@@ -52,10 +52,7 @@ class AuthService
     }
     public function validateLogin(Request $request)
     {
-        $login = $request->input('user');
-        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
-  $request->merge([$field => $login]);
-if($field=='email'){
+
     $request->validate(
         [
             'email'      => 'required|email|exists:users,email',
@@ -65,19 +62,7 @@ if($field=='email'){
             'email.exists'     => 'This email does not match our database record!',
         ]
     );
-}else if($field=='phone'){
 
-    $request->validate(
-        [
-            'phone'      => 'required|exists:users',
-            'password'              => 'required|string|min:6',
-        ],
-        [
-            'phone.exists'     => 'This number does not match our database record!',
-        ]
-    );
-
-}
 
     }
 
@@ -126,10 +111,7 @@ if($field=='email'){
 
             return $this->sendLockoutResponse($request);
         }
-        $login = $request->input('user');
-        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
-  $request->merge([$field => $login]);
-        $user = User::where($field, $request->user)->first();
+        $user = User::where("email", $request->email)->first();
 
         if ($user == null) {
             $this->incrementLoginAttempts($request);

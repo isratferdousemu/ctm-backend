@@ -31,7 +31,7 @@ class PermissionSeeder extends Seeder
                 'main-dashboard-total-revenue',
             ]
             ],
-           
+
                 //expense managment
                 [
                 'group_name' => $this->permissionGroupAdminExpense,
@@ -49,7 +49,7 @@ class PermissionSeeder extends Seeder
                     'main-expense-status',
                 ]
             ],
-     
+
             //Support ticket managment
                 [
                 'group_name' => $this->permissionGroupAdminSupport,
@@ -72,7 +72,7 @@ class PermissionSeeder extends Seeder
 
                 ]
             ],
-     
+
             //Setting managment
             [
             'group_name' => $this->permissionGroupAdminSetting,
@@ -92,12 +92,12 @@ class PermissionSeeder extends Seeder
 
             ]
             ],
-      
+
 
                             // admin permissions end
                             // admin permissions end
 
-               
+
 
 
                     ];

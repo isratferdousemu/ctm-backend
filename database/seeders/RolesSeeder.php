@@ -31,38 +31,12 @@ class RolesSeeder extends Seeder
                     'name' => $this->superAdmin
                 ]);
         $role->givePermissionTo(Permission::all());
-        //admin
-        Role::create([
-            'guard_name' => $guard,
-            'default' => 1,
-            'name' => $this->admin
-        ]);
-        //merchant
-        Role::create([
-            'guard_name' => $guard,
-            'default' => 1,
-            'name' => $this->merchant
-        ]);
-        Role::create([
-            'guard_name' => $guard,
-            'default' => 1,
-            'name' => $this->branchAdmin
-        ]);
-        Role::create([
-            'guard_name' => $guard,
-            'default' => 1,
-            'name' => $this->DelivaryMan
-        ]);
-        Role::create([
-            'guard_name' => $guard,
-            'default' => 1,
-            'name' => $this->PickupMan
-        ]);
+
 
         $admin = User::create(
             [
                 'full_name'            => 'CTM',
-                'email'                 => 'admin@metroexpress.com',
+                'email'                 => 'admin@ctm.com',
                 'password'              => bcrypt('@N159983a'), // password = R4d&DjVx
                 'user_type'               => $this->superAdminId,
                 'remember_token'        => Str::random(10),

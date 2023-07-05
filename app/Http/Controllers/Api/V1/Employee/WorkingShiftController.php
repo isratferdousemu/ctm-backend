@@ -125,42 +125,6 @@ class WorkingShiftController extends Controller
      *                  "end_at": "02:00",
      *                  "is_weekend": 0,
      *                },
-     *                  {
-     *                  "weekday": "mon",
-     *                  "start_at": "02:00",
-     *                  "end_at": "02:00",
-     *                  "is_weekend": 0,
-     *                },
-     *                  {
-     *                  "weekday": "tue",
-     *                  "start_at": "02:00",
-     *                  "end_at": "02:00",
-     *                  "is_weekend": 0,
-     *                },
-     *                  {
-     *                  "weekday": "wed",
-     *                  "start_at": "02:00",
-     *                  "end_at": "02:00",
-     *                  "is_weekend": 0,
-     *                },
-     *                  {
-     *                  "weekday": "thu",
-     *                  "start_at": "02:00",
-     *                  "end_at": "02:00",
-     *                  "is_weekend": 0,
-     *                },
-     *                  {
-     *                  "weekday": "fri",
-     *                  "start_at": "02:00",
-     *                  "end_at": "02:00",
-     *                  "is_weekend": 1,
-     *                },
-     *                  {
-     *                  "weekday": "sat",
-     *                  "start_at": "02:00",
-     *                  "end_at": "02:00",
-     *                  "is_weekend": 1,
-     *                },
      *              },
      *          @OA\Items(
      *                      @OA\Property(

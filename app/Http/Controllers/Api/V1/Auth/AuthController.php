@@ -38,19 +38,13 @@ class AuthController extends Controller
      *           @OA\Schema(
      *
      *                   @OA\Property(
-     *                      property="user",
-     *                      description="user email or phone number",
+     *                      property="email",
+     *                      description="user email",
      *                      type="string",
      *                   ),
      *                  @OA\Property(
      *                      property="password",
      *                      description="password",
-     *                      type="text",
-     *
-     *                   ),
-     *                  @OA\Property(
-     *                      property="device",
-     *                      description="device id for generating token for the device.",
      *                      type="text",
      *
      *                   ),

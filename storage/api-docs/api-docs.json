@@ -14,11 +14,76 @@
     },
     "servers": [
         {
-            "url": "http://my-default-host.com",
+            "url": "http://127.0.0.1:8000/api/v1/",
             "description": "Demo API Server"
         }
     ],
     "paths": {
+        "/admin/role/insert": {
+            "post": {
+                "tags": [
+                    "ADMIN-ROLE"
+                ],
+                "summary": "insert a role",
+                "description": "insert a role",
+                "operationId": "insert",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "name of the role",
+                                        "type": "text"
+                                    },
+                                    "permissions[0]": {
+                                        "type": "integer"
+                                    },
+                                    "permissions[1]": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/login": {
             "post": {
                 "tags": [
@@ -34,16 +99,12 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
-                                    "user": {
-                                        "description": "user email or phone number",
+                                    "email": {
+                                        "description": "user email",
                                         "type": "string"
                                     },
                                     "password": {
                                         "description": "password",
-                                        "type": "text"
-                                    },
-                                    "device": {
-                                        "description": "device id for generating token for the device.",
                                         "type": "text"
                                     }
                                 },
@@ -775,42 +836,6 @@
                                                 "start_at": "02:00",
                                                 "end_at": "02:00",
                                                 "is_weekend": 0
-                                            },
-                                            {
-                                                "weekday": "mon",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 0
-                                            },
-                                            {
-                                                "weekday": "tue",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 0
-                                            },
-                                            {
-                                                "weekday": "wed",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 0
-                                            },
-                                            {
-                                                "weekday": "thu",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 0
-                                            },
-                                            {
-                                                "weekday": "fri",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 1
-                                            },
-                                            {
-                                                "weekday": "sat",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 1
                                             }
                                         ]
                                     }
