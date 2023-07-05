@@ -30,4 +30,22 @@ class RoleService
         }
     }
 
+    public function updateRole(Request $request){
+        DB::beginTransaction();
+        try {
+            // update role
+            $role= Role::find($request->id);
+            $role->name=$request->name;
+            $role->save();
+            // assing permissions
+            $permissions = Permission::whereIn('id', $request->permissions)->get();
+            $role->syncPermissions($permissions);
+            db::commit();
+            return $role;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
 }

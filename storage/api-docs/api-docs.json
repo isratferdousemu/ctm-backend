@@ -84,6 +84,169 @@
                 ]
             }
         },
+        "/admin/role/edit/{id}": {
+            "get": {
+                "tags": [
+                    "ADMIN-ROLE"
+                ],
+                "summary": "get edit role data",
+                "description": "Returns Role Details by id",
+                "operationId": "edit",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of Role to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/role/update": {
+            "post": {
+                "tags": [
+                    "ADMIN-ROLE"
+                ],
+                "summary": "update a role",
+                "description": "update a role",
+                "operationId": "update",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the role",
+                                        "type": "text"
+                                    },
+                                    "name": {
+                                        "description": "name of the role",
+                                        "type": "text"
+                                    },
+                                    "permissions[0]": {
+                                        "type": "integer"
+                                    },
+                                    "permissions[1]": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/role/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "ADMIN-ROLE"
+                ],
+                "summary": " destroy role data",
+                "description": "Returns Role destroy by id",
+                "operationId": "destroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of Role to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/login": {
             "post": {
                 "tags": [
