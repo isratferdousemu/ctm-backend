@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::table('permissions', function (Blueprint $table) {
             $table->text('description')->nullable();
             $table->string('module_name')->nullable();
+            $table->string('sub_module_name')->nullable();
         });
     }
 
