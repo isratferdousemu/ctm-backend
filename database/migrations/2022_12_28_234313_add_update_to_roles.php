@@ -14,7 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::table('roles', function (Blueprint $table) {
-            $table->text('default')->default(0);
+            $table->integer('default')->default(0);
+            $table->string('code',6);
+            $table->string('name_en',50);
+            $table->string('name_bn',50);
+            $table->string('comment',120)->nullable();
+            $table->boolean('status')->default(true);
         });
     }
 
