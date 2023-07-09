@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('permissions', function (Blueprint $table) {
             $table->text('description')->nullable();
-            $table->string('group_name')->nullable();
+            $table->string('module_name')->nullable();
         });
     }
 
@@ -29,7 +29,7 @@ return new class extends Migration
         Schema::table('permissions', function (Blueprint $table) {
             //
             $table->dropColumn('description');
-            $table->dropColumn('group_name');
+            $table->dropColumn('module_name');
         });
     }
 };

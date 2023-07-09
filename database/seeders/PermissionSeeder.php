@@ -24,7 +24,7 @@ class PermissionSeeder extends Seeder
 
             //dashboard
             [
-            'group_name' => $this->permissionGroupAdminDashboard,
+            'module_name' => $this->permissionGroupAdminDashboard,
             'guard_name' => $this->guard,
 'permissions'=>[
                 'main-dashboard-filter',
@@ -34,7 +34,7 @@ class PermissionSeeder extends Seeder
 
                 //expense managment
                 [
-                'group_name' => $this->permissionGroupAdminExpense,
+                'module_name' => $this->permissionGroupAdminExpense,
                 'guard_name' => $this->guard,
 'permissions'=>[
                     'main-expense-category-list',
@@ -52,7 +52,7 @@ class PermissionSeeder extends Seeder
 
             //Support ticket managment
                 [
-                'group_name' => $this->permissionGroupAdminSupport,
+                'module_name' => $this->permissionGroupAdminSupport,
                 'guard_name' => $this->guard,
 'permissions'=>[
                     'main-support-category-list',
@@ -75,7 +75,7 @@ class PermissionSeeder extends Seeder
 
             //Setting managment
             [
-            'group_name' => $this->permissionGroupAdminSetting,
+            'module_name' => $this->permissionGroupAdminSetting,
             'guard_name' => $this->guard,
 'permissions'=>[
                 'main-setting-activity-log',
@@ -104,13 +104,13 @@ class PermissionSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
                     for ($i=0; $i < count($permissions) ; $i++) {
-                        $groupPermissions=$permissions[$i]['group_name'];
+                        $groupPermissions=$permissions[$i]['module_name'];
                         $guardPermissions=$permissions[$i]['guard_name'];
                         for ($j=0; $j < count($permissions[$i]['permissions']); $j++) {
                         //create permissions
                         $permission = Permission::create([
                             'name' => $permissions[$i]['permissions'][$j],
-                            'group_name' => $groupPermissions,
+                            'module_name' => $groupPermissions,
                             'guard_name' => $guardPermissions,
                             ]);
 
