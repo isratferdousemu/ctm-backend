@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Gegraphic\Division\DivisionRequest;
+use App\Http\Requests\Admin\Gegraphic\Division\DivisionUpdateRequest;
 use App\Http\Resources\Admin\Geographic\DivisionResource;
 use App\Http\Services\Admin\Location\LocationService;
 use App\Http\Traits\MessageTrait;
@@ -170,8 +172,7 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function insertDivision(Request $request){
-        $request->validate(Location::$divisionInsertRules);
+    public function insertDivision(DivisionRequest $request){
 
         try {
             $division = $this->locationService->createDivision($request);
@@ -182,6 +183,95 @@ class LocationController extends Controller
             return DivisionResource::make($division)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/division/update",
+     *      operationId="divisionUpdate",
+     *      tags={"GEOGRAPHIC-DIVISION"},
+     *      summary="update a Division",
+     *      description="update a Division",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="id",
+     *                      description="id of the Division",
+     *                      type="integer",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="english name of the Division",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="bangla name of the Division",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="code",
+     *                      description="code of the Division",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function divisionUpdate(DivisionUpdateRequest $request){
+
+        try {
+            $division = $this->locationService->updateDivision($request);
+            activity()
+            ->causedBy(auth()->user())
+            ->performedOn($division)
+            ->log('Division Update !');
+            return DivisionResource::make($division)->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
             ]);
         } catch (\Throwable $th) {
             //throw $th;

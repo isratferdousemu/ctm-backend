@@ -8,9 +8,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/insert', [LocationController::class, 'insertDivision'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::get('/get',[LocationController::class, 'getAllDivisionPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::post('/update', [LocationController::class, 'divisionUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
 
         // Route::get('/edit/{id}', [RoleController::class, 'edit'])->middleware(['role_or_permission:super-admin|main-role-edit']);
-        // Route::post('/update', [RoleController::class, 'update'])->middleware(['role_or_permission:super-admin|main-role-update']);
         // Route::get('/destroy/{id}', [RoleController::class, 'destroy'])->middleware(['role_or_permission:super-admin|main-role-destroy']);
     });
 
