@@ -11,6 +11,7 @@ use App\Http\Traits\MessageTrait;
 use App\Http\Traits\UserTrait;
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class LocationController extends Controller
 {
@@ -176,7 +177,7 @@ class LocationController extends Controller
 
         try {
             $division = $this->locationService->createDivision($request);
-            activity()
+            activity("Division")
             ->causedBy(auth()->user())
             ->performedOn($division)
             ->log('Division Created !');
@@ -265,7 +266,7 @@ class LocationController extends Controller
 
         try {
             $division = $this->locationService->updateDivision($request);
-            activity()
+            activity("Division")
             ->causedBy(auth()->user())
             ->performedOn($division)
             ->log('Division Update !');
@@ -277,5 +278,61 @@ class LocationController extends Controller
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+     /**
+     * @OA\Get(
+     *      path="/admin/division/destroy/{id}",
+     *      operationId="destroyDivision",
+     *      tags={"GEOGRAPHIC-DIVISION"},
+     *      summary=" destroy divisions",
+     *      description="Returns division destroy by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of division to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+    public function destroyDivision(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:location,id'
+        ]);
+
+        $division = Location::whereId($request->id)->first();
+        if($division){
+            $division->delete();
+        }
+        activity("Division")
+        ->causedBy(auth()->user())
+        ->log('Division Deleted!!');
+         return $this->sendResponse($division, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 }
