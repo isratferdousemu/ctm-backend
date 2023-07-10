@@ -15,9 +15,9 @@ class DivisionResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'                    => $this->id,
-            'name_en'                 => $this->name_en,
-            'name_bn'                 => $this->name_bn,
+            'id'                   => $this->id,
+            'name_en'              => $this->name_en,
+            'name_bn'              => $this->name_bn,
             'code'                 => $this->code,
         ];
     }
