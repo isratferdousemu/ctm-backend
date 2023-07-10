@@ -8,10 +8,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
 
-    include "Admin/Auth/AuthRoute.php"; 
+    include "Admin/Auth/AuthRoute.php";
     include "Admin/AdminRoute.php";
     include "Global/PushNotification.php";
     include "Global/public.php";
+    /* -------------------------------------------------------------------------- */
+    /*                         system configuration routes                        */
+    /* -------------------------------------------------------------------------- */
+    include "Admin/SystemConfig/LocationRoute.php";
 });
 
 
