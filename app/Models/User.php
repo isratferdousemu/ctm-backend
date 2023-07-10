@@ -131,6 +131,20 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePhoneVerifiedAt($value)
  * @property int|null $bank_id
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBankId($value)
+ * @property int|null $division_id
+ * @property int|null $district_id
+ * @property int|null $thana_id
+ * @property string $username
+ * @property string|null $mobile
+ * @property int|null $office_id
+ * @property int|null $assign_location_id
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereAssignLocationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereDistrictId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereDivisionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereMobile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOfficeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereThanaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable

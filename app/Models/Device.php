@@ -5,6 +5,34 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Device
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $name
+ * @property int $device_type
+ * @property string $device_name
+ * @property string $mac_address
+ * @property string $username_mapping
+ * @property string|null $purpose_use
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Device newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Device newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Device query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereDeviceName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereDeviceType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereMacAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device wherePurposeUse($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereUsernameMapping($value)
+ * @mixin \Eloquent
+ */
 class Device extends Model
 {
     use HasFactory;
