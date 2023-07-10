@@ -15,17 +15,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('division_id');
-            $table->unsignedInteger('district_id');
-            $table->unsignedInteger('thana_id');
+            $table->unsignedInteger('division_id')->nullable();
+            $table->unsignedInteger('district_id')->nullable();
+            $table->unsignedInteger('thana_id')->nullable();
             $table->string('username',50)->unique();
             $table->string('full_name',50)->nullable();
             $table->string('email',30)->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('mobile',13)->unique()->nullable();
-            $table->unsignedInteger('role_id');
-            $table->unsignedInteger('office_id');
-            $table->unsignedInteger('assign_location_id');
+            // $table->unsignedInteger('role_id');
+            $table->unsignedInteger('office_id')->nullable();
+            $table->unsignedInteger('assign_location_id')->nullable();
             $table->string('password')->nullable();
             $table->rememberToken();
             $table->integer('user_type')->nullable(); // 1 -> superadmin, 2 -> staff

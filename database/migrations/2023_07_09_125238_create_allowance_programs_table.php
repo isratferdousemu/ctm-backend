@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name_en',50);
             $table->string('name_bn',50);
             $table->string('guideline',120)->nullable();
-            $table->integer('service_type',10);
+            $table->integer('service_type');
             $table->string('description',120)->nullable();
             $table->timestamps();
         });

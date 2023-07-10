@@ -27,7 +27,10 @@ class RolesSeeder extends Seeder
 
                 $role = Role::create([
                     'guard_name' => $guard,
+                    'code' => "278932",
                     'default' => 1,
+                    'name_en' => $this->superAdmin,
+                    'name_bn' => $this->superAdmin,
                     'name' => $this->superAdmin
                 ]);
         $role->givePermissionTo(Permission::all());
@@ -36,6 +39,7 @@ class RolesSeeder extends Seeder
         $admin = User::create(
             [
                 'full_name'            => 'CTM',
+                'username'            => 'ctm-01',
                 'email'                 => 'admin@ctm.com',
                 'password'              => bcrypt('@N159983a'), // password = R4d&DjVx
                 'user_type'               => $this->superAdminId,

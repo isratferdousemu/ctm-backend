@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('offices', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('division_id')->unsigned()->index();
-            $table->bigInteger('district_id')->unsigned()->index();
-            $table->bigInteger('thana_id')->unsigned()->index();
-            $table->foreign('division_id')->references('id')->on('divisions')->onDelete('cascade');
-            $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade');
-            $table->foreign('thana_id')->references('id')->on('thanas')->onDelete('cascade');
+            $table->unsignedInteger('division_id')->nullable();
+            $table->unsignedInteger('district_id')->nullable();
+            $table->unsignedInteger('thana_id')->nullable();
             $table->string('name_en',50);
             $table->string('name_bn',50);
-            $table->integer('office_type',10);
+            $table->integer('office_type');
             $table->string('office_address',100);
             $table->string('comment',120)->nullable();
             $table->boolean('status');

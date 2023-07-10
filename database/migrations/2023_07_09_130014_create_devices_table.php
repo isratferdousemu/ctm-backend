@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('user_id')->unsigned()->index();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('name',50);
-            $table->integer('device_type',10);
+            $table->integer('device_type');
             $table->string('device_name',30);
             $table->macAddress();
             $table->string('username_mapping',50);
