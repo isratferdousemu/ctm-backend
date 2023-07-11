@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin\Gegraphic\Division;
+namespace App\Http\Requests\Admin\Geographic\Division;
 
 use Illuminate\Foundation\Http\FormRequest;
 

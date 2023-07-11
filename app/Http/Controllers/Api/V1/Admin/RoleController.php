@@ -22,6 +22,89 @@ class RoleController extends Controller
 
     }
 
+    /**
+    * @OA\Get(
+    *     path="/admin/role/all/filtered",
+    *      operationId="getAllRolePaginated",
+    *      tags={"ADMIN-ROLE"},
+    *      summary="get paginated role",
+    *      description="get paginated role",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="searchText",
+    *         in="query",
+    *         description="search by name",
+    *         @OA\Schema(type="string")
+    *     ),
+    *     @OA\Parameter(
+    *         name="perPage",
+    *         in="query",
+    *         description="number of role per page",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         description="page number",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getAllRolePaginated(Request $request){
+    // Retrieve the query parameters
+    $searchText = $request->query('searchText');
+    $perPage = $request->query('perPage');
+    $page = $request->query('page');
+
+    $filterArrayNameEn=[];
+    $filterArrayNameBn=[];
+    $filterArrayCode=[];
+
+    if ($searchText) {
+        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+    }
+    $role = Role::query()
+    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
+        $query->where($filterArrayNameEn)
+              ->orWhere($filterArrayNameBn)
+              ->orWhere($filterArrayCode);
+    })
+    ->whereParentId(null)
+    ->latest()
+    ->paginate($perPage, ['*'], 'page');
+
+    return RoleResource::collection($role->load('permissions'))->additional([
+        'success' => true,
+        'message' => $this->insertSuccessMessage,
+    ]);
+}
+
      /**
      *
      * @OA\Post(
@@ -85,7 +168,7 @@ class RoleController extends Controller
     public function insert(RoleRequest $request){
         try {
             //code...
-           return $role = $this->RoleService->createRole($request);
+            $role = $this->RoleService->createRole($request);
             activity()
             ->causedBy(auth()->user())
             ->performedOn($role)

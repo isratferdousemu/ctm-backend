@@ -230,14 +230,14 @@
                 "tags": [
                     "GEOGRAPHIC-DIVISION"
                 ],
-                "summary": " destroy role divisions",
+                "summary": " destroy divisions",
                 "description": "Returns division destroy by id",
                 "operationId": "destroyDivision",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "id of Role to return",
+                        "description": "id of division to return",
                         "schema": {
                             "type": "string"
                         }

@@ -10,7 +10,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin/role')->group(function () {
 
-        Route::post('all/filtered',[BankController::class, 'getAllBankPaginated'])->middleware(['role_or_permission:super-admin|main-bank-view']);
+        Route::get('all/filtered',[RoleController::class, 'getAllRolePaginated'])->middleware(['role_or_permission:super-admin|main-role-list']);
 
         Route::post('/insert', [RoleController::class, 'insert'])->middleware(['role_or_permission:super-admin|main-role-store']);
         Route::get('/edit/{id}', [RoleController::class, 'edit'])->middleware(['role_or_permission:super-admin|main-role-edit']);

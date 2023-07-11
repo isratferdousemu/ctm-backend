@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Gegraphic\Division\DivisionRequest;
-use App\Http\Requests\Admin\Gegraphic\Division\DivisionUpdateRequest;
+use App\Http\Requests\Admin\Geographic\Division\DivisionRequest;
+use App\Http\Requests\Admin\Geographic\Division\DivisionUpdateRequest;
 use App\Http\Resources\Admin\Geographic\DivisionResource;
 use App\Http\Services\Admin\Location\LocationService;
 use App\Http\Traits\MessageTrait;
