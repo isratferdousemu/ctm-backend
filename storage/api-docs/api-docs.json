@@ -272,6 +272,74 @@
                 ]
             }
         },
+        "/admin/district/get": {
+            "get": {
+                "tags": [
+                    "GEOGRAPHIC-DISTRICT"
+                ],
+                "summary": "get paginated Districts",
+                "description": "get paginated Districts",
+                "operationId": "getAllDistrictPaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of Districts per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/district/insert": {
             "post": {
                 "tags": [
@@ -343,40 +411,47 @@
                 ]
             }
         },
-        "/admin/district/get": {
-            "get": {
+        "/admin/district/update": {
+            "post": {
                 "tags": [
                     "GEOGRAPHIC-DISTRICT"
                 ],
-                "summary": "get paginated Districts",
-                "description": "get paginated Districts",
-                "operationId": "getAllDistrictPaginated",
-                "parameters": [
-                    {
-                        "name": "searchText",
-                        "in": "query",
-                        "description": "search by name",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of Districts per page",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "page number",
-                        "schema": {
-                            "type": "integer"
+                "summary": "update a district",
+                "description": "update a district",
+                "operationId": "districtUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the district",
+                                        "type": "integer"
+                                    },
+                                    "division_id": {
+                                        "description": "id of division",
+                                        "type": "text"
+                                    },
+                                    "name_en": {
+                                        "description": "english name of the district",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "bangla name of the district",
+                                        "type": "text"
+                                    },
+                                    "code": {
+                                        "description": "code of the Division",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Successful operation",

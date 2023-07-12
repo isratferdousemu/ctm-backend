@@ -52,6 +52,7 @@ class LocationService
         }
     }
 
+
     /* -------------------------------------------------------------------------- */
     /*                              District Service                              */
     /* -------------------------------------------------------------------------- */
@@ -68,6 +69,27 @@ class LocationService
             $location->code                   = $request->code;
             $location->type                   = $this->district;
             $location->created_by             = Auth()->user()->id;
+            $location->save();
+            DB::commit();
+            return $location;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function updateDistrict(Request $request){
+
+        DB::beginTransaction();
+        try {
+
+            $location                       = Location::find($request->id);
+            $location->name_en                = $request->name_en;
+            $location->parent_id              = $request->division_id;
+            $location->name_bn                = $request->name_bn;
+            $location->code                   = $request->code;
+            $location->version                  = $location->version+1;
+
             $location->save();
             DB::commit();
             return $location;

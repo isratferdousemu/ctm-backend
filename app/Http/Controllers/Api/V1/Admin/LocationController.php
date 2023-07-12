@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Geographic\District\DistrictRequest;
+use App\Http\Requests\Admin\Geographic\District\DistrictUpdateRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionUpdateRequest;
 use App\Http\Resources\Admin\Geographic\DistrictResource;
@@ -349,7 +350,92 @@ class LocationController extends Controller
     /*                                 District Function                          */
     /* -------------------------------------------------------------------------- */
 
+
     /**
+    * @OA\Get(
+    *     path="/admin/district/get",
+    *      operationId="getAllDistrictPaginated",
+    *      tags={"GEOGRAPHIC-DISTRICT"},
+    *      summary="get paginated Districts",
+    *      description="get paginated Districts",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="searchText",
+    *         in="query",
+    *         description="search by name",
+    *         @OA\Schema(type="string")
+    *     ),
+    *     @OA\Parameter(
+    *         name="perPage",
+    *         in="query",
+    *         description="number of Districts per page",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         description="page number",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getAllDistrictPaginated(Request $request){
+    // Retrieve the query parameters
+    $searchText = $request->query('searchText');
+    $perPage = $request->query('perPage');
+    $page = $request->query('page');
+
+    $filterArrayNameEn=[];
+    $filterArrayNameBn=[];
+    $filterArrayCode=[];
+
+    if ($searchText) {
+        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+    }
+    $district = Location::query()
+    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
+        $query->where($filterArrayNameEn)
+              ->orWhere($filterArrayNameBn)
+              ->orWhere($filterArrayCode);
+    })
+    ->whereType($this->district)
+    ->with('parent')
+    ->latest()
+    ->paginate($perPage, ['*'], 'page');
+    return DistrictResource::collection($district)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+
+}
+
+        /**
      *
      * @OA\Post(
      *      path="/admin/district/insert",
@@ -440,32 +526,55 @@ class LocationController extends Controller
     }
 
     /**
-    * @OA\Get(
-    *     path="/admin/district/get",
-    *      operationId="getAllDistrictPaginated",
-    *      tags={"GEOGRAPHIC-DISTRICT"},
-    *      summary="get paginated Districts",
-    *      description="get paginated Districts",
-    *      security={{"bearer_token":{}}},
-    *     @OA\Parameter(
-    *         name="searchText",
-    *         in="query",
-    *         description="search by name",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="perPage",
-    *         in="query",
-    *         description="number of Districts per page",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="page",
-    *         in="query",
-    *         description="page number",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *      @OA\Response(
+     *
+     * @OA\Post(
+     *      path="/admin/district/update",
+     *      operationId="districtUpdate",
+     *      tags={"GEOGRAPHIC-DISTRICT"},
+     *      summary="update a district",
+     *      description="update a district",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="id",
+     *                      description="id of the district",
+     *                      type="integer",
+     *                   ),
+     *           @OA\Property(
+     *                      property="division_id",
+     *                      description="id of division",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="english name of the district",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="bangla name of the district",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="code",
+     *                      description="code of the Division",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -488,37 +597,26 @@ class LocationController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
+     *        )
+     *     )
+     *
+     */
+    public function districtUpdate(DistrictUpdateRequest $request){
 
- public function getAllDistrictPaginated(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
-
-    $filterArrayNameEn=[];
-    $filterArrayNameBn=[];
-    $filterArrayCode=[];
-
-    if ($searchText) {
-        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+        try {
+            $district = $this->locationService->updateDistrict($request);
+            activity("District")
+            ->causedBy(auth()->user())
+            ->performedOn($district)
+            ->log('District Update !');
+            return DistrictResource::make($district->load('parent'))->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
     }
-    $district = Location::query()
-    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
-        $query->where($filterArrayNameEn)
-              ->orWhere($filterArrayNameBn)
-              ->orWhere($filterArrayCode);
-    })
-    ->whereType($this->district)
-    ->with('parent')
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
-    return DistrictResource::collection($district)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
+
 }
