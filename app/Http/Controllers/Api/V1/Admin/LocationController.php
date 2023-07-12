@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Geographic\District\DistrictRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionUpdateRequest;
+use App\Http\Resources\Admin\Geographic\DistrictResource;
 use App\Http\Resources\Admin\Geographic\DivisionResource;
 use App\Http\Services\Admin\Location\LocationService;
+use App\Http\Traits\LocationTrait;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\UserTrait;
 use App\Models\Location;
@@ -17,7 +19,7 @@ use Validator;
 
 class LocationController extends Controller
 {
-    use MessageTrait,UserTrait;
+    use MessageTrait,UserTrait,LocationTrait;
     private $locationService;
 
     public function __construct(LocationService $locationService) {
@@ -436,4 +438,87 @@ class LocationController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+    /**
+    * @OA\Get(
+    *     path="/admin/district/get",
+    *      operationId="getAllDistrictPaginated",
+    *      tags={"GEOGRAPHIC-DISTRICT"},
+    *      summary="get paginated Districts",
+    *      description="get paginated Districts",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="searchText",
+    *         in="query",
+    *         description="search by name",
+    *         @OA\Schema(type="string")
+    *     ),
+    *     @OA\Parameter(
+    *         name="perPage",
+    *         in="query",
+    *         description="number of Districts per page",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         description="page number",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getAllDistrictPaginated(Request $request){
+    // Retrieve the query parameters
+    $searchText = $request->query('searchText');
+    $perPage = $request->query('perPage');
+    $page = $request->query('page');
+
+    $filterArrayNameEn=[];
+    $filterArrayNameBn=[];
+    $filterArrayCode=[];
+
+    if ($searchText) {
+        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+    }
+    $district = Location::query()
+    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
+        $query->where($filterArrayNameEn)
+              ->orWhere($filterArrayNameBn)
+              ->orWhere($filterArrayCode);
+    })
+    ->whereType($this->district)
+    ->with('parent')
+    ->latest()
+    ->paginate($perPage, ['*'], 'page');
+    return DistrictResource::collection($district)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
 }
