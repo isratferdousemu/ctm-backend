@@ -57,4 +57,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/destroy/{id}', [LocationController::class, 'destroyUnion'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
 
+
+    /* -------------------------------------------------------------------------- */
+    /*                               Ward Routes                                  */
+    /* -------------------------------------------------------------------------- */
+    Route::prefix('admin/ward')->group(function () {
+
+        Route::post('/insert', [LocationController::class, 'insertWard'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
+        Route::get('/get',[LocationController::class, 'getAllWardPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::post('/update', [LocationController::class, 'wardUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
+        Route::get('/destroy/{id}', [LocationController::class, 'destroyWard'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+    });
+
 });

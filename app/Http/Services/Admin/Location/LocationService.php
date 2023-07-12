@@ -220,4 +220,51 @@ class LocationService
             throw $th;
         }
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                               Ward Services                               */
+    /* -------------------------------------------------------------------------- */
+
+
+    public function createWard(Request $request){
+
+        DB::beginTransaction();
+        try {
+
+            $location                         = new Location;
+            $location->parent_id              = $request->union_id;
+            $location->name_en                = $request->name_en;
+            $location->name_bn                = $request->name_bn;
+            $location->code                   = $request->code;
+            $location->type                   = $this->ward;
+            $location->created_by             = Auth()->user()->id;
+            $location->save();
+            DB::commit();
+            return $location;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function updateWard(Request $request){
+
+        DB::beginTransaction();
+        try {
+
+            $location                       = Location::find($request->id);
+            $location->parent_id              = $request->union_id;
+            $location->name_en                = $request->name_en;
+            $location->name_bn                = $request->name_bn;
+            $location->code                   = $request->code;
+            $location->version                = $location->version+1;
+
+            $location->save();
+            DB::commit();
+            return $location;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
 }

@@ -12,10 +12,13 @@ use App\Http\Requests\Admin\Geographic\Division\DivisionUpdateRequest;
 use App\Http\Requests\Admin\Geographic\Thana\ThanaRequest;
 use App\Http\Requests\Admin\Geographic\Uinion\UnionRequest;
 use App\Http\Requests\Admin\Geographic\Uinion\UnionUpdateRequest;
+use App\Http\Requests\Admin\Geographic\WardRequest;
+use App\Http\Requests\Admin\Geographic\WardUpdateRequest;
 use App\Http\Resources\Admin\Geographic\CityResource;
 use App\Http\Resources\Admin\Geographic\DistrictResource;
 use App\Http\Resources\Admin\Geographic\DivisionResource;
 use App\Http\Resources\Admin\Geographic\UnionResource;
+use App\Http\Resources\Admin\Geographic\WardResource;
 use App\Http\Services\Admin\Location\LocationService;
 use App\Http\Traits\LocationTrait;
 use App\Http\Traits\MessageTrait;
@@ -1721,5 +1724,366 @@ class LocationController extends Controller
         ->causedBy(auth()->user())
         ->log('Union Deleted!!');
          return $this->sendResponse($union, $this->deleteSuccessMessage, Response::HTTP_OK);
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                            TODO: WARD Functions                           */
+    /* -------------------------------------------------------------------------- */
+
+
+            /**
+    * @OA\Get(
+    *     path="/admin/ward/get",
+    *      operationId="getAllWardPaginated",
+    *      tags={"GEOGRAPHIC-WARD"},
+    *      summary="get paginated ward",
+    *      description="get paginated ward",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="searchText",
+    *         in="query",
+    *         description="search by name",
+    *         @OA\Schema(type="string")
+    *     ),
+    *     @OA\Parameter(
+    *         name="perPage",
+    *         in="query",
+    *         description="number of ward per page",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         description="page number",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getAllWardPaginated(Request $request){
+    // Retrieve the query parameters
+    $searchText = $request->query('searchText');
+    $perPage = $request->query('perPage');
+    $page = $request->query('page');
+
+    $filterArrayNameEn=[];
+    $filterArrayNameBn=[];
+    $filterArrayCode=[];
+
+    if ($searchText) {
+        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+    }
+    $ward = Location::query()
+    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
+        $query->where($filterArrayNameEn)
+              ->orWhere($filterArrayNameBn)
+              ->orWhere($filterArrayCode);
+    })
+    ->whereType($this->ward)
+    ->with('parent.parent.parent.parent')
+    ->latest()
+    ->paginate($perPage, ['*'], 'page');
+    return WardResource::collection($ward)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/ward/insert",
+     *      operationId="insertWard",
+     *      tags={"GEOGRAPHIC-WARD"},
+     *      summary="insert a ward",
+     *      description="insert a ward",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="division_id",
+     *                      description="id of division",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="district_id",
+     *                      description="id of district",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="thana_id",
+     *                      description="id of thana",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="union_id",
+     *                      description="id of union",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="english name of the ward",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="bangla name of the ward",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="code",
+     *                      description="code of the ward",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function insertWard(WardRequest $request){
+
+        try {
+            $ward = $this->locationService->createWard($request);
+            activity("Ward")
+            ->causedBy(auth()->user())
+            ->performedOn($ward)
+            ->log('Ward Created !');
+            return WardResource::make($ward->load('parent.parent.parent.parent'))->additional([
+                'success' => true,
+                'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/ward/update",
+     *      operationId="wardUpdate",
+     *      tags={"GEOGRAPHIC-WARD"},
+     *      summary="update a ward",
+     *      description="update a ward",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="id",
+     *                      description="id of the ward",
+     *                      type="integer",
+     *                   ),
+     *           @OA\Property(
+     *                      property="division_id",
+     *                      description="id of division",
+     *                      type="text",
+     *                   ),
+     *           @OA\Property(
+     *                      property="district_id",
+     *                      description="id of district",
+     *                      type="text",
+     *                   ),
+     *           @OA\Property(
+     *                      property="thana_id",
+     *                      description="id of thana",
+     *                      type="text",
+     *                   ),
+     *           @OA\Property(
+     *                      property="union_id",
+     *                      description="id of union",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="english name of the ward",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="bangla name of the ward",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="code",
+     *                      description="code of the ward",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function wardUpdate(WardUpdateRequest $request){
+
+        try {
+            $ward = $this->locationService->updateWard($request);
+            activity("Ward")
+            ->causedBy(auth()->user())
+            ->performedOn($ward)
+            ->log('Ward Update !');
+            return WardResource::make($ward->load('parent.parent.parent.parent'))->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+         /**
+     * @OA\Get(
+     *      path="/admin/ward/destroy/{id}",
+     *      operationId="destroyWard",
+     *      tags={"GEOGRAPHIC-WARD"},
+     *      summary="destroy ward",
+     *      description="Returns ward destroy by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of ward to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+    public function destroyWard($id)
+    {
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:locations,id,deleted_at,NULL',
+        ]);
+
+        $validator->validated();
+
+        $ward = Location::whereId($id)->whereType($this->ward)->first();
+        if($ward){
+            $ward->delete();
+        }
+        activity("Ward")
+        ->causedBy(auth()->user())
+        ->log('Ward Deleted!!');
+         return $this->sendResponse($ward, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 }
