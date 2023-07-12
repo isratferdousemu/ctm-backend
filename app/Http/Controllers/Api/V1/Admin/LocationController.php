@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Geographic\City\CityRequest;
+use App\Http\Requests\Admin\Geographic\City\CityUpdateRequest;
 use App\Http\Requests\Admin\Geographic\District\DistrictRequest;
 use App\Http\Requests\Admin\Geographic\District\DistrictUpdateRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionRequest;
@@ -860,6 +861,105 @@ class LocationController extends Controller
             return CityResource::make($city->load('parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/city/update",
+     *      operationId="cityUpdate",
+     *      tags={"GEOGRAPHIC-CITY"},
+     *      summary="update a city",
+     *      description="update a city",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="id",
+     *                      description="id of the city",
+     *                      type="integer",
+     *                   ),
+     *           @OA\Property(
+     *                      property="division_id",
+     *                      description="id of division",
+     *                      type="text",
+     *                   ),
+     *           @OA\Property(
+     *                      property="district_id",
+     *                      description="id of district",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="english name of the city",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="bangla name of the city",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="code",
+     *                      description="code of the city",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function cityUpdate(CityUpdateRequest $request){
+
+        try {
+            $city = $this->locationService->updateCity($request);
+            activity("City")
+            ->causedBy(auth()->user())
+            ->performedOn($city)
+            ->log('City Update !');
+            return CityResource::make($city->load('parent.parent'))->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
             ]);
         } catch (\Throwable $th) {
             //throw $th;
