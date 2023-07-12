@@ -619,4 +619,65 @@ class LocationController extends Controller
         }
     }
 
+
+     /**
+     * @OA\Get(
+     *      path="/admin/district/destroy/{id}",
+     *      operationId="destroyDistrict",
+     *      tags={"GEOGRAPHIC-DISTRICT"},
+     *      summary=" destroy district",
+     *      description="Returns district destroy by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of district to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+    public function destroyDistrict($id)
+    {
+
+
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:locations,id,deleted_at,NULL',
+        ]);
+
+        $validator->validated();
+
+        $district = Location::whereId($id)->whereType($this->district)->first();
+        if($district){
+            $district->delete();
+        }
+        activity("District")
+        ->causedBy(auth()->user())
+        ->log('District Deleted!!');
+         return $this->sendResponse($district, $this->deleteSuccessMessage, Response::HTTP_OK);
+    }
+
 }
