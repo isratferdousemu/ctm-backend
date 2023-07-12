@@ -53,8 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/insert', [LocationController::class, 'insertUnion'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::get('/get',[LocationController::class, 'getAllUnionPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
-        // Route::post('/update', [LocationController::class, 'thanaUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
-        // Route::get('/destroy/{id}', [LocationController::class, 'destroyThana'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        Route::post('/update', [LocationController::class, 'unionUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
+        Route::get('/destroy/{id}', [LocationController::class, 'destroyUnion'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
 
 });

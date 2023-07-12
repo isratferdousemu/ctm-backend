@@ -11,6 +11,7 @@ use App\Http\Requests\Admin\Geographic\Division\DivisionRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionUpdateRequest;
 use App\Http\Requests\Admin\Geographic\Thana\ThanaRequest;
 use App\Http\Requests\Admin\Geographic\Uinion\UnionRequest;
+use App\Http\Requests\Admin\Geographic\Uinion\UnionUpdateRequest;
 use App\Http\Resources\Admin\Geographic\CityResource;
 use App\Http\Resources\Admin\Geographic\DistrictResource;
 use App\Http\Resources\Admin\Geographic\DivisionResource;
@@ -1558,5 +1559,167 @@ class LocationController extends Controller
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/union/update",
+     *      operationId="unionUpdate",
+     *      tags={"GEOGRAPHIC-UNION"},
+     *      summary="update a union",
+     *      description="update a union",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="id",
+     *                      description="id of the union",
+     *                      type="integer",
+     *                   ),
+     *           @OA\Property(
+     *                      property="division_id",
+     *                      description="id of division",
+     *                      type="text",
+     *                   ),
+     *           @OA\Property(
+     *                      property="district_id",
+     *                      description="id of district",
+     *                      type="text",
+     *                   ),
+     *           @OA\Property(
+     *                      property="thana_id",
+     *                      description="id of thana",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="english name of the union",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="bangla name of the union",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="code",
+     *                      description="code of the union",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function unionUpdate(UnionUpdateRequest $request){
+
+        try {
+            $union = $this->locationService->updateUnion($request);
+            activity("Union")
+            ->causedBy(auth()->user())
+            ->performedOn($union)
+            ->log('Union Update !');
+            return UnionResource::make($union->load('parent.parent.parent'))->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+         /**
+     * @OA\Get(
+     *      path="/admin/union/destroy/{id}",
+     *      operationId="destroyUnion",
+     *      tags={"GEOGRAPHIC-UNION"},
+     *      summary=" destroy union",
+     *      description="Returns union destroy by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of union to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+    public function destroyUnion($id)
+    {
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:locations,id,deleted_at,NULL',
+        ]);
+
+        $validator->validated();
+
+        $union = Location::whereId($id)->whereType($this->union)->first();
+        if($union){
+            $union->delete();
+        }
+        activity("Union")
+        ->causedBy(auth()->user())
+        ->log('Union Deleted!!');
+         return $this->sendResponse($union, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 }
