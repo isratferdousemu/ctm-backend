@@ -12,6 +12,7 @@ use App\Http\Traits\UserTrait;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Validator;
 
 class LocationController extends Controller
 {
@@ -320,13 +321,17 @@ class LocationController extends Controller
      *      ),
      *     )
      */
-    public function destroyDivision(Request $request)
+    public function destroyDivision($id)
     {
-        $request->validate([
-            'id' => 'required|exists:locations,id,deleted_at,NULL'
+
+
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:locations,id,deleted_at,NULL',
         ]);
 
-        $division = Location::whereId($request->id)->first();
+        $validator->validated();
+
+        $division = Location::whereId($id)->first();
         if($division){
             $division->delete();
         }
