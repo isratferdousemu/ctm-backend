@@ -1211,4 +1211,103 @@ class LocationController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/thana/update",
+     *      operationId="thanaUpdate",
+     *      tags={"GEOGRAPHIC-THANA"},
+     *      summary="update a thana",
+     *      description="update a thana",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="id",
+     *                      description="id of the thana",
+     *                      type="integer",
+     *                   ),
+     *           @OA\Property(
+     *                      property="division_id",
+     *                      description="id of division",
+     *                      type="text",
+     *                   ),
+     *           @OA\Property(
+     *                      property="district_id",
+     *                      description="id of district",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="english name of the thana",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="bangla name of the thana",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="code",
+     *                      description="code of the thana",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function thanaUpdate(CityUpdateRequest $request){
+
+        try {
+            $thana = $this->locationService->updateCity($request);
+            activity("Thana")
+            ->causedBy(auth()->user())
+            ->performedOn($thana)
+            ->log('Thana Update !');
+            return CityResource::make($thana->load('parent.parent'))->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
 }
