@@ -1032,6 +1032,91 @@ class LocationController extends Controller
     /*                               Thana Functions                              */
     /* -------------------------------------------------------------------------- */
 
+
+        /**
+    * @OA\Get(
+    *     path="/admin/thana/get",
+    *      operationId="getAllThanaPaginated",
+    *      tags={"GEOGRAPHIC-THANA"},
+    *      summary="get paginated thana",
+    *      description="get paginated thana",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="searchText",
+    *         in="query",
+    *         description="search by name",
+    *         @OA\Schema(type="string")
+    *     ),
+    *     @OA\Parameter(
+    *         name="perPage",
+    *         in="query",
+    *         description="number of thana per page",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         description="page number",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getAllThanaPaginated(Request $request){
+    // Retrieve the query parameters
+    $searchText = $request->query('searchText');
+    $perPage = $request->query('perPage');
+    $page = $request->query('page');
+
+    $filterArrayNameEn=[];
+    $filterArrayNameBn=[];
+    $filterArrayCode=[];
+
+    if ($searchText) {
+        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+    }
+    $thana = Location::query()
+    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
+        $query->where($filterArrayNameEn)
+              ->orWhere($filterArrayNameBn)
+              ->orWhere($filterArrayCode);
+    })
+    ->whereType($this->thana)
+    ->with('parent.parent')
+    ->latest()
+    ->paginate($perPage, ['*'], 'page');
+    return CityResource::collection($thana)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+
+    }
+
     /**
      *
      * @OA\Post(

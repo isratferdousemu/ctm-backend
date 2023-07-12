@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin/thana')->group(function () {
 
         Route::post('/insert', [LocationController::class, 'insertThana'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
-        // Route::get('/get',[LocationController::class, 'getAllCityPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/get',[LocationController::class, 'getAllThanaPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         // Route::post('/update', [LocationController::class, 'cityUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
         // Route::get('/destroy/{id}', [LocationController::class, 'destroyCity'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
