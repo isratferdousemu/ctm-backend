@@ -323,7 +323,7 @@ class LocationController extends Controller
     public function destroyDivision(Request $request)
     {
         $request->validate([
-            'id' => 'required|exists:locations,id'
+            'id' => 'required|exists:locations,id,deleted_at,NULL'
         ]);
 
         $division = Location::whereId($request->id)->first();

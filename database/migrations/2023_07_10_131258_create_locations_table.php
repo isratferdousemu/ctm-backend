@@ -18,7 +18,12 @@ return new class extends Migration
             $table->string('code',6);
             $table->string('name_en',50);
             $table->string('name_bn',50);
+            $table->string('type',20);
+            $table->integer("version")->default(1);
+            $table->bigInteger('created_by')->unsigned()->index()->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

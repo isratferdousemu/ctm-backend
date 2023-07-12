@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Location
@@ -28,13 +29,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereNameEn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereParentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereUpdatedAt($value)
+ * @property string $type
+ * @property int $version
+ * @property int|null $created_by
+ * @property string|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Location> $children
+ * @method static \Illuminate\Database\Eloquent\Builder|Location whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Location whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Location whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Location whereVersion($value)
  * @mixin \Eloquent
  */
 class Location extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
 
-    protected $fillable = ['name_en','name_bn','code','parent_id'];
 
 
     public function children()

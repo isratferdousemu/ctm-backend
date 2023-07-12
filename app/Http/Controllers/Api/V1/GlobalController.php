@@ -63,11 +63,11 @@ class GlobalController extends Controller
             $filterArrayName[] = ['name', 'LIKE', '%' . $filteredText . '%'];
         }
 
-        $banks = Bank::query()
-            ->where($filterArrayName)
-            ->latest()->get();
+        // $banks = Bank::query()
+        //     ->where($filterArrayName)
+        //     ->latest()->get();
 
-            return $this->sendResponse($banks, $this->fetchSuccessMessage, Response::HTTP_OK);
+        //     return $this->sendResponse($banks, $this->fetchSuccessMessage, Response::HTTP_OK);
 
 
     }

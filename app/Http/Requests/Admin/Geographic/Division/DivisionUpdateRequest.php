@@ -22,10 +22,10 @@ class DivisionUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'id'    => 'required|exists:locations,id',
-        'name_en'   => 'required|string|max:50|unique:locations,name_en,'.$this->id.',id',
-        'name_bn'   => 'required|string|max:50|unique:locations,name_bn,'.$this->id.',id',
-        'code'  => 'required|string|max:6|unique:locations,code,'.$this->id.',id',
+        'id'    => 'required|exists:locations,id,deleted_at,NULL',
+        'name_en'   => 'required|string|max:50|unique:locations,name_en,'.$this->id.',id,deleted_at,NULL',
+        'name_bn'   => 'required|string|max:50|unique:locations,name_bn,'.$this->id.',id,deleted_at,NULL',
+        'code'  => 'required|string|max:6|unique:locations,code,'.$this->id.',id,deleted_at,NULL',
         ];
     }
 }

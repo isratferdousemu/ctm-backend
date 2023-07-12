@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Admin\Location;
 
+use App\Http\Traits\LocationTrait;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,7 @@ use Illuminate\Support\Str;
 
 class LocationService
 {
+    use LocationTrait;
     public function createDivision(Request $request){
 
         DB::beginTransaction();
@@ -19,6 +21,8 @@ class LocationService
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;
             $location->code                   = $request->code;
+            $location->type                   = $this->division;
+            $location->created_by                   = Auth()->user()->id;
             $location->save();
             DB::commit();
             return $location;
@@ -36,6 +40,8 @@ class LocationService
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;
             $location->code                   = $request->code;
+            $location->version                   = $location->increment('version');
+
             $location->save();
             DB::commit();
             return $location;
