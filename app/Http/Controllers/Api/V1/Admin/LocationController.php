@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Geographic\District\DistrictRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionUpdateRequest;
 use App\Http\Resources\Admin\Geographic\DivisionResource;
@@ -339,5 +340,100 @@ class LocationController extends Controller
         ->causedBy(auth()->user())
         ->log('Division Deleted!!');
          return $this->sendResponse($division, $this->deleteSuccessMessage, Response::HTTP_OK);
+    }
+
+
+    /* -------------------------------------------------------------------------- */
+    /*                                 District Function                          */
+    /* -------------------------------------------------------------------------- */
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/district/insert",
+     *      operationId="insertDistrict",
+     *      tags={"GEOGRAPHIC-DISTRICT"},
+     *      summary="insert a district",
+     *      description="insert a district",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="division_id",
+     *                      description="id of division",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="english name of the district",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="bangla name of the district",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="code",
+     *                      description="code of the district",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function insertDistrict(DistrictRequest $request){
+
+        try {
+            $District = $this->locationService->createDistrict($request);
+            activity("District")
+            ->causedBy(auth()->user())
+            ->performedOn($District)
+            ->log('District Created !');
+            return DivisionResource::make($District)->additional([
+                'success' => true,
+                'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
     }
 }

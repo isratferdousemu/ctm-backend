@@ -272,6 +272,77 @@
                 ]
             }
         },
+        "/admin/district/insert": {
+            "post": {
+                "tags": [
+                    "GEOGRAPHIC-DISTRICT"
+                ],
+                "summary": "insert a district",
+                "description": "insert a district",
+                "operationId": "insertDistrict",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "division_id": {
+                                        "description": "id of division",
+                                        "type": "text"
+                                    },
+                                    "name_en": {
+                                        "description": "english name of the district",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "bangla name of the district",
+                                        "type": "text"
+                                    },
+                                    "code": {
+                                        "description": "code of the district",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/role/all/filtered": {
             "get": {
                 "tags": [

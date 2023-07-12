@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Geographic\Division;
+namespace App\Http\Requests\Admin\Geographic\District;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DivisionRequest extends FormRequest
+class DistrictRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,10 @@ class DivisionRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'division_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
             'name_en'                              => 'required|string|max:50|unique:locations,name_en,NULL,id,deleted_at,NULL',
-        'name_bn'                              => 'required|string|max:50|unique:locations,name_bn,NULL,id,deleted_at,NULL',
-        'code'                               => 'required|string|max:6|unique:locations,code,NULL,id,deleted_at,NULL',
+            'name_bn'                              => 'required|string|max:50|unique:locations,name_bn,NULL,id,deleted_at,NULL',
+            'code'                               => 'required|string|max:6|unique:locations,code,NULL,id,deleted_at,NULL'
         ];
     }
 }
