@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/insert', [LocationController::class, 'insertThana'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::get('/get',[LocationController::class, 'getAllThanaPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::post('/update', [LocationController::class, 'thanaUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
-        // Route::get('/destroy/{id}', [LocationController::class, 'destroyCity'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        Route::get('/destroy/{id}', [LocationController::class, 'destroyThana'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
 
 });

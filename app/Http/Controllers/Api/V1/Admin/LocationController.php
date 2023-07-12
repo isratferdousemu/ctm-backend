@@ -1310,4 +1310,62 @@ class LocationController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+         /**
+     * @OA\Get(
+     *      path="/admin/thana/destroy/{id}",
+     *      operationId="destroyThana",
+     *      tags={"GEOGRAPHIC-THANA"},
+     *      summary=" destroy thana",
+     *      description="Returns thana destroy by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of thana to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+    public function destroyThana($id)
+    {
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:locations,id,deleted_at,NULL',
+        ]);
+
+        $validator->validated();
+
+        $thana = Location::whereId($id)->whereType($this->thana)->first();
+        if($thana){
+            $thana->delete();
+        }
+        activity("Thana")
+        ->causedBy(auth()->user())
+        ->log('Thana Deleted!!');
+         return $this->sendResponse($thana, $this->deleteSuccessMessage, Response::HTTP_OK);
+    }
 }
