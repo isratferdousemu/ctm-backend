@@ -9,7 +9,7 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('auth/token/check', 'checkToken');
 });
 
-// Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
-//     //logout
-//     Route::post('logout', [AuthController::class, 'logoutSpa']);
-// });
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    //logout
+    Route::get('admin/logout', [AuthController::class, 'LogoutAdmin']);
+});

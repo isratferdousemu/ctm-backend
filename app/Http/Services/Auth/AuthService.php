@@ -146,5 +146,30 @@ class AuthService
         return $this->sendFailedLoginResponse($request);
     }
 
+    public function logout(Request $request)
+    {
+
+
+        DB::beginTransaction();
+        try {
+            $user = User::findOrFail(Auth::user()->id);
+
+            if ($request->filled('device') && !empty($request->device)) {
+                $user->tokens()->where('name', $this->generateTokenKey($request) . $user->id)->delete();
+            } else {
+                Auth::user()->tokens->each(function ($token, $key) {
+                    $token->delete();
+                });
+            }
+
+
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
 
 }

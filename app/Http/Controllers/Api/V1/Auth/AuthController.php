@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminAuthResource;
 use App\Http\Services\Auth\AuthService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -98,4 +99,32 @@ class AuthController extends Controller
              ->success(true)
              ->message("Login Success");
      }
+
+      /**
+     * /**
+     * @OA\Get(
+     *      path="/admin/logout",
+     *      summary="Logout From The Application",
+     *      description="Logout user and invalidate token",
+     *      operationId="LogoutAdmin",
+     *      tags={"Auth"},
+     *      security={{"bearer_token":{}}},
+     *      @OA\Response(
+     *          response=204,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Returns when user is not authenticated",
+     *
+     *  )
+     * )
+
+     */
+    public function LogoutAdmin(Request $request)
+    {
+        $this->authService->logout($request);
+        return new JsonResponse([], 204);
+    }
 }
