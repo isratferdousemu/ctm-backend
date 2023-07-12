@@ -1376,6 +1376,90 @@ class LocationController extends Controller
     /* -------------------------------------------------------------------------- */
 
 
+            /**
+    * @OA\Get(
+    *     path="/admin/union/get",
+    *      operationId="getAllUnionPaginated",
+    *      tags={"GEOGRAPHIC-UNION"},
+    *      summary="get paginated union",
+    *      description="get paginated union",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="searchText",
+    *         in="query",
+    *         description="search by name",
+    *         @OA\Schema(type="string")
+    *     ),
+    *     @OA\Parameter(
+    *         name="perPage",
+    *         in="query",
+    *         description="number of union per page",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         description="page number",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getAllUnionPaginated(Request $request){
+    // Retrieve the query parameters
+    $searchText = $request->query('searchText');
+    $perPage = $request->query('perPage');
+    $page = $request->query('page');
+
+    $filterArrayNameEn=[];
+    $filterArrayNameBn=[];
+    $filterArrayCode=[];
+
+    if ($searchText) {
+        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+    }
+    $union = Location::query()
+    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
+        $query->where($filterArrayNameEn)
+              ->orWhere($filterArrayNameBn)
+              ->orWhere($filterArrayCode);
+    })
+    ->whereType($this->union)
+    ->with('parent.parent.parent')
+    ->latest()
+    ->paginate($perPage, ['*'], 'page');
+    return UnionResource::collection($union)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+
+    }
+
     /**
      *
      * @OA\Post(
