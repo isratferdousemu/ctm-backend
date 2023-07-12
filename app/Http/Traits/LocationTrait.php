@@ -11,4 +11,5 @@ trait LocationTrait
     private $thana = "thana";
     private $union = "union";
     private $ward = "ward";
+    private $village = "village";
 }

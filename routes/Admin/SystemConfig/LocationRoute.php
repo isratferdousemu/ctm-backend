@@ -69,4 +69,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/destroy/{id}', [LocationController::class, 'destroyWard'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
 
+    /* -------------------------------------------------------------------------- */
+    /*                               Village Routes                                  */
+    /* -------------------------------------------------------------------------- */
+    Route::prefix('admin/village')->group(function () {
+
+        Route::post('/insert', [LocationController::class, 'insertVillage'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
+        Route::get('/get',[LocationController::class, 'getAllVillagePaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::post('/update', [LocationController::class, 'villageUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
+        Route::get('/destroy/{id}', [LocationController::class, 'destroyVillage'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+    });
+
 });
