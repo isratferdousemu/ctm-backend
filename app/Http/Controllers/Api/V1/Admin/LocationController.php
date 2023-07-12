@@ -966,4 +966,65 @@ class LocationController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+
+         /**
+     * @OA\Get(
+     *      path="/admin/city/destroy/{id}",
+     *      operationId="destroyCity",
+     *      tags={"GEOGRAPHIC-CITY"},
+     *      summary=" destroy city",
+     *      description="Returns city destroy by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of city to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+    public function destroyCity($id)
+    {
+
+
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:locations,id,deleted_at,NULL',
+        ]);
+
+        $validator->validated();
+
+        $city = Location::whereId($id)->whereType($this->city)->first();
+        if($city){
+            $city->delete();
+        }
+        activity("City")
+        ->causedBy(auth()->user())
+        ->log('City Deleted!!');
+         return $this->sendResponse($city, $this->deleteSuccessMessage, Response::HTTP_OK);
+    }
 }
