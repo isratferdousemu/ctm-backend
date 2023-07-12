@@ -32,6 +32,7 @@ class LocationService
         }
     }
 
+
     public function updateDivision(Request $request){
 
         DB::beginTransaction();
@@ -99,4 +100,27 @@ class LocationService
         }
     }
 
+    /* -------------------------------------------------------------------------- */
+    /*                                City Services                               */
+    /* -------------------------------------------------------------------------- */
+    public function createCity(Request $request){
+
+        DB::beginTransaction();
+        try {
+
+            $location                         = new Location;
+            $location->parent_id              = $request->district_id;
+            $location->name_en                = $request->name_en;
+            $location->name_bn                = $request->name_bn;
+            $location->code                   = $request->code;
+            $location->type                   = $this->city;
+            $location->created_by             = Auth()->user()->id;
+            $location->save();
+            DB::commit();
+            return $location;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
 }
