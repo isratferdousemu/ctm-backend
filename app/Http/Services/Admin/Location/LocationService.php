@@ -171,4 +171,28 @@ class LocationService
             throw $th;
         }
     }
+    public function createUnion(Request $request){
+
+        DB::beginTransaction();
+        try {
+
+            $location                         = new Location;
+            $location->parent_id              = $request->thana_id;
+            $location->name_en                = $request->name_en;
+            $location->name_bn                = $request->name_bn;
+            $location->code                   = $request->code;
+            $location->type                   = $this->union;
+            $location->created_by             = Auth()->user()->id;
+            $location->save();
+            DB::commit();
+            return $location;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                               Union Services                               */
+    /* -------------------------------------------------------------------------- */
 }

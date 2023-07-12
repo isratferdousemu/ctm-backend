@@ -10,9 +10,11 @@ use App\Http\Requests\Admin\Geographic\District\DistrictUpdateRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionUpdateRequest;
 use App\Http\Requests\Admin\Geographic\Thana\ThanaRequest;
+use App\Http\Requests\Admin\Geographic\Uinion\UnionRequest;
 use App\Http\Resources\Admin\Geographic\CityResource;
 use App\Http\Resources\Admin\Geographic\DistrictResource;
 use App\Http\Resources\Admin\Geographic\DivisionResource;
+use App\Http\Resources\Admin\Geographic\UnionResource;
 use App\Http\Services\Admin\Location\LocationService;
 use App\Http\Traits\LocationTrait;
 use App\Http\Traits\MessageTrait;
@@ -1367,5 +1369,110 @@ class LocationController extends Controller
         ->causedBy(auth()->user())
         ->log('Thana Deleted!!');
          return $this->sendResponse($thana, $this->deleteSuccessMessage, Response::HTTP_OK);
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                            TODO: UNION Functions                           */
+    /* -------------------------------------------------------------------------- */
+
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/union/insert",
+     *      operationId="insertUnion",
+     *      tags={"GEOGRAPHIC-UNION"},
+     *      summary="insert a union",
+     *      description="insert a union",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="division_id",
+     *                      description="id of division",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="district_id",
+     *                      description="id of district",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="thana_id",
+     *                      description="id of thana",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="english name of the union",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="bangla name of the union",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="code",
+     *                      description="code of the union",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function insertUnion(UnionRequest $request){
+
+        try {
+            $union = $this->locationService->createUnion($request);
+            activity("Union")
+            ->causedBy(auth()->user())
+            ->performedOn($union)
+            ->log('Union Created !');
+            return UnionResource::make($union->load('parent.parent.parent'))->additional([
+                'success' => true,
+                'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
     }
 }
