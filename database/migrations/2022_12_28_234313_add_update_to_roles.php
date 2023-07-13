@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name_en',50);
             $table->string('name_bn',50);
             $table->string('comment',120)->nullable();
-            $table->boolean('status')->default(true);
+            $table->boolean('status')->default(false);
         });
     }
 

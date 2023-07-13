@@ -125,10 +125,29 @@ class RoleController extends Controller
      *              mediaType="multipart/form-data",
      *           @OA\Schema(
      *                   @OA\Property(
-     *                      property="name",
+     *                      property="code",
+     *                      description="code of the role",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
      *                      description="name of the role",
      *                      type="text",
-     *
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="Native name of the role",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="comment",
+     *                      description="comment of the role",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="status",
+     *                      description="status of the role",
+     *                      type="text",
      *                   ),
      *          @OA\Property(property="permissions[0]", type="integer"),
      *          @OA\Property(property="permissions[1]", type="integer"),
@@ -263,14 +282,31 @@ class RoleController extends Controller
      *                      type="text",
      *
      *                   ),
-     *              @OA\Property(
-     *                      property="name",
+ *                   @OA\Property(
+     *                      property="code",
+     *                      description="code of the role",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name_en",
      *                      description="name of the role",
      *                      type="text",
-     *
      *                   ),
-     *          @OA\Property(property="permissions[0]", type="integer"),
-     *          @OA\Property(property="permissions[1]", type="integer"),
+     *                   @OA\Property(
+     *                      property="name_bn",
+     *                      description="Native name of the role",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="comment",
+     *                      description="comment of the role",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="status",
+     *                      description="status of the role",
+     *                      type="text",
+     *                   ),
      *
      *                 ),
      *             ),
@@ -307,7 +343,7 @@ class RoleController extends Controller
     public function update(RoleUpdateRequest $request){
         try {
             //code...
-           return $role = $this->RoleService->updateRole($request);
+        $role = $this->RoleService->updateRole($request);
             activity()
             ->causedBy(auth()->user())
             ->performedOn($role)

@@ -38,6 +38,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereVersion($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Location> $children
+ * @method static \Illuminate\Database\Eloquent\Builder|Location onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Location withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Location withoutTrashed()
  * @mixin \Eloquent
  */
 class Location extends Model

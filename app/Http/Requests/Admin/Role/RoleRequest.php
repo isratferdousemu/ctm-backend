@@ -22,8 +22,12 @@ class RoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'                     => 'required|string|max:255|unique:roles,name',
-            'permissions'              => 'required|array'
+            'name_en'                     => 'required|string|max:50|unique:roles,name_en',
+            'name_bn'                     => 'required|string|max:50|unique:roles,name_bn',
+            // 'permissions'              => 'required|array'
+            'status' => 'sometimes|boolean',
+            'comment' => 'sometimes|string|max:120',
+            'code' => 'required|string|max:6|unique:roles,code,NULL,id,deleted_at,NULL'
         ];
     }
 }

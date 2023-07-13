@@ -2009,8 +2009,24 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
-                                    "name": {
+                                    "code": {
+                                        "description": "code of the role",
+                                        "type": "text"
+                                    },
+                                    "name_en": {
                                         "description": "name of the role",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "Native name of the role",
+                                        "type": "text"
+                                    },
+                                    "comment": {
+                                        "description": "comment of the role",
+                                        "type": "text"
+                                    },
+                                    "status": {
+                                        "description": "status of the role",
                                         "type": "text"
                                     },
                                     "permissions[0]": {

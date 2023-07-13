@@ -12,16 +12,20 @@ use Spatie\Permission\Models\Role;
 class RoleService
 {
     public function createRole(Request $request){
-        DB::beginTransaction();;
+        DB::beginTransaction();
         try {
             // store role
             $role= new Role;
             $role->guard_name="sanctum";
-            $role->name=$request->name;
+            $role->name=$request->name_en;
+            $role->name_en=$request->name_en;
+            $role->name_bn=$request->name_bn;
+            $role->code=$request->code;
+            $role->status=$request->status;
             $role->save();
             // assing permissions
-            $permissions = Permission::whereIn('id', $request->permissions)->get();
-            $role->syncPermissions($permissions);
+            // $permissions = Permission::whereIn('id', $request->permissions)->get();
+            // $role->syncPermissions($permissions);
             db::commit();
             return $role;
         } catch (\Throwable $th) {
@@ -35,11 +39,15 @@ class RoleService
         try {
             // update role
             $role= Role::find($request->id);
-            $role->name=$request->name;
+            $role->name=$request->name_en;
+            $role->name_en=$request->name_en;
+            $role->name_bn=$request->name_bn;
+            $role->code=$request->code;
+            $role->status=$request->status;
             $role->save();
             // assing permissions
-            $permissions = Permission::whereIn('id', $request->permissions)->get();
-            $role->syncPermissions($permissions);
+            // $permissions = Permission::whereIn('id', $request->permissions)->get();
+            // $role->syncPermissions($permissions);
             db::commit();
             return $role;
         } catch (\Throwable $th) {
