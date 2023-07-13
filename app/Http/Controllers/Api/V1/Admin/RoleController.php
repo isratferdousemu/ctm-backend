@@ -10,6 +10,7 @@ use App\Http\Services\Admin\Role\RoleService;
 use App\Http\Traits\MessageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
@@ -410,4 +411,67 @@ class RoleController extends Controller
         ->log('Role Deleted!!');
          return $this->sendResponse($role, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                             Permission Function                            */
+    /* -------------------------------------------------------------------------- */
+
+    /**
+    * @OA\Get(
+    *     path="/admin/role/permission/get",
+    *      operationId="getAllPermission",
+    *      tags={"ADMIN-PERMISSIONS"},
+    *      summary="get permissions",
+    *      description="get permissions",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="searchText",
+    *         in="query",
+    *         description="search by name",
+    *         @OA\Schema(type="string")
+    *     ),
+    *
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getAllPermission(Request $request){
+    // Retrieve the query parameters
+    $searchText = $request->query('searchText');
+
+    $filterArrayNameEn=[];
+    if ($searchText) {
+        $filterArrayNameEn[] = ['name', 'LIKE', '%' . $searchText . '%'];
+    }
+        $role = Permission::query()
+            ->where(function ($query) use ($filterArrayNameEn) {
+                $query->where($filterArrayNameEn);
+    })
+    ->latest()
+    ->get();
+    return $this->sendResponse($role, $this->insertSuccessMessage, Response::HTTP_OK);
+
+}
 }
