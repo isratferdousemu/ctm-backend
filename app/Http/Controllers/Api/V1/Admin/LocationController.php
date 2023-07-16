@@ -123,6 +123,7 @@ class LocationController extends Controller
         ]);
  }
 
+
     /**
      *
      * @OA\Post(
@@ -631,6 +632,58 @@ class LocationController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+        /**
+     * @OA\Get(
+     *      path="/admin/district/get/{division_id}",
+     *      operationId="getAllDistrictByDivisionId",
+     *      tags={"GEOGRAPHIC-DISTRICT"},
+     *      summary=" get district by division",
+     *      description="get district by division",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of division to return",
+     *         in="path",
+     *         name="division_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+ public function getAllDistrictByDivisionId($division_id){
+
+
+        $district = Location::whereParentId($division_id)->whereType($this->district)->get();
+
+    return DistrictResource::collection($district)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
 
 
      /**
