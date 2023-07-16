@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\Role;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RoleRequest extends FormRequest
+class PermissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,8 @@ class RoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name_en'                     => 'required|string|max:50|unique:roles,name_en',
-            'name_bn'                     => 'required|string|max:50|unique:roles,name_bn',
-            // 'permissions'              => 'required|array'
-            'status' => 'sometimes|boolean',
-            'comment' => 'sometimes|string|max:120',
-            'code' => 'required|string|max:6|unique:roles,code'
+            'permissions'              => 'required',
+            'role_id' => 'required|exists:roles,id',
         ];
     }
 }

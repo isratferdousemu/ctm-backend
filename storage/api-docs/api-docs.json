@@ -1994,6 +1994,48 @@
                 ]
             }
         },
+        "/admin/role/permission/roles/all": {
+            "get": {
+                "tags": [
+                    "ADMIN-PERMISSIONS"
+                ],
+                "summary": "get all role",
+                "description": "get all role",
+                "operationId": "getAllRole",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/role/insert": {
             "post": {
                 "tags": [
@@ -2028,12 +2070,6 @@
                                     "status": {
                                         "description": "status of the role",
                                         "type": "text"
-                                    },
-                                    "permissions[0]": {
-                                        "type": "integer"
-                                    },
-                                    "permissions[1]": {
-                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -2266,6 +2302,71 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/role/permission/assign": {
+            "post": {
+                "tags": [
+                    "ADMIN-PERMISSIONS"
+                ],
+                "summary": "assign permission to a role",
+                "description": "assign permission to a role",
+                "operationId": "AssignPermissionRole",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "role_id": {
+                                        "description": "id of the role",
+                                        "type": "text"
+                                    },
+                                    "permissions[0]": {
+                                        "type": "integer"
+                                    },
+                                    "permissions[1]": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Successful operation",

@@ -23,9 +23,6 @@ class RoleService
             $role->code=$request->code;
             $role->status=$request->status;
             $role->save();
-            // assing permissions
-            // $permissions = Permission::whereIn('id', $request->permissions)->get();
-            // $role->syncPermissions($permissions);
             db::commit();
             return $role;
         } catch (\Throwable $th) {
@@ -45,9 +42,6 @@ class RoleService
             $role->code=$request->code;
             $role->status=$request->status;
             $role->save();
-            // assing permissions
-            // $permissions = Permission::whereIn('id', $request->permissions)->get();
-            // $role->syncPermissions($permissions);
             db::commit();
             return $role;
         } catch (\Throwable $th) {
@@ -56,4 +50,23 @@ class RoleService
         }
     }
 
+    /* -------------------------------------------------------------------------- */
+    /*                             Permission Services                            */
+    /* -------------------------------------------------------------------------- */
+
+
+    public function AssignPermissionToRole(Request $request){
+        DB::beginTransaction();
+        try {
+            $role= Role::find($request->role_id);
+            // assign permissions
+            $permissions = Permission::whereIn('id', $request->permissions)->get();
+            $role->syncPermissions($permissions);
+            db::commit();
+            return $role;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
 }

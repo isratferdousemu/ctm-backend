@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Role\PermissionRequest;
 use App\Http\Requests\Admin\Role\RoleRequest;
 use App\Http\Requests\Admin\Role\RoleUpdateRequest;
 use App\Http\Resources\Admin\Role\RoleResource;
@@ -90,17 +91,59 @@ class RoleController extends Controller
         $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
         $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
     }
-    $role = Role::query()
-    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
-        $query->where($filterArrayNameEn)
-              ->orWhere($filterArrayNameBn)
-              ->orWhere($filterArrayCode);
-    })
-    ->whereParentId(null)
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
+        $role = Role::query()
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode);
+            })->with('permissions')->get();
 
     return RoleResource::collection($role->load('permissions'))->additional([
+        'success' => true,
+        'message' => $this->insertSuccessMessage,
+    ]);
+}
+    /**
+    * @OA\Get(
+    *     path="/admin/role/permission/roles/all",
+    *      operationId="getAllRole",
+    *      tags={"ADMIN-PERMISSIONS"},
+    *      summary="get all role",
+    *      description="get all role",
+    *      security={{"bearer_token":{}}},
+    *
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getAllRole(){
+
+    $role =Role::whereDoesntHave('permissions')->get();
+
+
+    return RoleResource::collection($role)->additional([
         'success' => true,
         'message' => $this->insertSuccessMessage,
     ]);
@@ -150,8 +193,6 @@ class RoleController extends Controller
      *                      description="status of the role",
      *                      type="text",
      *                   ),
-     *          @OA\Property(property="permissions[0]", type="integer"),
-     *          @OA\Property(property="permissions[1]", type="integer"),
      *
      *                 ),
      *             ),
@@ -189,7 +230,7 @@ class RoleController extends Controller
         try {
             //code...
             $role = $this->RoleService->createRole($request);
-            activity()
+            activity("Role")
             ->causedBy(auth()->user())
             ->performedOn($role)
             ->log('Role Created !');
@@ -345,7 +386,7 @@ class RoleController extends Controller
         try {
             //code...
         $role = $this->RoleService->updateRole($request);
-            activity()
+            activity("Role")
             ->causedBy(auth()->user())
             ->performedOn($role)
             ->log('Role Updated !');
@@ -406,7 +447,7 @@ class RoleController extends Controller
         if($role){
             $role->delete();
         }
-        activity()
+        activity("Role")
         ->causedBy(auth()->user())
         ->log('Role Deleted!!');
          return $this->sendResponse($role, $this->deleteSuccessMessage, Response::HTTP_OK);
@@ -465,13 +506,93 @@ class RoleController extends Controller
     if ($searchText) {
         $filterArrayNameEn[] = ['name', 'LIKE', '%' . $searchText . '%'];
     }
-        $role = Permission::query()
+        $permissions = Permission::query()
             ->where(function ($query) use ($filterArrayNameEn) {
                 $query->where($filterArrayNameEn);
     })
-    ->latest()
     ->get();
-    return $this->sendResponse($role, $this->insertSuccessMessage, Response::HTTP_OK);
+        $data = [];
+    for ($i=0; $i < Count($permissions) ; $i++) {
+            $data[$permissions[$i]['sub_module_name']][] = $permissions[$i];
+    }
+    return $this->sendResponse($permissions, $this->insertSuccessMessage, Response::HTTP_OK);
 
-}
+    }
+
+     /**
+     *
+     * @OA\Post(
+     *      path="/admin/role/permission/assign",
+     *      operationId="AssignPermissionRole",
+     *      tags={"ADMIN-PERMISSIONS"},
+     *      summary="assign permission to a role",
+     *      description="assign permission to a role",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="role_id",
+     *                      description="id of the role",
+     *                      type="text",
+     *                   ),
+     *          @OA\Property(property="permissions[0]", type="integer"),
+     *          @OA\Property(property="permissions[1]", type="integer"),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function AssignPermissionRole(PermissionRequest $request){
+        try {
+            //code...
+            $role = $this->RoleService->AssignPermissionToRole($request);
+            activity("Permission")
+            ->causedBy(auth()->user())
+            ->performedOn($role)
+            ->log('Permission Assign successfully !');
+            return RoleResource::make($role->load('permissions'))->additional([
+                'success' => true,
+                'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
 }

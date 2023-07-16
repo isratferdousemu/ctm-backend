@@ -18,6 +18,7 @@
         "qoraiche/laravel-mail-editor": "^4.0",
         "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-permission": "^5.7",
+        "symfony/process": "^6.3",
         "twilio/sdk": "^6.44"
     },
     "require-dev": {
