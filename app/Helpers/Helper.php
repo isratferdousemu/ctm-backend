@@ -7,7 +7,13 @@ class Helper{
 
     public static function GeneratePassword()
     {
-        $password = Str::random(8);
+        $password = Str::random(10); // Generate a random 10-character password
+
+        // Add special characters to the password
+        $specialCharacters = '!@#$%^&*()';
+        $randomSpecialCharacter = $specialCharacters[rand(0, strlen($specialCharacters) - 1)];
+        $password .= $randomSpecialCharacter;
+        // $password = Str::random(8);
         return $password;
     }
     public static function GenerateFourDigitNumber()

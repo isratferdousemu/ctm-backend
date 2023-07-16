@@ -42,6 +42,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Location onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Location withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Location withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Location> $children
  * @mixin \Eloquent
  */
 class Location extends Model

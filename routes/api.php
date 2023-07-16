@@ -16,6 +16,7 @@ Route::prefix('v1')->group(function () {
     /*                         system configuration routes                        */
     /* -------------------------------------------------------------------------- */
     include "Admin/SystemConfig/LocationRoute.php";
+    include "Admin/SystemConfig/UserRoutes.php";
 });
 
 
