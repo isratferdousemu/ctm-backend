@@ -1572,6 +1572,58 @@ class LocationController extends Controller
 
     }
 
+            /**
+     * @OA\Get(
+     *      path="/admin/union/get/{thana_id}",
+     *      operationId="getAllUnionByThanaId",
+     *      tags={"GEOGRAPHIC-UNION"},
+     *      summary=" get union by thana id",
+     *      description="get union by thana id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of union to return",
+     *         in="path",
+     *         name="thana_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+ public function getAllUnionByThanaId($thana_id){
+
+
+    $unions = Location::whereParentId($thana_id)->whereType($this->union)->get();
+
+    return DistrictResource::collection($unions)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
+
     /**
      *
      * @OA\Post(
