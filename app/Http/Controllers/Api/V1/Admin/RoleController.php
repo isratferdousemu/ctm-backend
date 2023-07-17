@@ -105,6 +105,51 @@ class RoleController extends Controller
 }
     /**
     * @OA\Get(
+    *     path="/admin/role/permission/roles/unassign",
+    *      operationId="getUnAssignPermissionRole",
+    *      tags={"ADMIN-PERMISSIONS"},
+    *      summary="get all role",
+    *      description="get all role",
+    *      security={{"bearer_token":{}}},
+    *
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getUnAssignPermissionRole(){
+
+    $role =Role::whereDoesntHave('permissions')->get();
+
+
+    return RoleResource::collection($role)->additional([
+        'success' => true,
+        'message' => $this->insertSuccessMessage,
+    ]);
+}
+    /**
+    * @OA\Get(
     *     path="/admin/role/permission/roles/all",
     *      operationId="getAllRole",
     *      tags={"ADMIN-PERMISSIONS"},
@@ -140,7 +185,7 @@ class RoleController extends Controller
 
  public function getAllRole(){
 
-    $role =Role::whereDoesntHave('permissions')->get();
+    $role =Role::with('permissions')->get();
 
 
     return RoleResource::collection($role)->additional([

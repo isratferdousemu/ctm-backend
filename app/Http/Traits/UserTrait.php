@@ -20,12 +20,7 @@ trait UserTrait
 
     // user types
     private $superAdminUserType = 1;
-    private $adminUserType = 2;
-    private $MerchantUserType = 3;
-    private $BranchAdminUserType = 4;
-    private $DelivaryManUserType= 5;
-    private $PickupManUserType= 6;
-    private $EmployeeUserType= 6;
+    private $staffType = 2;
 
     // bank account type
     private $bankAccountTypeCurrent = 1;

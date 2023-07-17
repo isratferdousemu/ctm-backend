@@ -677,7 +677,7 @@ class LocationController extends Controller
  public function getAllDistrictByDivisionId($division_id){
 
 
-        $district = Location::whereParentId($division_id)->whereType($this->district)->get();
+    $district = Location::whereParentId($division_id)->whereType($this->district)->get();
 
     return DistrictResource::collection($district)->additional([
         'success' => true,
@@ -1178,6 +1178,58 @@ class LocationController extends Controller
     ]);
 
     }
+
+        /**
+     * @OA\Get(
+     *      path="/admin/thana/get/{district_id}",
+     *      operationId="getAllThanaByDistrictId",
+     *      tags={"GEOGRAPHIC-THANA"},
+     *      summary=" get thana by district id",
+     *      description="get thana by district id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of district to return",
+     *         in="path",
+     *         name="district_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+ public function getAllThanaByDistrictId($district_id){
+
+
+    $thanas = Location::whereParentId($district_id)->whereType($this->thana)->get();
+
+    return DistrictResource::collection($thanas)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
 
     /**
      *

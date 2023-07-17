@@ -88,7 +88,7 @@ class AuthService
         }
 
         if ($user->user_type) {
-            if($user->user_type==$this->superAdminUserType){
+            if($user->user_type==$this->superAdminUserType || $user->user_type==$this->staffType){
                 if (Hash::check($request->password, $user->password)) {
                     return $this->authSuccessCode;
                 }
@@ -111,7 +111,7 @@ class AuthService
 
             return $this->sendLockoutResponse($request);
         }
-        $user = User::where("email", $request->email)->first();
+        $user = User::where("email", $request->email)->whereStatus($this->userAccountApproved)->first();
 
         if ($user == null) {
             $this->incrementLoginAttempts($request);

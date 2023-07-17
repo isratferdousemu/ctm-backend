@@ -26,7 +26,8 @@ class UserService
             $user->district_id = $request->district_id;
             $user->thana_id = $request->thana_id;
             $user->user_type = $this->staffId;
-            $user->password = $password;
+            $user->password = bcrypt($password);
+            $user->email_verified_at = now();
             $user->save();
 
             // assign role to the user

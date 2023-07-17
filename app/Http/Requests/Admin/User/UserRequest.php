@@ -28,9 +28,9 @@ class UserRequest extends FormRequest
             'email'                     => 'required|email|unique:users,email,deleted_at',
             'status' => 'sometimes|integer|in:0,1',
             'role_id' => 'required|integer|exists:roles,id',
-            'division_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
-            'district_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
-            'thana_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
+            // 'division_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
+            // 'district_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
+            // 'thana_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
         ];
     }
 }
