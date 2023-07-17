@@ -2847,6 +2847,34 @@
                 ]
             }
         },
+        "/admin/tokens": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "all token The Application",
+                "description": "all token",
+                "operationId": "adminTokens",
+                "responses": {
+                    "204": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Returns when user is not authenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/employee/department/all/filtered": {
             "post": {
                 "tags": [

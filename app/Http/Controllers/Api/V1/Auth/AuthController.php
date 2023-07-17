@@ -7,6 +7,7 @@ use App\Http\Resources\AdminAuthResource;
 use App\Http\Services\Auth\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -126,5 +127,33 @@ class AuthController extends Controller
     {
         $this->authService->logout($request);
         return new JsonResponse([], 204);
+    }
+
+
+      /**
+     * /**
+     * @OA\Get(
+     *      path="/admin/tokens",
+     *      summary="all token The Application",
+     *      description="all token",
+     *      operationId="adminTokens",
+     *      tags={"Auth"},
+     *      security={{"bearer_token":{}}},
+     *      @OA\Response(
+     *          response=204,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Returns when user is not authenticated",
+     *
+     *  )
+     * )
+
+     */
+    public function adminTokens(){
+        // return PersonalAccessToken::all();
+        return $tokens = Auth()->user()->tokens;
     }
 }

@@ -11,5 +11,6 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     //logout
+    Route::get('admin/tokens', [AuthController::class, 'adminTokens']);
     Route::get('admin/logout', [AuthController::class, 'LogoutAdmin']);
 });
