@@ -87,7 +87,7 @@ class AuthController extends Controller
          $this->authService->validateLogin($request);
          //login
          $authData = $this->authService->Adminlogin($request);
-         $permissions = $authData['user']->getAllPermissions()->pluck('name')->toArray();
+         $permissions = $authData['user']->getAllPermissions();
 
          activity()
          ->causedBy(auth()->user())

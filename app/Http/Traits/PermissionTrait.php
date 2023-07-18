@@ -24,7 +24,7 @@ trait PermissionTrait
     // module 1 sub modules
     private $subDemographicInformationManagement = "demographic-information-Management";
     private $subAllowanceProgramManagement = "Allowance-Program-Management";
-    private $subCenterInformationManagement = "center-information-management";
+    private $subOfficeInformationManagement = "office-information-management";
     private $subFinancialInformationManagement = "financial-information-management";
     private $subUserManagement = "user-management";
     private $subDeviceRegistrationManagement = "device-registration-management";

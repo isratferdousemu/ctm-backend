@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Admin\PermissionResource;
 use App\Http\Traits\UserTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,7 +27,7 @@ class AdminAuthResource extends JsonResource
     }
     public function permissions($value)
     {
-        $this->permissions = $value;
+        $this->permissions = PermissionResource::collection($value);
         return $this;
     }
 

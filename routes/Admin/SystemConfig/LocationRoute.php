@@ -4,6 +4,11 @@ use App\Http\Controllers\Api\V1\Admin\LocationController;
 
 Route::middleware('auth:sanctum')->group(function () {
 
+
+    /* -------------------------------------------------------------------------- */
+    /*                               Division Routes                              */
+    /* -------------------------------------------------------------------------- */
+
     Route::prefix('admin/division')->group(function () {
 
         Route::post('/insert', [LocationController::class, 'insertDivision'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);

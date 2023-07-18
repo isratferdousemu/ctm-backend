@@ -31,11 +31,36 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subDemographicInformationManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'demo-graphic-create',
-                'demo-graphic-list',
-                'demo-graphic-edit',
-                'demo-graphic-view',
-                'demo-graphic-delete'
+                'division-create',
+                'division-list',
+                'division-edit',
+                'division-view',
+                'division-delete',
+                'district-create',
+                'district-list',
+                'district-edit',
+                'district-view',
+                'district-delete',
+                'city-create',
+                'city-list',
+                'city-edit',
+                'city-view',
+                'city-delete',
+                'thana-create',
+                'thana-list',
+                'thana-edit',
+                'thana-view',
+                'thana-delete',
+                'union-create',
+                'union-list',
+                'union-edit',
+                'union-view',
+                'union-delete',
+                'ward-create',
+                'ward-list',
+                'ward-edit',
+                'ward-view',
+                'ward-delete',
                         ]
         ],
         [
@@ -52,14 +77,14 @@ class PermissionSeeder extends Seeder
         ],
         [
             'module_name' => $this->modulePermissionSystemConfiguration,
-            'sub_module_name' => $this->subCenterInformationManagement,
+            'sub_module_name' => $this->subOfficeInformationManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'center-create',
-                'center-list',
-                'center-edit',
-                'center-view',
-                'center-delete'
+                'office-create',
+                'office-list',
+                'office-edit',
+                'office-view',
+                'office-delete'
                         ]
         ],
         [
@@ -72,6 +97,24 @@ class PermissionSeeder extends Seeder
                 'financial-edit',
                 'financial-view',
                 'financial-delete'
+                        ]
+        ],
+        [
+            'module_name' => $this->modulePermissionSystemConfiguration,
+            'sub_module_name' => $this->subUserManagement,
+            'guard_name' => $this->guard,
+            'permissions'=>[
+                'role-create',
+                'role-list',
+                'role-edit',
+                'role-view',
+                'role-delete',
+                'role-permission-create',
+                'user-create',
+                'user-list',
+                'user-edit',
+                'user-view',
+                'user-delete',
                         ]
         ],
         [
@@ -94,23 +137,27 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subOnlineApplicationManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'application-create',
-                'application-list',
-                'application-edit',
-                'application-view',
-                'application-delete'
-                        ]
-            ],
-        [
-            'module_name' => $this->modulePermissionApplicationSelection,
-            'sub_module_name' => $this->subBeneficiarySelectionManagement,
-            'guard_name' => $this->guard,
-            'permissions'=>[
-                'beneficiary-selection-create',
-                'beneficiary-selection-list',
-                'beneficiary-selection-edit',
-                'beneficiary-selection-view',
-                'beneficiary-selection-delete'
+                'application-entry-create',
+                'application-entry-list',
+                'application-entry-edit',
+                'application-entry-view',
+                'application-entry-delete',
+                'primary-selection-union-list',
+                'primary-selection-union-edit',
+                'primary-selection-union-view',
+                'primary-selection-union-delete',
+                'primary-selection-upazila-list',
+                'primary-selection-upazila-edit',
+                'primary-selection-upazila-view',
+                'primary-selection-upazila-delete',
+                'final-list-list',
+                'final-list-edit',
+                'final-list-view',
+                'final-list-delete',
+                'approval-list-list',
+                'approval-list-edit',
+                'approval-list-view',
+                'approval-list-delete',
                         ]
             ],
 
@@ -118,6 +165,21 @@ class PermissionSeeder extends Seeder
         /* -------------------------------------------------------------------------- */
         /*                           Beneficiary Management                           */
         /* -------------------------------------------------------------------------- */
+        [
+            'module_name' => $this->modulePermissionBeneficiaryManagement,
+            'sub_module_name' => $this->subBeneficiaryInformationManagement,
+            'guard_name' => $this->guard,
+            'permissions'=>[
+                'beneficiary-info-create',
+                'beneficiary-info-list',
+                'beneficiary-info-edit',
+                'beneficiary-info-view',
+                'beneficiary-info-delete',
+                'beneficiary-info-active-list',
+                'beneficiary-info-not-active-list',
+                'beneficiary-info-waiting-active-list',
+                        ]
+        ],
         [
             'module_name' => $this->modulePermissionBeneficiaryManagement,
             'sub_module_name' => $this->subCommitteeInformation,
@@ -140,18 +202,6 @@ class PermissionSeeder extends Seeder
                 'allocation-edit',
                 'allocation-view',
                 'allocation-delete'
-                        ]
-        ],
-        [
-            'module_name' => $this->modulePermissionBeneficiaryManagement,
-            'sub_module_name' => $this->subBeneficiaryInformationManagement,
-            'guard_name' => $this->guard,
-            'permissions'=>[
-                'beneficiary-info-create',
-                'beneficiary-info-list',
-                'beneficiary-info-edit',
-                'beneficiary-info-view',
-                'beneficiary-info-delete'
                         ]
         ],
         [
