@@ -2161,6 +2161,307 @@
                 ]
             }
         },
+        "/admin/office/get": {
+            "get": {
+                "tags": [
+                    "SySTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": "get paginated Offices",
+                "description": "get paginated Offices",
+                "operationId": "getAllOfficePaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/office/insert": {
+            "post": {
+                "tags": [
+                    "SySTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": "insert a office",
+                "description": "insert a office",
+                "operationId": "insertOffice",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "division_id": {
+                                        "description": "insert Division Id",
+                                        "type": "integer"
+                                    },
+                                    "district_id": {
+                                        "description": "insert District Id",
+                                        "type": "integer"
+                                    },
+                                    "thana_id": {
+                                        "description": "insert Thana Id",
+                                        "type": "integer"
+                                    },
+                                    "office_type": {
+                                        "description": "insert office_type",
+                                        "type": "integer"
+                                    },
+                                    "name_en": {
+                                        "description": "insert name_en",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "insert name_en",
+                                        "type": "text"
+                                    },
+                                    "office_address": {
+                                        "description": "bangla name of office_address",
+                                        "type": "text"
+                                    },
+                                    "comment": {
+                                        "description": "comment",
+                                        "type": "text"
+                                    },
+                                    "status": {
+                                        "description": "status",
+                                        "type": "tinyInteger"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/office/update": {
+            "post": {
+                "tags": [
+                    "SySTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": "update a office",
+                "description": "updatet a office",
+                "operationId": "officeUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the Office",
+                                        "type": "integer"
+                                    },
+                                    "division_id": {
+                                        "description": "insert Division Id",
+                                        "type": "integer"
+                                    },
+                                    "district_id": {
+                                        "description": "insert District Id",
+                                        "type": "integer"
+                                    },
+                                    "thana_id": {
+                                        "description": "insert Thana Id",
+                                        "type": "integer"
+                                    },
+                                    "office_type": {
+                                        "description": "insert office_type",
+                                        "type": "integer"
+                                    },
+                                    "name_en": {
+                                        "description": "insert name_en",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "insert name_en",
+                                        "type": "text"
+                                    },
+                                    "office_address": {
+                                        "description": "bangla name of office_address",
+                                        "type": "text"
+                                    },
+                                    "comment": {
+                                        "description": "comment",
+                                        "type": "text"
+                                    },
+                                    "status": {
+                                        "description": "status",
+                                        "type": "tinyInteger"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/office/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "SySTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": " destroy Office",
+                "description": "Returns office destroy by id",
+                "operationId": "destroyOffice",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of office to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/role/all/filtered": {
             "get": {
                 "tags": [

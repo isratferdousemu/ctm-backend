@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('office_address',100);
             $table->string('comment',120)->nullable();
             $table->boolean('status');
+            $table->integer("version")->default(1);
             $table->timestamps();
         });
     }

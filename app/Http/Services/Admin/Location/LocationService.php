@@ -42,7 +42,7 @@ class LocationService
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;
             $location->code                   = $request->code;
-            $location->version                  = $location->version+1;
+            $location->version                 = $location->version+1;
 
             $location->save();
             DB::commit();
