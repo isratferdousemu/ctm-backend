@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('allowance_programs', function (Blueprint $table) {
             $table->id();
-            $table->string('code',6);
             $table->string('name_en',50);
             $table->string('name_bn',50);
             $table->string('guideline',120)->nullable();

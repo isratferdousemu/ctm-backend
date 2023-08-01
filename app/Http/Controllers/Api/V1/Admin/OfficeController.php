@@ -99,6 +99,8 @@ class OfficeController extends Controller
               ->orWhere($filterArrayComment)
               ->orWhere($filterArrayAddress);
     })
+    ->with('division','district','thana')
+
     ->latest()
     ->paginate($perPage, ['*'], 'page');
 

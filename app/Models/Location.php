@@ -60,4 +60,6 @@ class Location extends Model
     {
         return $this->belongsTo(Location::class, 'parent_id');
     }
+
+  
 }
