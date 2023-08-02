@@ -29,6 +29,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram whereNameEn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram whereServiceType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram whereUpdatedAt($value)
+ * @property string $nameEn
+ * @property string $nameBn
+ * @property int $serviceType
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @mixin \Eloquent
  */
 class AllowanceProgram extends Model

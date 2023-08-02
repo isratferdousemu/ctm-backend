@@ -11,6 +11,13 @@ use Spatie\Permission\Models\Role;
 
 class RoleService
 {
+    /**
+     * Create a new role based on the given request.
+     *
+     * @param  Request  $request
+     * @return Role
+     * @throws \Throwable
+     */
     public function createRole(Request $request){
         DB::beginTransaction();
         try {
@@ -31,6 +38,13 @@ class RoleService
         }
     }
 
+    /**
+     * Update the role with the given request data.
+     *
+     * @param  Request  $request
+     * @return Role
+     * @throws \Throwable
+     */
     public function updateRole(Request $request){
         DB::beginTransaction();
         try {
@@ -55,6 +69,13 @@ class RoleService
     /* -------------------------------------------------------------------------- */
 
 
+    /**
+     * Assigns permissions to a role.
+     *
+     * @param Request $request The request object containing the role ID and permissions.
+     * @return Role The updated role object.
+     * @throws \Throwable If an error occurs during the assignment process.
+     */
     public function AssignPermissionToRole(Request $request){
         DB::beginTransaction();
         try {

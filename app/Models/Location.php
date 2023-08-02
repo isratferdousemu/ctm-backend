@@ -43,6 +43,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Location withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Location withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Location> $children
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Location> $children
+ * @property int|null $parentId
+ * @property string $nameEn
+ * @property string $nameBn
+ * @property int|null $createdBy
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $deletedAt
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Location> $children
+ * @property-read int|null $childrenCount
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Location> $children
  * @mixin \Eloquent
  */
 class Location extends Model
@@ -51,10 +62,12 @@ class Location extends Model
 
 
 
+
     public function children()
     {
         return $this->hasMany(Location::class, 'parent_id');
     }
+
 
     public function parent()
     {

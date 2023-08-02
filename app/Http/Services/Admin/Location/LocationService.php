@@ -12,6 +12,13 @@ use Illuminate\Support\Str;
 class LocationService
 {
     use LocationTrait;
+    /**
+     * Create a new division in the database.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function createDivision(Request $request){
 
         DB::beginTransaction();
@@ -33,6 +40,13 @@ class LocationService
     }
 
 
+    /**
+     * Update the division record in the database.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function updateDivision(Request $request){
 
         DB::beginTransaction();
@@ -58,6 +72,14 @@ class LocationService
     /*                              District Service                              */
     /* -------------------------------------------------------------------------- */
 
+
+    /**
+     * Create a new district location based on the given request.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function createDistrict(Request $request){
 
         DB::beginTransaction();
@@ -79,6 +101,13 @@ class LocationService
         }
     }
 
+    /**
+     * Update the district information in the database.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function updateDistrict(Request $request){
 
         DB::beginTransaction();
@@ -104,6 +133,13 @@ class LocationService
     /* -------------------------------------------------------------------------- */
     /*                                City Services                               */
     /* -------------------------------------------------------------------------- */
+    /**
+     * Create a new city in the database.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function createCity(Request $request){
 
         DB::beginTransaction();
@@ -126,6 +162,13 @@ class LocationService
     }
 
 
+    /**
+     * Update the city information in the database.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function updateCity(Request $request){
 
         DB::beginTransaction();
@@ -152,6 +195,13 @@ class LocationService
     /*                               Thana Services                               */
     /* -------------------------------------------------------------------------- */
 
+    /**
+     * Create a new Thana (location) based on the given request data.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function createThana(Request $request){
 
         DB::beginTransaction();
@@ -179,6 +229,13 @@ class LocationService
     /* -------------------------------------------------------------------------- */
 
 
+    /**
+     * Create a new union location based on the given request.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function createUnion(Request $request){
 
         DB::beginTransaction();
@@ -200,6 +257,13 @@ class LocationService
         }
     }
 
+    /**
+     * Update the union location with the given request data.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function updateUnion(Request $request){
 
         DB::beginTransaction();
@@ -226,6 +290,13 @@ class LocationService
     /* -------------------------------------------------------------------------- */
 
 
+    /**
+     * Create a new ward location based on the given request.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function createWard(Request $request){
 
         DB::beginTransaction();
@@ -247,6 +318,14 @@ class LocationService
         }
     }
 
+
+    /**
+     * Update the ward information in the database.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function updateWard(Request $request){
 
         DB::beginTransaction();
@@ -272,6 +351,13 @@ class LocationService
     /* -------------------------------------------------------------------------- */
 
 
+    /**
+     * Create a new village location based on the given request.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function createVillage(Request $request){
 
         DB::beginTransaction();
@@ -293,6 +379,13 @@ class LocationService
         }
     }
 
+    /**
+     * Update the village location in the database.
+     *
+     * @param  Request  $request
+     * @return Location
+     * @throws \Throwable
+     */
     public function updateVillage(Request $request){
 
         DB::beginTransaction();

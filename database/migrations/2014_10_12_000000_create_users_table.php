@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->rememberToken();
             $table->integer('user_type')->nullable(); // 1 -> superadmin, 2 -> staff
-            $table->integer('status')->default(0);
+            $table->integer('status')->default(0); // 0 -> deactivated, 1 -> activated, 2 -> banned
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });

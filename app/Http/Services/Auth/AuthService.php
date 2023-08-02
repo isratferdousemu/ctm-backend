@@ -17,15 +17,25 @@ use Illuminate\Http\Response;
 
 class AuthService
 {
-    use RoleTrait,AuthenticatesUsers,UserTrait,MessageTrait;
+    use RoleTrait, AuthenticatesUsers, UserTrait, MessageTrait;
 
-
+    protected $maxAttempts = 5;
+    protected $decayMinutes = 1;
+    protected $warning = 3;
     protected function sendNonAllowedAdminResponse()
     {
         throw new AuthBasicErrorException(
             Response::HTTP_UNPROCESSABLE_ENTITY,
             $this->NonAllowedAdminTextErrorCode,
             $this->NonAllowedAdminErrorResponse,
+        );
+    }
+    protected function sendBannedLoginResponse()
+    {
+        throw new AuthBasicErrorException(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            $this->bannedUserTextErrorCode,
+            $this->bannedUserErrorResponse,
         );
     }
 
@@ -50,20 +60,19 @@ class AuthService
         }
         return $key;
     }
+
     public function validateLogin(Request $request)
     {
 
-    $request->validate(
-        [
-            'email'      => 'required|email|exists:users,email',
-            'password'              => 'required|string|min:6',
-        ],
-        [
-            'email.exists'     => 'This email does not match our database record!',
-        ]
-    );
-
-
+        $request->validate(
+            [
+                'email'      => 'required|email|exists:users,email',
+                'password'              => 'required|string|min:6',
+            ],
+            [
+                'email.exists'     => 'This email does not match our database record!',
+            ]
+        );
     }
 
     protected function sendFailedLoginResponse(Request $request)
@@ -78,26 +87,32 @@ class AuthService
         // ]);
     }
 
+
     protected function verifyBeforeLogin(Request $request, User $user)
     {
 
         if ($user->status == $this->userAccountDeactivate) return $this->authDeactivateUserErrorCode;
+        if ($user->status == $this->userAccountBanned) return $this->authBannedUserErrorCode;
         if (!$user->email_verified_at) return $this->authUnverifiedUserErrorCode;
+        if ($user->user_type) {
+            if ($user->user_type == $this->superAdminUserType || $user->user_type == $this->staffType) {
+                if (Hash::check($request->password, $user->password)) {
+                    return $this->authSuccessCode;
+                }
+            } else {
+                return $this->nonAllowedUserErrorCode;
+            }
+        }
         if (Hash::check($request->password, $user->password)) {
             return $this->authSuccessCode;
         }
 
-        if ($user->user_type) {
-            if($user->user_type==$this->superAdminUserType || $user->user_type==$this->staffType){
-                if (Hash::check($request->password, $user->password)) {
-                    return $this->authSuccessCode;
-                }
-            }else{
-                return $this->nonAllowedUserErrorCode;
-            }
-        }
-
         return $this->authBasicErrorCode;
+    }
+
+    protected function bannedUser($user){
+        $user->status= $this->userAccountBanned;
+        $user->save();
     }
 
     public function Adminlogin(Request $request)
@@ -108,10 +123,11 @@ class AuthService
             $this->hasTooManyLoginAttempts($request)
         ) {
             $this->fireLockoutEvent($request);
-
+            $user = User::where("email", $request->email)->first();
+            $this->bannedUser($user);
             return $this->sendLockoutResponse($request);
         }
-        $user = User::where("email", $request->email)->whereStatus($this->userAccountApproved)->first();
+        $user = User::where("email", $request->email)->first();
 
         if ($user == null) {
             $this->incrementLoginAttempts($request);
@@ -122,9 +138,12 @@ class AuthService
 
             if ($authCode == $this->nonAllowedUserErrorCode) return $this->sendNonAllowedAdminResponse();
 
+            if ($authCode == $this->authBannedUserErrorCode) return $this->sendBannedLoginResponse();
+
             if ($authCode == $this->authUnverifiedUserErrorCode) return $this->sendUnVerifiedLoginResponse($request);
 
             if ($authCode == $this->authBasicErrorCode) {
+
                 $this->incrementLoginAttempts($request);
                 return $this->sendFailedLoginResponse($request);
             }
@@ -170,6 +189,4 @@ class AuthService
             throw $th;
         }
     }
-
-
 }

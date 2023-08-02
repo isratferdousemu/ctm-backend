@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Events\RealTimeMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminAuthResource;
 use App\Http\Services\Auth\AuthService;
@@ -83,6 +84,8 @@ class AuthController extends Controller
 
      public function LoginAdmin(Request $request)
      {
+        broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
+
          //validate login
          $this->authService->validateLogin($request);
          //login

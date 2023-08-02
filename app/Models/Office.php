@@ -35,6 +35,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Office whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Office whereThanaId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Office whereUpdatedAt($value)
+ * @property int|null $divisionId
+ * @property int|null $districtId
+ * @property int|null $thanaId
+ * @property string $nameEn
+ * @property string $nameBn
+ * @property int $officeType
+ * @property string $officeAddress
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @mixin \Eloquent
  */
 class Office extends Model

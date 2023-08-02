@@ -31,6 +31,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Device whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Device whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Device whereUsernameMapping($value)
+ * @property int $userId
+ * @property int $deviceType
+ * @property string $deviceName
+ * @property string $macAddress
+ * @property string $usernameMapping
+ * @property string|null $purposeUse
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @mixin \Eloquent
  */
 class Device extends Model

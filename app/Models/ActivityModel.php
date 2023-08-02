@@ -53,6 +53,15 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityModel whereSubjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityModel whereSubjectType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityModel whereUpdatedAt($value)
+ * @property string|null $logName
+ * @property string|null $subjectType
+ * @property int|null $subjectId
+ * @property string|null $causerType
+ * @property int|null $causerId
+ * @property string|null $batchUuid
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $deletedAt
  * @mixin \Eloquent
  */
 class ActivityModel extends Activity

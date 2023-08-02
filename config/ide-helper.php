@@ -107,7 +107,7 @@ return [
     |
     */
 
-    'write_eloquent_model_mixins' => false,
+    'write_eloquent_model_mixins' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -254,7 +254,7 @@ return [
      | Note, it is currently an all-or-nothing option.
      |
      */
-    'model_camel_case_properties' => false,
+    'model_camel_case_properties' => true,
 
     /*
     |--------------------------------------------------------------------------

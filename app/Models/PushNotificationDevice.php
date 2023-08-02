@@ -28,12 +28,28 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $device
  * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|PushNotificationDevice whereDevice($value)
+ * @property int|null $userId
+ * @property string|null $deviceKey
+ * @property string|null $deviceType
+ * @property string|null $ipAddress
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @mixin \Eloquent
  */
 class PushNotificationDevice extends Model
 {
     use HasFactory;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = ['user_id','device_key','device_type','ip_address','device'];
+    /**
+     * Get the user associated with this model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo("App\Models\User", 'user_id');

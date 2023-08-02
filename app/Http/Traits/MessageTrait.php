@@ -6,11 +6,12 @@ trait MessageTrait
 {
     //auth error codes
     private $authDeactivateUserErrorCode = 1;
+    private $authBannedUserErrorCode = 10;
     private $authUnverifiedUserErrorCode = 2;
     private $authRegStepOneErrorCode = 7;
     private $authRegStepTwoErrorCode = 8;
     private $authRegStepThreeErrorCode = 9;
-    private $authRegStepFourErrorCode = 10;
+    private $authRegStepFourErrorCode = 101;
     private $authBasicErrorCode = 3;
     //auth success code
     private $authSuccessCode = 4;
@@ -24,7 +25,29 @@ trait MessageTrait
     //account verification otp name prefix
     private $otpPrefix = 'otp_';
     // text error code
+
+
+ //email verification code prefix
+ protected $employeeEmailVerificationPrefix = 'employee_email_';
+ protected $employeeEmailVerificationOtpPrefix = 'employee_email_otp';
+ protected $employeeEmailVerificationDirectPrefix = 'employee_email_own_verify_';
+
+ protected $merchantEmailVerificationPrefix = 'merchant_email_';
+ protected $merchantEmailVerificationOtpPrefix = 'merchant_email_otp';
+ protected $merchantEmailVerificationDirectPrefix = 'merchant_email_own_verify_';
+ protected $merchantPhoneOtpPrefix = 'merchant_phone_';
+
+ protected $riderEmailVerificationPrefix = 'rider_email_';
+ protected $riderEmailVerificationOtpPrefix = 'rider_email_otp';
+ protected $riderEmailVerificationDirectPrefix = 'rider_email_own_verify_';
+
+ protected $adminEmailVerificationPrefix = 'admin_email_';
+ protected $adminEmailVerificationOtpPrefix = 'admin_email_otp';
+ protected $adminEmailVerificationDirectPrefix = 'admin_email_own_verify_';
+ //forget password prefix
+ protected $userForgetPasswordPrefix = 'user_forget_password_';
     private $NonAllowedAdminTextErrorCode   = 'user_non_admin';
+    private $bannedUserTextErrorCode   = 'user_banned';
     private $authUnverifiedUserTextErrorCode   = 'user_email_unverified';
     private $authWrongCredentialTextErrorCode = 'wrong_email_or_password';
     private $employeeAlreadyBranchAdminTextErrorCode = 'employee_already_branch_admin';
@@ -32,32 +55,18 @@ trait MessageTrait
     private $authMerchantPhoneNotExistsTextErrorCode = 'phone_not_found';
     private $authEmailAlreadyVerifiedUserTextErrorCode   = 'user_email_already_verified';
     private $authEmailNotVerifiedUserTextErrorCode   = 'user_email_not_verified';
-    private $authMerchantUserTypeTextErrorCode   = 'user_merchant_type';
     private $authPhoneNotVerifiedUserTextErrorCode   = 'user_phone_not_verified';
     private $authPhoneAlreadyVerifiedUserTextErrorCode   = 'user_phone_already_verified';
-    private $authMerchantAccountPendingTextErrorCode = "merchant_account_pending";
-    private $authMerchantAccountBannedTextErrorCode = "merchant_account_banned";
-    private $authMerchantAccountRejectedTextErrorCode = "merchant_account_rejected";
-    private $authMerchantAccountDeactivateTextErrorCode = "merchant_account_deactivate";
+    private $authUserAccountPendingTextErrorCode = "user_account_pending";
+    private $authUserAccountBannedTextErrorCode = "user_account_banned";
+    private $authUserAccountRejectedTextErrorCode = "user_account_rejected";
+    private $authUserAccountDeactivateTextErrorCode = "user_account_deactivate";
     private $authExpiredCodeTextErrorCode = 'expired_code';
     private $authInvalidCodeTextErrorCode = 'invalid_code';
 
-    private $authMerchantAccountNotPendingTextErrorCode = 'merchant_account_not_pending';
+    private $authUserAccountNotPendingTextErrorCode = 'user_account_not_pending';
 
-    private $authMerchantStep1NotCompleteTextErrorCode = 'merchant_step1_not_complete';
-    private $authMerchantStep2NotCompleteTextErrorCode = 'merchant_step2_not_complete';
-    private $authMerchantStep3NotCompleteTextErrorCode = 'merchant_step3_not_complete';
-    private $authMerchantStep4AlreadyCompleteTextErrorCode = 'merchant_step4_already_complete';
-    private $authMerchantStep3AlreadyCompleteTextErrorCode = 'merchant_step3_already_complete';
-    private $authMerchantStep2AlreadyCompleteTextErrorCode = 'merchant_step2_already_complete';
-    private $merchantAccountNotPendingMessage = 'Merchant Account Not Pending';
-    private $merchantStep2AlreadyCompleteMessage = 'Merchant Step2 Already Complete';
-    private $merchantStep1NotCompleteMessage = 'Merchant Step1 Not Complete';
-    private $merchantStep2NotCompleteMessage = 'Merchant Step2 Not Complete';
-    private $merchantStep3NotCompleteMessage = 'Merchant Step3 Not Complete';
-    private $merchantStep4AlreadyCompleteMessage = 'Merchant Step4 Already Complete';
-
-    private $merchantStep3AlreadyCompleteMessage = 'Merchant Step3 Already Complete';
+    private $userAccountNotPendingMessage = 'User Account Not Pending';
     private $authExpiredCodeMessage = 'Expired Code!';
     private $authInvalidCodeMessage = 'Invalid Code!';
 
@@ -68,10 +77,10 @@ trait MessageTrait
     private $notEmailVerifiedMessage = 'Email is not verified!';
     private $merchantUserTypeMessage = 'Merchant User Not Found!';
     private $notPhoneVerifiedMessage='Phone is not verified!';
-    private $merchantAccountPendingMessage = 'Merchant Account Pending';
-    private $merchantAccountBannedMessage = 'Merchant Account Banned';
-    private $merchantAccountRejectedMessage = 'Merchant Account Rejected';
-    private $merchantAccountDeactivateMessage = 'Merchant Account Deactivate';
+    private $userAccountPendingMessage = 'User Account Pending';
+    private $userAccountBannedMessage = 'User Account Banned';
+    private $userAccountRejectedMessage = 'User Account Rejected';
+    private $userAccountDeactivateMessage = 'User Account Deactivate';
 
 
     //insert success
@@ -85,23 +94,22 @@ trait MessageTrait
     //not found
     private $unverifiedUserErrorResponse = 'Please Verify Your Account to login';
     private $NonAllowedAdminErrorResponse = 'please try to login your application';
+    private $bannedUserErrorResponse = 'please contact administrator for re-active your account';
 
     private $emailVerifySuccessMessage = 'Email verification Completed!';
     private $phoneVerifySuccessMessage = 'Phone verification Completed!';
 
-    private $employeeAlreadyBranchAdminMessage = "The Employee Already Admin In Another Branch.";
 
     /**
      * Email From mails And Subjects
      * */
     private $WebSiteName = "CTM";
 
-    private $EmployeeRegisterMailFrom = "career@metroexpress.com.bd";
+    private $EmployeeRegisterMailFrom = "example@gmail.com";
     private $InfoMailFrom = "info@metroexpress.com.bd";
-    private $EmployeeRegisterMailName = "Metro Career";
+    private $EmployeeRegisterMailName = "CTM ";
     private $EmployeeRegisterMailSubject = "Thanks for Joining CTM!!";
     private $MerchantEmailVerifyMailSubject = "Merchant Email Verify Mail";
-    private $EmployeeToBranchAdminMailSubject = "Welcome to Your New Role as Branch Admin";
 
 
 
