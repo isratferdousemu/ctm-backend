@@ -14,5 +14,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('admin/tokens', [AuthController::class, 'adminTokens']);
     Route::get('admin/logout', [AuthController::class, 'LogoutAdmin']);
     Route::get('admin/users/blocked/list',[AuthController::class, 'getAllBlockedUsers'])->middleware(['role_or_permission:super-admin|main-block-list']);
+    Route::post('admin/users/unblock',[AuthController::class, 'unBlockUser'])->middleware(['role_or_permission:super-admin|main-block-update']);
 
 });

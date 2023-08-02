@@ -9,8 +9,11 @@ use App\Http\Services\Auth\AuthService;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\UserTrait;
 use App\Models\User;
+use DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
@@ -240,5 +243,87 @@ class AuthController extends Controller
             'success' => true,
             'message' => $this->fetchSuccessMessage,
         ]);
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/users/unblock",
+     *      operationId="unBlockUser",
+     *      tags={"Auth"},
+     *      summary="update a blocked user",
+     *      description="update a blocked user",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="user_id",
+     *                      description="id of the user",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function unBlockUser(Request $request){
+        $validator = Validator::make(['id' => $request->user_id], [
+            'id' => 'required|exists:users,id,deleted_at,NULL',
+        ]);
+        $validator->validated();
+
+        DB::beginTransaction();
+        try {
+                $user = User::findOrFail($request->user_id);
+                $user->status = $this->userAccountApproved;
+                $user->save();
+                DB::commit();
+
+                activity("User")
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log('User Unblocked');
+         return $this->sendResponse($user, $this->updateSuccessMessage, Response::HTTP_OK);
+
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 }
