@@ -9,6 +9,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('admin/activity-log/all/filtered',[ActivityLogController::class, 'getAllActivityLogsPaginated'])->middleware(['role_or_permission:super-admin|main-setting-activity-log']);
 
 
+
     /* -------------------------------------------------------------------------- */
     /*                                 Role Routes                                */
     /* -------------------------------------------------------------------------- */

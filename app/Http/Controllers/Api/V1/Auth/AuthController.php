@@ -6,13 +6,16 @@ use App\Events\RealTimeMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminAuthResource;
 use App\Http\Services\Auth\AuthService;
+use App\Http\Traits\MessageTrait;
+use App\Http\Traits\UserTrait;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
-
+    use UserTrait, MessageTrait;
     private $authService;
     public function __construct(
         AuthService $authService
@@ -158,5 +161,84 @@ class AuthController extends Controller
     public function adminTokens(){
         // return PersonalAccessToken::all();
         return $tokens = Auth()->user()->tokens;
+    }
+
+    /**
+    * @OA\Get(
+    *     path="/admin/users/blocked/list",
+    *      operationId="getAllBlockedUsers",
+    *      tags={"Auth"},
+    *      summary="get paginated block users",
+    *      description="get paginated block users",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="searchText",
+    *         in="query",
+    *         description="search by name",
+    *         @OA\Schema(type="string")
+    *     ),
+    *     @OA\Parameter(
+    *         name="perPage",
+    *         in="query",
+    *         description="number of users per page",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         description="page number",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+    public function getAllBlockedUsers(Request $request){
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
+
+        $filterArrayName=[];
+        $filterArrayEmail=[];
+
+        if ($searchText) {
+            $filterArrayName[] = ['full_name', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayEmail[] = ['email', 'LIKE', '%' . $searchText . '%'];
+        }
+        $users = User::query()
+            ->where(function ($query) use ($filterArrayName, $filterArrayEmail) {
+                $query->where($filterArrayName)
+                    ->orWhere($filterArrayEmail);
+        })
+        ->whereStatus($this->userAccountBanned)
+        ->latest()
+        ->paginate($perPage, ['*'], 'page');
+
+        return AdminAuthResource::collection($users)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
     }
 }

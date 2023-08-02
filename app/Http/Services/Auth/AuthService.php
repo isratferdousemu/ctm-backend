@@ -113,6 +113,10 @@ class AuthService
     protected function bannedUser($user){
         $user->status= $this->userAccountBanned;
         $user->save();
+        activity("Automation")
+         ->causedBy(auth()->user())
+         ->performedOn($user)
+         ->log('User Blocked For Attempt Many time!!');
     }
 
     public function Adminlogin(Request $request)
