@@ -19,6 +19,267 @@
         }
     ],
     "paths": {
+        "/admin/lookup/get": {
+            "get": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": "get paginated Lookup",
+                "description": "get paginated Lookup",
+                "operationId": "getAllLookupPaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of lookup per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/lookup/insert": {
+            "post": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": "insert a lookup",
+                "description": "insert a lookup",
+                "operationId": "insertlookup",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "insert type",
+                                        "type": "integer"
+                                    },
+                                    "value_en": {
+                                        "description": "insert value in english",
+                                        "type": "text"
+                                    },
+                                    "value_bn": {
+                                        "description": "insert value in bangla",
+                                        "type": "text"
+                                    },
+                                    "keyword": {
+                                        "description": "insert Keyword of Lookup",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/lookup/update": {
+            "post": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": "update a Lookup",
+                "description": "update a lookup",
+                "operationId": "lookupUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the lookup",
+                                        "type": "integer"
+                                    },
+                                    "type": {
+                                        "description": "type of the Lookup",
+                                        "type": "integer"
+                                    },
+                                    "value_en": {
+                                        "description": "english name of the Lookup",
+                                        "type": "text"
+                                    },
+                                    "value_bn": {
+                                        "description": "bangla name of the lookup",
+                                        "type": "text"
+                                    },
+                                    "keyword": {
+                                        "description": "keyword of the Lookup",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/lookup/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": " destroy lookups",
+                "description": "Returns lookup destroy by id",
+                "operationId": "destroyLookup",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of lookup to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/division/get": {
             "get": {
                 "tags": [
