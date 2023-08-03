@@ -13,7 +13,18 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users');
+            $table->string('title');
+            $table->string('body')->nullable();
+            $table->string('link')->nullable();
+            $table->string('type')->nullable();
+            $table->string('platform');
+            $table->boolean('status')->default(0);
+            $table->boolean('seen')->default(0);
+            $table->dateTime('seen_at')->nullable();
+            $table->bigInteger('create_time')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

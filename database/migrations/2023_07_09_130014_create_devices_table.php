@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('name',50);
             $table->integer('device_type');
             $table->string('device_name',30);
-            $table->macAddress();
             $table->string('username_mapping',50);
             $table->string('purpose_use',120)->nullable();
             $table->timestamps();
