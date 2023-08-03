@@ -3,10 +3,12 @@
 namespace App\Http\Services\Auth;
 
 use App\Exceptions\AuthBasicErrorException;
+use App\Helpers\Helper;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\RoleTrait;
 use App\Http\Traits\UserTrait;
 use App\Models\User;
+use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -119,7 +121,7 @@ class AuthService
          ->log('User Blocked For Attempt Many time!!');
     }
 
-    public function Adminlogin(Request $request)
+    public function Adminlogin(Request $request,$type=1)
     {
 
         if (
@@ -153,21 +155,54 @@ class AuthService
             }
             if ($authCode == $this->authSuccessCode) {
                 $this->clearLoginAttempts($request);
-                //logging in
-                $token = $user->createToken($this->generateTokenKey($request) . $user->id)->plainTextToken;
-                return [
-                    'user'      => $user->load('roles'),
-                    'token'     => $token,
-                ];
+                if($type==1){
+                    return $otp = $this->sendLoginOtp($user);
+                }
+                if($type==2){
+                    // check device registration
+
+                    $code = $request->otp;
+                    $cachedCode = Cache::get($this->userLoginOtpPrefix . $user->id);
+
+                    if (!$cachedCode || $code != $cachedCode) {
+                        throw new AuthBasicErrorException(
+                            Response::HTTP_UNPROCESSABLE_ENTITY,
+                            'verify_failed',
+                            "Verification code invalid !",
+                        );
+                    }
+
+                    //logging in
+                    $token = $user->createToken($this->generateTokenKey($request) . $user->id)->plainTextToken;
+                    return [
+                        'user'      => $user->load('roles'),
+                        'token'     => $token,
+                    ];
+                }
+
             }
         }
 
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);
         return $this->sendFailedLoginResponse($request);
     }
+
+    public function generateOtpCode($user, $time)
+    {
+        Cache::forget($this->userLoginOtpPrefix . $user->id);
+        //generate code
+        $code =  mt_rand(100000, 999999);
+        //put them in cache
+        Cache::put($this->userLoginOtpPrefix . $user->id, $code, now()->addMinutes($time));
+        //return generated code
+        return $code;
+    }
+    protected function sendLoginOtp($user){
+
+        return $code = $this->generateOtpCode($user, 60);
+
+    }
+
 
     public function logout(Request $request)
     {

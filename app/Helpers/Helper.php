@@ -1,9 +1,12 @@
 <?php
 namespace App\Helpers;
 
+use App\Http\Traits\MessageTrait;
+use Cache;
 use Illuminate\Support\Str;
 
 class Helper{
+    use MessageTrait;
 
     public static function GeneratePassword()
     {
@@ -21,4 +24,15 @@ class Helper{
         $fourDigitNumber = random_int(1000, 9999);
         return $fourDigitNumber;
     }
+
+    // public static function generateOtpCode($user, $time)
+    // {
+    //     Cache::forget(self::userLoginOtpPrefix . $user->id);
+    //     //generate code
+    //     $code =  mt_rand(100000, 999999);
+    //     //put them in cache
+    //     Cache::put(self::userLoginOtpPrefix . $user->id, $code, now()->addMinutes($time));
+    //     //return generated code
+    //     return $code;
+    // }
 }

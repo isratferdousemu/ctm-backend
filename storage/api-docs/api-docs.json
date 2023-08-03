@@ -2769,6 +2769,56 @@
                 ]
             }
         },
+        "/admin/login/otp": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login to the Application",
+                "description": "login to the application",
+                "operationId": "LoginAdminOtp",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "user email",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "password",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
         "/admin/login": {
             "post": {
                 "tags": [
@@ -2784,6 +2834,10 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
+                                    "otp": {
+                                        "description": "OTP code",
+                                        "type": "string"
+                                    },
                                     "email": {
                                         "description": "user email",
                                         "type": "string"
