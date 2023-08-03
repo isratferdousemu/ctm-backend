@@ -34,7 +34,7 @@ class AuthController extends Controller
      *
      * @OA\Post(
      *      path="/admin/login/otp",
-     *      operationId="LoginAdminOtp",
+     *      operationId="LoginOtp",
      *      tags={"Auth"},
      *      summary="Login to the Application",
      *      description="login to the application",
@@ -89,7 +89,7 @@ class AuthController extends Controller
      *
      */
 
-     public function LoginAdminOtp(Request $request)
+     public function LoginOtp(Request $request)
      {
 
          //validate login
@@ -125,6 +125,7 @@ class AuthController extends Controller
      *                      description="Browser Fingerprint",
      *                      type="string",
      *                   ),
+     *                  @OA\Property(
      *                      property="otp",
      *                      description="OTP code",
      *                      type="string",
@@ -138,7 +139,6 @@ class AuthController extends Controller
      *                      property="password",
      *                      description="password",
      *                      type="text",
-     *
      *                   ),
      *
      *               ),
@@ -170,9 +170,7 @@ class AuthController extends Controller
      *     )
      *
      */
-
-     public function LoginAdmin(Request $request)
-     {
+     public function LoginAdmin(Request $request){
         broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
 
          //validate login
