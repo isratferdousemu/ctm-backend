@@ -171,7 +171,7 @@ class AuthService
                         );
                     }
                 // check device registration
-                $device = Device::whereId($user->id)->whereDeviceId($request->device_token)->whereIpAddress($request->ip())->first();
+                $device = Device::whereUserId($user->user_id)->whereDeviceId($request->device_token)->whereIpAddress($request->ip())->first();
                 if(!$device){
                     throw new AuthBasicErrorException(
                         Response::HTTP_UNPROCESSABLE_ENTITY,

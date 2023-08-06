@@ -19,7 +19,7 @@ class DeviceService
             $device->user_id                = $request->user_id;
             $device->name                = $request->name;
             $device->device_id                = $request->device_id;
-            $device->ip_address                   = $request->ip_address;
+            $device->ip_address                   = $request->ip();
             $device->device_type                   = $request->device_type;
             $device->purpose_use                   = $request->purpose_use;
             $device->createdBy                   = Auth()->user()->id;

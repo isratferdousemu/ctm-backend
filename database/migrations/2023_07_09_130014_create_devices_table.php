@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned()->index();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('name',50);
+                $table->unsignedBigInteger('user_id'); // Foreign key column
+                $table->foreign('user_id')
+                    ->references('user_id') // Column being referenced in the 'users' table
+                    ->on('users')
+                    ->onDelete('cascade');
+         $table->string('name',50);
             $table->string('device_name',30)->nullable();
             $table->string('device_id',50)->nullable();
             $table->ipAddress()->nullable();
