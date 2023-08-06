@@ -5,11 +5,8 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Traits\UserTrait;
 use App\Models\AllowanceProgram;
-
 use App\Http\Traits\MessageTrait;
-use App\Http\Traits\AllowanceTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Admin\Systemconfig\SystemconfigService;
 use App\Http\Requests\Admin\Systemconfig\Allowance\AllowanceRequest;
@@ -18,7 +15,7 @@ use App\Http\Requests\Admin\Systemconfig\Allowance\AllowanceUpdateRequest;
 
 class SystemconfigController extends Controller
 {
-    use MessageTrait,UserTrait,AllowanceTrait;
+    use MessageTrait;
     private $systemconfigService;
 
     public function __construct(SystemconfigService $systemconfigService) {

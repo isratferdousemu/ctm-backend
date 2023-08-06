@@ -5,8 +5,6 @@ use Validator;
 use App\Models\Office;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Traits\UserTrait;
-use App\Http\Traits\OfficeTrait;
 use App\Http\Traits\MessageTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Admin\Office\OfficeService;
@@ -16,7 +14,7 @@ use App\Http\Requests\Admin\System\Office\OfficeUpdateRequest;
 
 class OfficeController extends Controller
 {
-    use MessageTrait,UserTrait,OfficeTrait;
+    use MessageTrait;
     private $OfficeService;
 
     public function __construct(OfficeService $OfficeService) {
