@@ -7,6 +7,7 @@ use App\Helpers\Helper;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\RoleTrait;
 use App\Http\Traits\UserTrait;
+use App\Models\Device;
 use App\Models\User;
 use Cache;
 use Illuminate\Http\Request;
@@ -159,11 +160,9 @@ class AuthService
                     return $otp = $this->sendLoginOtp($user);
                 }
                 if($type==2){
-                    // check device registration
-
+                    // check OTP
                     $code = $request->otp;
                     $cachedCode = Cache::get($this->userLoginOtpPrefix . $user->id);
-
                     if (!$cachedCode || $code != $cachedCode) {
                         throw new AuthBasicErrorException(
                             Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -171,6 +170,15 @@ class AuthService
                             "Verification code invalid !",
                         );
                     }
+                // check device registration
+                $device = Device::whereId($user->id)->whereDeviceId($request->device_token)->whereIpAddress($request->ip())->first();
+                if(!$device){
+                    throw new AuthBasicErrorException(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        'device_not_found',
+                        "your device is not registered",
+                    );
+                }
 
                     //logging in
                     $token = $user->createToken($this->generateTokenKey($request) . $user->id)->plainTextToken;
@@ -199,14 +207,11 @@ class AuthService
     }
     protected function sendLoginOtp($user){
 
-        return $code = $this->generateOtpCode($user, 60);
-
+        return $code = $this->generateOtpCode($user, 1);
     }
-
 
     public function logout(Request $request)
     {
-
 
         DB::beginTransaction();
         try {
@@ -219,9 +224,6 @@ class AuthService
                     $token->delete();
                 });
             }
-
-
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
