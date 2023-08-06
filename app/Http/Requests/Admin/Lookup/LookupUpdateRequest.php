@@ -22,7 +22,7 @@ class LookupUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type'             => 'required|integer',
+            'type'             => 'required|integer|unique:lookups',
             'value_en'         => 'required|string|max:50',
             'value_bn'         => 'required|string|max:50',
             'keyword'          => 'required|string|max:120,Null',

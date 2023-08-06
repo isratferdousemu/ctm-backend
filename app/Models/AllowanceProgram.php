@@ -33,5 +33,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AllowanceProgram extends Model
 {
-    use HasFactory;
+
+    public function lookup()
+    {
+        return $this->belongsTo(Lookup::class,'service_type');
+    }
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('guideline',120)->nullable();
             $table->integer('service_type');
             $table->string('description',120)->nullable();
+            $table->integer("version")->default(1);
             $table->timestamps();
         });
     }

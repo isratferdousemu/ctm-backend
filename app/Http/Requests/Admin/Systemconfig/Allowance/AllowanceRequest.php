@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Lookup;
+namespace App\Http\Requests\Admin\Systemconfig\Allowance;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LookupRequest extends FormRequest
+class AllowanceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,11 +21,15 @@ class LookupRequest extends FormRequest
      */
     public function rules(): array
     {
+
+
         return [
-            'type'             => 'required|integer|unique:lookups',
-            'value_en'         => 'required|string|max:50',
-            'value_bn'         => 'required|string|max:50',
-            'keyword'          => 'required|string|max:120,Null',
+            'name_en'        => 'required|string|max:50',
+            'name_bn'        => 'required|string|max:50',
+            'guideline'      => 'required|string|max:120,Null',
+            'description'    => 'required|string|max:120,Null',
+            'service_type'   => 'required|integer|exists:lookups,id'
+
         ];
     }
 }
