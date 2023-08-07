@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('allowance_programs', function (Blueprint $table) {
+        Schema::create('lookups', function (Blueprint $table) {
             $table->id();
-            $table->string('name_en',50);
-            $table->string('name_bn',50);
-            $table->string('guideline',120)->nullable();
-            $table->integer('service_type');
-            $table->string('description',120)->nullable();
+            $table->integer('type')->length(6);
+            $table->string('value_en',60);
+            $table->string('value_bn',60);
+            $table->string('keyword',120)->nullable();
             $table->integer("version")->default(1);
             $table->timestamps();
         });
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('allowance_programs');
+        Schema::dropIfExists('lookups');
     }
 };

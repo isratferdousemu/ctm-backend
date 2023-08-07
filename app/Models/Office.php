@@ -48,5 +48,17 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Office extends Model
 {
-    use HasFactory;
+
+    public function division()
+    {
+        return $this->belongsTo(Location::class,'division_id');
+    }
+    public function district()
+    {
+        return $this->belongsTo(Location::class,'district_id');
+    }
+    public function thana()
+    {
+        return $this->belongsTo(Location::class,'thana_id');
+    }
 }

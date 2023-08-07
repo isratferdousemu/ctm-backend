@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('allowance_programs', function (Blueprint $table) {
+        Schema::create('financial_years', function (Blueprint $table) {
             $table->id();
-            $table->string('name_en',50);
-            $table->string('name_bn',50);
-            $table->string('guideline',120)->nullable();
-            $table->integer('service_type');
-            $table->string('description',120)->nullable();
+            $table->string('financial_year',60);
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->boolean('status');
             $table->integer("version")->default(1);
+          
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('allowance_programs');
+        Schema::dropIfExists('financial_years');
     }
 };
