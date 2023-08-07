@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Device\DeviceRequest;
+use App\Http\Requests\Admin\Device\DeviceUpdateRequest;
 use App\Http\Resources\Admin\Device\DeviceResource;
 use App\Http\Services\Admin\Device\DeviceService;
 use App\Http\Traits\MessageTrait;
@@ -203,6 +204,116 @@ class DeviceController extends Controller
             return DeviceResource::make($device)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/device/update",
+     *      operationId="deviceUpdate",
+     *      tags={"DEVICE"},
+     *      summary="update a device",
+     *      description="update a device",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="id",
+     *                      description="id of the device",
+     *                      type="integer",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="user_id",
+     *                      description="user id of the device user",
+     *                      type="integer",
+     *
+     *                   ),
+     *                   @OA\Property(
+     *                      property="name",
+     *                      description="user name",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="device_name",
+     *                      description="device name",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="device_id",
+     *                      description="browser fingerprint of the user",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="ip_address",
+     *                      description="IP address of the user",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="device_type",
+     *                      description="Device type of the user",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="purpose_use",
+     *                      description="purpose of the user device",
+     *                      type="text",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function deviceUpdate(DeviceUpdateRequest $request){
+
+        try {
+            $device = $this->DeviceService->editDevice($request);
+            activity("Device")
+            ->causedBy(auth()->user())
+            ->performedOn($device)
+            ->log('Device Update !');
+            return DeviceResource::make($device)->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
             ]);
         } catch (\Throwable $th) {
             //throw $th;

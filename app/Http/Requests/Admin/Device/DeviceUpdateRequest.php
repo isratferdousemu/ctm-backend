@@ -11,7 +11,7 @@ class DeviceUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class DeviceUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id'    => 'required|exists:devices,id',
+            'user_id' => "required|exists:users,user_id",
+            'ip_address' => "required|ip",
+            'name' => "required",
+            'device_id' => "required",
+            'device_type' => "required",
+            'purpose_use' => "sometimes",
         ];
     }
 }

@@ -170,6 +170,93 @@
                 ]
             }
         },
+        "/admin/device/update": {
+            "post": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": "update a device",
+                "description": "update a device",
+                "operationId": "deviceUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the device",
+                                        "type": "integer"
+                                    },
+                                    "user_id": {
+                                        "description": "user id of the device user",
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "description": "user name",
+                                        "type": "text"
+                                    },
+                                    "device_name": {
+                                        "description": "device name",
+                                        "type": "text"
+                                    },
+                                    "device_id": {
+                                        "description": "browser fingerprint of the user",
+                                        "type": "text"
+                                    },
+                                    "ip_address": {
+                                        "description": "IP address of the user",
+                                        "type": "text"
+                                    },
+                                    "device_type": {
+                                        "description": "Device type of the user",
+                                        "type": "text"
+                                    },
+                                    "purpose_use": {
+                                        "description": "purpose of the user device",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/device/status": {
             "post": {
                 "tags": [

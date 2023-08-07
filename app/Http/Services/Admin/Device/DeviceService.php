@@ -32,4 +32,25 @@ class DeviceService
             throw $th;
         }
     }
+    public function editDevice(Request $request){
+
+        DB::beginTransaction();
+        try {
+
+            $device                       = Device::find($request->id);
+            $device->user_id                = $request->user_id;
+            $device->name                = $request->name;
+            $device->device_name                = $request->device_name;
+            $device->device_id                = $request->device_id;
+            $device->ip_address                   = $request->ip();
+            $device->device_type                   = $request->device_type;
+            $device->purpose_use                   = $request->purpose_use;
+            $device->save();
+            DB::commit();
+            return $device;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
 }
