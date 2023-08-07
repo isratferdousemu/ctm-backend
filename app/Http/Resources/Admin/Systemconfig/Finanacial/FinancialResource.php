@@ -17,7 +17,7 @@ class FinancialResource extends JsonResource
         return [
 
             'id'                  => $this->id,
-            'financial_year'     => $this->finanacial_year,
+            'financial_year'     => $this->financial_year,
             'start_date'          => $this->start_date,
             'end_date'            => $this->end_date,
             'status'              => $this->status,

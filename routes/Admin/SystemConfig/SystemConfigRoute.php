@@ -42,25 +42,15 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::post('/update', [SystemconfigController::class, 'AllowanceUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
         Route::get('/destroy/{id}', [SystemconfigController::class, 'destroyAllowance'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
-    /* -------------------------------------------------------------------------- */
-    /*                               Allowance program Management  Routes                              */
-    /* -------------------------------------------------------------------------- */
 
-    Route::prefix('admin/allowance')->group(function () {
-
-        Route::post('/insert', [SystemconfigController::class, 'insertallowance'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
-        Route::get('/get',[SystemconfigController::class, 'getAllallowancePaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
-        Route::post('/update', [SystemconfigController::class, 'AllowanceUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
-        Route::get('/destroy/{id}', [SystemconfigController::class, 'destroyAllowance'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
-    });
     /* -------------------------------------------------------------------------- */
     /*                              Financial Year Management  Routes             */
     /* -------------------------------------------------------------------------- */
 
     Route::prefix('admin/financial-year')->group(function () {
 
-        Route::post('/insert', [financialYearController::class, 'insertFinancialYear'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
-        // Route::get('/get',[SystemconfigController::class, 'getAllfinancialPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::post('/insert', [financialYearController::class, 'insertFinancialYear'])->middleware(['role_or_permission:super-admin|financial-year-create']);
+        Route::get('/get',[financialYearController::class, 'getFinancialPaginated'])->middleware(['role_or_permission:super-admin|financial-year-view']);
         // Route::post('/update', [SystemconfigController::class, 'FinancialUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
         // Route::get('/destroy/{id}', [SystemconfigController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });

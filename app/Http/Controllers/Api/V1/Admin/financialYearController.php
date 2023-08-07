@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Systemconfig\FinanacialYear\FinancialRequest;
 use App\Http\Resources\Admin\systemconfig\Finanacial\FinancialResource;
 use App\Http\Services\Admin\Systemconfig\SystemconfigService;
 use App\Http\Traits\MessageTrait;
+use App\Models\FinancialYear;
 use Illuminate\Http\Request;
 
 class financialYearController extends Controller
@@ -17,6 +18,68 @@ class financialYearController extends Controller
     public function __construct(SystemconfigService $systemconfigService) {
         $this->systemconfigService= $systemconfigService;
     }
+
+    /**
+    * @OA\Get(
+    *     path="/admin/financial-year/get",
+    *      operationId="getFinancialPaginated",
+    *      tags={"ADMIN-FINANCIAL-YEAR"},
+    *      summary="get paginated financial-year",
+    *      description="get paginated financial-year",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="perPage",
+    *         in="query",
+    *         description="number of financial-year per page",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         description="page number",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getFinancialPaginated(Request $request){
+    // Retrieve the query parameters
+    $perPage = $request->query('perPage');
+    $page = $request->query('page');
+
+
+    $financial = FinancialYear::query()
+    ->latest()
+    ->paginate($perPage, ['*'], 'page');
+
+    return FinancialResource::collection($financial)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
 
     /**
      *
