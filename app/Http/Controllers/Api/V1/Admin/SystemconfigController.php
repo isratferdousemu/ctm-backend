@@ -26,7 +26,7 @@ class SystemconfigController extends Controller
     * @OA\Get(
     *     path="/admin/allowance/get",
     *      operationId="getAllallowancePaginated",
-    *     tags={"ALLOWANCE-PROGRAMM MANAGEMENT"},
+    *     tags={"ALLOWANCE-PROGRAM-MANAGEMENT"},
     *      summary="get paginated Allowances",
     *      description="get paginated Allowances",
     *      security={{"bearer_token":{}}},
@@ -117,7 +117,7 @@ class SystemconfigController extends Controller
      * @OA\Post(
      *      path="/admin/allowance/insert",
      *      operationId="insertAllowance",
-     *      tags={"ALLOWANCE-PROGRAMM MANAGEMENT"},
+     *      tags={"ALLOWANCE-PROGRAM-MANAGEMENT"},
      *      summary="insert a allowance program",
      *      description="insert a allowance program",
      *      security={{"bearer_token":{}}},
@@ -215,7 +215,7 @@ class SystemconfigController extends Controller
      * @OA\Post(
      *      path="/admin/allowance/update",
      *      operationId="allowanceUpdate",
-     *      tags={"ALLOWANCE-PROGRAMM MANAGEMENT"},
+     *      tags={"ALLOWANCE-PROGRAM-MANAGEMENT"},
      *      summary="update a office",
      *      description="updatet a office",
      *      security={{"bearer_token":{}}},
@@ -319,7 +319,7 @@ class SystemconfigController extends Controller
      * @OA\Get(
      *      path="/admin/allowance/destroy/{id}",
      *      operationId="destroyAllowance",
-     *     tags={"ALLOWANCE-PROGRAMM MANAGEMENT"},
+     *     tags={"ALLOWANCE-PROGRAM-MANAGEMENT"},
      *      summary=" destroy Allowance programm",
      *      description="Returns allowance destroy by id",
      *      security={{"bearer_token":{}}},

@@ -22,10 +22,7 @@ class FinancialRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'financialyear'         => 'required|string|max:60',
-            'start_date'             => 'required|date',
-            'end_date'               => 'required|date',
-            'status'                 => 'required|boolean',
+            'financial_year'         => 'required|string|max:60',
         ];
     }
 }

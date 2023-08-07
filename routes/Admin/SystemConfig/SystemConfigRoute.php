@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Admin\OfficeController;
 use App\Http\Controllers\APi\V1\Admin\AdminController;
+use App\Http\Controllers\Api\V1\Admin\financialYearController;
 use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
        Route::middleware('auth:sanctum')->group(function () {
@@ -52,16 +53,16 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::post('/update', [SystemconfigController::class, 'AllowanceUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
         Route::get('/destroy/{id}', [SystemconfigController::class, 'destroyAllowance'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
-        /* -------------------------------------------------------------------------- */
-    /*                              Financial Year Management  Routes                              */
+    /* -------------------------------------------------------------------------- */
+    /*                              Financial Year Management  Routes             */
     /* -------------------------------------------------------------------------- */
 
-    Route::prefix('admin/financial')->group(function () {
+    Route::prefix('admin/financial-year')->group(function () {
 
-        Route::post('/insert', [SystemconfigController::class, 'insertfinancial'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
-        Route::get('/get',[SystemconfigController::class, 'getAllfinancialPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
-        Route::post('/update', [SystemconfigController::class, 'FinancialUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
-        Route::get('/destroy/{id}', [SystemconfigController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        Route::post('/insert', [financialYearController::class, 'insertFinancialYear'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
+        // Route::get('/get',[SystemconfigController::class, 'getAllfinancialPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        // Route::post('/update', [SystemconfigController::class, 'FinancialUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
+        // Route::get('/destroy/{id}', [SystemconfigController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
 
 

@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('financial_years', function (Blueprint $table) {
             $table->id();
-            $table->string('financial_year',60);
+            $table->string('financial_year',10);
             $table->date('start_date');
             $table->date('end_date');
-            $table->boolean('status');
+            $table->boolean('status')->default(false);
             $table->integer("version")->default(1);
-          
             $table->softDeletes();
             $table->timestamps();
         });

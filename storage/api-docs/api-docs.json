@@ -3583,7 +3583,7 @@
         "/admin/allowance/get": {
             "get": {
                 "tags": [
-                    "ALLOWANCE-PROGRAMM MANAGEMENT"
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
                 ],
                 "summary": "get paginated Allowances",
                 "description": "get paginated Allowances",
@@ -3651,7 +3651,7 @@
         "/admin/allowance/insert": {
             "post": {
                 "tags": [
-                    "ALLOWANCE-PROGRAMM MANAGEMENT"
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
                 ],
                 "summary": "insert a allowance program",
                 "description": "insert a allowance program",
@@ -3726,7 +3726,7 @@
         "/admin/allowance/update": {
             "post": {
                 "tags": [
-                    "ALLOWANCE-PROGRAMM MANAGEMENT"
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
                 ],
                 "summary": "update a office",
                 "description": "updatet a office",
@@ -3805,7 +3805,7 @@
         "/admin/allowance/destroy/{id}": {
             "get": {
                 "tags": [
-                    "ALLOWANCE-PROGRAMM MANAGEMENT"
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
                 ],
                 "summary": " destroy Allowance programm",
                 "description": "Returns allowance destroy by id",
@@ -3898,6 +3898,65 @@
                                     },
                                     "thana_id": {
                                         "description": "id of thana",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/financial-year/insert": {
+            "post": {
+                "tags": [
+                    "ADMIN-FINANCIAL-YEAR"
+                ],
+                "summary": "insert a financial-year",
+                "description": "insert a financial-year",
+                "operationId": "insertFinancialYear",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "financial_year": {
+                                        "description": "financial year. ex: 2023-2024",
                                         "type": "text"
                                     }
                                 },
