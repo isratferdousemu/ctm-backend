@@ -128,6 +128,11 @@ class DeviceController extends Controller
      *                   ),
      *                   @OA\Property(
      *                      property="name",
+     *                      description="user name",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="device_name",
      *                      description="device name",
      *                      type="text",
      *                   ),
@@ -199,6 +204,92 @@ class DeviceController extends Controller
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
             ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/device/status",
+     *      operationId="deviceStatusUpdate",
+     *      tags={"DEVICE"},
+     *      summary="update publish status of a device",
+     *      description="update publish status of a device",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="update the device",
+     *
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *
+     *                    @OA\Property(
+     *                      property="id",
+     *                      description="id of the device",
+     *                      type="text",
+     *
+     *                   ),
+     *                    @OA\Property(
+     *                      property="status",
+     *                      description="status or not.boolean 0 or 1",
+     *                      type="text",
+     *
+     *                   ),
+     *
+     *                   ),
+     *               ),
+     *
+     *         ),
+     *
+     *
+     *
+     *      @OA\Response(
+     *          response=204,
+     *          description="Successful operation with no content",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function deviceStatusUpdate(Request $request)
+    {
+        # code...
+        $request->validate([
+            'id'  => 'required|exists:devices,id',
+            'status' => 'required|boolean'
+        ]);
+
+        $post = Device::findOrFail($request->id);
+
+        try {
+            $post->status = $request->status;
+            $post->save();
+            activity('Device')
+            ->causedBy(auth()->user())
+            ->performedOn($post)
+            ->log('Device Status Updated!!');
+            return $this->sendResponse([], $this->updateSuccessMessage, 200);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
