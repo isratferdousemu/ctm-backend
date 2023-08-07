@@ -19,6 +19,607 @@
         }
     ],
     "paths": {
+        "/admin/lookup/get": {
+            "get": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": "get paginated Lookup",
+                "description": "get paginated Lookup",
+                "operationId": "getAllLookupPaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of lookup per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/lookup/insert": {
+            "post": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": "insert a lookup",
+                "description": "insert a lookup",
+                "operationId": "insertlookup",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "insert type",
+                                        "type": "integer"
+                                    },
+                                    "value_en": {
+                                        "description": "insert value in english",
+                                        "type": "text"
+                                    },
+                                    "value_bn": {
+                                        "description": "insert value in bangla",
+                                        "type": "text"
+                                    },
+                                    "keyword": {
+                                        "description": "insert Keyword of Lookup",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/lookup/update": {
+            "post": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": "update a Lookup",
+                "description": "update a lookup",
+                "operationId": "lookupUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the lookup",
+                                        "type": "integer"
+                                    },
+                                    "type": {
+                                        "description": "type of the Lookup",
+                                        "type": "integer"
+                                    },
+                                    "value_en": {
+                                        "description": "english name of the Lookup",
+                                        "type": "text"
+                                    },
+                                    "value_bn": {
+                                        "description": "bangla name of the lookup",
+                                        "type": "text"
+                                    },
+                                    "keyword": {
+                                        "description": "keyword of the Lookup",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/lookup/get/{type}": {
+            "get": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": " get lookup by type",
+                "description": "get lookup by type",
+                "operationId": "getAllLookupByType",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "path",
+                        "description": "type of lookup to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/device/get": {
+            "get": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": "get paginated device",
+                "description": "get paginated device",
+                "operationId": "getAllDevicePaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by user ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of device per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/device/insert": {
+            "post": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": "insert a device",
+                "description": "insert a device",
+                "operationId": "insertDevice",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "description": "user id of the device user",
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "description": "user name",
+                                        "type": "text"
+                                    },
+                                    "device_name": {
+                                        "description": "device name",
+                                        "type": "text"
+                                    },
+                                    "device_id": {
+                                        "description": "browser fingerprint of the user",
+                                        "type": "text"
+                                    },
+                                    "ip_address": {
+                                        "description": "IP address of the user",
+                                        "type": "text"
+                                    },
+                                    "device_type": {
+                                        "description": "Device type of the user",
+                                        "type": "text"
+                                    },
+                                    "purpose_use": {
+                                        "description": "purpose of the user device",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/device/update": {
+            "post": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": "update a device",
+                "description": "update a device",
+                "operationId": "deviceUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the device",
+                                        "type": "integer"
+                                    },
+                                    "user_id": {
+                                        "description": "user id of the device user",
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "description": "user name",
+                                        "type": "text"
+                                    },
+                                    "device_name": {
+                                        "description": "device name",
+                                        "type": "text"
+                                    },
+                                    "device_id": {
+                                        "description": "browser fingerprint of the user",
+                                        "type": "text"
+                                    },
+                                    "ip_address": {
+                                        "description": "IP address of the user",
+                                        "type": "text"
+                                    },
+                                    "device_type": {
+                                        "description": "Device type of the user",
+                                        "type": "text"
+                                    },
+                                    "purpose_use": {
+                                        "description": "purpose of the user device",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/device/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": " destroy device",
+                "description": "Returns device destroy by id",
+                "operationId": "destroyDevice",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of device to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/device/status": {
+            "post": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": "update publish status of a device",
+                "description": "update publish status of a device",
+                "operationId": "deviceStatusUpdate",
+                "requestBody": {
+                    "description": "update the device",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the device",
+                                        "type": "text"
+                                    },
+                                    "status": {
+                                        "description": "status or not.boolean 0 or 1",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/division/get": {
             "get": {
                 "tags": [

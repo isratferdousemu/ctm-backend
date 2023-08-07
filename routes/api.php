@@ -12,15 +12,9 @@ Route::prefix('v1')->group(function () {
     include "Admin/AdminRoute.php";
     include "Global/PushNotification.php";
     include "Global/public.php";
-    /* -------------------------------------------------------------------------- */
-    /*                         system configuration routes                        */
-    /* -------------------------------------------------------------------------- */
     include "Admin/SystemConfig/LocationRoute.php";
     include "Admin/SystemConfig/UserRoutes.php";
     include "Admin/SystemConfig/SystemConfigRoute.php";
-    /* -------------------------------------------------------------------------- */
-    /*                         Admin routes                        */
-    /* -------------------------------------------------------------------------- */
 
 });
 
