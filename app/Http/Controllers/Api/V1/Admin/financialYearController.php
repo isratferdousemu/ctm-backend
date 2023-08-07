@@ -9,6 +9,8 @@ use App\Http\Services\Admin\Systemconfig\SystemconfigService;
 use App\Http\Traits\MessageTrait;
 use App\Models\FinancialYear;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class financialYearController extends Controller
 {
@@ -155,5 +157,65 @@ class financialYearController extends Controller
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/admin/financial-year/destroy/{id}",
+     *      operationId="destroyFinancial",
+     *      tags={"ADMIN-FINANCIAL-YEAR"},
+     *      summary=" destroy financial-year",
+     *      description="Returns financial-year destroy by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of financial-year to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+    public function destroyFinancial($id)
+    {
+
+
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:financial_years,id,deleted_at,NULL',
+        ]);
+
+        $validator->validated();
+
+        $financial_years = FinancialYear::whereId($id)->whereStatus(0)->first();
+        if($financial_years){
+            $financial_years->delete();
+        }
+        activity("Financial-Year")
+        ->causedBy(auth()->user())
+        ->log('Financial Year Deleted!!');
+         return $this->sendResponse($financial_years, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 }

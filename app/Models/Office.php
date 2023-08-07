@@ -44,6 +44,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $officeAddress
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property-read \App\Models\Location|null $district
+ * @property-read \App\Models\Location|null $division
+ * @property-read \App\Models\Location|null $thana
  * @mixin \Eloquent
  */
 class Office extends Model

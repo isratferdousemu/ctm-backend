@@ -51,8 +51,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
         Route::post('/insert', [financialYearController::class, 'insertFinancialYear'])->middleware(['role_or_permission:super-admin|financial-year-create']);
         Route::get('/get',[financialYearController::class, 'getFinancialPaginated'])->middleware(['role_or_permission:super-admin|financial-year-view']);
-        // Route::post('/update', [SystemconfigController::class, 'FinancialUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
-        // Route::get('/destroy/{id}', [SystemconfigController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        Route::get('/destroy/{id}', [financialYearController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|financial-year-destroy']);
     });
 
 

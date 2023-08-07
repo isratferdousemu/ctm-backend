@@ -34,6 +34,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $serviceType
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property int $version
+ * @property-read \App\Models\Lookup|null $lookup
+ * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram whereVersion($value)
  * @mixin \Eloquent
  */
 class AllowanceProgram extends Model
