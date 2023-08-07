@@ -10,6 +10,8 @@ use App\Http\Services\Admin\Device\DeviceService;
 use App\Http\Traits\MessageTrait;
 use App\Models\Device;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class DeviceController extends Controller
 {
@@ -319,6 +321,66 @@ class DeviceController extends Controller
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/admin/device/destroy/{id}",
+     *      operationId="destroyDevice",
+     *      tags={"DEVICE"},
+     *      summary=" destroy device",
+     *      description="Returns device destroy by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of device to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+    public function destroyDevice($id)
+    {
+
+
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:devices,id',
+        ]);
+
+        $validator->validated();
+
+        $device = Device::whereId($id)->first();
+        if($device){
+            $device->delete();
+        }
+        activity("Device")
+        ->causedBy(auth()->user())
+        ->log('Device Deleted!!');
+         return $this->sendResponse($device, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
     /**
