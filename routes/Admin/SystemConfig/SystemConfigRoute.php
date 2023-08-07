@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\DeviceController;
 use App\Http\Controllers\Api\V1\Admin\OfficeController;
 use App\Http\Controllers\APi\V1\Admin\AdminController;
 use App\Http\Controllers\Api\V1\Admin\financialYearController;

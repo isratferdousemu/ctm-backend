@@ -22,7 +22,7 @@ class FinancialRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'financial_year'         => 'required|string|max:60',
+            'financial_year'         => 'required|string|max:60|unique:financial_years,financial_year',
         ];
     }
 }

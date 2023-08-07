@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Admin\Systemconfig;
 
+use App\Helpers\Helper;
 use App\Models\Office;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -81,6 +82,7 @@ class SystemconfigService
             $financial->financial_year         = $financialYear;
             $financial->start_date             = $startDate;
             $financial->end_date               = $lastDate;
+            $financial->status               = Helper::FinancialYear()==$financialYear ? true:false;
             $financial->version                = $financial->version+1;
             $financial ->save();
             DB::commit();

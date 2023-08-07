@@ -24,6 +24,13 @@ class Helper{
         $fourDigitNumber = random_int(1000, 9999);
         return $fourDigitNumber;
     }
+    public static function FinancialYear(){
+        $currentDate = now();
+        $startOfFinancialYear = $currentDate->month >= 4 ? $currentDate->year : $currentDate->year - 1;
+        $endOfFinancialYear = $startOfFinancialYear + 1;
+
+        return "{$startOfFinancialYear}-{$endOfFinancialYear}";
+    }
 
     // public static function generateOtpCode($user, $time)
     // {
