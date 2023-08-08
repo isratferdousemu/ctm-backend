@@ -32,14 +32,4 @@ class Helper{
         return "{$startOfFinancialYear}-{$endOfFinancialYear}";
     }
 
-    // public static function generateOtpCode($user, $time)
-    // {
-    //     Cache::forget(self::userLoginOtpPrefix . $user->id);
-    //     //generate code
-    //     $code =  mt_rand(100000, 999999);
-    //     //put them in cache
-    //     Cache::put(self::userLoginOtpPrefix . $user->id, $code, now()->addMinutes($time));
-    //     //return generated code
-    //     return $code;
-    // }
 }

@@ -65,6 +65,7 @@ trait MessageTrait
     private $authInvalidCodeTextErrorCode = 'invalid_code';
 
     private $userLoginOtpPrefix = "user_login_otp_";
+    private $userForgotOtpPrefix = "user_forgot_otp_";
 
     private $authUserAccountNotPendingTextErrorCode = 'user_account_not_pending';
 

@@ -64,6 +64,32 @@ class AuthService
         return $key;
     }
 
+    public function validatePhone(Request $request)
+    {
+
+        $request->validate(
+            [
+                'phone'      => 'required|exists:users,mobile',
+            ],
+            [
+                'phone.exists'     => 'This phone does not match our database record!',
+            ]
+        );
+    }
+    public function validatePasswordPhone(Request $request)
+    {
+
+        $request->validate(
+            [
+                'phone'      => 'required|exists:users,mobile',
+                'password'      => 'required|min:6',
+                'confirm_password'      => 'required|same:password',
+            ],
+            [
+                'phone.exists'     => 'This phone does not match our database record!',
+            ]
+        );
+    }
     public function validateLogin(Request $request)
     {
 
@@ -122,6 +148,30 @@ class AuthService
          ->log('User Blocked For Attempt Many time!!');
     }
 
+    public function AdminForgotPassword(Request $request){
+        $user = User::whereMobile($request->phone)->first();
+        return $otp = $this->sendLoginOtp($user,5);
+
+    }
+    public function AdminForgotPasswordSubmit(Request $request){
+        $user = User::whereMobile($request->phone)->first();
+        $code = $request->otp;
+        $cachedCode = Cache::get($this->userLoginOtpPrefix . $user->id);
+        if (!$cachedCode || $code != $cachedCode) {
+            throw new AuthBasicErrorException(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                'verify_failed',
+                "Verification code invalid !",
+            );
+        }
+        $user->password=Hash::make($request->password);
+        $user->save();
+        $cachedCode = Cache::forget($this->userLoginOtpPrefix . $user->id);
+
+        return $user;
+
+    }
+
     public function Adminlogin(Request $request,$type=1)
     {
 
@@ -157,7 +207,7 @@ class AuthService
             if ($authCode == $this->authSuccessCode) {
                 $this->clearLoginAttempts($request);
                 if($type==1){
-                    return $otp = $this->sendLoginOtp($user);
+                    return $otp = $this->sendLoginOtp($user,1);
                 }
                 if($type==2){
                     // check OTP
@@ -205,9 +255,9 @@ class AuthService
         //return generated code
         return $code;
     }
-    protected function sendLoginOtp($user){
+    protected function sendLoginOtp($user,$time){
 
-        return $code = $this->generateOtpCode($user, 1);
+        return $code = $this->generateOtpCode($user, $time);
     }
 
     public function logout(Request $request)

@@ -98,8 +98,6 @@ class financialYearController extends Controller
      *       @OA\RequestBody(
      *          required=true,
      *          description="enter inputs",
-     *
-     *
      *            @OA\MediaType(
      *              mediaType="multipart/form-data",
      *           @OA\Schema(
@@ -107,12 +105,9 @@ class financialYearController extends Controller
      *                      property="financial_year",
      *                      description="financial year. ex: 2023-2024",
      *                      type="text",
-     *
      *                   ),
-     *
      *                 ),
      *             ),
-     *
      *         ),
      *
      *      @OA\Response(
@@ -140,7 +135,6 @@ class financialYearController extends Controller
      *          )
      *        )
      *     )
-     *
      */
     public function insertFinancialYear(FinancialRequest $request){
 

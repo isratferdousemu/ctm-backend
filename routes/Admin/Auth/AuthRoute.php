@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 
 Route::controller(AuthController::class)->group(function () {
         //login
+        Route::post('admin/forgot-password', 'forgotPassword');
+        Route::post('admin/forgot-password/submit', 'forgotPasswordSubmit');
         Route::post('admin/login/otp', 'LoginOtp');
         Route::post('admin/login', 'LoginAdmin');
         //check token
