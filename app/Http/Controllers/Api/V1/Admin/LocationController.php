@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\Geographic\District\DistrictUpdateRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionRequest;
 use App\Http\Requests\Admin\Geographic\Division\DivisionUpdateRequest;
 use App\Http\Requests\Admin\Geographic\Thana\ThanaRequest;
+use App\Http\Requests\Admin\Geographic\Thana\ThanaUpdateRequest;
 use App\Http\Requests\Admin\Geographic\Uinion\UnionRequest;
 use App\Http\Requests\Admin\Geographic\Uinion\UnionUpdateRequest;
 use App\Http\Requests\Admin\Geographic\Village\VillageRequest;
@@ -1169,7 +1170,7 @@ class LocationController extends Controller
               ->orWhere($filterArrayCode);
     })
     ->whereType($this->thana)
-    ->with('parent.parent')
+    ->with('parent.parent','locationType')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
     return CityResource::collection($thana)->additional([
@@ -1271,6 +1272,11 @@ class LocationController extends Controller
      *                      type="text",
      *                   ),
      *                   @OA\Property(
+     *                      property="location_type",
+     *                      description="if fo the location type ",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
      *                      property="code",
      *                      description="code of the city",
      *                      type="text",
@@ -1316,7 +1322,7 @@ class LocationController extends Controller
             ->causedBy(auth()->user())
             ->performedOn($thana)
             ->log('Thana Created !');
-            return CityResource::make($thana->load('parent.parent'))->additional([
+            return CityResource::make($thana->load('parent.parent','locationType'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
             ]);
@@ -1374,6 +1380,11 @@ class LocationController extends Controller
      *                      description="code of the thana",
      *                      type="text",
      *                   ),
+     *                   @OA\Property(
+     *                      property="location_type",
+     *                      description="if fo the location type ",
+     *                      type="text",
+     *                   ),
      *
      *                 ),
      *             ),
@@ -1407,10 +1418,10 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function thanaUpdate(CityUpdateRequest $request){
+    public function thanaUpdate(ThanaUpdateRequest $request){
 
         try {
-            $thana = $this->locationService->updateCity($request);
+            $thana = $this->locationService->updateThana($request);
             activity("Thana")
             ->causedBy(auth()->user())
             ->performedOn($thana)

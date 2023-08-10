@@ -108,7 +108,7 @@ class AdminController extends Controller
 
      /**
      * @OA\Get(
-     *      path="/admin/lookup/get/{id}",
+     *      path="/admin/lookup/get/{type}",
      *      operationId="getLookupByType",
      *      tags={"SYSTEM-OFFICE MANAGEMENT"},
      *      summary="get lookup by type",
