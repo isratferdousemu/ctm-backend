@@ -25,7 +25,7 @@ class LookupUpdateRequest extends FormRequest
             'type'             => 'required|integer',
             'value_en'         => 'required|string|max:50',
             'value_bn'         => 'required|string|max:50',
-            'keyword'          => 'sometimes|string|max:120,Null',
+            'keyword'          => 'sometimes',
         ];
     }
 }
