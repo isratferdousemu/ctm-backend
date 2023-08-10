@@ -24,7 +24,7 @@ class OfficeController extends Controller
     * @OA\Get(
     *     path="/admin/office/get",
     *      operationId="getAllOfficePaginated",
-    *      tags={"SySTEM-OFFICE MANAGEMENT"},
+    *      tags={"SYSTEM-OFFICE MANAGEMENT"},
     *      summary="get paginated Offices",
     *      description="get paginated Offices",
     *      security={{"bearer_token":{}}},
@@ -112,7 +112,7 @@ class OfficeController extends Controller
      * @OA\Post(
      *      path="/admin/office/insert",
      *      operationId="insertOffice",
-     *      tags={"SySTEM-OFFICE MANAGEMENT"},
+     *      tags={"SYSTEM-OFFICE MANAGEMENT"},
      *      summary="insert a office",
      *      description="insert a office",
      *      security={{"bearer_token":{}}},
@@ -232,7 +232,7 @@ class OfficeController extends Controller
      * @OA\Post(
      *      path="/admin/office/update",
      *      operationId="officeUpdate",
-     *      tags={"SySTEM-OFFICE MANAGEMENT"},
+     *      tags={"SYSTEM-OFFICE MANAGEMENT"},
      *      summary="update a office",
      *      description="updatet a office",
      *      security={{"bearer_token":{}}},
@@ -362,7 +362,7 @@ class OfficeController extends Controller
      * @OA\Get(
      *      path="/admin/office/destroy/{id}",
      *      operationId="destroyOffice",
-     *      tags={"SySTEM-OFFICE MANAGEMENT"},
+     *      tags={"SYSTEM-OFFICE MANAGEMENT"},
      *      summary=" destroy Office",
      *      description="Returns office destroy by id",
      *      security={{"bearer_token":{}}},

@@ -105,6 +105,61 @@ class AdminController extends Controller
         'message' => $this->fetchSuccessMessage,
     ]);
 }
+
+     /**
+     * @OA\Get(
+     *      path="/admin/lookup/get/{id}",
+     *      operationId="getLookupByType",
+     *      tags={"SYSTEM-OFFICE MANAGEMENT"},
+     *      summary="get lookup by type",
+     *      description="get lookup by type",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="type of lookup to return",
+     *         in="path",
+     *         name="type",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+     public function getLookupByType($type){
+        $validator = Validator::make(['type' => $type], [
+            'type' => 'required|exists:lookups,type',
+        ]);
+
+        $validator->validated();
+        $lookup = Lookup::whereType($type)->get();
+        return LookupResource::collection($lookup)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+     }
+
     /**
      *
      * @OA\Post(
