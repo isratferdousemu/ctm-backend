@@ -26,11 +26,10 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
     Route::prefix('admin/lookup')->group(function () {
 
-        Route::post('/get/{type}', [AdminController::class, 'getLookupByType']);
         Route::post('/insert', [AdminController::class, 'insertlookup'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::get('/get',[AdminController::class, 'getAllLookupPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::post('/update', [AdminController::class, 'LookupUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
-        Route::get('/get/{type}',[AdminController::class, 'getAllLookupByType'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/get/{type}',[AdminController::class, 'getAllLookupByType']);
         Route::get('/destroy/{id}', [AdminController::class, 'destroyLookup'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
     /* -------------------------------------------------------------------------- */
