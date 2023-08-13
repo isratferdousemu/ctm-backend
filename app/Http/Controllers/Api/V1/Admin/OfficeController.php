@@ -358,6 +358,59 @@ class OfficeController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+        /**
+     * @OA\Get(
+     *      path="/admin/office/get/{district_id}",
+     *      operationId="getAllOfficeByDistrictId",
+     *     tags={"SySTEM-OFFICE MANAGEMENT"},
+     *      summary=" get office by district",
+     *      description="get office by district",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of district to return",
+     *         in="path",
+     *         name="district_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+ public function getAllOfficeByDistrictId($district_id){
+
+
+    $office = Office::wheredistrict_id($district_id)->get();
+
+    return OfficeResource::collection($office)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
+
      /**
      * @OA\Get(
      *      path="/admin/office/destroy/{id}",

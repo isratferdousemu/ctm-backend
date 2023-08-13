@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('division_id')->nullable();
             $table->unsignedInteger('district_id')->nullable();
             $table->unsignedInteger('thana_id')->nullable();
-            $table->string('username',50)->unique();
+            // $table->string('username',50)->unique();
             $table->string('full_name',50)->nullable();
             $table->string('email',30)->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();

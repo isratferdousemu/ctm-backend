@@ -377,6 +377,386 @@
                 ]
             }
         },
+        "/admin/committee/get": {
+            "get": {
+                "tags": [
+                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                ],
+                "summary": "get paginated Commitees with members",
+                "description": "get paginated Commitees",
+                "operationId": "getAllCommitteePaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of committee per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/committee/insert": {
+            "post": {
+                "tags": [
+                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                ],
+                "summary": "insert a Committee",
+                "description": "insert a Committee",
+                "operationId": "insertCommittee",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "code": {
+                                        "description": "insert code  of Committee",
+                                        "type": "text"
+                                    },
+                                    "name": {
+                                        "description": "insert Name  of Committee",
+                                        "type": "text"
+                                    },
+                                    "program_id": {
+                                        "description": "insert Program Id",
+                                        "type": "integer"
+                                    },
+                                    "details": {
+                                        "description": "insert Details ",
+                                        "type": "integer"
+                                    },
+                                    "division_id": {
+                                        "description": "insert division Id",
+                                        "type": "integer"
+                                    },
+                                    "district_id": {
+                                        "description": "insert district Id",
+                                        "type": "integer"
+                                    },
+                                    "office_id": {
+                                        "description": "insert office_id",
+                                        "type": "integer"
+                                    },
+                                    "location_id": {
+                                        "description": "insert location_id",
+                                        "type": "integer"
+                                    },
+                                    "members[0]['member_name]": {
+                                        "description": "insert memeber_name ",
+                                        "type": "text"
+                                    },
+                                    "members[0]['designation]": {
+                                        "description": "insert designation",
+                                        "type": "text"
+                                    },
+                                    "members[0]['address]": {
+                                        "description": "insert address",
+                                        "type": "text"
+                                    },
+                                    "members[0]['email]": {
+                                        "description": "email",
+                                        "type": "text"
+                                    },
+                                    "members[0]['phone]": {
+                                        "description": "phone",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/committee/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                ],
+                "summary": " destroy Committee",
+                "description": "Returns Committee destroy by id",
+                "operationId": "destroyCommittee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of Committee to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/committee/{id}": {
+            "get": {
+                "tags": [
+                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                ],
+                "summary": " get committee by id",
+                "description": "get committee by id",
+                "operationId": "editCommittee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of committee to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/committee/update": {
+            "post": {
+                "tags": [
+                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                ],
+                "summary": "update a committee",
+                "description": "updatet a committee",
+                "operationId": "committeeUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the Committee",
+                                        "type": "integer"
+                                    },
+                                    "code": {
+                                        "description": "Insert Code",
+                                        "type": "text"
+                                    },
+                                    "name": {
+                                        "description": "Insert Name",
+                                        "type": "text"
+                                    },
+                                    "program_id": {
+                                        "description": "Insert program_id",
+                                        "type": "integer"
+                                    },
+                                    "details": {
+                                        "description": "Insert details",
+                                        "type": "text"
+                                    },
+                                    "division_id": {
+                                        "description": "Insert division_id",
+                                        "type": "integer"
+                                    },
+                                    "district_id": {
+                                        "description": "Insert district_id",
+                                        "type": "integer"
+                                    },
+                                    "office_id": {
+                                        "description": "Insert office_id",
+                                        "type": "integer"
+                                    },
+                                    "location_id": {
+                                        "description": "insert location_id",
+                                        "type": "integer"
+                                    },
+                                    "members[0]['member_name]": {
+                                        "description": "insert memeber_name ",
+                                        "type": "text"
+                                    },
+                                    "members[0]['designation]": {
+                                        "description": "insert designation",
+                                        "type": "text"
+                                    },
+                                    "members[0]['address]": {
+                                        "description": "insert address",
+                                        "type": "text"
+                                    },
+                                    "members[0]['email]": {
+                                        "description": "email",
+                                        "type": "text"
+                                    },
+                                    "members[0]['phone]": {
+                                        "description": "phone",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/device/get": {
             "get": {
                 "tags": [
@@ -3109,6 +3489,53 @@
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/office/get/{district_id}": {
+            "get": {
+                "tags": [
+                    "SySTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": " get office by district",
+                "description": "get office by district",
+                "operationId": "getAllOfficeByDistrictId",
+                "parameters": [
+                    {
+                        "name": "district_id",
+                        "in": "path",
+                        "description": "id of district to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
                     },
                     "422": {
                         "description": "Unprocessable Entity"
