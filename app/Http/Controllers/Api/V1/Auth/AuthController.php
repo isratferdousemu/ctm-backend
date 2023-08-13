@@ -326,7 +326,7 @@ class AuthController extends Controller
          $authData = $this->authService->Adminlogin($request,2);
          $permissions = $authData['user']->getAllPermissions();
 
-         activity()
+         activity("Login OTP")
          ->causedBy(auth()->user())
          ->performedOn($authData['user'])
          ->log('Logged In!!');
