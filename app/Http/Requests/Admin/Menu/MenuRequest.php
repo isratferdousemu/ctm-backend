@@ -22,8 +22,8 @@ class MenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page_link_id' => 'required|integer|exists:permissions,id,deleted_at,NULL',
-            'parent_id' => 'required|integer|exists:menus,id,deleted_at,NULL',
+            'page_link_id' => 'required|integer|exists:permissions,id',
+            'parent_id' => 'sometimes|integer|exists:menus,id,deleted_at,NULL',
             'label_name_en' => 'required|string|max:50|unique:menus,label_name_en,NULL,id,deleted_at,NULL',
             'label_name_bn' => 'required|string|max:50|unique:menus,label_name_bn,NULL,id,deleted_at,NULL',
             'order' => 'required|string|max:6|unique:menus,order,NULL,id,deleted_at,NULL'

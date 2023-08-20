@@ -7,6 +7,39 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Models\Permission;
 
+/**
+ * App\Models\Menu
+ *
+ * @property int $id
+ * @property int $pageLinkId
+ * @property int|null $parentId
+ * @property string $labelNameEn
+ * @property string $labelNameBn
+ * @property int $order
+ * @property \Illuminate\Support\Carbon|null $deletedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Menu> $children
+ * @property-read int|null $childrenCount
+ * @property-read Permission $pageLink
+ * @property-read Menu|null $parent
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu whereLabelNameBn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu whereLabelNameEn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu wherePageLinkId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu whereParentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Menu extends Model
 {
     use HasFactory,SoftDeletes;

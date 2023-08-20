@@ -8,6 +8,7 @@ use App\Http\Resources\Admin\Menu\MenuResource;
 use App\Http\Services\Admin\Menu\MenuService;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\UserTrait;
+use App\Models\Menu;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -18,6 +19,69 @@ class MenuController extends Controller
     public function __construct(MenuService $MenuService) {
         $this->MenuService = $MenuService;
     }
+
+    /**
+    * @OA\Get(
+    *     path="/admin/menu/get",
+    *      operationId="getAllMenu",
+    *      tags={"MENU-MANAGEMENT"},
+    *      summary="get all menus",
+    *      description="get all menus",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="searchText",
+    *         in="query",
+    *         description="search by name",
+    *         @OA\Schema(type="string")
+    *     ),
+    *     @OA\Parameter(
+    *         name="perPage",
+    *         in="query",
+    *         description="number of division per page",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         description="page number",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getAllMenu(Request $request){
+
+
+    $menus = Menu::with("pageLink","children")->whereParentId(null)->get();
+
+    return MenuResource::collection($menus)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
 
     /**
      *

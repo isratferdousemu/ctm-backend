@@ -78,7 +78,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
     Route::prefix('admin/menu')->group(function () {
 
         Route::post('/insert', [MenuController::class, 'insertMenu'])->middleware(['role_or_permission:super-admin|menu-create']);
-        // Route::get('/get',[financialYearController::class, 'getFinancialPaginated'])->middleware(['role_or_permission:super-admin|financial-year-view']);
+        Route::get('/get',[MenuController::class, 'getAllMenu']);
         // Route::get('/destroy/{id}', [financialYearController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|financial-year-destroy']);
     });
 
