@@ -3247,6 +3247,81 @@
                 ]
             }
         },
+        "/admin/menu/insert": {
+            "post": {
+                "tags": [
+                    "MENU-MANAGEMENT"
+                ],
+                "summary": "insert a menu",
+                "description": "insert a menu",
+                "operationId": "insertMenu",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "label_name_en": {
+                                        "description": "english name of the menu",
+                                        "type": "text"
+                                    },
+                                    "label_name_bn": {
+                                        "description": "bangla name of the menu",
+                                        "type": "text"
+                                    },
+                                    "order": {
+                                        "description": "sl of the menu",
+                                        "type": "integer"
+                                    },
+                                    "page_link_id": {
+                                        "description": "page link id",
+                                        "type": "integer"
+                                    },
+                                    "parent_id": {
+                                        "description": "parent menu id",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/office/get": {
             "get": {
                 "tags": [

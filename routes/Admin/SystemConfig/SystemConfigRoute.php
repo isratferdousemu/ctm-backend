@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Admin\DeviceController;
 use App\Http\Controllers\Api\V1\Admin\OfficeController;
 use App\Http\Controllers\APi\V1\Admin\AdminController;
 use App\Http\Controllers\Api\V1\Admin\financialYearController;
+use App\Http\Controllers\Api\V1\Admin\MenuController;
 use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
        Route::middleware('auth:sanctum')->group(function () {
@@ -57,6 +58,9 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::get('/destroy/{id}', [financialYearController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|financial-year-destroy']);
     });
 
+    /* -------------------------------------------------------------------------- */
+    /*                          Device management Routes                          */
+    /* -------------------------------------------------------------------------- */
 
     Route::prefix('admin/device')->group(function () {
         Route::post('/status', [DeviceController::class, 'deviceStatusUpdate'])->middleware(['role_or_permission:super-admin|device-edit']);
@@ -64,6 +68,18 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::get('/get',[DeviceController::class, 'getAllDevicePaginated'])->middleware(['role_or_permission:super-admin|device-list']);
         Route::post('/update', [DeviceController::class, 'deviceUpdate'])->middleware(['role_or_permission:super-admin|device-update']);
         Route::get('/destroy/{id}', [DeviceController::class, 'destroyDevice'])->middleware(['role_or_permission:super-admin|device-destroy']);
+    });
+
+
+    /* -------------------------------------------------------------------------- */
+    /*                           Menu Management Routes                           */
+    /* -------------------------------------------------------------------------- */
+
+    Route::prefix('admin/menu')->group(function () {
+
+        Route::post('/insert', [MenuController::class, 'insertMenu'])->middleware(['role_or_permission:super-admin|menu-create']);
+        // Route::get('/get',[financialYearController::class, 'getFinancialPaginated'])->middleware(['role_or_permission:super-admin|financial-year-view']);
+        // Route::get('/destroy/{id}', [financialYearController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|financial-year-destroy']);
     });
 
 
