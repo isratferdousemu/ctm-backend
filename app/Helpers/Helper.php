@@ -1,9 +1,12 @@
 <?php
 namespace App\Helpers;
 
+use App\Http\Traits\MessageTrait;
+use Cache;
 use Illuminate\Support\Str;
 
 class Helper{
+    use MessageTrait;
 
     public static function GeneratePassword()
     {
@@ -21,4 +24,12 @@ class Helper{
         $fourDigitNumber = random_int(1000, 9999);
         return $fourDigitNumber;
     }
+    public static function FinancialYear(){
+        $currentDate = now();
+        $startOfFinancialYear = $currentDate->month >= 4 ? $currentDate->year : $currentDate->year - 1;
+        $endOfFinancialYear = $startOfFinancialYear + 1;
+
+        return "{$startOfFinancialYear}-{$endOfFinancialYear}";
+    }
+
 }

@@ -19,7 +19,7 @@ class CauserResource extends JsonResource
             'full_name'                 => $this->full_name,
             'user_type'                  => $this->user_type,
             'email'                  => $this->email,
-            'branch_id'                  => $this->branch_id,
+            'user_id'                  => $this->user_id,
             'created_at'            => $this->created_at
         ];
     }

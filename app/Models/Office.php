@@ -44,9 +44,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $officeAddress
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property-read \App\Models\Location|null $district
+ * @property-read \App\Models\Location|null $division
+ * @property-read \App\Models\Location|null $thana
  * @mixin \Eloquent
  */
 class Office extends Model
 {
-    use HasFactory;
+
+    public function division()
+    {
+        return $this->belongsTo(Location::class,'division_id');
+    }
+    public function district()
+    {
+        return $this->belongsTo(Location::class,'district_id');
+    }
+    public function thana()
+    {
+        return $this->belongsTo(Location::class,'thana_id');
+    }
 }

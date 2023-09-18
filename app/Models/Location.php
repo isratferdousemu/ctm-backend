@@ -54,6 +54,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Location> $children
  * @property-read int|null $childrenCount
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Location> $children
+ * @property int|null $locationType
+ * @property-read \App\Models\Lookup|null $locationType
+ * @method static \Illuminate\Database\Eloquent\Builder|Location whereLocationType($value)
  * @mixin \Eloquent
  */
 class Location extends Model
@@ -73,4 +76,10 @@ class Location extends Model
     {
         return $this->belongsTo(Location::class, 'parent_id');
     }
+    public function locationType()
+    {
+        return $this->belongsTo(Lookup::class, 'location_type');
+    }
+
+
 }

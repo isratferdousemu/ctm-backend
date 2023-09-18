@@ -20,7 +20,7 @@ class ActivityResource extends JsonResource
             'log_name'            => $this->log_name,
             'subject'            => $this->subject,
             'causer'                  => CauserResource::make($this->whenLoaded('causer')),
-            'created_at'            => $this->created_at,
+            'created_at'            => $this->created_at->diffForHumans(),
         ];
     }
 }
