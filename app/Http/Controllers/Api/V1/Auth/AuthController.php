@@ -29,11 +29,159 @@ class AuthController extends Controller
         // $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
         // $this->middleware('permission:user-delete', ['only' => ['destroy']]);
     }
+
     /**
      *
      * @OA\Post(
-     *      path="/admin/login",
-     *      operationId="LoginAdmin",
+     *      path="/admin/forgot-password",
+     *      operationId="forgotPassword",
+     *      tags={"Auth"},
+     *      summary="forgot-password to the Application",
+     *      description="forgot-password to the application",
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="Pass user credentials",
+     *           @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *
+     *                   @OA\Property(
+     *                      property="phone",
+     *                      description="user phone number",
+     *                      type="string",
+     *                   ),
+     *               ),
+     *               ),
+     *
+     *         ),
+     *
+     *
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+     public function forgotPassword(Request $request)
+     {
+
+         //validate login
+         $this->authService->validatePhone($request);
+         //forgot password
+         $data = $this->authService->AdminForgotPassword($request);
+
+         activity("Forgot")
+         ->log('Forgot Password OTP Send!!');
+
+         return response()->json(['success' => true, 'message' => 'Verification OTP Sent!', 'data' => $data]);
+
+     }
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/forgot-password/submit",
+     *      operationId="forgotPasswordSubmit",
+     *      tags={"Auth"},
+     *      summary="forgot-password submit to the Application",
+     *      description="forgot-password submit to the application",
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="Pass user credentials",
+     *           @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *
+     *                   @OA\Property(
+     *                      property="phone",
+     *                      description="user phone number",
+     *                      type="string",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="otp",
+     *                      description="otp number",
+     *                      type="string",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="password",
+     *                      description="new password",
+     *                      type="string",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="confirm_password",
+     *                      description="confirm password",
+     *                      type="string",
+     *                   ),
+     *               ),
+     *               ),
+     *
+     *         ),
+     *
+     *
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+     public function forgotPasswordSubmit(Request $request)
+     {
+
+         //validate request
+         $this->authService->validatePasswordPhone($request);
+         //forgot password submit
+         $data = $this->authService->AdminForgotPasswordSubmit($request);
+
+         activity("Forgot")
+         ->log('Forgot Password Successfully!!');
+
+         return response()->json(['success' => true, 'message' => 'Forgot Password Successfully!', 'data' => $data]);
+
+     }
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/login/otp",
+     *      operationId="LoginOtp",
      *      tags={"Auth"},
      *      summary="Login to the Application",
      *      description="login to the application",
@@ -88,17 +236,97 @@ class AuthController extends Controller
      *
      */
 
-     public function LoginAdmin(Request $request)
+     public function LoginOtp(Request $request)
      {
+
+         //validate login
+         $this->authService->validateLogin($request);
+         //login
+         $data = $this->authService->Adminlogin($request,1);
+
+         activity("Login")
+         ->log('Login OTP Send!!');
+
+         return response()->json(['success' => true, 'message' => 'Verification OTP Sent!', 'data' => $data]);
+
+     }
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/login",
+     *      operationId="LoginAdmin",
+     *      tags={"Auth"},
+     *      summary="Login to the Application",
+     *      description="login to the application",
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="Pass user credentials",
+     *           @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *
+     *                   @OA\Property(
+     *                      property="device_token",
+     *                      description="Browser Fingerprint",
+     *                      type="string",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="otp",
+     *                      description="OTP code",
+     *                      type="string",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="email",
+     *                      description="user email",
+     *                      type="string",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="password",
+     *                      description="password",
+     *                      type="text",
+     *                   ),
+     *
+     *               ),
+     *               ),
+     *
+     *         ),
+     *
+     *
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+     public function LoginAdmin(Request $request){
         broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
 
          //validate login
          $this->authService->validateLogin($request);
          //login
-         $authData = $this->authService->Adminlogin($request);
+         $authData = $this->authService->Adminlogin($request,2);
          $permissions = $authData['user']->getAllPermissions();
 
-         activity()
+         activity("Login OTP")
          ->causedBy(auth()->user())
          ->performedOn($authData['user'])
          ->log('Logged In!!');

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Admin\LocationController;
 use App\Http\Controllers\Api\V1\Admin\UserController;
 
 Route::middleware('auth:sanctum')->group(function () {

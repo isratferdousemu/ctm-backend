@@ -19,6 +19,1084 @@
         }
     ],
     "paths": {
+        "/admin/lookup/get": {
+            "get": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": "get paginated Lookup",
+                "description": "get paginated Lookup",
+                "operationId": "getAllLookupPaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of lookup per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/lookup/get/{type}": {
+            "get": {
+                "tags": [
+                    "SYSTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": "get lookup by type",
+                "description": "get lookup by type",
+                "operationId": "getLookupByType",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "path",
+                        "description": "type of lookup to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "LOOKUP-MANAGEMENT"
+                ],
+                "summary": "update a Lookup",
+                "description": "update a lookup",
+                "operationId": "getAllLookupByType",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "path",
+                        "description": "id of thana to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/lookup/insert": {
+            "post": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": "insert a lookup",
+                "description": "insert a lookup",
+                "operationId": "insertlookup",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "insert type",
+                                        "type": "integer"
+                                    },
+                                    "value_en": {
+                                        "description": "insert value in english",
+                                        "type": "text"
+                                    },
+                                    "value_bn": {
+                                        "description": "insert value in bangla",
+                                        "type": "text"
+                                    },
+                                    "keyword": {
+                                        "description": "insert Keyword of Lookup",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/lookup/update": {
+            "post": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": "update a Lookup",
+                "description": "update a lookup",
+                "operationId": "lookupUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the lookup",
+                                        "type": "integer"
+                                    },
+                                    "type": {
+                                        "description": "type of the Lookup",
+                                        "type": "integer"
+                                    },
+                                    "value_en": {
+                                        "description": "english name of the Lookup",
+                                        "type": "text"
+                                    },
+                                    "value_bn": {
+                                        "description": "bangla name of the lookup",
+                                        "type": "text"
+                                    },
+                                    "keyword": {
+                                        "description": "keyword of the Lookup",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/lookup/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "LOOKUP MANAGEMENT"
+                ],
+                "summary": " destroy lookups",
+                "description": "Returns lookup destroy by id",
+                "operationId": "destroyLookup",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of lookup to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/committee/get": {
+            "get": {
+                "tags": [
+                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                ],
+                "summary": "get paginated Commitees with members",
+                "description": "get paginated Commitees",
+                "operationId": "getAllCommitteePaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of committee per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/committee/insert": {
+            "post": {
+                "tags": [
+                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                ],
+                "summary": "insert a Committee",
+                "description": "insert a Committee",
+                "operationId": "insertCommittee",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "code": {
+                                        "description": "insert code  of Committee",
+                                        "type": "text"
+                                    },
+                                    "name": {
+                                        "description": "insert Name  of Committee",
+                                        "type": "text"
+                                    },
+                                    "program_id": {
+                                        "description": "insert Program Id",
+                                        "type": "integer"
+                                    },
+                                    "details": {
+                                        "description": "insert Details ",
+                                        "type": "integer"
+                                    },
+                                    "division_id": {
+                                        "description": "insert division Id",
+                                        "type": "integer"
+                                    },
+                                    "district_id": {
+                                        "description": "insert district Id",
+                                        "type": "integer"
+                                    },
+                                    "office_id": {
+                                        "description": "insert office_id",
+                                        "type": "integer"
+                                    },
+                                    "location_id": {
+                                        "description": "insert location_id",
+                                        "type": "integer"
+                                    },
+                                    "members[0]['member_name]": {
+                                        "description": "insert memeber_name ",
+                                        "type": "text"
+                                    },
+                                    "members[0]['designation]": {
+                                        "description": "insert designation",
+                                        "type": "text"
+                                    },
+                                    "members[0]['address]": {
+                                        "description": "insert address",
+                                        "type": "text"
+                                    },
+                                    "members[0]['email]": {
+                                        "description": "email",
+                                        "type": "text"
+                                    },
+                                    "members[0]['phone]": {
+                                        "description": "phone",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/committee/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                ],
+                "summary": " destroy Committee",
+                "description": "Returns Committee destroy by id",
+                "operationId": "destroyCommittee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of Committee to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/committee/{id}": {
+            "get": {
+                "tags": [
+                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                ],
+                "summary": " get committee by id",
+                "description": "get committee by id",
+                "operationId": "editCommittee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of committee to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/committee/update": {
+            "post": {
+                "tags": [
+                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                ],
+                "summary": "update a committee",
+                "description": "updatet a committee",
+                "operationId": "committeeUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the Committee",
+                                        "type": "integer"
+                                    },
+                                    "code": {
+                                        "description": "Insert Code",
+                                        "type": "text"
+                                    },
+                                    "name": {
+                                        "description": "Insert Name",
+                                        "type": "text"
+                                    },
+                                    "program_id": {
+                                        "description": "Insert program_id",
+                                        "type": "integer"
+                                    },
+                                    "details": {
+                                        "description": "Insert details",
+                                        "type": "text"
+                                    },
+                                    "division_id": {
+                                        "description": "Insert division_id",
+                                        "type": "integer"
+                                    },
+                                    "district_id": {
+                                        "description": "Insert district_id",
+                                        "type": "integer"
+                                    },
+                                    "office_id": {
+                                        "description": "Insert office_id",
+                                        "type": "integer"
+                                    },
+                                    "location_id": {
+                                        "description": "insert location_id",
+                                        "type": "integer"
+                                    },
+                                    "members[0]['member_name]": {
+                                        "description": "insert memeber_name ",
+                                        "type": "text"
+                                    },
+                                    "members[0]['designation]": {
+                                        "description": "insert designation",
+                                        "type": "text"
+                                    },
+                                    "members[0]['address]": {
+                                        "description": "insert address",
+                                        "type": "text"
+                                    },
+                                    "members[0]['email]": {
+                                        "description": "email",
+                                        "type": "text"
+                                    },
+                                    "members[0]['phone]": {
+                                        "description": "phone",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/device/get": {
+            "get": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": "get paginated device",
+                "description": "get paginated device",
+                "operationId": "getAllDevicePaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by user ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of device per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/device/insert": {
+            "post": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": "insert a device",
+                "description": "insert a device",
+                "operationId": "insertDevice",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "description": "user id of the device user",
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "description": "user name",
+                                        "type": "text"
+                                    },
+                                    "device_name": {
+                                        "description": "device name",
+                                        "type": "text"
+                                    },
+                                    "device_id": {
+                                        "description": "browser fingerprint of the user",
+                                        "type": "text"
+                                    },
+                                    "ip_address": {
+                                        "description": "IP address of the user",
+                                        "type": "text"
+                                    },
+                                    "device_type": {
+                                        "description": "Device type of the user",
+                                        "type": "text"
+                                    },
+                                    "purpose_use": {
+                                        "description": "purpose of the user device",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/device/update": {
+            "post": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": "update a device",
+                "description": "update a device",
+                "operationId": "deviceUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the device",
+                                        "type": "integer"
+                                    },
+                                    "user_id": {
+                                        "description": "user id of the device user",
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "description": "user name",
+                                        "type": "text"
+                                    },
+                                    "device_name": {
+                                        "description": "device name",
+                                        "type": "text"
+                                    },
+                                    "device_id": {
+                                        "description": "browser fingerprint of the user",
+                                        "type": "text"
+                                    },
+                                    "ip_address": {
+                                        "description": "IP address of the user",
+                                        "type": "text"
+                                    },
+                                    "device_type": {
+                                        "description": "Device type of the user",
+                                        "type": "text"
+                                    },
+                                    "purpose_use": {
+                                        "description": "purpose of the user device",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/device/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": " destroy device",
+                "description": "Returns device destroy by id",
+                "operationId": "destroyDevice",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of device to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/device/status": {
+            "post": {
+                "tags": [
+                    "DEVICE"
+                ],
+                "summary": "update publish status of a device",
+                "description": "update publish status of a device",
+                "operationId": "deviceStatusUpdate",
+                "requestBody": {
+                    "description": "update the device",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the device",
+                                        "type": "text"
+                                    },
+                                    "status": {
+                                        "description": "status or not.boolean 0 or 1",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/division/get": {
             "get": {
                 "tags": [
@@ -995,6 +2073,10 @@
                                         "description": "bangla name of the thana",
                                         "type": "text"
                                     },
+                                    "location_type": {
+                                        "description": "if fo the location type ",
+                                        "type": "text"
+                                    },
                                     "code": {
                                         "description": "code of the city",
                                         "type": "text"
@@ -1076,6 +2158,10 @@
                                     },
                                     "code": {
                                         "description": "code of the thana",
+                                        "type": "text"
+                                    },
+                                    "location_type": {
+                                        "description": "if fo the location type ",
                                         "type": "text"
                                     }
                                 },
@@ -2161,6 +3247,497 @@
                 ]
             }
         },
+        "/admin/menu/get": {
+            "get": {
+                "tags": [
+                    "MENU-MANAGEMENT"
+                ],
+                "summary": "get all menus",
+                "description": "get all menus",
+                "operationId": "getAllMenu",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/menu/insert": {
+            "post": {
+                "tags": [
+                    "MENU-MANAGEMENT"
+                ],
+                "summary": "insert a menu",
+                "description": "insert a menu",
+                "operationId": "insertMenu",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "label_name_en": {
+                                        "description": "english name of the menu",
+                                        "type": "text"
+                                    },
+                                    "label_name_bn": {
+                                        "description": "bangla name of the menu",
+                                        "type": "text"
+                                    },
+                                    "order": {
+                                        "description": "sl of the menu",
+                                        "type": "integer"
+                                    },
+                                    "page_link_id": {
+                                        "description": "page link id",
+                                        "type": "integer"
+                                    },
+                                    "parent_id": {
+                                        "description": "parent menu id",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/office/get": {
+            "get": {
+                "tags": [
+                    "SYSTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": "get paginated Offices",
+                "description": "get paginated Offices",
+                "operationId": "getAllOfficePaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/office/insert": {
+            "post": {
+                "tags": [
+                    "SYSTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": "insert a office",
+                "description": "insert a office",
+                "operationId": "insertOffice",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "division_id": {
+                                        "description": "insert Division Id",
+                                        "type": "integer"
+                                    },
+                                    "district_id": {
+                                        "description": "insert District Id",
+                                        "type": "integer"
+                                    },
+                                    "thana_id": {
+                                        "description": "insert Thana Id",
+                                        "type": "integer"
+                                    },
+                                    "office_type": {
+                                        "description": "insert office_type",
+                                        "type": "integer"
+                                    },
+                                    "name_en": {
+                                        "description": "insert name_en",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "insert name_en",
+                                        "type": "text"
+                                    },
+                                    "office_address": {
+                                        "description": "bangla name of office_address",
+                                        "type": "text"
+                                    },
+                                    "comment": {
+                                        "description": "comment",
+                                        "type": "text"
+                                    },
+                                    "status": {
+                                        "description": "status",
+                                        "type": "tinyInteger"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/office/update": {
+            "post": {
+                "tags": [
+                    "SYSTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": "update a office",
+                "description": "updatet a office",
+                "operationId": "officeUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the Office",
+                                        "type": "integer"
+                                    },
+                                    "division_id": {
+                                        "description": "insert Division Id",
+                                        "type": "integer"
+                                    },
+                                    "district_id": {
+                                        "description": "insert District Id",
+                                        "type": "integer"
+                                    },
+                                    "thana_id": {
+                                        "description": "insert Thana Id",
+                                        "type": "integer"
+                                    },
+                                    "office_type": {
+                                        "description": "insert office_type",
+                                        "type": "integer"
+                                    },
+                                    "name_en": {
+                                        "description": "insert name_en",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "insert name_en",
+                                        "type": "text"
+                                    },
+                                    "office_address": {
+                                        "description": "bangla name of office_address",
+                                        "type": "text"
+                                    },
+                                    "comment": {
+                                        "description": "comment",
+                                        "type": "text"
+                                    },
+                                    "status": {
+                                        "description": "status",
+                                        "type": "tinyInteger"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/office/get/{district_id}": {
+            "get": {
+                "tags": [
+                    "SySTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": " get office by district",
+                "description": "get office by district",
+                "operationId": "getAllOfficeByDistrictId",
+                "parameters": [
+                    {
+                        "name": "district_id",
+                        "in": "path",
+                        "description": "id of district to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/office/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "SYSTEM-OFFICE MANAGEMENT"
+                ],
+                "summary": " destroy Office",
+                "description": "Returns office destroy by id",
+                "operationId": "destroyOffice",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of office to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/role/all/filtered": {
             "get": {
                 "tags": [
@@ -2678,6 +4255,275 @@
                 ]
             }
         },
+        "/admin/allowance/get": {
+            "get": {
+                "tags": [
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
+                ],
+                "summary": "get paginated Allowances",
+                "description": "get paginated Allowances",
+                "operationId": "getAllallowancePaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/allowance/insert": {
+            "post": {
+                "tags": [
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
+                ],
+                "summary": "insert a allowance program",
+                "description": "insert a allowance program",
+                "operationId": "insertAllowance",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name_en": {
+                                        "description": "Insert allowance program  name in english",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "Insert allowance program  name in Bengali",
+                                        "type": "text"
+                                    },
+                                    "guideline": {
+                                        "description": "Insert allowance program  guideline",
+                                        "type": "text"
+                                    },
+                                    "description": {
+                                        "description": "Insert allowance program  description",
+                                        "type": "text"
+                                    },
+                                    "service_type": {
+                                        "description": "insert Service type of Allowance program",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/allowance/update": {
+            "post": {
+                "tags": [
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
+                ],
+                "summary": "update a office",
+                "description": "updatet a office",
+                "operationId": "allowanceUpdate",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id of the Allowance program",
+                                        "type": "integer"
+                                    },
+                                    "name_en": {
+                                        "description": "Insert allowance program  name in english",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "Insert allowance program  name in Bengali",
+                                        "type": "text"
+                                    },
+                                    "guideline": {
+                                        "description": "Insert allowance program  guideline",
+                                        "type": "text"
+                                    },
+                                    "description": {
+                                        "description": "Insert allowance program  description",
+                                        "type": "text"
+                                    },
+                                    "service_type": {
+                                        "description": "insert Service type of Allowance program",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/allowance/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
+                ],
+                "summary": " destroy Allowance programm",
+                "description": "Returns allowance destroy by id",
+                "operationId": "destroyAllowance",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of allowance to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/user/insert": {
             "post": {
                 "tags": [
@@ -2769,6 +4615,326 @@
                 ]
             }
         },
+        "/admin/financial-year/get": {
+            "get": {
+                "tags": [
+                    "ADMIN-FINANCIAL-YEAR"
+                ],
+                "summary": "get paginated financial-year",
+                "description": "get paginated financial-year",
+                "operationId": "getFinancialPaginated",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of financial-year per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/financial-year/insert": {
+            "post": {
+                "tags": [
+                    "ADMIN-FINANCIAL-YEAR"
+                ],
+                "summary": "insert a financial-year",
+                "description": "insert a financial-year",
+                "operationId": "insertFinancialYear",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "financial_year": {
+                                        "description": "financial year. ex: 2023-2024",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/financial-year/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "ADMIN-FINANCIAL-YEAR"
+                ],
+                "summary": " destroy financial-year",
+                "description": "Returns financial-year destroy by id",
+                "operationId": "destroyFinancial",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of financial-year to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/forgot-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "forgot-password to the Application",
+                "description": "forgot-password to the application",
+                "operationId": "forgotPassword",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "phone": {
+                                        "description": "user phone number",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
+        "/admin/forgot-password/submit": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "forgot-password submit to the Application",
+                "description": "forgot-password submit to the application",
+                "operationId": "forgotPasswordSubmit",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "phone": {
+                                        "description": "user phone number",
+                                        "type": "string"
+                                    },
+                                    "otp": {
+                                        "description": "otp number",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "new password",
+                                        "type": "string"
+                                    },
+                                    "confirm_password": {
+                                        "description": "confirm password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
+        "/admin/login/otp": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login to the Application",
+                "description": "login to the application",
+                "operationId": "LoginOtp",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "user email",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "password",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
         "/admin/login": {
             "post": {
                 "tags": [
@@ -2784,6 +4950,14 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
+                                    "device_token": {
+                                        "description": "Browser Fingerprint",
+                                        "type": "string"
+                                    },
+                                    "otp": {
+                                        "description": "OTP code",
+                                        "type": "string"
+                                    },
                                     "email": {
                                         "description": "user email",
                                         "type": "string"
@@ -3000,986 +5174,6 @@
                         "bearer_token": []
                     }
                 ]
-            }
-        },
-        "/admin/employee/department/all/filtered": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE"
-                ],
-                "summary": "get paginated employee department from database",
-                "description": "get paginated employee department from database",
-                "operationId": "getAllEmpDepPaginated",
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "searchText": {
-                                        "description": "search text for searching by employee department name",
-                                        "type": "text"
-                                    },
-                                    "perPage": {
-                                        "description": "number of employee department per page",
-                                        "type": "text"
-                                    },
-                                    "page": {
-                                        "description": "page number",
-                                        "type": "text"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/department/insert": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE"
-                ],
-                "summary": "insert a Employee Department",
-                "description": "insert a Employee Department",
-                "operationId": "InsertEmpDep",
-                "requestBody": {
-                    "description": "enter inputs",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "description": "name of the Employee Department",
-                                        "type": "text"
-                                    },
-                                    "description": {
-                                        "description": "description of the Employee Department",
-                                        "type": "text"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/department/update": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE"
-                ],
-                "summary": "update a employee department",
-                "description": "update a employee department",
-                "operationId": "UpdateEmpDep",
-                "requestBody": {
-                    "description": "enter inputs",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "description": "id of the employee department",
-                                        "type": "text"
-                                    },
-                                    "name": {
-                                        "description": "name of the employee department",
-                                        "type": "text"
-                                    },
-                                    "description": {
-                                        "description": "description of the employee department",
-                                        "type": "text"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/department/delete": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE"
-                ],
-                "summary": "delete a employee department",
-                "description": "delete a employee department",
-                "operationId": "DeleteEmpDep",
-                "requestBody": {
-                    "description": "enter inputs",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "description": "id of the employee department",
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/all/filtered": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE"
-                ],
-                "summary": "get paginated employees from database",
-                "description": "get paginated employees from database",
-                "operationId": "getAllEmployeePaginated",
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "searchText": {
-                                        "description": "search text for searching by employee department name",
-                                        "type": "text"
-                                    },
-                                    "branch_id": {
-                                        "description": "search employee for searching by employee branch ID",
-                                        "type": "integer"
-                                    },
-                                    "department_id": {
-                                        "description": "search employee for searching by employee department_id",
-                                        "type": "integer"
-                                    },
-                                    "employee_id": {
-                                        "description": "search employee for searching by employee employee_id",
-                                        "type": "text"
-                                    },
-                                    "perPage": {
-                                        "description": "number of employee department per page",
-                                        "type": "text"
-                                    },
-                                    "page": {
-                                        "description": "page number",
-                                        "type": "text"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/insert": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE"
-                ],
-                "summary": "insert a New Employee",
-                "description": "insert a New Employee",
-                "operationId": "InsertEmployee",
-                "requestBody": {
-                    "description": "enter inputs",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "full_name": {
-                                        "description": "name of the Employee",
-                                        "type": "text"
-                                    },
-                                    "branch_id": {
-                                        "description": "branch_id of the Employee",
-                                        "type": "integer"
-                                    },
-                                    "department_id": {
-                                        "description": "department_id of the Employee",
-                                        "type": "integer"
-                                    },
-                                    "email": {
-                                        "description": "email of the Employee",
-                                        "type": "text"
-                                    },
-                                    "phone": {
-                                        "description": "phone of the Employee",
-                                        "type": "integer"
-                                    },
-                                    "date_of_birth": {
-                                        "description": "date_of_birth of the Employee",
-                                        "type": "string",
-                                        "format": "date"
-                                    },
-                                    "join_date": {
-                                        "description": "join_date of the Employee",
-                                        "type": "string",
-                                        "format": "date"
-                                    },
-                                    "permanent_address": {
-                                        "description": "permanent_address of the Employee",
-                                        "type": "text"
-                                    },
-                                    "present_address": {
-                                        "description": "present_address of the Employee",
-                                        "type": "text"
-                                    },
-                                    "employee_shift_id": {
-                                        "description": "employee_shift_id of the Employee",
-                                        "type": "integer"
-                                    },
-                                    "gender": {
-                                        "description": "gender of the Employee",
-                                        "type": "text"
-                                    },
-                                    "salary": {
-                                        "description": "salary of the Employee",
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/update": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE"
-                ],
-                "summary": "update a employee",
-                "description": "update a employee",
-                "operationId": "UpdateEmployee",
-                "requestBody": {
-                    "description": "enter inputs",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "description": "id of the employee",
-                                        "type": "text"
-                                    },
-                                    "full_name": {
-                                        "description": "name of the Employee",
-                                        "type": "text"
-                                    },
-                                    "branch_id": {
-                                        "description": "branch_id of the Employee",
-                                        "type": "integer"
-                                    },
-                                    "department_id": {
-                                        "description": "department_id of the Employee",
-                                        "type": "integer"
-                                    },
-                                    "email": {
-                                        "description": "email of the Employee",
-                                        "type": "text"
-                                    },
-                                    "phone": {
-                                        "description": "phone of the Employee",
-                                        "type": "integer"
-                                    },
-                                    "date_of_birth": {
-                                        "description": "date_of_birth of the Employee",
-                                        "type": "string",
-                                        "format": "date"
-                                    },
-                                    "join_date": {
-                                        "description": "join_date of the Employee",
-                                        "type": "string",
-                                        "format": "date"
-                                    },
-                                    "permanent_address": {
-                                        "description": "permanent_address of the Employee",
-                                        "type": "text"
-                                    },
-                                    "present_address": {
-                                        "description": "present_address of the Employee",
-                                        "type": "text"
-                                    },
-                                    "employee_shift_id": {
-                                        "description": "employee_shift_id of the Employee",
-                                        "type": "integer"
-                                    },
-                                    "gender": {
-                                        "description": "gender of the Employee",
-                                        "type": "text"
-                                    },
-                                    "salary": {
-                                        "description": "salary of the Employee",
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/delete": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE"
-                ],
-                "summary": "delete a employee",
-                "description": "delete a employee",
-                "operationId": "DeleteEmployee",
-                "requestBody": {
-                    "description": "enter inputs",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "description": "id of the employee",
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/shift/all/filtered": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE-SHIFT"
-                ],
-                "summary": "get paginated employee shift from database",
-                "description": "get paginated employee shift from database",
-                "operationId": "getAllEmpShiftPaginated",
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "searchText": {
-                                        "description": "search text for searching by employee shift name",
-                                        "type": "text"
-                                    },
-                                    "perPage": {
-                                        "description": "number of employee shift per page",
-                                        "type": "text"
-                                    },
-                                    "page": {
-                                        "description": "page number",
-                                        "type": "text"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/shift/insert": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE-SHIFT"
-                ],
-                "summary": "insert a Employee Shift with Shift Details",
-                "operationId": "InsertEmpShift",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Shift name"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Shift name"
-                                    },
-                                    "type": {
-                                        "type": "string",
-                                        "example": "shift Type is : regular OR scheduled"
-                                    },
-                                    "start_at": {
-                                        "type": "string",
-                                        "example": "if type is regular start_at get value else null"
-                                    },
-                                    "end_at": {
-                                        "type": "string",
-                                        "example": "if type is regular end_at get value else null"
-                                    },
-                                    "weekdays": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "item_cost": {
-                                                    "type": "integer",
-                                                    "example": ""
-                                                },
-                                                "item_name": {
-                                                    "type": "string",
-                                                    "example": ""
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "example": [
-                                            {
-                                                "weekday": "sun",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 0
-                                            }
-                                        ]
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "not found"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/shift/update": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE-SHIFT"
-                ],
-                "summary": "update a employee shift",
-                "description": "update a employee shift",
-                "operationId": "UpdateEmpShift",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "example": "Shift id"
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Shift name"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Shift name"
-                                    },
-                                    "type": {
-                                        "type": "string",
-                                        "example": "shift Type is : regular OR scheduled"
-                                    },
-                                    "start_at": {
-                                        "type": "string",
-                                        "example": "if type is regular start_at get value else null"
-                                    },
-                                    "end_at": {
-                                        "type": "string",
-                                        "example": "if type is regular end_at get value else null"
-                                    },
-                                    "weekdays": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "item_cost": {
-                                                    "type": "integer",
-                                                    "example": ""
-                                                },
-                                                "item_name": {
-                                                    "type": "string",
-                                                    "example": ""
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "example": [
-                                            {
-                                                "weekday": "sun",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 0
-                                            },
-                                            {
-                                                "weekday": "mon",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 0
-                                            },
-                                            {
-                                                "weekday": "tue",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 0
-                                            },
-                                            {
-                                                "weekday": "wed",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 0
-                                            },
-                                            {
-                                                "weekday": "thu",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 0
-                                            },
-                                            {
-                                                "weekday": "fri",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 1
-                                            },
-                                            {
-                                                "weekday": "sat",
-                                                "start_at": "02:00",
-                                                "end_at": "02:00",
-                                                "is_weekend": 1
-                                            }
-                                        ]
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/employee/shift/delete": {
-            "post": {
-                "tags": [
-                    "EMPLOYEE-SHIFT"
-                ],
-                "summary": "delete a employee Shift",
-                "description": "delete a employee Shift",
-                "operationId": "DeleteEmpShift",
-                "requestBody": {
-                    "description": "enter inputs",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "description": "id of the employee shift",
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/global/bank/all/filtered": {
-            "post": {
-                "tags": [
-                    "GLOBAL"
-                ],
-                "summary": "get paginated bank from database",
-                "description": "get paginated bank from database",
-                "operationId": "getAllPublicBankPaginated",
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "searchText": {
-                                        "description": "search text for searching by bank name",
-                                        "type": "text"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                }
             }
         },
         "/notifications-system/save-token": {

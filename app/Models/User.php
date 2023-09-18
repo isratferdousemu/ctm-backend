@@ -94,6 +94,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property int|null $userId
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUserId($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable

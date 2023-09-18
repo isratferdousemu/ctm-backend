@@ -39,6 +39,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $purposeUse
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property string|null $deviceId
+ * @property string|null $ipAddress
+ * @property string|null $deviceDetails
+ * @property int $createdBy
+ * @property int $status
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereDeviceDetails($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereIpAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Device whereStatus($value)
  * @mixin \Eloquent
  */
 class Device extends Model

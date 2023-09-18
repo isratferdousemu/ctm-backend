@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin\Geographic;
 
+use App\Http\Resources\Admin\Lookup\LookupResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,6 +21,7 @@ class CityResource extends JsonResource
             'name_bn'              => $this->name_bn,
             'code'                 => $this->code,
             'district'  => DistrictResource::make($this->whenLoaded('parent')),
+            'locationType'  => LookupResource::make($this->whenLoaded('locationType')),
         ];
     }
 }

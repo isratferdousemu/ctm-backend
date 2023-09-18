@@ -22,6 +22,7 @@ class ThanaRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'location_type' => 'required|integer|exists:lookups,id',
             'division_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
             'district_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
             'name_en' => 'required|string|max:50|unique:locations,name_en,NULL,id,deleted_at,NULL',
