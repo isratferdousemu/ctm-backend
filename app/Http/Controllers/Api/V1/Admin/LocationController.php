@@ -343,7 +343,6 @@ class LocationController extends Controller
     public function destroyDivision($id)
     {
 
-
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:locations,id,deleted_at,NULL',
         ]);
