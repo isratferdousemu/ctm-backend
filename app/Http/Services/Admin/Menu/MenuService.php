@@ -20,6 +20,8 @@ class MenuService
             $menu->label_name_bn                = $request->label_name_bn;
             $menu->order                = $request->order;
             $menu->page_link_id                   = $request->page_link_id;
+            $menu->link_type                   = $request->link_type;
+            $menu->link                   = $request->link;
             $menu->save();
             DB::commit();
             return $menu;

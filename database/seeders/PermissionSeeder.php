@@ -335,12 +335,12 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->modulePermissionTrainingManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'training-create',
                 'training-list',
                 'training-edit',
                 'training-view',
                 'training-delete'
-                        ]
+            ],
+
             ],
                     ];
 

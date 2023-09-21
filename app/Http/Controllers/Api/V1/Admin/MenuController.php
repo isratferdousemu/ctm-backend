@@ -128,6 +128,16 @@ class MenuController extends Controller
      *                      description="parent menu id",
      *                      type="integer",
      *                   ),
+     *                   @OA\Property(
+     *                      property="link_type",
+     *                      description="page link type. ex:1->external, 2->internal",
+     *                      type="integer",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="link",
+     *                      description="page link if link type is external",
+     *                      type="text",
+     *                   ),
      *
      *                 ),
      *             ),
