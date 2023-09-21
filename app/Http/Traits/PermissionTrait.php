@@ -29,6 +29,8 @@ trait PermissionTrait
     private $subUserManagement = "user-management";
     private $subDeviceRegistrationManagement = "device-registration-management";
 
+    private $menuManagement = "menu-management";
+
     // module 2 sub modules
     private $subOnlineApplicationManagement = "online-application-management";
     private $subBeneficiarySelectionManagement   = "beneficiary-selection-management";
