@@ -380,12 +380,13 @@ class PermissionSeeder extends Seeder
                 for ($j=0; $j < count($permissions[$i]['permissions']); $j++) {
                 //create permissions
                 $permission = Permission::create([
-                    'name' => $permissions[$i]['permissions'][$j],
+                    'name' => $permissions[$i]['permissions'][$j]['name'],
                     'module_name' => $groupPermissions,
                     'sub_module_name' => $subModulePermissions,
                     'guard_name' => $guardPermissions,
+                    'page_url' => $permissions[$i]['permissions'][$j]['page_url'],
+                    'parent_page' => $permissions[$i]['permissions'][$j]['parent_page'],
                     ]);
-
                 }
 
             }
