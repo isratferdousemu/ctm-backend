@@ -89,10 +89,13 @@ class SystemconfigService
             return $financial;
         } catch (\Throwable $th) {
             DB::rollBack();
-            throw $th; 
+            throw $th;
         }
 
     }
+
+
+
 
 
 }
