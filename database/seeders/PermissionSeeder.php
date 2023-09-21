@@ -342,9 +342,6 @@ class PermissionSeeder extends Seeder
                 'training-delete'
                         ]
             ],
-
-
-
                     ];
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
