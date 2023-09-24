@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\APi\V1\Admin;
+namespace App\Http\Controllers\Api\V1\Admin;
 
 use Validator;
 use App\Models\Lookup;

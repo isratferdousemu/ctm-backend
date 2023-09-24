@@ -15,14 +15,28 @@ class MenuService
         DB::beginTransaction();
         try {
             $menu                       = New Menu;
-            $menu->parent_id              = $request->parent_id;
             $menu->label_name_en          = $request->label_name_en;
-            $menu->label_name_bn                = $request->label_name_bn;
-            $menu->order                = $request->order;
-            $menu->page_link_id                   = $request->page_link_id;
-            $menu->link_type                   = $request->link_type;
+            $menu->label_name_bn          = $request->label_name_bn;
+            $menu->order                  = $request->order;
+            $menu->page_link_id           = $request->page_link_id;
+            $menu->link_type              = $request->link_type;
             $menu->link                   = $request->link;
-            $menu->save();
+
+            if ($request->parent_id == null)
+            {
+                if ($menu->save()) {
+                    $menu->parent_id = null;
+                    $menu->save();
+                }
+            }else{
+                if ($menu->save()) {
+                    $menu->parent_id = $request->parent_id;
+                    $menu->save();
+                }
+            }
+
+
+
             DB::commit();
             return $menu;
         } catch (\Throwable $th) {

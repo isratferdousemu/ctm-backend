@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Systemconfig\FinanacialYear\FinancialRequest;
-use App\Http\Resources\Admin\systemconfig\Finanacial\FinancialResource;
+use App\Http\Resources\Admin\Systemconfig\Finanacial\FinancialResource;
 use App\Http\Services\Admin\Systemconfig\SystemconfigService;
 use App\Http\Traits\MessageTrait;
 use App\Models\FinancialYear;
