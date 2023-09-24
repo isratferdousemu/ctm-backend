@@ -75,7 +75,7 @@ class MenuController extends Controller
  public function getAllMenu(Request $request){
 
 
-    $menus = Menu::with("pageLink","children")->whereParentId(null)->get();
+    $menus = Menu::with("children.children.pageLink","children.pageLink","pageLink")->whereParentId(null)->get();
 
     return MenuResource::collection($menus)->additional([
         'success' => true,
