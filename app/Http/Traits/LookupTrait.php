@@ -24,7 +24,7 @@ trait LookupTrait
 
     public static function getLookUpTypes()
     {
-        $users = [
+        $types = [
             ['id' => 1, 'name' => 'Location Type'],
             ['id' => 2, 'name' => 'Allowance Service'],
             ['id' => 3, 'name' => 'Office category'],
@@ -43,6 +43,6 @@ trait LookupTrait
             ['id' => 16, 'name' => 'Module Name'],
         ];
 
-        return collect($users);
+        return collect($types);
     }
 }
