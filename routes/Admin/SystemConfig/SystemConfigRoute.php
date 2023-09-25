@@ -66,26 +66,28 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::post('/status', [DeviceController::class, 'deviceStatusUpdate'])->middleware(['role_or_permission:super-admin|device-edit']);
         Route::post('/insert', [DeviceController::class, 'insertDevice'])->middleware(['role_or_permission:super-admin|device-create']);
         Route::get('/get',[DeviceController::class, 'getAllDevicePaginated'])->middleware(['role_or_permission:super-admin|device-list']);
+        Route::get('/get_users',[DeviceController::class, 'getUsers'])->middleware(['role_or_permission:super-admin|device-list']);
+        Route::get('/edit/{id}',[DeviceController::class, 'edit'])->middleware(['role_or_permission:super-admin|device-list']);
         Route::post('/update', [DeviceController::class, 'deviceUpdate'])->middleware(['role_or_permission:super-admin|device-update']);
-        Route::get('/destroy/{id}', [DeviceController::class, 'destroyDevice'])->middleware(['role_or_permission:super-admin|device-destroy']);
+        Route::delete('/destroy/{id}', [DeviceController::class, 'destroyDevice'])->middleware(['role_or_permission:super-admin|device-destroy']);
     });
 
 
     /* -------------------------------------------------------------------------- */
     /*                           Menu Management Routes                           */
     /* -------------------------------------------------------------------------- */
+    Route::prefix('admin/menu')->group(function () {
 
+        Route::post('/insert', [MenuController::class, 'insertMenu'])->middleware(['role_or_permission:super-admin|menu-create']);
+        Route::get('/get',[MenuController::class, 'getAllMenu']);
+        Route::get('/get_page_url', [MenuController::class, 'getPageUrl']);
+        Route::get('/get_parent', [MenuController::class, 'getParent']);
+        Route::get('/edit/{id}', [MenuController::class, 'edit']);
+        Route::put('/update/{id}', [MenuController::class, 'update']);
+        Route::delete('/destroy/{id}', [MenuController::class, 'destroy'])->middleware(['role_or_permission:super-admin|menu-destroy']);
+    });
 
 
 });
 
-Route::prefix('admin/menu')->group(function () {
 
-    Route::post('/insert', [MenuController::class, 'insertMenu'])->middleware(['role_or_permission:super-admin|menu-create']);
-    Route::get('/get',[MenuController::class, 'getAllMenu']);
-    Route::get('/get_page_url', [MenuController::class, 'getPageUrl']);
-    Route::get('/get_parent', [MenuController::class, 'getParent']);
-    Route::get('/edit/{id}', [MenuController::class, 'edit']);
-    Route::put('/update/{id}', [MenuController::class, 'update']);
-    Route::delete('/destroy/{id}', [MenuController::class, 'destroy'])->middleware(['role_or_permission:super-admin|menu-destroy']);
-});
