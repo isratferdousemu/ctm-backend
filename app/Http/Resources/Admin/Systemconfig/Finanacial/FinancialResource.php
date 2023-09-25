@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Admin\systemconfig\Finanacial;
+namespace App\Http\Resources\Admin\Systemconfig\Finanacial;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

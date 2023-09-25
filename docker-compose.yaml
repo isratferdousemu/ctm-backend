@@ -1,0 +1,65 @@
+version: '3.7'
+
+networks:
+  web-app-ctm-net:
+    name: my-web-ctm-net
+    driver: bridge
+
+volumes:
+  db-storage:
+
+services:
+  # ctm-app service
+  backend-app:
+    #image: devibcs/ctm-apps:backend-service-1.0
+    image: backend-service:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile-staging
+      args:
+        - APP_ENV=${APP_ENV}
+    environment:
+      - APP_ENV=${APP_ENV}
+    ports:
+      - 8000:80
+    depends_on:
+      - mariadb
+    networks:
+      - web-app-ctm-net
+
+  # ctm-mysql services
+  mariadb:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD: root
+      - MYSQL_USER: root
+      - MYSQL_PASSWORD: root
+    volumes:
+      - db-storage:/var/lib/mysql
+    networks:
+      - web-app-ctm-net
+
+  # PhpMyAdmin service
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+    ports:
+      - 8081:80
+    depends_on:
+      - mariadb
+    networks:
+      - web-app-ctm-net
+
+  frontend-app:
+    #image: devibcs/ctm-apps:ctm-prod-frontend-service-1.0.0
+    image: frontend-service:1.0
+    ports:
+      - 8080:80
+    networks:
+      - web-ctm-app-net
+
+###End Of File

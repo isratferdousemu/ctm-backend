@@ -1272,7 +1272,7 @@ class LocationController extends Controller
      *                   ),
      *                   @OA\Property(
      *                      property="location_type",
-     *                      description="if fo the location type ",
+     *                      description="id of the location type ",
      *                      type="text",
      *                   ),
      *                   @OA\Property(
