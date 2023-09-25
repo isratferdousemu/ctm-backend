@@ -2,12 +2,12 @@
 
 use App\Http\Controllers\Api\V1\Admin\DeviceController;
 use App\Http\Controllers\Api\V1\Admin\OfficeController;
-use App\Http\Controllers\APi\V1\Admin\AdminController;
+use App\Http\Controllers\Api\V1\Admin\AdminController;
 use App\Http\Controllers\Api\V1\Admin\financialYearController;
 use App\Http\Controllers\Api\V1\Admin\MenuController;
 use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
-       Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
 
     /* -------------------------------------------------------------------------- */
     /*                               Office Management Routes                              */
@@ -75,13 +75,17 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
     /*                           Menu Management Routes                           */
     /* -------------------------------------------------------------------------- */
 
-    Route::prefix('admin/menu')->group(function () {
-
-        Route::post('/insert', [MenuController::class, 'insertMenu'])->middleware(['role_or_permission:super-admin|menu-create']);
-        Route::get('/get',[MenuController::class, 'getAllMenu']);
-        // Route::get('/destroy/{id}', [financialYearController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|financial-year-destroy']);
-    });
 
 
+});
 
+Route::prefix('admin/menu')->group(function () {
+
+    Route::post('/insert', [MenuController::class, 'insertMenu'])->middleware(['role_or_permission:super-admin|menu-create']);
+    Route::get('/get',[MenuController::class, 'getAllMenu']);
+    Route::get('/get_page_url', [MenuController::class, 'getPageUrl']);
+    Route::get('/get_parent', [MenuController::class, 'getParent']);
+    Route::get('/edit/{id}', [MenuController::class, 'edit']);
+    Route::put('/update/{id}', [MenuController::class, 'update']);
+    Route::delete('/destroy/{id}', [MenuController::class, 'destroy'])->middleware(['role_or_permission:super-admin|menu-destroy']);
 });

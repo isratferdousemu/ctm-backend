@@ -31,104 +31,125 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subDemographicInformationManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'division-create',
-                'division-list',
-                'division-edit',
-                'division-view',
-                'division-delete',
-                'district-create',
-                'district-list',
-                'district-edit',
-                'district-view',
-                'district-delete',
-                'city-create',
-                'city-list',
-                'city-edit',
-                'city-view',
-                'city-delete',
-                'thana-create',
-                'thana-list',
-                'thana-edit',
-                'thana-view',
-                'thana-delete',
-                'union-create',
-                'union-list',
-                'union-edit',
-                'union-view',
-                'union-delete',
-                'ward-create',
-                'ward-list',
-                'ward-edit',
-                'ward-view',
-                'ward-delete',
-                        ]
+                ["name"=>"division-create", "page_url"=>"/system-configuration/division/create", "parent_page"=>1],
+                ["name"=>"division-list", "page_url"=>"/system-configuration/division", "parent_page"=>1],
+                ["name"=>"division-edit", "page_url"=>"/system-configuration/division/edit/:id", "parent_page"=>1],
+                ["name"=>"division-view", "page_url"=>"/system-configuration/division/details/:id", "parent_page"=>1],
+                ["name"=>"division-delete", "page_url"=>"/system-configuration/division", "parent_page"=>1],
+
+                ["name"=>"district-create", "page_url"=>"/system-configuration/district/create", "parent_page"=>1],
+                ["name"=>"district-list", "page_url"=>"/system-configuration/district", "parent_page"=>1],
+                ["name"=>"district-edit", "page_url"=>"/system-configuration/district/edit/:id", "parent_page"=>1],
+                ["name"=>"district-view", "page_url"=>"/system-configuration/district/details/:id", "parent_page"=>1],
+                ["name"=>"district-delete", "page_url"=>"/system-configuration/district", "parent_page"=>1],
+
+                ["name"=>"city-create", "page_url"=>"/system-configuration/city/create", "parent_page"=>1],
+                ["name"=>"city-list", "page_url"=>"/system-configuration/city", "parent_page"=>1],
+                ["name"=>"city-edit", "page_url"=>"/system-configuration/city/edit/:id", "parent_page"=>1],
+                ["name"=>"city-view", "page_url"=>"/system-configuration/city/details/:id", "parent_page"=>1],
+                ["name"=>"city-delete", "page_url"=>"/system-configuration/city", "parent_page"=>1],
+
+                ["name"=>"thana-create", "page_url"=>"/system-configuration/thana/create", "parent_page"=>1],
+                ["name"=>"thana-list", "page_url"=>"/system-configuration/thana", "parent_page"=>1],
+                ["name"=>"thana-edit", "page_url"=>"/system-configuration/thana/edit/:id", "parent_page"=>1],
+                ["name"=>"thana-view", "page_url"=>"/system-configuration/thana/details/:id", "parent_page"=>1],
+                ["name"=>"thana-delete", "page_url"=>"/system-configuration/thana", "parent_page"=>1],
+
+                ["name"=>"union-create", "page_url"=>"/system-configuration/union/create", "parent_page"=>1],
+                ["name"=>"union-list", "page_url"=>"/system-configuration/union", "parent_page"=>1],
+                ["name"=>"union-edit", "page_url"=>"/system-configuration/union/edit/:id", "parent_page"=>1],
+                ["name"=>"union-view", "page_url"=>"/system-configuration/union/details/:id", "parent_page"=>1],
+                ["name"=>"union-delete", "page_url"=>"/system-configuration/union", "parent_page"=>1],
+
+                ["name"=>"ward-create", "page_url"=>"/system-configuration/ward/create", "parent_page"=>1],
+                ["name"=>"ward-list", "page_url"=>"/system-configuration/ward", "parent_page"=>1],
+                ["name"=>"ward-edit", "page_url"=>"/system-configuration/ward/edit/:id", "parent_page"=>1],
+                ["name"=>"ward-view", "page_url"=>"/system-configuration/ward/details/:id", "parent_page"=>1],
+                ["name"=>"ward-delete", "page_url"=>"/system-configuration/ward", "parent_page"=>1]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionSystemConfiguration,
             'sub_module_name' => $this->subAllowanceProgramManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'allowance-create',
-                'allowance-list',
-                'allowance-edit',
-                'allowance-view',
-                'allowance-delete'
-                        ]
+                ["name"=>"allowance-create", "page_url"=>"/system-configuration/allowance/create", "parent_page"=>0],
+                ["name"=>"allowance-list", "page_url"=>"/system-configuration/allowance", "parent_page"=>0],
+                ["name"=>"allowance-edit", "page_url"=>"/system-configuration/allowance/edit/:id", "parent_page"=>0],
+                ["name"=>"allowance-view", "page_url"=>"/system-configuration/allowance/details/:id", "parent_page"=>0],
+                ["name"=>"allowance-delete", "page_url"=>"/system-configuration/allowance", "parent_page"=>0],
+                ["name"=>"allowance-field-create", "page_url"=>"/system-configuration/allowance/create/field", "parent_page"=>0]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionSystemConfiguration,
             'sub_module_name' => $this->subOfficeInformationManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'office-create',
-                'office-list',
-                'office-edit',
-                'office-view',
-                'office-delete'
-                        ]
+                ["name"=>"office-create", "page_url"=>"/system-configuration/office/create", "parent_page"=>0],
+                ["name"=>"office-list", "page_url"=>"/system-configuration/office", "parent_page"=>0],
+                ["name"=>"office-edit", "page_url"=>"/system-configuration/office/edit/:id", "parent_page"=>0],
+                ["name"=>"office-view", "page_url"=>"/system-configuration/office/details/:id", "parent_page"=>0],
+                ["name"=>"office-delete", "page_url"=>"/system-configuration/office", "parent_page"=>0]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionSystemConfiguration,
             'sub_module_name' => $this->subFinancialInformationManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'financial-create',
-                'financial-list',
-                'financial-edit',
-                'financial-view',
-                'financial-delete'
-                        ]
+                ["name"=>"financial-create", "page_url"=>"/system-configuration/financial/create", "parent_page"=>0],
+                ["name"=>"financial-list", "page_url"=>"/system-configuration/financial", "parent_page"=>0],
+                ["name"=>"financial-edit", "page_url"=>"/system-configuration/financial/edit/:id", "parent_page"=>0],
+                ["name"=>"financial-view", "page_url"=>"/system-configuration/financial/details/:id", "parent_page"=>0],
+                ["name"=>"financial-delete", "page_url"=>"/system-configuration/financial", "parent_page"=>0]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionSystemConfiguration,
             'sub_module_name' => $this->subUserManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'role-create',
-                'role-list',
-                'role-edit',
-                'role-view',
-                'role-delete',
-                'role-permission-create',
-                'user-create',
-                'user-list',
-                'user-edit',
-                'user-view',
-                'user-delete',
-                        ]
+                ["name"=>"role-create", "page_url"=>"/system-configuration/role/create", "parent_page"=>1],
+                ["name"=>"role-list", "page_url"=>"/system-configuration/role", "parent_page"=>1],
+                ["name"=>"role-edit", "page_url"=>"/system-configuration/role/edit/:id", "parent_page"=>1],
+                ["name"=>"role-view", "page_url"=>"/system-configuration/role/details/:id", "parent_page"=>1],
+                ["name"=>"role-delete", "page_url"=>"/system-configuration/role", "parent_page"=>1],
+
+                ["name"=>"role-permission-create", "page_url"=>"/system-configuration/role-permission/create", "parent_page"=>1],
+
+                ["name"=>"user-create", "page_url"=>"/system-configuration/user/create", "parent_page"=>1],
+                ["name"=>"user-list", "page_url"=>"/system-configuration/user", "parent_page"=>1],
+                ["name"=>"user-edit", "page_url"=>"/system-configuration/user/edit/:id", "parent_page"=>1],
+                ["name"=>"user-view", "page_url"=>"/system-configuration/user/details/:id", "parent_page"=>1],
+                ["name"=>"user-delete", "page_url"=>"/system-configuration/user", "parent_page"=>1]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionSystemConfiguration,
             'sub_module_name' => $this->subDeviceRegistrationManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'device-create',
-                'device-list',
-                'device-edit',
-                'device-view',
-                'device-delete'
-                        ]
+                ["name"=>"device-create", "page_url"=>"/system-configuration/device/create", "parent_page"=>0],
+                ["name"=>"device-list", "page_url"=>"/system-configuration/device", "parent_page"=>0],
+                ["name"=>"device-edit", "page_url"=>"/system-configuration/device/edit/:id", "parent_page"=>0],
+                ["name"=>"device-view", "page_url"=>"/system-configuration/device/details/:id", "parent_page"=>0],
+                ["name"=>"device-delete", "page_url"=>"/system-configuration/device", "parent_page"=>0]
+            ]
         ],
+        [
+            'module_name' => $this->modulePermissionSystemConfiguration,
+            'sub_module_name' => $this->menuManagement,
+            'guard_name' => $this->guard,
+            'permissions' => [
+                ["name"=> "menu-create", "page_url"=>"/system-configuration/menu/create", "parent_page"=>0],
+                ["name"=> "menu-list", "page_url"=>"/system-configuration/menu", "parent_page"=>0],
+                ["name"=> "menu-edit", "page_url"=>"/system-configuration/menu/edit/:id", "parent_page"=>0],
+                ["name"=> "menu-view", "page_url"=>"/system-configuration/menu/details/:id", "parent_page"=>0],
+                ["name"=> "menu-delete", "page_url"=>"/system-configuration/menu", "parent_page"=>0]
+            ]
+        ],
+
         /* -------------------------------------------------------------------------- */
         /*                            Application Selection                           */
         /* -------------------------------------------------------------------------- */
@@ -137,28 +158,33 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subOnlineApplicationManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'application-entry-create',
-                'application-entry-list',
-                'application-entry-edit',
-                'application-entry-view',
-                'application-entry-delete',
-                'primary-selection-union-list',
-                'primary-selection-union-edit',
-                'primary-selection-union-view',
-                'primary-selection-union-delete',
-                'primary-selection-upazila-list',
-                'primary-selection-upazila-edit',
-                'primary-selection-upazila-view',
-                'primary-selection-upazila-delete',
-                'final-list-list',
-                'final-list-edit',
-                'final-list-view',
-                'final-list-delete',
-                'approval-list-list',
-                'approval-list-edit',
-                'approval-list-view',
-                'approval-list-delete',
-                        ]
+                ["name"=>"application-entry-create", "page_url"=>"/application-management/application/create", "parent_page"=>1],
+                ["name"=>"application-entry-list", "page_url"=>"/application-management/application", "parent_page"=>1],
+                ["name"=>"application-entry-edit", "page_url"=>"/application-management/application/edit/:id", "parent_page"=>1],
+                ["name"=>"application-entry-view", "page_url"=>"/application-management/application/details/:id", "parent_page"=>1],
+                ["name"=>"application-entry-delete", "page_url"=>"/application-management/application", "parent_page"=>1],
+
+                ["name"=>"primary-selection-union-list", "page_url"=>"/application-management/primary-selection-union", "parent_page"=>1],
+                ["name"=>"primary-selection-union-edit", "page_url"=>"/application-management/primary-selection-union/edit/:id", "parent_page"=>1],
+                ["name"=>"primary-selection-union-view", "page_url"=>"/application-management/primary-selection-union/details/:id", "parent_page"=>1],
+                ["name"=>"primary-selection-union-delete", "page_url"=>"/application-management/primary-selection-union", "parent_page"=>1],
+
+                ["name"=>"primary-selection-upazila-list", "page_url"=>"/application-management/primary-selection-upazila", "parent_page"=>1],
+                ["name"=>"primary-selection-upazila-edit", "page_url"=>"/application-management/primary-selection-upazila/edit/:id", "parent_page"=>1],
+                ["name"=>"primary-selection-upazila-view", "page_url"=>"/application-management/primary-selection-upazila/details/:id", "parent_page"=>1],
+                ["name"=>"primary-selection-upazila-delete", "page_url"=>"/application-management/primary-selection-upazila", "parent_page"=>1],
+
+                ["name"=>"final-list-list", "page_url"=>"/application-management/final", "parent_page"=>1],
+                ["name"=>"final-list-edit", "page_url"=>"/application-management/final/edit/:id", "parent_page"=>1],
+                ["name"=>"final-list-view", "page_url"=>"/application-management/final/details/:id", "parent_page"=>1],
+                ["name"=>"final-list-delete", "page_url"=>"/application-management/final", "parent_page"=>1],
+
+                ["name"=>"approval-list-list", "page_url"=>"/application-management/approval", "parent_page"=>1],
+                ["name"=>"approval-list-edit", "page_url"=>"/application-management/approval/edit/:id", "parent_page"=>1],
+                ["name"=>"approval-list-view", "page_url"=>"/application-management/approval/details/:id", "parent_page"=>1],
+                ["name"=>"approval-list-delete", "page_url"=>"/application-management/approval", "parent_page"=>1]
+
+                ]
             ],
 
 
@@ -170,63 +196,66 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subBeneficiaryInformationManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'beneficiary-info-create',
-                'beneficiary-info-list',
-                'beneficiary-info-edit',
-                'beneficiary-info-view',
-                'beneficiary-info-delete',
-                'beneficiary-info-active-list',
-                'beneficiary-info-not-active-list',
-                'beneficiary-info-waiting-active-list',
-                        ]
+                ["name"=>"beneficiary-info-create", "page_url"=>"/beneficiary-management/beneficiary-info/create", "parent_page"=>1],
+                ["name"=>"beneficiary-info-list", "page_url"=>"/beneficiary-management/beneficiary-info", "parent_page"=>1],
+                ["name"=>"beneficiary-info-edit", "page_url"=>"/beneficiary-management/beneficiary-info/edit/:id", "parent_page"=>1],
+                ["name"=>"beneficiary-info-view", "page_url"=>"/beneficiary-management/beneficiary-info/details/:id", "parent_page"=>1],
+                ["name"=>"beneficiary-info-delete", "page_url"=>"/beneficiary-management/beneficiary-info", "parent_page"=>1],
+                ["name"=>"beneficiary-info-active-list", "page_url"=>"/beneficiary-management/beneficiary-info/active-list", "parent_page"=>1],
+                ["name"=>"beneficiary-info-not-active-list", "page_url"=>"/beneficiary-management/beneficiary-info/not-active-list", "parent_page"=>1],
+                ["name"=>"beneficiary-info-waiting-active-list", "page_url"=>"/beneficiary-management/beneficiary-info/waiting-active-list", "parent_page"=>1]
+
+            ]
         ],
         [
             'module_name' => $this->modulePermissionBeneficiaryManagement,
             'sub_module_name' => $this->subCommitteeInformation,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'committee-create',
-                'committee-list',
-                'committee-edit',
-                'committee-view',
-                'committee-delete'
-                        ]
+                ["name"=>"committee-create", "page_url"=>"/beneficiary-management/committe/create", "parent_page"=>1],
+                ["name"=>"committee-list", "page_url"=>"/beneficiary-management/committe", "parent_page"=>1],
+                ["name"=>"committee-edit", "page_url"=>"/beneficiary-management/committe/edit/:id", "parent_page"=>1],
+                ["name"=>"committee-view", "page_url"=>"/beneficiary-management/committe/details/:id", "parent_page"=>1],
+                ["name"=>"committee-delete", "page_url"=>"/beneficiary-management/committe", "parent_page"=>1]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionBeneficiaryManagement,
             'sub_module_name' => $this->subAllocationInformation,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'allocation-create',
-                'allocation-list',
-                'allocation-edit',
-                'allocation-view',
-                'allocation-delete'
-                        ]
+                ["name"=>"allocation-create", "page_url"=>"/beneficiary-management/allocation/create", "parent_page"=>1],
+                ["name"=>"allocation-list", "page_url"=>"/beneficiary-management/allocation", "parent_page"=>1],
+                ["name"=>"allocation-edit", "page_url"=>"/beneficiary-management/allocation/edit/:id", "parent_page"=>1],
+                ["name"=>"allocation-view", "page_url"=>"/beneficiary-management/allocation/details/:id", "parent_page"=>1],
+                ["name"=>"allocation-delete", "page_url"=>"/beneficiary-management/allocation", "parent_page"=>1]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionBeneficiaryManagement,
             'sub_module_name' => $this->subBeneficiaryReplacement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'beneficiary-replacement-create',
-                'beneficiary-replacement-list',
-                'beneficiary-replacement-edit',
-                'beneficiary-replacement-view',
-                'beneficiary-replacement-delete'
-                        ]
+                ["name"=>"beneficiary-replacement-create", "page_url"=>"/beneficiary-management/beneficiary-replacement/create", "parent_page"=>1],
+                ["name"=>"beneficiary-replacement-list", "page_url"=>"/beneficiary-management/beneficiary-replacement", "parent_page"=>1],
+                ["name"=>"beneficiary-replacement-edit", "page_url"=>"/beneficiary-management/beneficiary-replacement/edit/:id", "parent_page"=>1],
+                ["name"=>"beneficiary-replacement-view", "page_url"=>"/beneficiary-management/beneficiary-replacement/details/:id", "parent_page"=>1],
+                ["name"=>"beneficiary-replacement-delete", "page_url"=>"/beneficiary-management/beneficiary-replacement", "parent_page"=>1]
+
+            ]
         ],
         [
             'module_name' => $this->modulePermissionBeneficiaryManagement,
             'sub_module_name' => $this->subBeneficiaryIDCard,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'beneficiary-card-create',
-                'beneficiary-card-list',
-                'beneficiary-card-edit',
-                'beneficiary-card-view',
-                'beneficiary-card-delete'
-                        ]
+                ["name"=>"beneficiary-card-create", "page_url"=>"/beneficiary-management/beneficiary-card/create", "parent_page"=>1],
+                ["name"=>"beneficiary-card-list", "page_url"=>"/beneficiary-management/beneficiary-card", "parent_page"=>1],
+                ["name"=>"beneficiary-card-edit", "page_url"=>"/beneficiary-management/beneficiary-card/edit/:id", "parent_page"=>1],
+                ["name"=>"beneficiary-card-view", "page_url"=>"/beneficiary-management/beneficiary-card/details/:id", "parent_page"=>1],
+                ["name"=>"beneficiary-card-delete", "page_url"=>"/beneficiary-management/beneficiary-card", "parent_page"=>1]
+
+            ]
         ],
 
 
@@ -238,48 +267,48 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subPaymentProcessorInformation,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'payment-process-create',
-                'payment-process-list',
-                'payment-process-edit',
-                'payment-process-view',
-                'payment-process-delete'
-                        ]
+                ["name"=>"payment-process-create", "page_url"=>"/payroll-management/payment-process/create", "parent_page"=>1],
+                ["name"=>"payment-process-list", "page_url"=>"/payroll-management/payment-process", "parent_page"=>1],
+                ["name"=>"payment-process-edit", "page_url"=>"/payroll-management/payment-process/edit/:id", "parent_page"=>1],
+                ["name"=>"payment-process-view", "page_url"=>"/payroll-management/payment-process/details/:id", "parent_page"=>1],
+                ["name"=>"payment-process-delete", "page_url"=>"/payroll-management/payment-process", "parent_page"=>1]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionPayrollManagement,
             'sub_module_name' => $this->subAccountsInformation,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'account-information-create',
-                'account-information-list',
-                'account-information-edit',
-                'account-information-view',
-                'account-information-delete'
-                        ]
+                ["name"=>"account-information-create", "page_url"=>"/payroll-management/account-information/create", "parent_page"=>1],
+                ["name"=>"account-information-list", "page_url"=>"/payroll-management/account-information", "parent_page"=>1],
+                ["name"=>"account-information-edit", "page_url"=>"/payroll-management/account-information/edit/:id", "parent_page"=>1],
+                ["name"=>"account-information-view", "page_url"=>"/payroll-management/account-information/details/:id", "parent_page"=>1],
+                ["name"=>"account-information-delete", "page_url"=>"/payroll-management/account-information", "parent_page"=>1]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionPayrollManagement,
             'sub_module_name' => $this->subPayrollGeneration,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'payroll-generation-create',
-                'payroll-generation-list',
-                'payroll-generation-edit',
-                'payroll-generation-view',
-                'payroll-generation-delete'
-                        ]
+                ["name"=>"payroll-generation-create", "page_url"=>"/payroll-management/payroll-generation/create", "parent_page"=>1],
+                ["name"=>"payroll-generation-list", "page_url"=>"/payroll-management/payroll-generation", "parent_page"=>1],
+                ["name"=>"payroll-generation-edit", "page_url"=>"/payroll-management/payroll-generation/edit/:id", "parent_page"=>1],
+                ["name"=>"payroll-generation-view", "page_url"=>"/payroll-management/payroll-generation/details/:id", "parent_page"=>1],
+                ["name"=>"payroll-generation-delete", "page_url"=>"/payroll-management/payroll-generation", "parent_page"=>1]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionPayrollManagement,
             'sub_module_name' => $this->subEmergencyPayment,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'emergency-payment-create',
-                'emergency-payment-list',
-                'emergency-payment-edit',
-                'emergency-payment-view',
-                'emergency-payment-delete'
-                        ]
+                ["name"=>"emergency-payment-create", "page_url"=>"/payroll-management/emergency-payment/create", "parent_page"=>1],
+                ["name"=>"emergency-payment-list", "page_url"=>"/payroll-management/emergency-payment", "parent_page"=>1],
+                ["name"=>"emergency-payment-edit", "page_url"=>"/payroll-management/emergency-payment/edit/:id", "parent_page"=>1],
+                ["name"=>"emergency-payment-view", "page_url"=>"/payroll-management/emergency-payment/details/:id", "parent_page"=>1],
+                ["name"=>"emergency-payment-delete", "page_url"=>"/payroll-management/emergency-payment", "parent_page"=>1]
+            ]
         ],
 
 
@@ -291,24 +320,24 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subGrievanceCategoryInformation,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'grievance-category-create',
-                'grievance-category-list',
-                'grievance-category-edit',
-                'grievance-category-view',
-                'grievance-category-delete'
-                        ]
+                ["name"=>"grievance-category-create", "page_url"=>"/grievance-management/grievance-category/create", "parent_page"=>1],
+                ["name"=>"grievance-category-list", "page_url"=>"/grievance-management/grievance-category", "parent_page"=>1],
+                ["name"=>"grievance-category-edit", "page_url"=>"/grievance-management/grievance-category/edit/:id", "parent_page"=>1],
+                ["name"=>"grievance-category-view", "page_url"=>"/grievance-management/grievance-category/details/:id", "parent_page"=>1],
+                ["name"=>"grievance-category-delete", "page_url"=>"/grievance-management/grievance-category", "parent_page"=>1]
+            ]
         ],
         [
             'module_name' => $this->modulePermissionGrievanceManagement,
             'sub_module_name' => $this->subGrievanceInformation,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'grievance-info-create',
-                'grievance-info-list',
-                'grievance-info-edit',
-                'grievance-info-view',
-                'grievance-info-delete'
-                        ]
+                ["name"=>"grievance-info-create", "page_url"=>"/grievance-management/grievance-info/create", "parent_page"=>1],
+                ["name"=>"grievance-info-list", "page_url"=>"/grievance-management/grievance-info", "parent_page"=>1],
+                ["name"=>"grievance-info-edit", "page_url"=>"/grievance-management/grievance-info/edit/:id", "parent_page"=>1],
+                ["name"=>"grievance-info-view", "page_url"=>"/grievance-management/grievance-info/details/:id", "parent_page"=>1],
+                ["name"=>"grievance-info-delete", "page_url"=>"/grievance-management/grievance-info", "parent_page"=>1]
+            ]
         ],
 
         /* -------------------------------------------------------------------------- */
@@ -319,13 +348,14 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->modulePermissionReportingSystem,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'reporting-system-create',
-                'reporting-system-list',
-                'reporting-system-edit',
-                'reporting-system-view',
-                'reporting-system-delete'
-                        ]
-            ],
+                ["name"=>"reporting-system-create", "page_url"=>"/reporting-management/reporting-system/create", "parent_page"=>1],
+                ["name"=>"reporting-system-list", "page_url"=>"/reporting-management/reporting-system", "parent_page"=>1],
+                ["name"=>"reporting-system-edit", "page_url"=>"/reporting-management/reporting-system/edit/:id", "parent_page"=>1],
+                ["name"=>"reporting-system-view", "page_url"=>"/reporting-management/reporting-system/details/:id", "parent_page"=>1],
+                ["name"=>"reporting-system-delete", "page_url"=>"/reporting-management/reporting-system", "parent_page"=>1]
+
+            ]
+        ],
 
         /* -------------------------------------------------------------------------- */
         /*                             Training Management                            */
@@ -335,35 +365,33 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->modulePermissionTrainingManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                'training-create',
-                'training-list',
-                'training-edit',
-                'training-view',
-                'training-delete'
-                        ]
-            ],
+                ["name"=>"training-list", "page_url"=>"training-management/training-list", "parent_page"=>1],
+                ["name"=>"training-edit", "page_url"=>"training-management/training-list/edit/:id", "parent_page"=>1],
+                ["name"=>"training-view", "page_url"=>"training-management/training-list/details/:id", "parent_page"=>1],
+                ["name"=>"training-delete", "page_url"=>"training-management/training-list", "parent_page"=>1]
+            ]
 
-
-
-                    ];
+        ],
+    ];
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-                    for ($i=0; $i < count($permissions) ; $i++) {
-                        $groupPermissions=$permissions[$i]['module_name'];
-                        $subModulePermissions=$permissions[$i]['sub_module_name'];
-                        $guardPermissions=$permissions[$i]['guard_name'];
-                        for ($j=0; $j < count($permissions[$i]['permissions']); $j++) {
-                        //create permissions
-                        $permission = Permission::create([
-                            'name' => $permissions[$i]['permissions'][$j],
-                            'module_name' => $groupPermissions,
-                            'sub_module_name' => $subModulePermissions,
-                            'guard_name' => $guardPermissions,
-                            ]);
+            for ($i=0; $i < count($permissions) ; $i++) {
+                $groupPermissions=$permissions[$i]['module_name'];
+                $subModulePermissions=$permissions[$i]['sub_module_name'];
+                $guardPermissions=$permissions[$i]['guard_name'];
+                for ($j=0; $j < count($permissions[$i]['permissions']); $j++) {
+                //create permissions
+                $permission = Permission::create([
+                    'name' => $permissions[$i]['permissions'][$j]['name'],
+                    'module_name' => $groupPermissions,
+                    'sub_module_name' => $subModulePermissions,
+                    'guard_name' => $guardPermissions,
+                    'page_url' => $permissions[$i]['permissions'][$j]['page_url'],
+                    'parent_page' => $permissions[$i]['permissions'][$j]['parent_page'],
+                    ]);
+                }
 
-                        }
-
-                        }
+            }
     }
 }

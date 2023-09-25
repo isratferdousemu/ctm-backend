@@ -2074,7 +2074,7 @@
                                         "type": "text"
                                     },
                                     "location_type": {
-                                        "description": "if fo the location type ",
+                                        "description": "id of the location type ",
                                         "type": "text"
                                     },
                                     "code": {
@@ -3315,47 +3315,56 @@
                 ]
             }
         },
-        "/admin/menu/insert": {
-            "post": {
+        "/admin/menu/get_page_url": {
+            "get": {
                 "tags": [
                     "MENU-MANAGEMENT"
                 ],
-                "summary": "insert a menu",
-                "description": "insert a menu",
-                "operationId": "insertMenu",
-                "requestBody": {
-                    "description": "enter inputs",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "label_name_en": {
-                                        "description": "english name of the menu",
-                                        "type": "text"
-                                    },
-                                    "label_name_bn": {
-                                        "description": "bangla name of the menu",
-                                        "type": "text"
-                                    },
-                                    "order": {
-                                        "description": "sl of the menu",
-                                        "type": "integer"
-                                    },
-                                    "page_link_id": {
-                                        "description": "page link id",
-                                        "type": "integer"
-                                    },
-                                    "parent_id": {
-                                        "description": "parent menu id",
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
+                "summary": "get paginated role",
+                "description": "get paginated role",
+                "operationId": "getPageUrl",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
                             }
                         }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
                     }
                 },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/menu/get_parent": {
+            "get": {
+                "tags": [
+                    "MENU-MANAGEMENT"
+                ],
+                "summary": "get paginated role",
+                "description": "get paginated role",
+                "operationId": "getParent",
                 "responses": {
                     "200": {
                         "description": "Successful operation",

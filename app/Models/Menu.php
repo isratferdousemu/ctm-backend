@@ -38,6 +38,10 @@ use Spatie\Permission\Models\Permission;
  * @method static \Illuminate\Database\Eloquent\Builder|Menu whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Menu withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Menu withoutTrashed()
+ * @property string $linkType
+ * @property string|null $link
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu whereLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Menu whereLinkType($value)
  * @mixin \Eloquent
  */
 class Menu extends Model
