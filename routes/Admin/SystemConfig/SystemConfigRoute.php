@@ -74,18 +74,18 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
     /* -------------------------------------------------------------------------- */
     /*                           Menu Management Routes                           */
     /* -------------------------------------------------------------------------- */
+    Route::prefix('admin/menu')->group(function () {
 
+        Route::post('/insert', [MenuController::class, 'insertMenu'])->middleware(['role_or_permission:super-admin|menu-create']);
+        Route::get('/get',[MenuController::class, 'getAllMenu']);
+        Route::get('/get_page_url', [MenuController::class, 'getPageUrl']);
+        Route::get('/get_parent', [MenuController::class, 'getParent']);
+        Route::get('/edit/{id}', [MenuController::class, 'edit']);
+        Route::put('/update/{id}', [MenuController::class, 'update']);
+        Route::delete('/destroy/{id}', [MenuController::class, 'destroy'])->middleware(['role_or_permission:super-admin|menu-destroy']);
+    });
 
 
 });
 
-Route::prefix('admin/menu')->group(function () {
 
-    Route::post('/insert', [MenuController::class, 'insertMenu'])->middleware(['role_or_permission:super-admin|menu-create']);
-    Route::get('/get',[MenuController::class, 'getAllMenu']);
-    Route::get('/get_page_url', [MenuController::class, 'getPageUrl']);
-    Route::get('/get_parent', [MenuController::class, 'getParent']);
-    Route::get('/edit/{id}', [MenuController::class, 'edit']);
-    Route::put('/update/{id}', [MenuController::class, 'update']);
-    Route::delete('/destroy/{id}', [MenuController::class, 'destroy'])->middleware(['role_or_permission:super-admin|menu-destroy']);
-});
