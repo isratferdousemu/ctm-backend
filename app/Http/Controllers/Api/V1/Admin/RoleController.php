@@ -348,7 +348,7 @@ class RoleController extends Controller
      *
      * @OA\Post(
      *      path="/admin/role/update",
-     *      operationId="update",
+     *      operationId="updateRole",
      *      tags={"ADMIN-ROLE"},
      *      summary="update a role",
      *      description="update a role",
@@ -427,7 +427,7 @@ class RoleController extends Controller
      *     )
      *
      */
-    public function update(RoleUpdateRequest $request){
+    public function updateRole(RoleUpdateRequest $request){
         try {
             //code...
         $role = $this->RoleService->updateRole($request);
@@ -448,7 +448,7 @@ class RoleController extends Controller
      /**
      * @OA\Get(
      *      path="/admin/role/destroy/{id}",
-     *      operationId="destroy",
+     *      operationId="destroRole",
      *      tags={"ADMIN-ROLE"},
      *      summary=" destroy role data",
      *      description="Returns Role destroy by id",
@@ -485,7 +485,7 @@ class RoleController extends Controller
      *      ),
      *     )
      */
-    public function destroy(Request $request)
+    public function destroRole(Request $request)
     {
 
         $role = Role::whereId($request->id)->whereDefault(0)->first();

@@ -14,12 +14,13 @@ class LookUpSeeder extends Seeder
     public function run(): void
     {
         $lookups = [
-            ['type' => 1, 'value_en' => 'District Pouroshava','value_bn' => 'জেলা পৌরসভা','version'=>1],
-            ['type' => 1, 'value_en' => 'Upazila','value_bn' => 'উপজেলা','version'=>2],
-            ['type' => 1, 'value_en' => 'City Corporation','value_bn' => 'সিটি কর্পোরেশন','version'=>3],
+            ['id'=>1,'type' => 1, 'value_en' => 'District Pouroshava','value_bn' => 'জেলা পৌরসভা','version'=>1],
+            ['id'=>2,'type' => 1, 'value_en' => 'Upazila','value_bn' => 'উপজেলা','version'=>2],
+            ['id'=>3,'type' => 1, 'value_en' => 'City Corporation','value_bn' => 'সিটি কর্পোরেশন','version'=>3],
         ];
         foreach ($lookups as $value) {
             $lookup = new Lookup;
+            $lookup->id                   = $value['id'];
             $lookup->type                   = $value['type'];
             $lookup->value_en               = $value['value_en'];
             $lookup->value_bn               = $value['value_bn'];

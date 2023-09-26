@@ -880,6 +880,11 @@ class LocationController extends Controller
      *                      description="code of the city",
      *                      type="text",
      *                   ),
+     *                   @OA\Property(
+     *                      property="location_type",
+     *                      description="location type of the city",
+     *                      type="text",
+     *                   ),
      *
      *                 ),
      *             ),
@@ -917,10 +922,10 @@ class LocationController extends Controller
 
         try {
             $city = $this->locationService->createCity($request);
-            activity("City")
+            activity($request->location_type==3?$this->city:$this->districtPouroshava)
             ->causedBy(auth()->user())
             ->performedOn($city)
-            ->log('City Created !');
+            ->log($request->location_type==3?$this->city:$this->districtPouroshava.' Created !');
             return CityResource::make($city->load('parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
