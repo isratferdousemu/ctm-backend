@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Menu;
+use Arr;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -37,7 +38,6 @@ class MenuSeeder extends Seeder
                 "order"=>2,
                 "sub_menu"=>[
                     [
-                'page_link_id' => null,
                 'label_name_en' => 'Demographic Info',
                 'label_name_bn' => 'Demographic Info',
                 "link_type"=>null,
@@ -55,7 +55,6 @@ class MenuSeeder extends Seeder
                         ]
                         ],
                     [
-                'page_link_id' => null,
                 'label_name_en' => 'User Management',
                 'label_name_bn' => 'User Management',
                 "link_type"=>null,
@@ -76,7 +75,6 @@ class MenuSeeder extends Seeder
                     ]
             ],
             [
-                'parent_id' => null,
                 'page_link_id' => null,
                 'label_name_en' => 'Budget Management',
                 'label_name_bn' => 'বাজেট ব্যবস্থাপনা',
@@ -185,8 +183,40 @@ class MenuSeeder extends Seeder
             ],
 
         ];
+        for ($main=0; $main < count($datas) ; $main++) {
+            $groupPermissions=$datas[$main]['module_name'];
+            $menu = Menu::create([
+                'page_link_id' => $datas[$main]['page_link_id'],
+                'label_name_en' => $datas[$main]['label_name_en'],
+                'label_name_bn' => $datas[$main]['label_name_bn'],
+                'link_type' => $datas[$main]['link_type'],
+                'link' => $datas[$main]['link'],
+                'order' => $datas[$main]['order'],
+                'parent_id' => array_key_exists('parent_id',$datas[$main])? $datas[$main]['parent_id']:NULL,
+                ]);
+            for ($sub=0; $sub < count($datas[$main]['sub_menu']); $sub++) {
+            //create permissions
+            $permission = Menu::create([
+                'name' => $datas[$i]['permissions'][$j]['name'],
+                'module_name' => $groupPermissions,
+                'sub_module_name' => $subModulePermissions,
+                'guard_name' => $guardPermissions,
+                'page_url' => $datas[$i]['permissions'][$j]['page_url'],
+                'parent_page' => $datas[$i]['permissions'][$j]['parent_page'],
+                ]);
+                $sub = Menu::create([
+                    'page_link_id' => $datas[$main]['sub_menu'][$sub]['page_link_id'],
+                    'label_name_en' => $datas[$main]['sub_menu'][$sub]['label_name_en'],
+                    'label_name_bn' => $datas[$main]['sub_menu'][$sub]['label_name_bn'],
+                    'link_type' => $datas[$main]['sub_menu'][$sub]['link_type'],
+                    'link' => $datas[$main]['sub_menu'][$sub]['link'],
+                    'order' => $datas[$main]['sub_menu'][$sub]['order'],
+                    'parent_id' => array_key_exists('parent_id',$datas[$main])? $datas[$main]['parent_id']:NULL,
+                    ]);
 
-        //  menu array list using this keys page_link_id,label_name_en,label_name_bn,link_type,link,order,paren_id and insert into menus table using Menu model ORM if you want to add sub menu then add sub_menu key and insert sub menu data using Menu model ORM if you want to add sub sub menu then add sub_sub_menu key and insert sub sub menu data using Menu model ORM
+            }
+
+        }
 
         foreach ($datas as $data) {
             $menu = Menu::create([
@@ -196,45 +226,56 @@ class MenuSeeder extends Seeder
                 'link_type' => $data['link_type'],
                 'link' => $data['link'],
                 'order' => $data['order'],
-                'parent_id' => $data['parent_id'],
+                'parent_id' => array_key_exists('parent_id',$data)? $data['parent_id']:NULL,
                 ]);
+                if (isset($data['sub_menu'])) {
+                    $sub_menus = $data['sub_menu'];
+                    $sub_menus['parent_id'] = $menu->id;
+         // sub_menu has multiple sub_menu
+                    foreach ($sub_menus as $key => $sub_me) {
+                        // dd($sub_menus);
+                        // dd(array_key_exists('page_link_id',$sub_menus[$key]));
+                        $sub_menu = Menu::create([
+                            'page_link_id' => NULL,
+                            'label_name_en' => $sub_menus[$key]['label_name_en'],
+                            'label_name_bn' => $sub_me['label_name_bn'],
+                            'link_type' => $sub_me['link_type'],
+                            'link' => $sub_me['link'],
+                            'order' => $sub_me['order'],
+                            'parent_id' => $sub_menus['parent_id'],
+                            ]);
+                        // $sub_menu = new Menu;
+                        // $sub_menu->parent_id = $sub_menus['parent_id'];
+                        // $sub_menu->page_link_id = array_key_exists('page_link_id',$sub_me)? $sub_me['page_link_id']:NULL;
 
-            if (isset($data['sub_menu'])) {
-                $sub_menus = $data['sub_menu'];
-                $sub_menus['parent_id'] = $menu->id;
-     // sub_menu has multiple sub_menu
-                foreach ($sub_menus as $sub_me) {
-                     dd(type_of($sub_me['label_name_en']));
-                    $sub_menu = new Menu;
-                    $sub_menu->page_link_id = $sub_me['page_link_id'];
-                    $sub_menu->label_name_en = $sub_me['label_name_en'];
-                    $sub_menu->label_name_bn = $sub_me['label_name_bn'];
-                    $sub_menu->link_type = $sub_me['link_type'];
-                    $sub_menu->link = $sub_me['link'];
-                    $sub_menu->order = $sub_me['order'];
-                    $sub_menu->parent_id = $sub_menus['parent_id'];
-                    $sub_menu->save();
+                        // $sub_menu->label_name_en = $sub_me['label_name_en'];
+                        // $sub_menu->label_name_bn = $sub_me['label_name_bn'];
+                        // $sub_menu->link_type = $sub_me['link_type'];
+                        // $sub_menu->link = $sub_me['link'];
+                        // $sub_menu->order = $sub_me['order'];
+                        // $sub_menu->save();
 
-                    if (isset($sub_menu['sub_sub_menu'])) {
-                        $sub_sub_menus = $sub_menu['sub_sub_menu'];
-                        $sub_sub_menus['parent_id'] = $sub_menu->id;
-                        foreach ($sub_sub_menus as $sub_sub_menu) {
-                            $sub_sub_menu = Menu::create([
-                                'page_link_id' => $sub_sub_menu['page_link_id'],
-                                'label_name_en' => $sub_sub_menu['label_name_en'],
-                                'label_name_bn' => $sub_sub_menu['label_name_bn'],
-                                'link_type' => $sub_sub_menu['link_type'],
-                                'link' => $sub_sub_menu['link'],
-                                'order' => $sub_sub_menu['order'],
-                                'parent_id' => $sub_sub_menus['parent_id'],
-                                ]);
+                        if (isset($sub_menu['sub_sub_menu'])) {
+                            $sub_sub_menus = $sub_menu['sub_sub_menu'];
+                            $sub_sub_menus['parent_id'] = $sub_menu->id;
+                            foreach ($sub_sub_menus as $sub_sub_menu) {
+                                $sub_sub_menu = Menu::create([
+                                    'page_link_id' => $sub_sub_menu['page_link_id'],
+                                    'label_name_en' => $sub_sub_menu['label_name_en'],
+                                    'label_name_bn' => $sub_sub_menu['label_name_bn'],
+                                    'link_type' => $sub_sub_menu['link_type'],
+                                    'link' => $sub_sub_menu['link'],
+                                    'order' => $sub_sub_menu['order'],
+                                    'parent_id' => $sub_sub_menus['parent_id'],
+                                    ]);
+                            }
                         }
                     }
+
+
+
                 }
 
-
-
-            }
         }
 
 
