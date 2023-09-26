@@ -76,34 +76,69 @@ class DeviceController extends Controller
     */
 
  public function getAllDevicePaginated(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
 
-    $filterArrayUserId=[];
-    $filterArrayName=[];
-    $filterArrayIpAddress=[];
+     $device = new Device;
 
-    if ($searchText) {
-        $filterArrayUserId[] = ['user_id', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayName[] = ['name', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayIpAddress[] = ['ip_address', 'LIKE', '%' . $searchText . '%'];
+     if($request->has('sortBy'))
+     {
+         if($request->get('sortDesc') === true)
+         {
+             $device = $device->orderBy($request->get('sortBy'), 'desc');
+         }else{
+             $device = $device->orderBy($request->get('sortBy'), 'asc');
+         }
+     }else{
+         $device = $device->orderBy('id', 'desc');
+     }
+
+     $searchValue = $request->input('search');
+
+     if($searchValue)
+     {
+         $device->where(function($query) use ($searchValue) {
+             $query->where('name', 'like', '%' . $searchValue . '%');
+             $query->orWhere('ip_address', 'like', '%' . $searchValue . '%');
+             $query->orWhere('device_type', 'like', '%' . $searchValue . '%');
+         });
+     }
+
+     $itemsPerPage = 10;
+
+     if($request->has('itemsPerPage'))
+     {
+         $itemsPerPage = $request->get('itemsPerPage');
+     }
+
+     return $device->paginate($itemsPerPage);
+
+     // Retrieve the query parameters
+    //    $searchText = $request->query('searchText');
+    //    $perPage = $request->query('perPage');
+    //    $page = $request->query('page');
+    //
+    //    $filterArrayUserId=[];
+    //    $filterArrayName=[];
+    //    $filterArrayIpAddress=[];
+    //
+    //    if ($searchText) {
+    //        $filterArrayUserId[] = ['user_id', 'LIKE', '%' . $searchText . '%'];
+    //        $filterArrayName[] = ['name', 'LIKE', '%' . $searchText . '%'];
+    //        $filterArrayIpAddress[] = ['ip_address', 'LIKE', '%' . $searchText . '%'];
+    //    }
+    //    $device = Device::query()
+    //    ->where(function ($query) use ($filterArrayUserId,$filterArrayName,$filterArrayIpAddress) {
+    //        $query->where($filterArrayUserId)
+    //              ->orWhere($filterArrayName)
+    //              ->orWhere($filterArrayIpAddress);
+    //    })
+    //    ->latest()
+    //    ->paginate($perPage, ['*'], 'page');
+    //
+    //    return DeviceResource::collection($device)->additional([
+    //        'success' => true,
+    //        'message' => $this->fetchSuccessMessage,
+    //    ]);
     }
-    $device = Device::query()
-    ->where(function ($query) use ($filterArrayUserId,$filterArrayName,$filterArrayIpAddress) {
-        $query->where($filterArrayUserId)
-              ->orWhere($filterArrayName)
-              ->orWhere($filterArrayIpAddress);
-    })
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
-
-    return DeviceResource::collection($device)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
 
     public function getUsers()
     {
@@ -464,27 +499,32 @@ class DeviceController extends Controller
      *     )
      *
      */
-    public function deviceStatusUpdate(Request $request)
+    public function deviceStatusUpdate($id)
     {
-        # code...
-        $request->validate([
-            'id'  => 'required|exists:devices,id',
-            'status' => 'required|boolean'
-        ]);
 
-        $post = Device::findOrFail($request->id);
+        $device = Device::findOrFail($id);
 
-        try {
-            $post->status = $request->status;
-            $post->save();
+        if($device->status == 0)
+        {
+            Device::where('id', $id)->update(['status'=> 1]);
             activity('Device')
             ->causedBy(auth()->user())
-            ->performedOn($post)
+            ->performedOn($device)
             ->log('Device Status Updated!!');
-            return $this->sendResponse([], $this->updateSuccessMessage, 200);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return $this->sendError($th->getMessage(), [], 500);
+
+            return response()->json([
+                'message' => 'Device Activate Successful'
+            ],Response::HTTP_OK);
+        }else{
+            Device::where('id', $id)->update(['status'=> 0]);
+            activity('Device')
+            ->causedBy(auth()->user())
+            ->performedOn($device)
+            ->log('Device Status Updated!!');
+
+            return response()->json([
+                'message' => 'Device De-activate Successful'
+            ],Response::HTTP_OK);
         }
     }
 
