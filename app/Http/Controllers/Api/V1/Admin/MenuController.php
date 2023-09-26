@@ -192,7 +192,24 @@ class MenuController extends Controller
      *     )
      *
      */
+    public function insertMenu(MenuRequest $request)
+    {
 
+        try {
+            $menu = $this->MenuService->createMenu($request);
+            activity("Menu")
+                ->causedBy(auth()->user())
+                ->performedOn($menu)
+                ->log('Menu Created !');
+            return MenuResource::make($menu)->additional([
+                'success' => true,
+                'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
 
     /**
      * @OA\Get(
@@ -279,24 +296,7 @@ class MenuController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function insertMenu(MenuRequest $request)
-    {
 
-        try {
-            $menu = $this->MenuService->createMenu($request);
-            activity("Menu")
-            ->causedBy(auth()->user())
-            ->performedOn($menu)
-            ->log('Menu Created !');
-            return MenuResource::make($menu)->additional([
-                'success' => true,
-                'message' => $this->insertSuccessMessage,
-            ]);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return $this->sendError($th->getMessage(), [], 500);
-        }
-    }
 
     public function edit($id)
     {

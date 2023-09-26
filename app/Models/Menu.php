@@ -47,6 +47,16 @@ use Spatie\Permission\Models\Permission;
 class Menu extends Model
 {
     use HasFactory,SoftDeletes;
+
+    protected $fillable = [
+        'page_link_id',
+        'parent_id',
+        'label_name_en',
+        'label_name_bn',
+        'link_type',
+        'link',
+        'order',
+    ];
     public function children()
     {
         return $this->hasMany(Menu::class, 'parent_id');

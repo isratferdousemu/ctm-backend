@@ -146,10 +146,11 @@ class LocationService
 
             $location                         = new Location;
             $location->parent_id              = $request->district_id;
+            $location->location_type          = $request->location_type;
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;
             $location->code                   = $request->code;
-            $location->type                   = $this->city;
+            $location->type                   = $request->location_type==3?$this->city:$this->districtPouroshava;
             $location->created_by             = Auth()->user()->id;
             $location->save();
             DB::commit();
