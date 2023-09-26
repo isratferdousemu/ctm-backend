@@ -3399,6 +3399,131 @@
                 ]
             }
         },
+        "/admin/menu/update/{id}": {
+            "post": {
+                "tags": [
+                    "MENU-MANAGEMENT"
+                ],
+                "summary": "update a menu",
+                "description": "update a menu",
+                "operationId": "update",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "label_name_en": {
+                                        "description": "english name of the menu",
+                                        "type": "text"
+                                    },
+                                    "label_name_bn": {
+                                        "description": "bangla name of the menu",
+                                        "type": "text"
+                                    },
+                                    "order": {
+                                        "description": "sl of the menu",
+                                        "type": "integer"
+                                    },
+                                    "page_link_id": {
+                                        "description": "page link id",
+                                        "type": "integer"
+                                    },
+                                    "parent_id": {
+                                        "description": "parent menu id",
+                                        "type": "integer"
+                                    },
+                                    "link_type": {
+                                        "description": "page link type. ex:1->external, 2->internal",
+                                        "type": "integer"
+                                    },
+                                    "link": {
+                                        "description": "page link if link type is external",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/menu/destroy/{id}": {
+            "get": {
+                "tags": [
+                    "MENU-MANAGEMENT"
+                ],
+                "summary": "destroy menu",
+                "description": "destroy menu from menu lists",
+                "operationId": "destroy",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/office/get": {
             "get": {
                 "tags": [
@@ -4028,7 +4153,7 @@
                 ],
                 "summary": "update a role",
                 "description": "update a role",
-                "operationId": "update",
+                "operationId": "updateRole",
                 "requestBody": {
                     "description": "enter inputs",
                     "required": true,
@@ -4107,7 +4232,7 @@
                 ],
                 "summary": " destroy role data",
                 "description": "Returns Role destroy by id",
-                "operationId": "destroy",
+                "operationId": "destroRole",
                 "parameters": [
                     {
                         "name": "id",
