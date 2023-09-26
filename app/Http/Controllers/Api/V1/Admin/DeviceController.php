@@ -9,6 +9,7 @@ use App\Http\Resources\Admin\Device\DeviceResource;
 use App\Http\Services\Admin\Device\DeviceService;
 use App\Http\Traits\MessageTrait;
 use App\Models\Device;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
@@ -103,6 +104,15 @@ class DeviceController extends Controller
         'message' => $this->fetchSuccessMessage,
     ]);
 }
+
+    public function getUsers()
+    {
+        $users = User::where('status',1)->latest()->get();
+
+        return \response()->json([
+            'users' => $users
+        ],Response::HTTP_OK);
+    }
 
     /**
      *
@@ -211,6 +221,15 @@ class DeviceController extends Controller
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+    public function edit($id)
+    {
+        $device = Device::where('id', $id)->first();
+
+        return \response()->json([
+            'device' => $device
+        ],Response::HTTP_OK);
     }
 
     /**
