@@ -18,7 +18,6 @@ class DeviceService
             $device                       = new Device;
             $device->user_id                = $request->user_id;
             $device->name                = $request->name;
-            $device->device_name                = $request->device_name;
             $device->device_id                = $request->device_id;
             $device->ip_address                   = $request->ip();
             $device->device_type                   = $request->device_type;
@@ -40,7 +39,6 @@ class DeviceService
             $device                       = Device::find($request->id);
             $device->user_id                = $request->user_id;
             $device->name                = $request->name;
-            $device->device_name                = $request->device_name;
             $device->device_id                = $request->device_id;
             $device->ip_address                   = $request->ip();
             $device->device_type                   = $request->device_type;

@@ -66,8 +66,10 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::post('/status', [DeviceController::class, 'deviceStatusUpdate'])->middleware(['role_or_permission:super-admin|device-edit']);
         Route::post('/insert', [DeviceController::class, 'insertDevice'])->middleware(['role_or_permission:super-admin|device-create']);
         Route::get('/get',[DeviceController::class, 'getAllDevicePaginated'])->middleware(['role_or_permission:super-admin|device-list']);
+        Route::get('/get_users',[DeviceController::class, 'getUsers'])->middleware(['role_or_permission:super-admin|device-list']);
+        Route::get('/edit/{id}',[DeviceController::class, 'edit'])->middleware(['role_or_permission:super-admin|device-list']);
         Route::post('/update', [DeviceController::class, 'deviceUpdate'])->middleware(['role_or_permission:super-admin|device-update']);
-        Route::get('/destroy/{id}', [DeviceController::class, 'destroyDevice'])->middleware(['role_or_permission:super-admin|device-destroy']);
+        Route::delete('/destroy/{id}', [DeviceController::class, 'destroyDevice'])->middleware(['role_or_permission:super-admin|device-destroy']);
     });
 
 
