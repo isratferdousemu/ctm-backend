@@ -22,6 +22,9 @@ class WardRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'city_id' => 'sometimes|integer|exists:locations,id,deleted_at,NULL',
+            'city_thana_id' => 'sometimes|integer|exists:locations,id,deleted_at,NULL',
+            'district_pouro_id' => 'sometimes|integer|exists:locations,id,deleted_at,NULL',
             'division_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
             'district_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
             'thana_id' => 'required|integer|exists:locations,id,deleted_at,NULL',

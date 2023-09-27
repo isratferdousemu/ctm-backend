@@ -854,7 +854,7 @@ class LocationController extends Controller
      *         )
      *     ),
      *       @OA\Parameter(
-     *         description="location type id for get city, eg: 3 for city, 2 for upazila",
+     *         description="location type id for get city, eg: 3 for city, 2 for upazila, 1 for District Pouroshava",
      *         in="path",
      *         name="location_type",
      *         @OA\Schema(
@@ -1290,6 +1290,57 @@ class LocationController extends Controller
 
 
     $thanas = Location::whereParentId($district_id)->whereType($this->thana)->get();
+
+    return DistrictResource::collection($thanas)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
+        /**
+     * @OA\Get(
+     *      path="/admin/thana/get/{city_id}",
+     *      operationId="getAllThanaByCityId",
+     *      tags={"GEOGRAPHIC-THANA"},
+     *      summary=" get thana by city  id",
+     *      description="get thana by city id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of city to return",
+     *         in="path",
+     *         name="city_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+ public function getAllThanaByCityId($city_id){
+
+
+    $thanas = Location::whereParentId($city_id)->whereType($this->thana)->whereLocationType(3)->get();
 
     return DistrictResource::collection($thanas)->additional([
         'success' => true,
@@ -2151,6 +2202,21 @@ class LocationController extends Controller
      *                   @OA\Property(
      *                      property="union_id",
      *                      description="id of union",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="city_id",
+     *                      description="id of city",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="city_thana_id",
+     *                      description="id of city corporation thana",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="district_pouro_id",
+     *                      description="id of city",
      *                      type="text",
      *                   ),
      *                   @OA\Property(

@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/insert', [LocationController::class, 'insertThana'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::get('/get',[LocationController::class, 'getAllThanaPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::get('/get/{district_id}',[LocationController::class, 'getAllThanaByDistrictId'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/get/{city_id}',[LocationController::class, 'getAllThanaByCityId'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::post('/update', [LocationController::class, 'thanaUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyThana'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
