@@ -195,8 +195,8 @@ class AuthController extends Controller
      *           @OA\Schema(
      *
      *                   @OA\Property(
-     *                      property="email",
-     *                      description="user email",
+     *                      property="username",
+     *                      description="username",
      *                      type="string",
      *                   ),
      *                  @OA\Property(
@@ -278,8 +278,8 @@ class AuthController extends Controller
      *                      type="string",
      *                   ),
      *                   @OA\Property(
-     *                      property="email",
-     *                      description="user email",
+     *                      property="username",
+     *                      description="username",
      *                      type="string",
      *                   ),
      *                  @OA\Property(

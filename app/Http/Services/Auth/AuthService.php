@@ -95,11 +95,11 @@ class AuthService
 
         $request->validate(
             [
-                'email'      => 'required|email|exists:users,email',
+                'username'      => 'required|exists:users,username',
                 'password'              => 'required|string|min:6',
             ],
             [
-                'email.exists'     => 'This email does not match our database record!',
+                'username.exists'     => 'This username does not match our database record!',
             ]
         );
     }
@@ -180,11 +180,11 @@ class AuthService
             $this->hasTooManyLoginAttempts($request)
         ) {
             $this->fireLockoutEvent($request);
-            $user = User::where("email", $request->email)->first();
+            $user = User::where("username", $request->username)->first();
             $this->bannedUser($user);
             return $this->sendLockoutResponse($request);
         }
-        $user = User::where("email", $request->email)->first();
+        $user = User::where("username", $request->username)->first();
 
         if ($user == null) {
             $this->incrementLoginAttempts($request);
@@ -221,7 +221,7 @@ class AuthService
                         );
                     }
                 // check device registration
-                $device = Device::whereUserId($user->user_id)->whereDeviceId($request->device_token)->whereIpAddress($request->ip())->first();
+                $device = Device::whereUserId($user->user_id)->whereDeviceId($request->device_token)->first();
                 if(!$device){
                     throw new AuthBasicErrorException(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
