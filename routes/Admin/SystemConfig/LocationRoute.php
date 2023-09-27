@@ -38,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get',[LocationController::class, 'getAllCityPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::post('/update', [LocationController::class, 'cityUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyCity'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        Route::get('/get/{district_id}',[LocationController::class, 'getAllCityByDistrictId'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+
     });
 
     /* -------------------------------------------------------------------------- */

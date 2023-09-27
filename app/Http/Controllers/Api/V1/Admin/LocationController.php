@@ -826,7 +826,7 @@ class LocationController extends Controller
               ->orWhere($filterArrayCode);
     })
     ->whereType($this->city)
-    ->with('parent.parent')
+    ->with('parent.parent','locationType')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
     return CityResource::collection($district)->additional([
@@ -835,6 +835,58 @@ class LocationController extends Controller
     ]);
 
     }
+
+    /**
+     * @OA\Get(
+     *      path="/admin/city/get/{district_id}",
+     *      operationId="getAllCityByDistrictId",
+     *      tags={"GEOGRAPHIC-CITY"},
+     *      summary=" get city by district id",
+     *      description="get city by district id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of district to return",
+     *         in="path",
+     *         name="district_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+ public function getAllCityByDistrictId($district_id){
+
+
+    $cities = Location::whereParentId($district_id)->whereType($this->city)->get();
+
+    return DistrictResource::collection($cities)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
 
     /**
      *
@@ -880,6 +932,11 @@ class LocationController extends Controller
      *                      description="code of the city",
      *                      type="text",
      *                   ),
+     *                   @OA\Property(
+     *                      property="location_type",
+     *                      description="location type of the city",
+     *                      type="text",
+     *                   ),
      *
      *                 ),
      *             ),
@@ -917,10 +974,10 @@ class LocationController extends Controller
 
         try {
             $city = $this->locationService->createCity($request);
-            activity("City")
+            activity($request->location_type==3?$this->city:$this->districtPouroshava)
             ->causedBy(auth()->user())
             ->performedOn($city)
-            ->log('City Created !');
+            ->log($request->location_type==3?$this->city:$this->districtPouroshava.' Created !');
             return CityResource::make($city->load('parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -2068,6 +2125,11 @@ class LocationController extends Controller
      *                      type="text",
      *                   ),
      *                   @OA\Property(
+     *                      property="location_type",
+     *                      description="location type of the ward",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
      *                      property="thana_id",
      *                      description="id of thana",
      *                      type="text",
@@ -2310,426 +2372,5 @@ class LocationController extends Controller
          return $this->sendResponse($ward, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
-    /* -------------------------------------------------------------------------- */
-    /*                            TODO: VILLAGE Functions                           */
-    /* -------------------------------------------------------------------------- */
 
-
-            /**
-    * @OA\Get(
-    *     path="/admin/village/get",
-    *      operationId="getAllVillagePaginated",
-    *      tags={"GEOGRAPHIC-VILLAGE"},
-    *      summary="get paginated village",
-    *      description="get paginated village",
-    *      security={{"bearer_token":{}}},
-    *     @OA\Parameter(
-    *         name="searchText",
-    *         in="query",
-    *         description="search by name",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="perPage",
-    *         in="query",
-    *         description="number of village per page",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="page",
-    *         in="query",
-    *         description="page number",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful Insert operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *
-     *          )
-    * )
-    */
-
- public function getAllVillagePaginated(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
-
-    $filterArrayNameEn=[];
-    $filterArrayNameBn=[];
-    $filterArrayCode=[];
-
-    if ($searchText) {
-        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-    }
-    $village = Location::query()
-    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
-        $query->where($filterArrayNameEn)
-              ->orWhere($filterArrayNameBn)
-              ->orWhere($filterArrayCode);
-    })
-    ->whereType($this->village)
-    ->with('parent.parent.parent.parent.parent')
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
-    return VillageResource::collection($village)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-
-    }
-
-        /**
-     * @OA\Get(
-     *      path="/admin/village/get/{ward_id}",
-     *      operationId="getAllVillageByWardId",
-     *      tags={"GEOGRAPHIC-VILLAGE"},
-     *      summary=" get village by ward id",
-     *      description="get village by ward id",
-     *      security={{"bearer_token":{}}},
-     *
-     *       @OA\Parameter(
-     *         description="id of ward to return",
-     *         in="path",
-     *         name="union_id",
-     *         @OA\Schema(
-     *           type="integer",
-     *         )
-     *     ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=404,
-     *          description="Not Found!"
-     *      ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity"
-     *      ),
-     *     )
-     */
-
- public function getAllVillageByWardId($ward_id){
-
-
-    $village = Location::whereParentId($ward_id)->whereType($this->village)->get();
-
-    return DistrictResource::collection($village)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
-
-    /**
-     *
-     * @OA\Post(
-     *      path="/admin/village/insert",
-     *      operationId="insertVillage",
-     *      tags={"GEOGRAPHIC-VILLAGE"},
-     *      summary="insert a village",
-     *      description="insert a village",
-     *      security={{"bearer_token":{}}},
-     *
-     *
-     *       @OA\RequestBody(
-     *          required=true,
-     *          description="enter inputs",
-     *
-     *
-     *            @OA\MediaType(
-     *              mediaType="multipart/form-data",
-     *           @OA\Schema(
-     *                   @OA\Property(
-     *                      property="division_id",
-     *                      description="id of division",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="district_id",
-     *                      description="id of district",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="thana_id",
-     *                      description="id of thana",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="union_id",
-     *                      description="id of union",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="ward_id",
-     *                      description="id of ward",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="name_en",
-     *                      description="english name of the village",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="name_bn",
-     *                      description="bangla name of the village",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="code",
-     *                      description="code of the village",
-     *                      type="text",
-     *                   ),
-     *
-     *                 ),
-     *             ),
-     *
-     *         ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful Insert operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *
-     *          )
-     *        )
-     *     )
-     *
-     */
-    public function insertVillage(VillageRequest $request){
-
-        try {
-            $village = $this->locationService->createVillage($request);
-            activity("Village")
-            ->causedBy(auth()->user())
-            ->performedOn($village)
-            ->log('Village Created !');
-            return VillageResource::make($village->load('parent.parent.parent.parent.parent'))->additional([
-                'success' => true,
-                'message' => $this->insertSuccessMessage,
-            ]);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return $this->sendError($th->getMessage(), [], 500);
-        }
-    }
-
-    /**
-     *
-     * @OA\Post(
-     *      path="/admin/village/update",
-     *      operationId="villageUpdate",
-     *      tags={"GEOGRAPHIC-VILLAGE"},
-     *      summary="update a village",
-     *      description="update a village",
-     *      security={{"bearer_token":{}}},
-     *
-     *
-     *       @OA\RequestBody(
-     *          required=true,
-     *          description="enter inputs",
-     *
-     *            @OA\MediaType(
-     *              mediaType="multipart/form-data",
-     *           @OA\Schema(
-     *                   @OA\Property(
-     *                      property="id",
-     *                      description="id of the village",
-     *                      type="integer",
-     *                   ),
-     *           @OA\Property(
-     *                      property="division_id",
-     *                      description="id of division",
-     *                      type="text",
-     *                   ),
-     *           @OA\Property(
-     *                      property="district_id",
-     *                      description="id of district",
-     *                      type="text",
-     *                   ),
-     *           @OA\Property(
-     *                      property="thana_id",
-     *                      description="id of thana",
-     *                      type="text",
-     *                   ),
-     *           @OA\Property(
-     *                      property="union_id",
-     *                      description="id of union",
-     *                      type="text",
-     *                   ),
-     *           @OA\Property(
-     *                      property="ward_id",
-     *                      description="id of ward",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="name_en",
-     *                      description="english name of the village",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="name_bn",
-     *                      description="bangla name of the village",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="code",
-     *                      description="code of the village",
-     *                      type="text",
-     *                   ),
-     *
-     *                 ),
-     *             ),
-     *
-     *         ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful Insert operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *
-     *          )
-     *        )
-     *     )
-     *
-     */
-    public function villageUpdate(VillageUpdateRequest $request){
-
-        try {
-            $village = $this->locationService->updateVillage($request);
-            activity("Village")
-            ->causedBy(auth()->user())
-            ->performedOn($village)
-            ->log('Village Update !');
-            return WardResource::make($village->load('parent.parent.parent.parent.parent'))->additional([
-                'success' => true,
-                'message' => $this->updateSuccessMessage,
-            ]);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return $this->sendError($th->getMessage(), [], 500);
-        }
-    }
-
-         /**
-     * @OA\Get(
-     *      path="/admin/village/destroy/{id}",
-     *      operationId="destroyVillage",
-     *      tags={"GEOGRAPHIC-VILLAGE"},
-     *      summary="destroy village",
-     *      description="Returns village destroy by id",
-     *      security={{"bearer_token":{}}},
-     *
-     *       @OA\Parameter(
-     *         description="id of village to return",
-     *         in="path",
-     *         name="id",
-     *         @OA\Schema(
-     *           type="string",
-     *         )
-     *     ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=404,
-     *          description="Not Found!"
-     *      ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity"
-     *      ),
-     *     )
-     */
-    public function destroyVillage($id)
-    {
-        $validator = Validator::make(['id' => $id], [
-            'id' => 'required|exists:locations,id,deleted_at,NULL',
-        ]);
-
-        $validator->validated();
-
-        $village = Location::whereId($id)->whereType($this->village)->first();
-        if($village){
-            $village->delete();
-        }
-        activity("Village")
-        ->causedBy(auth()->user())
-        ->log('Village Deleted!!');
-         return $this->sendResponse($village, $this->deleteSuccessMessage, Response::HTTP_OK);
-    }
 }
