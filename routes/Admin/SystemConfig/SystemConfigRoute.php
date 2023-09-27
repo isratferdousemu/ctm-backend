@@ -63,7 +63,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
     /* -------------------------------------------------------------------------- */
 
     Route::prefix('admin/device')->group(function () {
-        Route::post('/status', [DeviceController::class, 'deviceStatusUpdate'])->middleware(['role_or_permission:super-admin|device-edit']);
+        Route::post('/status/{id}', [DeviceController::class, 'deviceStatusUpdate'])->middleware(['role_or_permission:super-admin|device-edit']);
         Route::post('/insert', [DeviceController::class, 'insertDevice'])->middleware(['role_or_permission:super-admin|device-create']);
         Route::get('/get',[DeviceController::class, 'getAllDevicePaginated'])->middleware(['role_or_permission:super-admin|device-list']);
         Route::get('/get_users',[DeviceController::class, 'getUsers'])->middleware(['role_or_permission:super-admin|device-list']);

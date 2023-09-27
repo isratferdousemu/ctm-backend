@@ -11,7 +11,7 @@ class MenuUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class MenuUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'label_name_en' => 'required',
+            'label_name_bn' => 'required'
         ];
     }
 }

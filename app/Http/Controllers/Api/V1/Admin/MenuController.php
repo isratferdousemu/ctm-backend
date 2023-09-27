@@ -89,19 +89,45 @@ class MenuController extends Controller
 //        'message' => $this->fetchSuccessMessage,
 //    ]);
 
-        $menus = Menu::select(
+        $menu = Menu::select(
             'menus.*',
             'permissions.page_url as link'
-        )
+            )
             ->leftJoin('permissions', function ($join) {
                 $join->on('menus.page_link_id', '=', 'permissions.id');
-            })
-            ->latest()
-            ->get();
+            });
 
-        return \response()->json([
-            'menus' => $menus
-        ], Response::HTTP_OK);
+        if($request->has('sortBy'))
+        {
+            if($request->get('sortDesc') === true)
+            {
+                $menu = $menu->orderBy($request->get('sortBy'), 'desc');
+            }else{
+                $menu = $menu->orderBy($request->get('sortBy'), 'asc');
+            }
+        }else{
+            $menu = $menu->orderBy('id', 'desc');
+        }
+
+        $searchValue = $request->input('search');
+
+        if($searchValue)
+        {
+            $menu->where(function($query) use ($searchValue) {
+                $query->where('label_name_en', 'like', '%' . $searchValue . '%');
+                $query->orWhere('label_name_bn', 'like', '%' . $searchValue . '%');
+                $query->orWhere('link_type', 'like', '%' . $searchValue . '%');
+            });
+        }
+
+        $itemsPerPage = 10;
+
+        if($request->has('itemsPerPage'))
+        {
+            $itemsPerPage = $request->get('itemsPerPage');
+        }
+
+        return $menu->paginate($itemsPerPage);
     }
 
     /**
@@ -404,12 +430,14 @@ class MenuController extends Controller
 
             try {
 
-                $menu = Menu::find($id);
+                $menu = Menu::findOrFail($id);
 
-                $menu->label_name_en          = $request->label_name_en;
-                $menu->label_name_bn          = $request->label_name_bn;
-                $menu->order                  = $request->order;
-                $menu->page_link_id           = $request->page_link_id;
+                $menu->label_name_en = $request->label_name_en;
+                $menu->label_name_bn = $request->label_name_bn;
+                $menu->order = $request->order;
+
+                $menu->page_link_id = $request->page_link_id;
+
                 $menu->link_type              = $request->link_type;
                 $menu->link                   = $request->link;
 
@@ -426,10 +454,10 @@ class MenuController extends Controller
                     }
                 }
 
-                // activity("Menu")
-                // ->causedBy(auth()->user())
-                // ->performedOn($menu)
-                // ->log('Menu Updated !');
+                 activity("Menu")
+                 ->causedBy(auth()->user())
+                 ->performedOn($menu)
+                 ->log('Menu Updated !');
 
                 DB::commit();
 
@@ -484,7 +512,7 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
-        $menu = Menu::find($id);
+        $menu = Menu::findOrFail($id);
         $menu->delete();
 
         return \response()->json([
