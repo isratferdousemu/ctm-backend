@@ -1726,6 +1726,53 @@
                 ]
             }
         },
+        "/admin/city/get/{district_id}": {
+            "get": {
+                "tags": [
+                    "GEOGRAPHIC-CITY"
+                ],
+                "summary": " get city by district id",
+                "description": "get city by district id",
+                "operationId": "getAllCityByDistrictId",
+                "parameters": [
+                    {
+                        "name": "district_id",
+                        "in": "path",
+                        "description": "id of district to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/city/insert": {
             "post": {
                 "tags": [
@@ -1759,6 +1806,10 @@
                                     },
                                     "code": {
                                         "description": "code of the city",
+                                        "type": "text"
+                                    },
+                                    "location_type": {
+                                        "description": "location type of the city",
                                         "type": "text"
                                     }
                                 },
@@ -2713,6 +2764,10 @@
                                         "description": "id of district",
                                         "type": "text"
                                     },
+                                    "location_type": {
+                                        "description": "location type of the ward",
+                                        "type": "text"
+                                    },
                                     "thana_id": {
                                         "description": "id of thana",
                                         "type": "text"
@@ -2907,346 +2962,6 @@
                 ]
             }
         },
-        "/admin/village/get": {
-            "get": {
-                "tags": [
-                    "GEOGRAPHIC-VILLAGE"
-                ],
-                "summary": "get paginated village",
-                "description": "get paginated village",
-                "operationId": "getAllVillagePaginated",
-                "parameters": [
-                    {
-                        "name": "searchText",
-                        "in": "query",
-                        "description": "search by name",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of village per page",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "page number",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/village/get/{ward_id}": {
-            "get": {
-                "tags": [
-                    "GEOGRAPHIC-VILLAGE"
-                ],
-                "summary": " get village by ward id",
-                "description": "get village by ward id",
-                "operationId": "getAllVillageByWardId",
-                "parameters": [
-                    {
-                        "name": "union_id",
-                        "in": "path",
-                        "description": "id of ward to return",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Not Found!"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/village/insert": {
-            "post": {
-                "tags": [
-                    "GEOGRAPHIC-VILLAGE"
-                ],
-                "summary": "insert a village",
-                "description": "insert a village",
-                "operationId": "insertVillage",
-                "requestBody": {
-                    "description": "enter inputs",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "division_id": {
-                                        "description": "id of division",
-                                        "type": "text"
-                                    },
-                                    "district_id": {
-                                        "description": "id of district",
-                                        "type": "text"
-                                    },
-                                    "thana_id": {
-                                        "description": "id of thana",
-                                        "type": "text"
-                                    },
-                                    "union_id": {
-                                        "description": "id of union",
-                                        "type": "text"
-                                    },
-                                    "ward_id": {
-                                        "description": "id of ward",
-                                        "type": "text"
-                                    },
-                                    "name_en": {
-                                        "description": "english name of the village",
-                                        "type": "text"
-                                    },
-                                    "name_bn": {
-                                        "description": "bangla name of the village",
-                                        "type": "text"
-                                    },
-                                    "code": {
-                                        "description": "code of the village",
-                                        "type": "text"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/village/update": {
-            "post": {
-                "tags": [
-                    "GEOGRAPHIC-VILLAGE"
-                ],
-                "summary": "update a village",
-                "description": "update a village",
-                "operationId": "villageUpdate",
-                "requestBody": {
-                    "description": "enter inputs",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "description": "id of the village",
-                                        "type": "integer"
-                                    },
-                                    "division_id": {
-                                        "description": "id of division",
-                                        "type": "text"
-                                    },
-                                    "district_id": {
-                                        "description": "id of district",
-                                        "type": "text"
-                                    },
-                                    "thana_id": {
-                                        "description": "id of thana",
-                                        "type": "text"
-                                    },
-                                    "union_id": {
-                                        "description": "id of union",
-                                        "type": "text"
-                                    },
-                                    "ward_id": {
-                                        "description": "id of ward",
-                                        "type": "text"
-                                    },
-                                    "name_en": {
-                                        "description": "english name of the village",
-                                        "type": "text"
-                                    },
-                                    "name_bn": {
-                                        "description": "bangla name of the village",
-                                        "type": "text"
-                                    },
-                                    "code": {
-                                        "description": "code of the village",
-                                        "type": "text"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": "Successful Insert operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/admin/village/destroy/{id}": {
-            "get": {
-                "tags": [
-                    "GEOGRAPHIC-VILLAGE"
-                ],
-                "summary": "destroy village",
-                "description": "Returns village destroy by id",
-                "operationId": "destroyVillage",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "id of village to return",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Not Found!"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
         "/admin/menu/get": {
             "get": {
                 "tags": [
@@ -3281,6 +2996,89 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/menu/insert": {
+            "post": {
+                "tags": [
+                    "MENU-MANAGEMENT"
+                ],
+                "summary": "insert a menu",
+                "description": "insert a menu",
+                "operationId": "insertMenu",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "label_name_en": {
+                                        "description": "english name of the menu",
+                                        "type": "text"
+                                    },
+                                    "label_name_bn": {
+                                        "description": "bangla name of the menu",
+                                        "type": "text"
+                                    },
+                                    "order": {
+                                        "description": "sl of the menu",
+                                        "type": "integer"
+                                    },
+                                    "page_link_id": {
+                                        "description": "page link id",
+                                        "type": "integer"
+                                    },
+                                    "parent_id": {
+                                        "description": "parent menu id",
+                                        "type": "integer"
+                                    },
+                                    "link_type": {
+                                        "description": "page link type. ex:1->external, 2->internal",
+                                        "type": "integer"
+                                    },
+                                    "link": {
+                                        "description": "page link if link type is external",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -5034,8 +4832,8 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
-                                    "email": {
-                                        "description": "user email",
+                                    "username": {
+                                        "description": "username",
                                         "type": "string"
                                     },
                                     "password": {
@@ -5092,8 +4890,8 @@
                                         "description": "OTP code",
                                         "type": "string"
                                     },
-                                    "email": {
-                                        "description": "user email",
+                                    "username": {
+                                        "description": "username",
                                         "type": "string"
                                     },
                                     "password": {
