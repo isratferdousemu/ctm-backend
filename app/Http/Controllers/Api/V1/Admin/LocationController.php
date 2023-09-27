@@ -826,7 +826,7 @@ class LocationController extends Controller
               ->orWhere($filterArrayCode);
     })
     ->whereType($this->city)
-    ->with('parent.parent')
+    ->with('parent.parent','locationType')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
     return CityResource::collection($district)->additional([
@@ -835,6 +835,58 @@ class LocationController extends Controller
     ]);
 
     }
+
+    /**
+     * @OA\Get(
+     *      path="/admin/city/get/{district_id}",
+     *      operationId="getAllCityByDistrictId",
+     *      tags={"GEOGRAPHIC-CITY"},
+     *      summary=" get city by district id",
+     *      description="get city by district id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of district to return",
+     *         in="path",
+     *         name="district_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+ public function getAllCityByDistrictId($district_id){
+
+
+    $cities = Location::whereParentId($district_id)->whereType($this->city)->get();
+
+    return DistrictResource::collection($cities)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
 
     /**
      *
@@ -2070,6 +2122,11 @@ class LocationController extends Controller
      *                   @OA\Property(
      *                      property="district_id",
      *                      description="id of district",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="location_type",
+     *                      description="location type of the ward",
      *                      type="text",
      *                   ),
      *                   @OA\Property(
