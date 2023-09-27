@@ -838,7 +838,7 @@ class LocationController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/admin/city/get/{district_id}",
+     *      path="/admin/city/get/{district_id}/{location_type}",
      *      operationId="getAllCityByDistrictId",
      *      tags={"GEOGRAPHIC-CITY"},
      *      summary=" get city by district id",
@@ -849,6 +849,14 @@ class LocationController extends Controller
      *         description="id of district to return",
      *         in="path",
      *         name="district_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *       @OA\Parameter(
+     *         description="location type id for get city, eg: 3 for city, 2 for upazila, 1 for District Pouroshava",
+     *         in="path",
+     *         name="location_type",
      *         @OA\Schema(
      *           type="integer",
      *         )
@@ -877,10 +885,10 @@ class LocationController extends Controller
      *     )
      */
 
- public function getAllCityByDistrictId($district_id){
+ public function getAllCityByDistrictId($district_id,$location_type=3){
 
 
-    $cities = Location::whereParentId($district_id)->whereType($this->city)->get();
+    $cities = Location::whereParentId($district_id)->whereType($this->city)->whereLocationType($location_type)->get();
 
     return DistrictResource::collection($cities)->additional([
         'success' => true,
@@ -974,7 +982,8 @@ class LocationController extends Controller
 
         try {
             $city = $this->locationService->createCity($request);
-            activity($request->location_type==3?$this->city:$this->districtPouroshava)
+            // activity($request->location_type==3?$this->city:$this->districtPouroshava)
+            activity($this->city)
             ->causedBy(auth()->user())
             ->performedOn($city)
             ->log($request->location_type==3?$this->city:$this->districtPouroshava.' Created !');
@@ -1287,6 +1296,57 @@ class LocationController extends Controller
         'message' => $this->fetchSuccessMessage,
     ]);
 }
+        /**
+     * @OA\Get(
+     *      path="/admin/thana/get/{city_id}",
+     *      operationId="getAllThanaByCityId",
+     *      tags={"GEOGRAPHIC-THANA"},
+     *      summary=" get thana by city  id",
+     *      description="get thana by city id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of city to return",
+     *         in="path",
+     *         name="city_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+ public function getAllThanaByCityId($city_id){
+
+
+    $thanas = Location::whereParentId($city_id)->whereType($this->thana)->whereLocationType(3)->get();
+
+    return DistrictResource::collection($thanas)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
 
     /**
      *
@@ -1315,6 +1375,11 @@ class LocationController extends Controller
      *                   @OA\Property(
      *                      property="district_id",
      *                      description="id of district",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="city_corporation_id",
+     *                      description="id of city corporation",
      *                      type="text",
      *                   ),
      *                   @OA\Property(
@@ -2137,6 +2202,21 @@ class LocationController extends Controller
      *                   @OA\Property(
      *                      property="union_id",
      *                      description="id of union",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="city_id",
+     *                      description="id of city",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="city_thana_id",
+     *                      description="id of city corporation thana",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="district_pouro_id",
+     *                      description="id of city",
      *                      type="text",
      *                   ),
      *                   @OA\Property(

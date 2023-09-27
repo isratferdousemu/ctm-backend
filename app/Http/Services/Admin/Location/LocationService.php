@@ -150,7 +150,8 @@ class LocationService
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;
             $location->code                   = $request->code;
-            $location->type                   = $request->location_type==3?$this->city:$this->districtPouroshava;
+            $location->type                   = $this->city;
+            // $location->type                   = $request->location_type==3?$this->city:$this->districtPouroshava;
             $location->created_by             = Auth()->user()->id;
             $location->save();
             DB::commit();
@@ -208,7 +209,7 @@ class LocationService
         try {
 
             $location                         = new Location;
-            $location->parent_id              = $request->district_id;
+            $location->parent_id              = $request->has('city_corporation_id')?$request->city_corporation_id:$request->district_id;
             $location->location_type          = $request->location_type;
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;
@@ -326,7 +327,13 @@ class LocationService
         try {
 
             $location                         = new Location;
-            $location->parent_id              = $request->union_id;
+            if($request->has('city_thana_id')){
+                $location->parent_id              = $request->city_thana_id;
+            }elseif($request->has('district_pouro_id')){
+                $location->parent_id              = $request->district_pouro_id;
+            }else{
+                $location->parent_id              = $request->union_id;
+            }
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;
             $location->code                   = $request->code;

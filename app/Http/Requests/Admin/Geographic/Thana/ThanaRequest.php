@@ -23,6 +23,7 @@ class ThanaRequest extends FormRequest
     {
         return [
             'location_type' => 'required|integer|exists:lookups,id',
+            'city_corporation_id' => 'sometimes|integer|exists:locations,id,deleted_at,NULL',
             'division_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
             'district_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
             'name_en' => 'required|string|max:50|unique:locations,name_en,NULL,id,deleted_at,NULL',
