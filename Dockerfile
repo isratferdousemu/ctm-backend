@@ -50,9 +50,9 @@ COPY . .
 
 COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
 
-
 #for staging
 ENV PORT=8000
 
-RUN chmod a+x ./Docker/entrypoint-staging.sh
-ENTRYPOINT [ "sh", "./Docker/entrypoint-staging.sh" ]
+RUN chmod a+x ./Docker/entrypoint.sh
+
+ENTRYPOINT ["sh", "./Docker/entrypoint.sh"]
