@@ -207,6 +207,15 @@ class AuthService
             if ($authCode == $this->authSuccessCode) {
                 $this->clearLoginAttempts($request);
                 if($type==1){
+                        // check device registration
+                $device = Device::whereUserId($user->user_id)->whereDeviceId($request->device_token)->first();
+                if(!$device){
+                    throw new AuthBasicErrorException(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        'device_not_found',
+                        "your device is not registered",
+                    );
+                }
                     return $otp = $this->sendLoginOtp($user,1);
                 }
                 if($type==2){
