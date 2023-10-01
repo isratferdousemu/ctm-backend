@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('locations', function (Blueprint $table) {
-            $table->bigInteger('location_type')->unsigned()->index()->nullable()->after('type');
-            $table->foreign('location_type')->references('id')->on('lookups')->onDelete('cascade');
+            // parent_id forgien key update add constraint on delete cascade and soft delete cascade
+            $table->dropForeign(['parent_id']);
+            $table->foreign('parent_id')->references('id')->on('locations')->onDelete('cascade')->onUpdate('cascade')->onSoftDelete('cascade');
+
+
         });
     }
 

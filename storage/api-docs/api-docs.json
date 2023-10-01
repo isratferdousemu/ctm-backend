@@ -2101,7 +2101,11 @@
                 ]
             }
         },
+<<<<<<< HEAD
         "/admin/thana/get/{city_id}": {
+=======
+        "/admin/thana/get/city/{city_id}": {
+>>>>>>> 0c787bc5b7021ab335c2abeadc4bdfdde934aef8
             "get": {
                 "tags": [
                     "GEOGRAPHIC-THANA"
