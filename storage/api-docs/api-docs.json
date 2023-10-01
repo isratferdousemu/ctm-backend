@@ -4903,6 +4903,10 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
+                                    "device_token": {
+                                        "description": "Browser Fingerprint",
+                                        "type": "string"
+                                    },
                                     "username": {
                                         "description": "username",
                                         "type": "string"
