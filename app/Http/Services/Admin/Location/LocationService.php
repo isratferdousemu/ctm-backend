@@ -327,7 +327,16 @@ class LocationService
         try {
 
             $location                         = new Location;
-            $location->parent_id              = $request->union_id;
+            if($request->has('city_thana_id')){
+                $location->parent_id              = $request->city_thana_id;
+            }
+            if($request->has('district_pouro_id')){
+                $location->parent_id              = $request->district_pouro_id;
+            }
+            if($request->has('union_id')){
+                $location->parent_id              = $request->union_id;
+            }
+            $location->location_type          = $request->location_type;
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;
             $location->code                   = $request->code;
@@ -356,7 +365,6 @@ class LocationService
         try {
 
             $location                       = Location::find($request->id);
-            $location->parent_id              = $request->union_id;
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;
             $location->code                   = $request->code;

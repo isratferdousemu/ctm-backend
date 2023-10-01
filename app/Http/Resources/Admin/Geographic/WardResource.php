@@ -14,12 +14,14 @@ class WardResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'id'                   => $this->id,
-            'name_en'              => $this->name_en,
-            'name_bn'              => $this->name_bn,
-            'code'                 => $this->code,
-            'union'  => UnionResource::make($this->whenLoaded('parent')),
-        ];
+        // return [
+        //     'id'                   => $this->id,
+        //     'name_en'              => $this->name_en,
+        //     'name_bn'              => $this->name_bn,
+        //     'code'                 => $this->code,
+        //     'union'  => UnionResource::make($this->whenLoaded('parent')),
+        // ];
+        return parent::toArray($request);
+
     }
 }

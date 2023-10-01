@@ -1746,7 +1746,7 @@
                     {
                         "name": "location_type",
                         "in": "path",
-                        "description": "location type id for get city, eg: 3 for city, 2 for upazila",
+                        "description": "location type id for get city, eg: 3 for city, 2 for upazila, 1 for District Pouroshava",
                         "schema": {
                             "type": "integer"
                         }
@@ -2067,6 +2067,53 @@
                         "name": "district_id",
                         "in": "path",
                         "description": "id of district to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/thana/get/city/{city_id}": {
+            "get": {
+                "tags": [
+                    "GEOGRAPHIC-THANA"
+                ],
+                "summary": " get thana by city  id",
+                "description": "get thana by city id",
+                "operationId": "getAllThanaByCityId",
+                "parameters": [
+                    {
+                        "name": "city_id",
+                        "in": "path",
+                        "description": "id of city to return",
                         "schema": {
                             "type": "integer"
                         }
@@ -2786,6 +2833,18 @@
                                     },
                                     "union_id": {
                                         "description": "id of union",
+                                        "type": "text"
+                                    },
+                                    "city_id": {
+                                        "description": "id of city",
+                                        "type": "text"
+                                    },
+                                    "city_thana_id": {
+                                        "description": "id of city corporation thana",
+                                        "type": "text"
+                                    },
+                                    "district_pouro_id": {
+                                        "description": "id of city",
                                         "type": "text"
                                     },
                                     "name_en": {

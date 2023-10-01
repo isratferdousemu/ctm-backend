@@ -350,9 +350,18 @@ class LocationController extends Controller
         $validator->validated();
 
         $division = Location::whereId($id)->first();
+
+        // check if division has any child if yes then return exception else delete
+        if($division->children->count() > 0){
+
+            return $this->sendError('you cannot delete this because it has child', [], 500);
+        }
+
+
         if($division){
             $division->delete();
         }
+
         activity("Division")
         ->causedBy(auth()->user())
         ->log('Division Deleted!!');
@@ -737,6 +746,10 @@ class LocationController extends Controller
         $validator->validated();
 
         $district = Location::whereId($id)->whereType($this->district)->first();
+        if($district->children->count() > 0){
+
+            return $this->sendError('you cannot delete this because it has child', [], 500);
+        }
         if($district){
             $district->delete();
         }
@@ -854,7 +867,7 @@ class LocationController extends Controller
      *         )
      *     ),
      *       @OA\Parameter(
-     *         description="location type id for get city, eg: 3 for city, 2 for upazila",
+     *         description="location type id for get city, eg: 3 for city, 2 for upazila, 1 for District Pouroshava",
      *         in="path",
      *         name="location_type",
      *         @OA\Schema(
@@ -1146,6 +1159,10 @@ class LocationController extends Controller
         $validator->validated();
 
         $city = Location::whereId($id)->whereType($this->city)->first();
+        if($city->children->count() > 0){
+
+            return $this->sendError('you cannot delete this because it has child', [], 500);
+        }
         if($city){
             $city->delete();
         }
@@ -1290,7 +1307,58 @@ class LocationController extends Controller
  public function getAllThanaByDistrictId($district_id){
 
 
-    $thanas = Location::whereParentId($district_id)->whereType($this->thana)->get();
+    $thanas = Location::whereParentId($district_id)->whereType($this->thana)->whereLocationType(2)->get();
+
+    return DistrictResource::collection($thanas)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
+        /**
+     * @OA\Get(
+     *      path="/admin/thana/get/city/{city_id}",
+     *      operationId="getAllThanaByCityId",
+     *      tags={"GEOGRAPHIC-THANA"},
+     *      summary=" get thana by city  id",
+     *      description="get thana by city id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of city to return",
+     *         in="path",
+     *         name="city_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+ public function getAllThanaByCityId($city_id){
+
+
+    $thanas = Location::whereParentId($city_id)->whereType($this->thana)->whereLocationType(3)->get();
 
     return DistrictResource::collection($thanas)->additional([
         'success' => true,
@@ -1556,6 +1624,10 @@ class LocationController extends Controller
         $validator->validated();
 
         $thana = Location::whereId($id)->whereType($this->thana)->first();
+        if($thana->children->count() > 0){
+
+            return $this->sendError('you cannot delete this because it has child', [], 500);
+        }
         if($thana){
             $thana->delete();
         }
@@ -1959,6 +2031,10 @@ class LocationController extends Controller
         $validator->validated();
 
         $union = Location::whereId($id)->whereType($this->union)->first();
+        if($union->children->count() > 0){
+
+            return $this->sendError('you cannot delete this because it has child', [], 500);
+        }
         if($union){
             $union->delete();
         }
@@ -2047,7 +2123,7 @@ class LocationController extends Controller
               ->orWhere($filterArrayCode);
     })
     ->whereType($this->ward)
-    ->with('parent.parent.parent.parent')
+    ->with('parent.parent.parent.parent','locationType')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
     return WardResource::collection($ward)->additional([
@@ -2152,6 +2228,21 @@ class LocationController extends Controller
      *                   @OA\Property(
      *                      property="union_id",
      *                      description="id of union",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="city_id",
+     *                      description="id of city",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="city_thana_id",
+     *                      description="id of city corporation thana",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="district_pouro_id",
+     *                      description="id of city",
      *                      type="text",
      *                   ),
      *                   @OA\Property(
@@ -2378,6 +2469,10 @@ class LocationController extends Controller
         $validator->validated();
 
         $ward = Location::whereId($id)->whereType($this->ward)->first();
+        if($ward->children->count() > 0){
+
+            return $this->sendError('you cannot delete this because it has child', [], 500);
+        }
         if($ward){
             $ward->delete();
         }
