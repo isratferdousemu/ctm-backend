@@ -1726,7 +1726,7 @@
                 ]
             }
         },
-        "/admin/city/get/{district_id}": {
+        "/admin/city/get/{district_id}/{location_type}": {
             "get": {
                 "tags": [
                     "GEOGRAPHIC-CITY"
@@ -1739,6 +1739,14 @@
                         "name": "district_id",
                         "in": "path",
                         "description": "id of district to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "location_type",
+                        "in": "path",
+                        "description": "location type id for get city, eg: 3 for city, 2 for upazila",
                         "schema": {
                             "type": "integer"
                         }
@@ -2114,6 +2122,10 @@
                                     },
                                     "district_id": {
                                         "description": "id of district",
+                                        "type": "text"
+                                    },
+                                    "city_corporation_id": {
+                                        "description": "id of city corporation",
                                         "type": "text"
                                     },
                                     "name_en": {

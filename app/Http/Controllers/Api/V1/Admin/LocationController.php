@@ -1235,9 +1235,10 @@ class LocationController extends Controller
               ->orWhere($filterArrayCode);
     })
     ->whereType($this->thana)
-    ->with('parent.parent','locationType')
+    ->with('parent.parent.parent','locationType')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
+    // return $thana; 
     return CityResource::collection($thana)->additional([
         'success' => true,
         'message' => $this->fetchSuccessMessage,
