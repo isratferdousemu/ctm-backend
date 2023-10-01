@@ -1306,7 +1306,7 @@ class LocationController extends Controller
  public function getAllThanaByDistrictId($district_id){
 
 
-    $thanas = Location::whereParentId($district_id)->whereType($this->thana)->get();
+    $thanas = Location::whereParentId($district_id)->whereType($this->thana)->whereLocationType(2)->get();
 
     return DistrictResource::collection($thanas)->additional([
         'success' => true,
@@ -1315,7 +1315,7 @@ class LocationController extends Controller
 }
         /**
      * @OA\Get(
-     *      path="/admin/thana/get/{city_id}",
+     *      path="/admin/thana/get/city/{city_id}",
      *      operationId="getAllThanaByCityId",
      *      tags={"GEOGRAPHIC-THANA"},
      *      summary=" get thana by city  id",
@@ -2122,7 +2122,7 @@ class LocationController extends Controller
               ->orWhere($filterArrayCode);
     })
     ->whereType($this->ward)
-    ->with('parent.parent.parent.parent')
+    ->with('parent.parent.parent.parent','locationType')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
     return WardResource::collection($ward)->additional([
