@@ -123,6 +123,19 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function office()
+    {
+        return $this->belongsTo(Lookup::class,'office_id','id');
+    }
+    public function officeType()
+    {
+        return $this->belongsTo(Lookup::class,'office_type','id');
+    }
+
+
+
+
+
 
 
 }
