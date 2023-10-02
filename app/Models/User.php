@@ -132,6 +132,11 @@ class User extends Authenticatable
         return $this->belongsTo(Lookup::class,'office_type','id');
     }
 
+    public function assignLocation()
+    {
+        return $this->belongsTo(Location::class,'assign_location_id','id');
+    }
+
 
 
 
