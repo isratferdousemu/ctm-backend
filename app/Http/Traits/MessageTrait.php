@@ -13,6 +13,7 @@ trait MessageTrait
     private $authRegStepThreeErrorCode = 9;
     private $authRegStepFourErrorCode = 101;
     private $authBasicErrorCode = 3;
+    private $authDefaultPasswordErrorCode = 11;
     //auth success code
     private $authSuccessCode = 4;
 
@@ -48,6 +49,7 @@ trait MessageTrait
  protected $userForgetPasswordPrefix = 'user_forget_password_';
     private $NonAllowedAdminTextErrorCode   = 'user_non_admin';
     private $bannedUserTextErrorCode   = 'user_banned';
+    private $defaultPasswordTextErrorCode   = 'user_default_password';
     private $authUnverifiedUserTextErrorCode   = 'user_email_unverified';
     private $authWrongCredentialTextErrorCode = 'wrong_email_or_password';
     private $employeeAlreadyBranchAdminTextErrorCode = 'employee_already_branch_admin';
@@ -98,6 +100,8 @@ trait MessageTrait
     private $unverifiedUserErrorResponse = 'Please Verify Your Account to login';
     private $NonAllowedAdminErrorResponse = 'please try to login your application';
     private $bannedUserErrorResponse = 'please contact administrator for re-active your account';
+
+    private $defaultPasswordErrorResponse = 'please change your default password';
 
     private $emailVerifySuccessMessage = 'Email verification Completed!';
     private $phoneVerifySuccessMessage = 'Phone verification Completed!';

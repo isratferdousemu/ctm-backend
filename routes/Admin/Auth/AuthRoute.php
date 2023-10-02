@@ -8,6 +8,7 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('admin/forgot-password/submit', 'forgotPasswordSubmit');
         Route::post('admin/login/otp', 'LoginOtp');
         Route::post('admin/login', 'LoginAdmin');
+        Route::post('admin/reset/password', 'resetPassword');
         //check token
         Route::post('auth/token/check', 'checkToken');
 });
