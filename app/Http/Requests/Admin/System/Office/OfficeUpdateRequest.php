@@ -22,12 +22,13 @@ class OfficeUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'division_id'         => 'required|integer|exists:locations,id',
-            'district_id'         => 'required|integer|exists:locations,id',
-            'thana_id'            => 'required|integer|exists:locations,id',
+            'division_id'         => 'sometimes|integer|exists:locations,id',
+            'district_id'         => 'sometimes|integer|exists:locations,id',
+            'thana_id'            => 'sometimes|integer|exists:locations,id',
+            'city_corpo_id'            => 'sometimes|integer|exists:locations,id',
             'name_en'             => 'required|string|max:50',
             'name_bn'             => 'required|string|max:50',
-            'office_type'         => 'required|integer',
+            'office_type'         => 'required|integer|exists:lookups,id',
             'office_address'      => 'required|string',
             'comment'             => 'required|string|max:120,Null',
             'status'              => 'required|boolean',
