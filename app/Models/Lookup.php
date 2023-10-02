@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Lookup whereValueBn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Lookup whereValueEn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Lookup whereVersion($value)
+ * @property int $default
+ * @method static \Illuminate\Database\Eloquent\Builder|Lookup whereDefault($value)
  * @mixin \Eloquent
  */
 class Lookup extends Model

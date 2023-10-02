@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // remove division_id, district_id, thana_id
+        Schema::table('offices', function (Blueprint $table) {
             $table->dropColumn('division_id');
             $table->dropColumn('district_id');
             $table->dropColumn('thana_id');
-     $table->unsignedInteger('office_type')->nullable();
-     $table->integer('is_default_password')->default(1);
-
+            $table->dropColumn('parent_id');
+            $table->unsignedInteger('assign_location_id')->nullable();
         });
     }
 
@@ -27,7 +25,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('offices', function (Blueprint $table) {
             //
         });
     }
