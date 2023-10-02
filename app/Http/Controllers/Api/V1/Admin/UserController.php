@@ -62,7 +62,7 @@ class UserController extends Controller
      *                      type="text",
      *                   ),
      *                   @OA\Property(
-     *                      property="role_id",
+     *                      property="role_id[0]",
      *                      description="id of role",
      *                      type="text",
      *                   ),
@@ -125,6 +125,7 @@ class UserController extends Controller
         try {
             $user = $this->UserService->createUser($request,$password);
 
+            
             $this->dispatch(new UserCreateJob($user->email,$user->full_name,$password));
 
             activity("User")

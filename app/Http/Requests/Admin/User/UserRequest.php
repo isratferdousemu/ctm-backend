@@ -27,7 +27,10 @@ class UserRequest extends FormRequest
             'mobile'                     => 'required|numeric|unique:users,mobile|regex:/^8801[3-9]\d{8}$/',
             'email'                     => 'required|email|unique:users,email,deleted_at',
             'status' => 'sometimes|integer|in:0,1',
-            'role_id' => 'required|integer|exists:roles,id',
+            'role_id' => 'required|array|exists:roles,id',
+            'office_type'                     => 'required|integer|unique:lookups,id,deleted_at',
+            'office_id'                     => 'required|email|unique:lookups,id,deleted_at',
+
             // 'division_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
             // 'district_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
             // 'thana_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
