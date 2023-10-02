@@ -3464,7 +3464,7 @@
         "/admin/office/insert": {
             "post": {
                 "tags": [
-                    "SYSTEM-OFFICE MANAGEMENT"
+                    "SYSTEM-OFFICE-MANAGEMENT"
                 ],
                 "summary": "insert a office",
                 "description": "insert a office",
@@ -3486,6 +3486,10 @@
                                     },
                                     "thana_id": {
                                         "description": "insert Thana Id",
+                                        "type": "integer"
+                                    },
+                                    "city_corpo_id": {
+                                        "description": "insert city corporation Id",
                                         "type": "integer"
                                     },
                                     "office_type": {
@@ -3555,10 +3559,10 @@
         "/admin/office/update": {
             "post": {
                 "tags": [
-                    "SYSTEM-OFFICE MANAGEMENT"
+                    "SYSTEM-OFFICE-MANAGEMENT"
                 ],
                 "summary": "update a office",
-                "description": "updatet a office",
+                "description": "update a office",
                 "operationId": "officeUpdate",
                 "requestBody": {
                     "description": "enter inputs",
@@ -3581,6 +3585,10 @@
                                     },
                                     "thana_id": {
                                         "description": "insert Thana Id",
+                                        "type": "integer"
+                                    },
+                                    "city_corpo_id": {
+                                        "description": "insert city corporation Id",
                                         "type": "integer"
                                     },
                                     "office_type": {
@@ -3697,7 +3705,7 @@
         "/admin/office/destroy/{id}": {
             "get": {
                 "tags": [
-                    "SYSTEM-OFFICE MANAGEMENT"
+                    "SYSTEM-OFFICE-MANAGEMENT"
                 ],
                 "summary": " destroy Office",
                 "description": "Returns office destroy by id",

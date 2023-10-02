@@ -64,4 +64,11 @@ class Office extends Model
     {
         return $this->belongsTo(Location::class,'thana_id');
     }
+
+    public function officeType(){
+        return $this->belongsTo(Lookup::class,'office_type');
+
+    }
+
+
 }
