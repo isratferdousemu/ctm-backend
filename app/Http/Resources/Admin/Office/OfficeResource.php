@@ -21,9 +21,7 @@ class OfficeResource extends JsonResource
         return [
 
         'id'               =>      $this->id,
-        'division'         =>      DivisionResource::make($this->whenLoaded('division')),
-        'district'         =>      DistrictResource::make($this->whenLoaded('district')),
-        'thana'            =>      CityResource::make($this->whenLoaded('thana')),
+        'assignLocation'   =>       $this->assignLocation,
         'officeType'       =>      LookupResource::make($this->whenLoaded('officeType')),
         'name_en'          =>      $this->name_en,
         'name_bn'          =>      $this->name_bn,

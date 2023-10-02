@@ -56,21 +56,15 @@ use Illuminate\Database\Eloquent\Model;
 class Office extends Model
 {
 
-    public function division()
-    {
-        return $this->belongsTo(Location::class,'division_id');
-    }
-    public function district()
-    {
-        return $this->belongsTo(Location::class,'district_id');
-    }
-    public function thana()
-    {
-        return $this->belongsTo(Location::class,'thana_id');
-    }
+
 
     public function officeType(){
         return $this->belongsTo(Lookup::class,'office_type');
+
+    }
+
+    public function assignLocation(){
+        return $this->belongsTo(Location::class,'assign_location_id');
 
     }
 
