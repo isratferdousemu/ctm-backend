@@ -17,9 +17,6 @@ return new class extends Migration
             $table->bigInteger('district_id')->unsigned()->index()->nullable();
             $table->bigInteger('thana_id')->unsigned()->index()->nullable();
             $table->bigInteger('parent_id')->unsigned()->index()->nullable();
-            // $table->foreign('division_id')->references('id')->on('locations')->onDelete('cascade');
-            // $table->foreign('district_id')->references('id')->on('locations')->onDelete('cascade');
-            // $table->foreign('thana_id')->references('id')->on('locations')->onDelete('cascade');
             $table->string('name_en',50);
             $table->string('name_bn',50);
             $table->integer('office_type');

@@ -22,9 +22,31 @@ class UserService
             $user->mobile = $request->mobile;
             $user->email = $request->email;
             $user->status = $request->status;
-            $user->division_id = $request->division_id;
-            $user->district_id = $request->district_id;
-            $user->thana_id = $request->thana_id;
+            // check request has division_id, district_id, thana_id, city_corpo_id
+
+            if($request->has('office_type')){
+            $user->office_type = $request->office_type;
+                if($request->office_type!=4 || $request->office_type!=5){
+                    if($request->office_type==6){
+                        if($request->has('division_id')){
+                            $user->assign_location_id = $request->division_id;
+                        }
+                    }elseif ($request->office_type==7) {
+                        if($request->has('district_id')){
+                            $user->assign_location_id = $request->district_id;
+                        }
+                        }elseif ($request->office_type==8 || $request->office_type==10 || $request->office_type==11) {
+                        if($request->has('thana_id')){
+                            $user->assign_location_id = $request->thana_id;
+                        }
+                    }elseif ($request->office_type==9) {
+                        if($request->has('city_corpo_id')){
+                            $user->assign_location_id = $request->city_corpo_id;
+                        }
+                    }
+                }
+            }
+            $user->office_id = $request->office_id;
             $user->user_type = $this->staffId;
             $user->password = bcrypt($password);
             $user->email_verified_at = now();

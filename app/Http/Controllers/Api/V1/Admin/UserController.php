@@ -62,13 +62,23 @@ class UserController extends Controller
      *                      type="text",
      *                   ),
      *                   @OA\Property(
-     *                      property="role_id",
+     *                      property="role_id[0]",
      *                      description="id of role",
      *                      type="text",
      *                   ),
      *                   @OA\Property(
      *                      property="status",
      *                      description="enter status. ex: 0 => pending, 1 => active",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="office_type",
+     *                      description="id of office type",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="office_id",
+     *                      description="id of office",
      *                      type="text",
      *                   ),
      *                   @OA\Property(
@@ -84,6 +94,11 @@ class UserController extends Controller
      *                   @OA\Property(
      *                      property="thana_id",
      *                      description="id of thana",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="city_corpo_id",
+     *                      description="id of city corporation",
      *                      type="text",
      *                   ),
      *
@@ -124,6 +139,7 @@ class UserController extends Controller
 
         try {
             $user = $this->UserService->createUser($request,$password);
+
 
             $this->dispatch(new UserCreateJob($user->email,$user->full_name,$password));
 

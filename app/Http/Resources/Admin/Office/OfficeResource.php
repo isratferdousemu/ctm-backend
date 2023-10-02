@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Admin\Geographic\CityResource;
 use App\Http\Resources\Admin\Geographic\DistrictResource;
 use App\Http\Resources\Admin\Geographic\DivisionResource;
+use App\Http\Resources\Admin\Lookup\LookupResource;
 
 class OfficeResource extends JsonResource
 {
@@ -20,9 +21,8 @@ class OfficeResource extends JsonResource
         return [
 
         'id'               =>      $this->id,
-        'division'         =>      DivisionResource::make($this->whenLoaded('division')),
-        'district'         =>      DistrictResource::make($this->whenLoaded('district')),
-        'thana'            =>      CityResource::make($this->whenLoaded('thana')),
+        'assignLocation'   =>       $this->assignLocation,
+        'officeType'       =>      LookupResource::make($this->whenLoaded('officeType')),
         'name_en'          =>      $this->name_en,
         'name_bn'          =>      $this->name_bn,
         'office_type'      =>      $this->office_type,
