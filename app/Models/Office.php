@@ -47,6 +47,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Location|null $district
  * @property-read \App\Models\Location|null $division
  * @property-read \App\Models\Location|null $thana
+ * @property int|null $parentId
+ * @property int $version
+ * @method static \Illuminate\Database\Eloquent\Builder|Office whereParentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Office whereVersion($value)
  * @mixin \Eloquent
  */
 class Office extends Model

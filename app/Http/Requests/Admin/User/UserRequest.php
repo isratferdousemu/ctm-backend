@@ -28,12 +28,12 @@ class UserRequest extends FormRequest
             'email'                     => 'required|email|unique:users,email,deleted_at',
             'status' => 'sometimes|integer|in:0,1',
             'role_id' => 'required|array|exists:roles,id',
-            'office_type'                     => 'required|integer|unique:lookups,id,deleted_at',
-            'office_id'                     => 'required|email|unique:lookups,id,deleted_at',
-
-            // 'division_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
-            // 'district_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
-            // 'thana_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
+            'office_type'                     => 'required|integer|exists:lookups,id,deleted_at,NULL',
+            'office_id'                     => 'required|email|exists:lookups,id,deleted_at,NULL',
+            'division_id' => 'sometimes|integer|exists:locations,id,deleted_at,NULL',
+            'district_id' => 'sometimes|integer|exists:locations,id,deleted_at,NULL',
+            'thana_id' => 'sometimes|integer|exists:locations,id,deleted_at,NULL',
+            'city_corpo_id' => 'sometimes|integer|exists:locations,id,deleted_at,NULL',
         ];
     }
 }
