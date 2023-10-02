@@ -3464,7 +3464,7 @@
         "/admin/office/insert": {
             "post": {
                 "tags": [
-                    "SYSTEM-OFFICE MANAGEMENT"
+                    "SYSTEM-OFFICE-MANAGEMENT"
                 ],
                 "summary": "insert a office",
                 "description": "insert a office",
@@ -3486,6 +3486,10 @@
                                     },
                                     "thana_id": {
                                         "description": "insert Thana Id",
+                                        "type": "integer"
+                                    },
+                                    "city_corpo_id": {
+                                        "description": "insert city corporation Id",
                                         "type": "integer"
                                     },
                                     "office_type": {
@@ -3555,10 +3559,10 @@
         "/admin/office/update": {
             "post": {
                 "tags": [
-                    "SYSTEM-OFFICE MANAGEMENT"
+                    "SYSTEM-OFFICE-MANAGEMENT"
                 ],
                 "summary": "update a office",
-                "description": "updatet a office",
+                "description": "update a office",
                 "operationId": "officeUpdate",
                 "requestBody": {
                     "description": "enter inputs",
@@ -3581,6 +3585,10 @@
                                     },
                                     "thana_id": {
                                         "description": "insert Thana Id",
+                                        "type": "integer"
+                                    },
+                                    "city_corpo_id": {
+                                        "description": "insert city corporation Id",
                                         "type": "integer"
                                     },
                                     "office_type": {
@@ -3697,7 +3705,7 @@
         "/admin/office/destroy/{id}": {
             "get": {
                 "tags": [
-                    "SYSTEM-OFFICE MANAGEMENT"
+                    "SYSTEM-OFFICE-MANAGEMENT"
                 ],
                 "summary": " destroy Office",
                 "description": "Returns office destroy by id",
@@ -4558,12 +4566,20 @@
                                         "description": "user email address",
                                         "type": "text"
                                     },
-                                    "role_id": {
+                                    "role_id[0]": {
                                         "description": "id of role",
                                         "type": "text"
                                     },
                                     "status": {
                                         "description": "enter status. ex: 0 => pending, 1 => active",
+                                        "type": "text"
+                                    },
+                                    "office_type": {
+                                        "description": "id of office type",
+                                        "type": "text"
+                                    },
+                                    "office_id": {
+                                        "description": "id of office",
                                         "type": "text"
                                     },
                                     "division_id": {
@@ -4576,6 +4592,10 @@
                                     },
                                     "thana_id": {
                                         "description": "id of thana",
+                                        "type": "text"
+                                    },
+                                    "city_corpo_id": {
+                                        "description": "id of city corporation",
                                         "type": "text"
                                     }
                                 },
@@ -4903,6 +4923,10 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
+                                    "device_token": {
+                                        "description": "Browser Fingerprint",
+                                        "type": "string"
+                                    },
                                     "username": {
                                         "description": "username",
                                         "type": "string"

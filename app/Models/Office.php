@@ -47,21 +47,26 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Location|null $district
  * @property-read \App\Models\Location|null $division
  * @property-read \App\Models\Location|null $thana
+ * @property int|null $parentId
+ * @property int $version
+ * @method static \Illuminate\Database\Eloquent\Builder|Office whereParentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Office whereVersion($value)
  * @mixin \Eloquent
  */
 class Office extends Model
 {
 
-    public function division()
-    {
-        return $this->belongsTo(Location::class,'division_id');
+
+
+    public function officeType(){
+        return $this->belongsTo(Lookup::class,'office_type');
+
     }
-    public function district()
-    {
-        return $this->belongsTo(Location::class,'district_id');
+
+    public function assignLocation(){
+        return $this->belongsTo(Location::class,'assign_location_id');
+
     }
-    public function thana()
-    {
-        return $this->belongsTo(Location::class,'thana_id');
-    }
+
+
 }

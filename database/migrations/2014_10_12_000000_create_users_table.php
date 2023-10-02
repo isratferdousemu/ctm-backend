@@ -25,7 +25,6 @@ return new class extends Migration
             $table->string('mobile',13)->unique()->nullable();
             // $table->unsignedInteger('role_id');
             $table->unsignedInteger('office_id')->nullable();
-            $table->unsignedInteger('assign_location_id')->nullable();
             $table->string('password')->nullable();
             $table->rememberToken();
             $table->integer('user_type')->nullable(); // 1 -> superadmin, 2 -> staff

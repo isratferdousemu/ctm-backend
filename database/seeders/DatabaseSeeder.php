@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         //role seeder with admin & super admin
         $this->call(PermissionSeeder::class);
         $this->call(RolesSeeder::class);
+        $this->call(LookUpSeeder::class);
         // Model::reguard(); // Enable mass assignment
 
     }

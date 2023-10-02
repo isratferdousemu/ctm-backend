@@ -97,7 +97,7 @@ class OfficeController extends Controller
               ->orWhere($filterArrayComment)
               ->orWhere($filterArrayAddress);
     })
-    ->with('division','district','thana')
+    ->with('assignLocation.parent.parent.parent','assignLocation.locationType','officeType')
 
     ->latest()
     ->paginate($perPage, ['*'], 'page');
@@ -112,7 +112,7 @@ class OfficeController extends Controller
      * @OA\Post(
      *      path="/admin/office/insert",
      *      operationId="insertOffice",
-     *      tags={"SYSTEM-OFFICE MANAGEMENT"},
+     *      tags={"SYSTEM-OFFICE-MANAGEMENT"},
      *      summary="insert a office",
      *      description="insert a office",
      *      security={{"bearer_token":{}}},
@@ -141,6 +141,12 @@ class OfficeController extends Controller
      *                   @OA\Property(
      *                      property="thana_id",
      *                      description="insert Thana Id",
+     *                      type="integer",
+     *
+     *                   ),
+     *                   @OA\Property(
+     *                      property="city_corpo_id",
+     *                      description="insert city corporation Id",
      *                      type="integer",
      *
      *                   ),
@@ -211,7 +217,6 @@ class OfficeController extends Controller
      *
      */
     public function insertOffice(OfficeRequest $request){
-        // return $request->all();
         try {
             $office = $this->OfficeService->createOffice($request);
             activity("Office")
@@ -232,9 +237,9 @@ class OfficeController extends Controller
      * @OA\Post(
      *      path="/admin/office/update",
      *      operationId="officeUpdate",
-     *      tags={"SYSTEM-OFFICE MANAGEMENT"},
+     *      tags={"SYSTEM-OFFICE-MANAGEMENT"},
      *      summary="update a office",
-     *      description="updatet a office",
+     *      description="update a office",
      *      security={{"bearer_token":{}}},
      *
      *
@@ -265,6 +270,12 @@ class OfficeController extends Controller
      *                   @OA\Property(
      *                      property="thana_id",
      *                      description="insert Thana Id",
+     *                      type="integer",
+     *
+     *                   ),
+     *                    @OA\Property(
+     *                      property="city_corpo_id",
+     *                      description="insert city corporation Id",
      *                      type="integer",
      *
      *                   ),
@@ -336,11 +347,6 @@ class OfficeController extends Controller
      *
      */
 
-
-
-
-
-
     public function officeUpdate(OfficeUpdateRequest $request){
 
         try {
@@ -403,7 +409,7 @@ class OfficeController extends Controller
  public function getAllOfficeByDistrictId($district_id){
 
 
-    $office = Office::wheredistrict_id($district_id)->get();
+    $office = Office::whereDistrictId($district_id)->get();
 
     return OfficeResource::collection($office)->additional([
         'success' => true,
@@ -415,7 +421,7 @@ class OfficeController extends Controller
      * @OA\Get(
      *      path="/admin/office/destroy/{id}",
      *      operationId="destroyOffice",
-     *      tags={"SYSTEM-OFFICE MANAGEMENT"},
+     *      tags={"SYSTEM-OFFICE-MANAGEMENT"},
      *      summary=" destroy Office",
      *      description="Returns office destroy by id",
      *      security={{"bearer_token":{}}},
