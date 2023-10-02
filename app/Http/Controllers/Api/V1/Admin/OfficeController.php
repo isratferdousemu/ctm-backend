@@ -97,7 +97,7 @@ class OfficeController extends Controller
               ->orWhere($filterArrayComment)
               ->orWhere($filterArrayAddress);
     })
-    ->with('division','district','thana','officeType')
+    ->with('assignLocation','officeType')
 
     ->latest()
     ->paginate($perPage, ['*'], 'page');
