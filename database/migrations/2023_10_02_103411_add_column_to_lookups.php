@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // remove division_id, district_id, thana_id
-            $table->dropColumn('division_id');
-            $table->dropColumn('district_id');
-            $table->dropColumn('thana_id');
-     $table->unsignedInteger('office_type')->nullable();
-
+        Schema::table('lookups', function (Blueprint $table) {
+            $table->integer('default')->default(0);
         });
     }
 
@@ -26,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('lookups', function (Blueprint $table) {
             //
         });
     }
