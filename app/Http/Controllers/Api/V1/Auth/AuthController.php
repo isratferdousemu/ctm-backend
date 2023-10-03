@@ -193,7 +193,11 @@ class AuthController extends Controller
      *           @OA\MediaType(
      *              mediaType="multipart/form-data",
      *           @OA\Schema(
-     *
+     *                    @OA\Property(
+     *                      property="device_token",
+     *                      description="Browser Fingerprint",
+     *                      type="string",
+     *                   ),
      *                   @OA\Property(
      *                      property="username",
      *                      description="username",

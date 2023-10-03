@@ -42,10 +42,11 @@ class RolesSeeder extends Seeder
                 'username'            => 'ctm-01',
                 'user_id'            => 1000,
                 'email'                 => 'admin@ctm.com',
-                'password'              => bcrypt('@N159983a'), // password = R4d&DjVx
+                'password'              => bcrypt('12345678'),
                 'user_type'               => $this->superAdminId,
                 'remember_token'        => Str::random(10),
                 'status'            => 1,
+                'is_default_password'            => 0,
                 'email_verified_at'     => now(),
             ]
         );

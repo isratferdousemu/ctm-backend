@@ -96,6 +96,11 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property int|null $userId
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserId($value)
+ * @property int|null $officeType
+ * @property-read \App\Models\Location|null $assignLocation
+ * @property-read \App\Models\Lookup|null $office
+ * @property-read \App\Models\Lookup|null $officeType
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOfficeType($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -122,6 +127,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function office()
+    {
+        return $this->belongsTo(Lookup::class,'office_id','id');
+    }
+    public function officeType()
+    {
+        return $this->belongsTo(Lookup::class,'office_type','id');
+    }
+
+    public function assignLocation()
+    {
+        return $this->belongsTo(Location::class,'assign_location_id','id');
+    }
+
+
+
+
 
 
 
