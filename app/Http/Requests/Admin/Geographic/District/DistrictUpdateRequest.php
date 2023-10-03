@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Geographic\District;
 
+use App\Rules\UniqueDemoGraphicRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DistrictUpdateRequest extends FormRequest
@@ -24,8 +25,8 @@ class DistrictUpdateRequest extends FormRequest
         return [
             'id'    => 'required|exists:locations,id,deleted_at,NULL',
             'division_id' => 'required|integer|exists:locations,id,deleted_at,NULL',
-            'name_en'   => 'required|string|max:50|unique:locations,name_en,'.$this->id.',id,deleted_at,NULL',
-            'name_bn'   => 'required|string|max:50|unique:locations,name_bn,'.$this->id.',id,deleted_at,NULL',
+            'name_en'   => ['required',new UniqueDemoGraphicRule($this->id, 'district')],
+            'name_bn'   => ['required',new UniqueDemoGraphicRule($this->id, 'district')],
             'code'  => 'required|string|max:6|unique:locations,code,'.$this->id.',id,deleted_at,NULL',
             ];
     }

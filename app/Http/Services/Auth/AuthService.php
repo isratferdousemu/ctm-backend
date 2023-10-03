@@ -341,9 +341,11 @@ class AuthService
             if ($request->filled('device') && !empty($request->device)) {
                 $user->tokens()->where('name', $this->generateTokenKey($request) . $user->id)->delete();
             } else {
-                Auth::user()->tokens->each(function ($token, $key) {
-                    $token->delete();
-                });
+                $user->tokens()->where('name', $this->generateTokenKey($request) . $user->id)->delete();
+
+                // Auth::user()->tokens->each(function ($token, $key) {
+                //     $token->delete();
+                // });
             }
             DB::commit();
         } catch (\Throwable $th) {
