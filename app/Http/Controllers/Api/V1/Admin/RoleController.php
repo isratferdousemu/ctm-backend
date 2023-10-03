@@ -78,30 +78,39 @@ class RoleController extends Controller
 
  public function getAllRolePaginated(Request $request){
     // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
+     $role = new Role;
 
-    $filterArrayNameEn=[];
-    $filterArrayNameBn=[];
-    $filterArrayCode=[];
+     if($request->has('sortBy'))
+     {
+         if($request->get('sortDesc') === true)
+         {
+             $role = $role->orderBy($request->get('sortBy'), 'desc');
+         }else{
+             $role = $role->orderBy($request->get('sortBy'), 'asc');
+         }
+     }else{
+         $role = $role->orderBy('id', 'desc');
+     }
 
-    if ($searchText) {
-        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-    }
-        $role = Role::query()
-            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
-                $query->where($filterArrayNameEn)
-                    ->orWhere($filterArrayNameBn)
-                    ->orWhere($filterArrayCode);
-            })->with('permissions')->get();
+     $searchValue = $request->input('search');
 
-    return RoleResource::collection($role->load('permissions'))->additional([
-        'success' => true,
-        'message' => $this->insertSuccessMessage,
-    ]);
+     if($searchValue)
+     {
+         $role->where(function($query) use ($searchValue) {
+             $query->where('name', 'like', '%' . $searchValue . '%');
+             $query->orWhere('ip_address', 'like', '%' . $searchValue . '%');
+             $query->orWhere('device_type', 'like', '%' . $searchValue . '%');
+         });
+     }
+
+     $itemsPerPage = 10;
+
+     if($request->has('itemsPerPage'))
+     {
+         $itemsPerPage = $request->get('itemsPerPage');
+     }
+
+     return $role->paginate($itemsPerPage);
 }
     /**
     * @OA\Get(
@@ -185,7 +194,7 @@ class RoleController extends Controller
 
  public function getAllRole(){
 
-    $role =Role::with('permissions')->get();
+    $role = Role::with('permissions')->get();
 
 
     return RoleResource::collection($role)->additional([
@@ -437,7 +446,7 @@ class RoleController extends Controller
             ->log('Role Updated !');
             return RoleResource::make($role->load('permissions'))->additional([
                 'success' => true,
-                'message' => $this->insertSuccessMessage,
+                'message' => $this->updateSuccessMessage,
             ]);
         } catch (\Throwable $th) {
             //throw $th;
@@ -485,10 +494,10 @@ class RoleController extends Controller
      *      ),
      *     )
      */
-    public function destroRole(Request $request)
+    public function destroyRole($id)
     {
 
-        $role = Role::whereId($request->id)->whereDefault(0)->first();
+        $role = Role::whereId($id)->whereDefault(0)->first();
         if($role){
             $role->delete();
         }
@@ -544,23 +553,31 @@ class RoleController extends Controller
     */
 
  public function getAllPermission(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
+        // Retrieve the query parameters
 
-    $filterArrayNameEn=[];
-    if ($searchText) {
-        $filterArrayNameEn[] = ['name', 'LIKE', '%' . $searchText . '%'];
-    }
-        $permissions = Permission::query()
-            ->where(function ($query) use ($filterArrayNameEn) {
-                $query->where($filterArrayNameEn);
-    })
-    ->get();
+        $permissions = Permission::latest()->get();
+
+        $result = [];
+
+        foreach ($permissions as $permission)
+        {
+            $result[$permission->module_name."/".$permission->sub_module_name][] = $permission;
+        }
+
         $data = [];
-    for ($i=0; $i < Count($permissions) ; $i++) {
-            $data[$permissions[$i]['sub_module_name']][] = $permissions[$i];
-    }
-    return $this->sendResponse($permissions, $this->insertSuccessMessage, Response::HTTP_OK);
+        $new_result = [];
+
+        foreach ($result as $key => $r)
+        {
+            $data[] = array("name" => $key);
+
+            foreach ($r as $rs)
+            {
+                $new_result[] = $rs;
+            }
+        }
+
+        return \response()->json(['data' => $data, 'result' => $new_result]);
 
     }
 

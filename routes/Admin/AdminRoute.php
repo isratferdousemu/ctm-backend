@@ -16,12 +16,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin/role')->group(function () {
 
-        Route::get('all/filtered',[RoleController::class, 'getAllRolePaginated'])->middleware(['role_or_permission:super-admin|main-role-list']);
-
+        Route::get('/get',[RoleController::class, 'getAllRolePaginated'])->middleware(['role_or_permission:super-admin|main-role-list']);
         Route::post('/insert', [RoleController::class, 'insert'])->middleware(['role_or_permission:super-admin|main-role-store']);
         Route::get('/edit/{id}', [RoleController::class, 'edit'])->middleware(['role_or_permission:super-admin|main-role-edit']);
         Route::post('/update', [RoleController::class, 'updateRole'])->middleware(['role_or_permission:super-admin|main-role-update']);
-        Route::get('/destroy/{id}', [RoleController::class, 'destroRole'])->middleware(['role_or_permission:super-admin|main-role-destroy']);
+        Route::delete('/destroy/{id}', [RoleController::class, 'destroyRole'])->middleware(['role_or_permission:super-admin|main-role-destroy']);
 
         /* -------------------------------------------------------------------------- */
         /*                              Permission Routes                             */
@@ -30,12 +29,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
             Route::get('roles/unassign',[RoleController::class, 'getUnAssignPermissionRole'])->middleware(['role_or_permission:super-admin|main-role-list']);
             Route::get('roles/all',[RoleController::class, 'getAllRole'])->middleware(['role_or_permission:super-admin|main-role-list']);
-            Route::get('get',[RoleController::class, 'getAllPermission'])->middleware(['role_or_permission:super-admin|main-permission-list']);
+            Route::get('modules',[RoleController::class, 'getAllPermission'])->middleware(['role_or_permission:super-admin|main-permission-list']);
 
             Route::post('/assign', [RoleController::class, 'AssignPermissionRole'])->middleware(['role_or_permission:super-admin|main-role-store']);
 
         });
     });
-    
+
 
 });

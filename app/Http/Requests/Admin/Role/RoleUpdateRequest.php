@@ -22,13 +22,12 @@ class RoleUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id'                        =>'required|exists:roles,id',
+            'id'                          =>'required|exists:roles,id',
             'name_en'                     => 'required|string|max:50|unique:roles,name_en',
             'name_bn'                     => 'required|string|max:50|unique:roles,name_bn',
-            // 'permissions'              => 'required|array'
-            'status' => 'sometimes|boolean',
+            'status' => 'sometimes',
             'comment' => 'sometimes|string|max:120',
-            'code' => 'required|string|max:6|unique:roles,code,NULL,id,deleted_at,NULL'
+            'code' => 'required|string|max:6|unique:roles,code'
         ];
     }
 }
