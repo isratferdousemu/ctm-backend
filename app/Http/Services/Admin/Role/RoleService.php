@@ -28,7 +28,15 @@ class RoleService
             $role->name_en=$request->name_en;
             $role->name_bn=$request->name_bn;
             $role->code=$request->code;
-            $role->status=$request->status;
+            if($request->status == true)
+            {
+                $role->status=1;
+            }else{
+                $role->status=0;
+            }
+
+            $role->comment = $request->comment;
+
             $role->save();
             db::commit();
             return $role;
@@ -54,7 +62,21 @@ class RoleService
             $role->name_en=$request->name_en;
             $role->name_bn=$request->name_bn;
             $role->code=$request->code;
-            $role->status=$request->status;
+
+            if (!$request->status)
+            {
+                $role->status = $role->status;
+            }
+
+            if ($request->status == true)
+            {
+                $role->status= 1;
+            }else{
+                $role->status= 0;
+            }
+
+
+            $role->comment = $request->comment;
             $role->save();
             db::commit();
             return $role;

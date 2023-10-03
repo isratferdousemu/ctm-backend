@@ -49,11 +49,10 @@ class UserService
             $user->office_id = $request->office_id;
             $user->user_type = $this->staffId;
             $user->password = bcrypt($password);
+            $user->user_id = $this->generateUserId();
             $user->email_verified_at = now();
             $user->save();
-
             // assign role to the user
-
             $user->assignRole([$request->role_id]);
 
             DB::commit();
@@ -63,4 +62,14 @@ class UserService
             throw $th;
         }
     }
+    public function generateUserId(){
+        $user_id = User::count()+1;
+        $user = User::where('user_id',$user_id)->first();
+        if($user){
+            $this->generateUserId();
+        }
+        return $user_id;
+    }
+
+
 }
