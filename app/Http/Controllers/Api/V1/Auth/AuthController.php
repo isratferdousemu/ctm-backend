@@ -180,6 +180,92 @@ class AuthController extends Controller
     /**
      *
      * @OA\Post(
+     *      path="/admin/reset/password",
+     *      operationId="resetPassword",
+     *      tags={"Auth"},
+     *      summary="reset default password the Application",
+     *      description="reset default password to the application user",
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="Pass user credentials",
+     *           @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                    @OA\Property(
+     *                      property="device_token",
+     *                      description="Browser Fingerprint",
+     *                      type="string",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="username",
+     *                      description="username",
+     *                      type="string",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="old_password",
+     *                      description="old password",
+     *                      type="text",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="password",
+     *                      description="password",
+     *                      type="text",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="confirm_password",
+     *                      description="confirm password",
+     *                      type="text",
+     *                   ),
+     *
+     *               ),
+     *               ),
+     *
+     *         ),
+     *
+     *
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+     public function resetPassword(Request $request)
+     {
+
+         //validate login
+         $this->authService->validateLogin($request);
+
+         $data = $this->authService->passwordReset($request);
+
+
+         activity("Reset")
+         ->log('Reset Password Successfully!!');
+
+         return response()->json(['success' => true, 'message' => 'Reset Password Successfully!', 'data' => $data]);
+     }
+    /**
+     *
+     * @OA\Post(
      *      path="/admin/login/otp",
      *      operationId="LoginOtp",
      *      tags={"Auth"},

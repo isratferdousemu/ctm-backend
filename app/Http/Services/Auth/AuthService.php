@@ -42,6 +42,15 @@ class AuthService
         );
     }
 
+    protected function sendDefaultPasswordResponse()
+    {
+        throw new AuthBasicErrorException(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            $this->defaultPasswordTextErrorCode,
+            $this->defaultPasswordErrorResponse,
+        );
+    }
+
     protected function sendUnVerifiedLoginResponse(Request $request)
     {
         throw new AuthBasicErrorException(
@@ -125,6 +134,13 @@ class AuthService
         if (!$user->email_verified_at) return $this->authUnverifiedUserErrorCode;
         if ($user->user_type) {
             if ($user->user_type == $this->superAdminUserType || $user->user_type == $this->staffType) {
+                if($user->user_type == $this->staffType){
+                 // check this user password is_default_password or not if default password then request to change password first then login
+                    if($user->is_default_password==1){
+                        return $this->authDefaultPasswordErrorCode;
+                    }
+
+                }
                 if (Hash::check($request->password, $user->password)) {
                     return $this->authSuccessCode;
                 }
@@ -172,6 +188,52 @@ class AuthService
 
     }
 
+    public function passwordReset(Request $request)
+    {
+        // validate password and confirm password
+        $request->validate(
+            [
+                'password'              => 'required|string|min:6',
+                'confirm_password'      => 'required|same:password',
+            ],
+            [
+                'confirm_password.same' => 'Password and Confirm Password does not match!',
+            ]
+        );
+        $user = User::where("username", $request->username)->first();
+        if (
+            method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)
+        ) {
+            $this->fireLockoutEvent($request);
+            $this->bannedUser($user);
+            return $this->sendLockoutResponse($request);
+        }
+
+        if ($user == null) {
+            $this->incrementLoginAttempts($request);
+            return $this->sendFailedLoginResponse($request);
+        }
+
+            if($user->user_type == $this->staffType){
+
+                if($user->is_default_password==1){
+                    if (Hash::check($request->old_password, $user->password)) {
+                        $user->password=Hash::make($request->password);
+                        $user->is_default_password=0;
+                        $user->save();
+                        return $user;
+
+                    }
+                    $this->incrementLoginAttempts($request);
+                    return $this->sendFailedLoginResponse($request);
+                }
+
+            }
+            return $this->sendNonAllowedAdminResponse();
+
+    }
+
     public function Adminlogin(Request $request,$type=1)
     {
 
@@ -198,7 +260,7 @@ class AuthService
             if ($authCode == $this->authBannedUserErrorCode) return $this->sendBannedLoginResponse();
 
             if ($authCode == $this->authUnverifiedUserErrorCode) return $this->sendUnVerifiedLoginResponse($request);
-
+            if ($authCode == $this->authDefaultPasswordErrorCode) return $this->sendDefaultPasswordResponse();
             if ($authCode == $this->authBasicErrorCode) {
 
                 $this->incrementLoginAttempts($request);
@@ -279,9 +341,11 @@ class AuthService
             if ($request->filled('device') && !empty($request->device)) {
                 $user->tokens()->where('name', $this->generateTokenKey($request) . $user->id)->delete();
             } else {
-                Auth::user()->tokens->each(function ($token, $key) {
-                    $token->delete();
-                });
+                $user->tokens()->where('name', $this->generateTokenKey($request) . $user->id)->delete();
+
+                // Auth::user()->tokens->each(function ($token, $key) {
+                //     $token->delete();
+                // });
             }
             DB::commit();
         } catch (\Throwable $th) {
