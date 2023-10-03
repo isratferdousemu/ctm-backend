@@ -111,33 +111,6 @@ class DeviceController extends Controller
 
      return $device->paginate($itemsPerPage);
 
-     // Retrieve the query parameters
-    //    $searchText = $request->query('searchText');
-    //    $perPage = $request->query('perPage');
-    //    $page = $request->query('page');
-    //
-    //    $filterArrayUserId=[];
-    //    $filterArrayName=[];
-    //    $filterArrayIpAddress=[];
-    //
-    //    if ($searchText) {
-    //        $filterArrayUserId[] = ['user_id', 'LIKE', '%' . $searchText . '%'];
-    //        $filterArrayName[] = ['name', 'LIKE', '%' . $searchText . '%'];
-    //        $filterArrayIpAddress[] = ['ip_address', 'LIKE', '%' . $searchText . '%'];
-    //    }
-    //    $device = Device::query()
-    //    ->where(function ($query) use ($filterArrayUserId,$filterArrayName,$filterArrayIpAddress) {
-    //        $query->where($filterArrayUserId)
-    //              ->orWhere($filterArrayName)
-    //              ->orWhere($filterArrayIpAddress);
-    //    })
-    //    ->latest()
-    //    ->paginate($perPage, ['*'], 'page');
-    //
-    //    return DeviceResource::collection($device)->additional([
-    //        'success' => true,
-    //        'message' => $this->fetchSuccessMessage,
-    //    ]);
     }
 
     public function getUsers()
