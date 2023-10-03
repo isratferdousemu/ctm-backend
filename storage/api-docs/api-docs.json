@@ -4908,6 +4908,68 @@
                 }
             }
         },
+        "/admin/reset/password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "reset default password the Application",
+                "description": "reset default password to the application user",
+                "operationId": "resetPassword",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "device_token": {
+                                        "description": "Browser Fingerprint",
+                                        "type": "string"
+                                    },
+                                    "username": {
+                                        "description": "username",
+                                        "type": "string"
+                                    },
+                                    "old_password": {
+                                        "description": "old password",
+                                        "type": "text"
+                                    },
+                                    "password": {
+                                        "description": "password",
+                                        "type": "text"
+                                    },
+                                    "confirm_password": {
+                                        "description": "confirm password",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
         "/admin/login/otp": {
             "post": {
                 "tags": [
