@@ -11,6 +11,7 @@ use App\Http\Services\Admin\Role\RoleService;
 use App\Http\Traits\MessageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -149,7 +150,8 @@ class RoleController extends Controller
 
  public function getUnAssignPermissionRole(){
 
-    $role =Role::whereDoesntHave('permissions')->get();
+    //$role =Role::whereDoesntHave('permissions')->get();
+    $role =Role::where('name','!=','super-admin')->get();
 
 
     return RoleResource::collection($role)->additional([
@@ -557,27 +559,28 @@ class RoleController extends Controller
 
         $permissions = Permission::latest()->get();
 
-        $result = [];
+         $result = [];
+
+         $data = [];
+
+         $result_data = [];
 
         foreach ($permissions as $permission)
         {
-            $result[$permission->module_name."/".$permission->sub_module_name][] = $permission;
+            $name = explode('-', $permission->name);
+
+            $result[$permission->module_name][] = $permission;
+
+            $result_data[$permission->module_name][$name[0]][] = $permission;
         }
 
-        $data = [];
-        $new_result = [];
 
         foreach ($result as $key => $r)
         {
             $data[] = array("name" => $key);
-
-            foreach ($r as $rs)
-            {
-                $new_result[] = $rs;
-            }
         }
 
-        return \response()->json(['data' => $data, 'result' => $new_result]);
+        return \response()->json(['data' => $data, 'result' => $result_data]);
 
     }
 
@@ -656,5 +659,23 @@ class RoleController extends Controller
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+    public function rolePermissionEdit($id)
+    {
+        $rolePermissions = \DB::table("role_has_permissions")->where("role_has_permissions.role_id", $id)
+            ->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')
+            ->all();
+
+        $rp_array = [];
+        foreach ($rolePermissions as $rp) {
+            $rp_array[] = $rp;
+        }
+
+        return \response()->json([
+            'success' => true,
+            'role_permission' => $rp_array,
+            'status_code' => 200
+        ], Response::HTTP_OK);
     }
 }
