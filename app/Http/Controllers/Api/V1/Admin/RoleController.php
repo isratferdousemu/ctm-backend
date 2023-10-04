@@ -98,9 +98,9 @@ class RoleController extends Controller
      if($searchValue)
      {
          $role->where(function($query) use ($searchValue) {
-             $query->where('name', 'like', '%' . $searchValue . '%');
-             $query->orWhere('ip_address', 'like', '%' . $searchValue . '%');
-             $query->orWhere('device_type', 'like', '%' . $searchValue . '%');
+             $query->orWhere('name_bn', 'like', '%' . $searchValue . '%');
+             $query->orWhere('code', 'like', '%' . $searchValue . '%');
+             $query->orWhere('name_en', 'like', '%' . $searchValue . '%');
          });
      }
 

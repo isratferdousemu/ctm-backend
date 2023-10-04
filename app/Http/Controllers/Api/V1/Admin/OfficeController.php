@@ -98,7 +98,6 @@ class OfficeController extends Controller
               ->orWhere($filterArrayAddress);
     })
     ->with('assignLocation.parent.parent.parent','assignLocation.locationType','officeType')
-
     ->latest()
     ->paginate($perPage, ['*'], 'page');
 
