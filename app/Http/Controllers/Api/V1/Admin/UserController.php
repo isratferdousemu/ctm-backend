@@ -393,4 +393,70 @@ class UserController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+    /**
+     *
+     * @OA\Delete(
+     *      path="/admin/user/destroy/{id}",
+     *      operationId="destroyUser",
+     *      tags={"ADMIN-USER"},
+     *      summary="delete a user",
+     *      description="delete a user",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id of user",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+    public function destroyUser($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            activity("User")
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log('User Deleted !');
+            return UserResource::make($user)->additional([
+                'success' => true,
+                'message' => $this->deleteSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
 }
