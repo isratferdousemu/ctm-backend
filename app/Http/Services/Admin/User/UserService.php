@@ -63,12 +63,12 @@ class UserService
         }
     }
 
-    public function upddateUser(Request $request)
+    public function upddateUser(Request $request, $id)
     {
         DB::beginTransaction();
         try {
 
-            $user                       = User::findOrFail($request->id);
+            $user                       = User::findOrFail($id);
             $user->full_name = $request->full_name;
             $user->username = $request->username;
             $user->mobile = $request->mobile;
