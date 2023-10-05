@@ -14,9 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get',[OfficeController::class, 'getAllOfficePaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::post('/update', [OfficeController::class, 'OfficeUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
         Route::get('/destroy/{id}', [OfficeController::class, 'destroyOffice'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+
     });
-
-
-
 
 });
