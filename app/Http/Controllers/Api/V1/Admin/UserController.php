@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\User\UserRequest;
+use App\Http\Requests\Admin\User\UserUpdateRequest;
 use App\Http\Resources\Admin\Office\OfficeResource;
 use App\Http\Resources\Admin\User\UserResource;
 use App\Http\Services\Admin\User\UserService;
@@ -303,6 +304,47 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    public function update(UserUpdateRequest $request, $id)
+    {
+        if ($request->_method == 'PUT')
+        {
+
+            try {
+
+                if($request->has('role_id')){
+                    $role = Role::whereName($this->officeHead)->first();
+                    if(in_array($role->id,$request->role_id)){
+                        $officeHead = User::where('office_id',$request->office_id)->whereHas('roles', function ($query) {
+                            $query->where('name', $this->officeHead);
+                        })->first();
+                        if($officeHead){
+                            return $this->sendError('This office already has a office head', [], 500);
+                        }
+                    }
+                }
+
+                $user = $this->UserService->upddateUser($request);
+
+
+                activity("User")
+                    ->causedBy(auth()->user())
+                    ->performedOn($user)
+                    ->log('User Created !');
+                return UserResource::make($user)->additional([
+                    'success' => true,
+                    'message' => $this->updateSuccessMessage,
+                ]);
+
+            }catch (\Exception $e){
+                \DB::rollBack();
+
+                $error = $e->getMessage();
+
+                return $this->sendError($error, [], 500);
+            }
         }
     }
 
