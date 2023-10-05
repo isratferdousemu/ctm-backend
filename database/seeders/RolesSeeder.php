@@ -33,8 +33,16 @@ class RolesSeeder extends Seeder
                     'name_bn' => $this->superAdmin,
                     'name' => $this->superAdmin
                 ]);
-        $role->givePermissionTo(Permission::all());
-
+                $role->givePermissionTo(Permission::all());
+                $officeHeadRole = Role::create([
+                    'guard_name' => $guard,
+                    'code' => "10001",
+                    'default' => 1,
+                    'name_en' => $this->officeHead,
+                    'name_bn' => $this->officeHead,
+                    'name' => $this->officeHead
+                ]);
+                $officeHeadRole->givePermissionTo(Permission::all());
 
         $admin = User::create(
             [
