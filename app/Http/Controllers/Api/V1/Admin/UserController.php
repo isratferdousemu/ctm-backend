@@ -132,7 +132,7 @@ class UserController extends Controller
                 // assign_location_id is locations id of office get location all users and location
                 $query->where('assign_location_id',auth()->user()->office->assign_location_id);
                 //and assign_location_id location one child down user office head
-                $query->orWhere('assign_location_id',auth()->user()->office->location->parent_id);
+                $query->orWhere('assign_location_id',auth()->user()->office?->location?->parent_id);
                 })
                 ->with('office','assign_location','office_type')
                 ->latest()
