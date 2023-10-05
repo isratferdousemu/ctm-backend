@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -43,8 +44,17 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+    $this->renderable(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, $request) {
+        // throw new \Exception('You do not have the required authorization.',422);
+        throw new AuthBasicErrorException(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            403,
+            "You do not have the required authorization.",
+        );
+        // return response()->json([
+        //     'message' => 'You do not have the required authorization.',
+        //     'status'  => 403,
+        // ]);
+    });
     }
 }
