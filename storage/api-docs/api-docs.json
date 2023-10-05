@@ -4535,6 +4535,90 @@
                 ]
             }
         },
+        "/admin/user/get": {
+            "get": {
+                "tags": [
+                    "ADMIN-USER"
+                ],
+                "summary": "get paginated users",
+                "description": "get paginated users",
+                "operationId": "getAllUserPaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name, phone, email, username",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "description": "search by user_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "officeId",
+                        "in": "query",
+                        "description": "search by office_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/user/insert": {
             "post": {
                 "tags": [
@@ -4597,6 +4681,69 @@
                                     "city_corpo_id": {
                                         "description": "id of city corporation",
                                         "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/user/office/by-location": {
+            "post": {
+                "tags": [
+                    "SYSTEM-OFFICE-MANAGEMENT"
+                ],
+                "summary": "get a office",
+                "description": "get a office",
+                "operationId": "getOfficeByLocationAssignId",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "assign_location_id": {
+                                        "description": "get office by assign location Id",
+                                        "type": "integer"
+                                    },
+                                    "office_type_id": {
+                                        "description": "get office by office type Id",
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"

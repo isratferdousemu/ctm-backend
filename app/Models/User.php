@@ -130,14 +130,14 @@ class User extends Authenticatable
 
     public function office()
     {
-        return $this->belongsTo(Lookup::class,'office_id','id');
+        return $this->belongsTo(Office::class,'office_id','id');
     }
-    public function officeType()
+    public function office_type()
     {
         return $this->belongsTo(Lookup::class,'office_type','id');
     }
 
-    public function assignLocation()
+    public function assign_location()
     {
         return $this->belongsTo(Location::class,'assign_location_id','id');
     }
