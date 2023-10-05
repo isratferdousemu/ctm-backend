@@ -28,7 +28,13 @@ class UniqueDemoGraphicRule implements ValidationRule
         $model = $model->where($attribute, $value)
             ->where('type', $this->typeId)
             ->where('deleted_at', null);
-        if ($this->id) {
+            if($this->typeId == 'city'){
+                // location_type => 2 = upazila, 3 = city corporation, 1 = district paurashava
+                if(request()->has('location_type') && request()->location_type==2 || request()->location_type==3 || request()->location_type==1){
+                    $model = $model->where('location_type', request()->location_type);
+                }
+            }
+            if ($this->id) {
             $model = $model->where('id', '!=', $this->id);
         }
         $model = $model->first();

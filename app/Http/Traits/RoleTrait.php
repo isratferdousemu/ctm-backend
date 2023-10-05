@@ -13,4 +13,5 @@ trait RoleTrait
 
     private $superAdmin = 'super-admin';
     private $staff = 'staff';
+    private $officeHead = 'office-head';
 }

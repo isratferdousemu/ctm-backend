@@ -43,8 +43,13 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+    $this->renderable(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, $request) {
+        // throw new \Exception('You do not have the required authorization.',403);
+
+        return response()->json([
+            'message' => 'You do not have the required authorization.',
+            'status'  => 403,
+        ]);
+    });
     }
 }

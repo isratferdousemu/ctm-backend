@@ -16,11 +16,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin/role')->group(function () {
 
-        Route::get('/get',[RoleController::class, 'getAllRolePaginated'])->middleware(['role_or_permission:super-admin|main-role-list']);
-        Route::post('/insert', [RoleController::class, 'insert'])->middleware(['role_or_permission:super-admin|main-role-store']);
-        Route::get('/edit/{id}', [RoleController::class, 'edit'])->middleware(['role_or_permission:super-admin|main-role-edit']);
-        Route::post('/update', [RoleController::class, 'updateRole'])->middleware(['role_or_permission:super-admin|main-role-update']);
-        Route::delete('/destroy/{id}', [RoleController::class, 'destroyRole'])->middleware(['role_or_permission:super-admin|main-role-destroy']);
+        Route::get('/get',[RoleController::class, 'getAllRolePaginated'])->middleware(['role_or_permission:super-admin|role-list']);
+        Route::post('/insert', [RoleController::class, 'insert'])->middleware(['role_or_permission:super-admin|role-create']);
+        Route::get('/edit/{id}', [RoleController::class, 'edit'])->middleware(['role_or_permission:super-admin|role-edit']);
+        Route::post('/update', [RoleController::class, 'updateRole'])->middleware(['role_or_permission:super-admin|role-update']);
+        Route::delete('/destroy/{id}', [RoleController::class, 'destroyRole'])->middleware(['role_or_permission:super-admin|role-delete']);
 
         /* -------------------------------------------------------------------------- */
         /*                              Permission Routes                             */
@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('modules',[RoleController::class, 'getAllPermission'])->middleware(['role_or_permission:super-admin|main-permission-list']);
 
             Route::post('/assign', [RoleController::class, 'AssignPermissionRole'])->middleware(['role_or_permission:super-admin|main-role-store']);
+            Route::get('/role_permission_edit/{id}', [RoleController::class, 'rolePermissionEdit'])->middleware(['role_or_permission:super-admin|main-role-store']);
 
         });
     });
