@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('modules',[RoleController::class, 'getAllPermission'])->middleware(['role_or_permission:super-admin|main-permission-list']);
 
             Route::post('/assign', [RoleController::class, 'AssignPermissionRole'])->middleware(['role_or_permission:super-admin|main-role-store']);
+            Route::get('/role_permission_edit/{id}', [RoleController::class, 'rolePermissionEdit'])->middleware(['role_or_permission:super-admin|main-role-store']);
 
         });
     });
