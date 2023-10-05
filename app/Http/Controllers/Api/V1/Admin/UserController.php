@@ -326,7 +326,7 @@ class UserController extends Controller
                     }
                 }
 
-                $user = $this->UserService->upddateUser($request);
+                $user = $this->UserService->upddateUser($request, $id);
 
 
                 activity("User")
