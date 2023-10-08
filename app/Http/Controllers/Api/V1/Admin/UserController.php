@@ -135,7 +135,7 @@ class UserController extends Controller
                 //and assign_location_id location one child down user office head
                 $query->orWhere('assign_location_id',auth()->user()->office?->location?->parent_id);
                 })
-                ->with('office','assign_location','office_type')
+                ->with('office','assign_location','office_type','roles')
                 ->latest()
                 ->paginate($perPage, ['*'], 'page');
             }else{
@@ -148,7 +148,7 @@ class UserController extends Controller
               ->orWhere($filterArrayOfficeId)
               ->orWhere($filterArrayPhone);
     })
-    ->with('office','assign_location','office_type')
+    ->with('office','assign_location','office_type','roles')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
 }
