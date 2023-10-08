@@ -315,11 +315,29 @@ class MenuController extends Controller
      */
     public function getParent()
     {
-        $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn')->where('parent_id', null)->get();
+       // $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn')->where('parent_id', null)->get();
+    // get manu list with total 3 level parent child in only one list without using with method
+        $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn','page_link_id')->get();
+        $parents = $this->getMenuList($parents);
+
+
+
 
         return \response()->json([
             'parents' => $parents
         ], Response::HTTP_OK);
+    }
+
+    public function getMenuList($parents, $parent_id = null)
+    {
+        $menuList = [];
+        foreach ($parents as $parent) {
+            if ($parent->parent_id == $parent_id && $parent->page_link_id == null) {
+                $menuList[] = $parent;
+                $menuList = array_merge($menuList, $this->getMenuList($parents, $parent->id));
+            }
+        }
+        return $menuList;
     }
 
 

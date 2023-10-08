@@ -115,6 +115,8 @@ class PermissionSeeder extends Seeder
                 ["name"=>"role-view", "page_url"=>"/system-configuration/role/details/:id", "parent_page"=>1],
                 ["name"=>"role-delete", "page_url"=>"/system-configuration/role", "parent_page"=>1],
 
+                ["name"=>"role-permission", "page_url"=>"/system-configuration/role-permission", "parent_page"=>1],
+
                 ["name"=>"user-create", "page_url"=>"/system-configuration/user/create", "parent_page"=>1],
                 ["name"=>"user-list", "page_url"=>"/system-configuration/user", "parent_page"=>1],
                 ["name"=>"user-edit", "page_url"=>"/system-configuration/user/edit/:id", "parent_page"=>1],
@@ -124,14 +126,34 @@ class PermissionSeeder extends Seeder
         ],
         [
             'module_name' => $this->modulePermissionSystemConfiguration,
-            'sub_module_name' => $this->subDeviceRegistrationManagement,
+            'sub_module_name' => $this->subUserManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"device-create", "page_url"=>"/system-configuration/device/create", "parent_page"=>0],
-                ["name"=>"device-list", "page_url"=>"/system-configuration/device", "parent_page"=>0],
-                ["name"=>"device-edit", "page_url"=>"/system-configuration/device/edit/:id", "parent_page"=>0],
-                ["name"=>"device-view", "page_url"=>"/system-configuration/device/details/:id", "parent_page"=>0],
-                ["name"=>"device-delete", "page_url"=>"/system-configuration/device", "parent_page"=>0]
+                ["name"=>"role-create", "page_url"=>"/system-configuration/role/create", "parent_page"=>1],
+                ["name"=>"role-list", "page_url"=>"/system-configuration/role", "parent_page"=>1],
+                ["name"=>"role-edit", "page_url"=>"/system-configuration/role/edit/:id", "parent_page"=>1],
+                ["name"=>"role-view", "page_url"=>"/system-configuration/role/details/:id", "parent_page"=>1],
+                ["name"=>"role-delete", "page_url"=>"/system-configuration/role", "parent_page"=>1],
+
+                ["name"=>"role-permission", "page_url"=>"/system-configuration/role-permission", "parent_page"=>1],
+
+                ["name"=>"user-create", "page_url"=>"/system-configuration/user/create", "parent_page"=>1],
+                ["name"=>"user-list", "page_url"=>"/system-configuration/user", "parent_page"=>1],
+                ["name"=>"user-edit", "page_url"=>"/system-configuration/user/edit/:id", "parent_page"=>1],
+                ["name"=>"user-view", "page_url"=>"/system-configuration/user/details/:id", "parent_page"=>1],
+                ["name"=>"user-delete", "page_url"=>"/system-configuration/user", "parent_page"=>1]
+            ]
+        ],
+        [
+            'module_name' => $this->modulePermissionBudgetManagement,
+            'sub_module_name' => $this->budgetManagement,
+            'guard_name' => $this->guard,
+            'permissions'=>[
+                ["name"=>"budget-create", "page_url"=>"/budget/create", "parent_page"=>1],
+                ["name"=>"budget-list", "page_url"=>"/budget", "parent_page"=>1],
+                ["name"=>"budget-edit", "page_url"=>"/budget/edit/:id", "parent_page"=>1],
+                ["name"=>"budget-view", "page_url"=>"/budget/details/:id", "parent_page"=>1],
+                ["name"=>"budget-delete", "page_url"=>"/budget", "parent_page"=>1]
             ]
         ],
         [
