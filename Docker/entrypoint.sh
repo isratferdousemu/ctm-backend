@@ -5,7 +5,8 @@ composer install --no-progress --no-interaction --ignore-platform-reqs
 echo "Creating env file for env $APP_ENV"
 cp .env.example .env
 
-php artisan migrate:fresh --seed
+#php artisan migrate:fresh --seed
+php artisan migrate
 php artisan key:generate
 php artisan route:clear
 php artisan config:clear
