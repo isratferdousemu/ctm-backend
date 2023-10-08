@@ -7,8 +7,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin/user')->group(function () {
 
         Route::post('/insert', [UserController::class, 'insertUser'])->middleware(['role_or_permission:super-admin|user-create']);
+        Route::put('/update/{id}', [UserController::class, 'update'])->middleware(['role_or_permission:super-admin|user-update']);
         Route::get('/get',[UserController::class, 'getAllUserPaginated'])->middleware(['role_or_permission:super-admin|user-list']);
         Route::post('/office/by-location', [UserController::class, 'getOfficeByLocationAssignId'])->middleware(['role_or_permission:super-admin|user-create']);
+        Route::delete('/destroy/{id}', [UserController::class, 'destroyUser'])->middleware(['role_or_permission:super-admin|user-destroy']);
+
     });
 
 

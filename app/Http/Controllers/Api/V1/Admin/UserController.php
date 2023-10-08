@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\User\UserRequest;
+use App\Http\Requests\Admin\User\UserUpdateRequest;
 use App\Http\Resources\Admin\Office\OfficeResource;
 use App\Http\Resources\Admin\User\UserResource;
 use App\Http\Services\Admin\User\UserService;
@@ -306,6 +307,47 @@ class UserController extends Controller
         }
     }
 
+    public function update(UserUpdateRequest $request, $id)
+    {
+        if ($request->_method == 'PUT')
+        {
+
+            try {
+
+                if($request->has('role_id')){
+                    $role = Role::whereName($this->officeHead)->first();
+                    if(in_array($role->id,$request->role_id)){
+                        $officeHead = User::where('office_id',$request->office_id)->whereHas('roles', function ($query) {
+                            $query->where('name', $this->officeHead);
+                        })->first();
+                        if($officeHead){
+                            return $this->sendError('This office already has a office head', [], 500);
+                        }
+                    }
+                }
+
+                $user = $this->UserService->upddateUser($request, $id);
+
+
+                activity("User")
+                    ->causedBy(auth()->user())
+                    ->performedOn($user)
+                    ->log('User Created !');
+                return UserResource::make($user)->additional([
+                    'success' => true,
+                    'message' => $this->updateSuccessMessage,
+                ]);
+
+            }catch (\Exception $e){
+                \DB::rollBack();
+
+                $error = $e->getMessage();
+
+                return $this->sendError($error, [], 500);
+            }
+        }
+    }
+
     /**
      *
      * @OA\Post(
@@ -387,6 +429,72 @@ class UserController extends Controller
             return OfficeResource::collection($office)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     *
+     * @OA\Delete(
+     *      path="/admin/user/destroy/{id}",
+     *      operationId="destroyUser",
+     *      tags={"ADMIN-USER"},
+     *      summary="delete a user",
+     *      description="delete a user",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id of user",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+    public function destroyUser($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            activity("User")
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log('User Deleted !');
+            return UserResource::make($user)->additional([
+                'success' => true,
+                'message' => $this->deleteSuccessMessage,
             ]);
         } catch (\Throwable $th) {
             //throw $th;
