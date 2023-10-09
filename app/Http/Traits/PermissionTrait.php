@@ -19,6 +19,7 @@ trait PermissionTrait
     private $modulePermissionReportingSystem = "ReportingSystem";
     private $modulePermissionTrainingManagement = "TrainingManagement";
     private $modulePermissionBudgetManagement = "BudgetManagement";
+    private $modulePermissionAllotmentManagement = "AllotmentManagement";
 
     // sub modules list
 
@@ -31,6 +32,7 @@ trait PermissionTrait
     private $subDeviceRegistrationManagement = "device-registration-management";
 
     private $menuManagement = "menu-management";
+    private $deviceRegistrationManagement = "device-registration";
 
     // module 2 sub modules
     private $subOnlineApplicationManagement = "online-application-management";
@@ -60,5 +62,6 @@ trait PermissionTrait
     // module 6 sub modules
 
     private $budgetManagement= "budget-management";
+    private $allotmentManagement= "allotment-management";
 
 }

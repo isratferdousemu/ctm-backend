@@ -15,6 +15,9 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
+/**
+ *
+ */
 class MenuController extends Controller
 {
     use MessageTrait, UserTrait;
@@ -88,7 +91,6 @@ class MenuController extends Controller
 //        'success' => true,
 //        'message' => $this->fetchSuccessMessage,
 //    ]);
-
         $menu = Menu::select(
             'menus.*',
             'permissions.page_url as link'
@@ -96,6 +98,7 @@ class MenuController extends Controller
             ->leftJoin('permissions', function ($join) {
                 $join->on('menus.page_link_id', '=', 'permissions.id');
             });
+
 
         if($request->has('sortBy'))
         {
@@ -106,7 +109,7 @@ class MenuController extends Controller
                 $menu = $menu->orderBy($request->get('sortBy'), 'asc');
             }
         }else{
-            $menu = $menu->orderBy('id', 'desc');
+            $menu = $menu->orderBy('order', 'asc');
         }
 
         $searchValue = $request->input('search');
@@ -125,9 +128,56 @@ class MenuController extends Controller
         if($request->has('itemsPerPage'))
         {
             $itemsPerPage = $request->get('itemsPerPage');
+        return $menu->paginate($itemsPerPage);
+        }else{
+        return $menu->get();
+
         }
 
-        return $menu->paginate($itemsPerPage);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/admin/menu/get-all",
+     *      operationId="getMenus",
+     *     tags={"MENU-MANAGEMENT"},
+     *      summary="get all menus",
+     *      description="get all menus",
+     *      security={{"bearer_token":{}}},
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     * )
+     */
+
+    public function getMenus(Request $request){
+
+        $menus = Menu::with("children.children.pageLink","children.pageLink","pageLink")->whereParentId(null)->orderBy('order', 'asc')->get();
+
+        return MenuResource::collection($menus)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
     }
 
     /**
@@ -273,7 +323,7 @@ class MenuController extends Controller
 
     public function getPageUrl()
     {
-        $page_urls = Permission::select('id', 'page_url')->get();
+        $page_urls = Permission::select('id', 'page_url','name')->get();
 
         return response()->json([
             'page_urls' => $page_urls
@@ -528,6 +578,7 @@ class MenuController extends Controller
      *          )
      * )
      */
+    
     public function destroy($id)
     {
         $menu = Menu::findOrFail($id);
