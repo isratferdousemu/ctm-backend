@@ -151,7 +151,7 @@ class RoleController extends Controller
  public function getUnAssignPermissionRole(){
 
     //$role =Role::whereDoesntHave('permissions')->get();
-    $role =Role::where('name','!=','super-admin')->get();
+    $role =Role::where('name','!=','super-admin')->where('name', '!=', 'office-head')->get();
 
 
     return RoleResource::collection($role)->additional([
@@ -557,7 +557,7 @@ class RoleController extends Controller
  public function getAllPermission(Request $request){
         // Retrieve the query parameters
 
-        $permissions = Permission::latest()->get();
+        $permissions = Permission::get();
 
          $result = [];
 
@@ -571,7 +571,7 @@ class RoleController extends Controller
 
             $result[$permission->module_name][] = $permission;
 
-            $result_data[$permission->module_name][$name[0]][] = $permission;
+            $result_data[$permission->module_name][$permission->sub_module_name.'/'.$name[0]][] = $permission;
         }
 
 
