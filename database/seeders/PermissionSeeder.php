@@ -100,10 +100,10 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subUserManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"user-create", "page_url"=>"/system-configuration/user/create", "parent_page"=>1],
-                ["name"=>"user-view", "page_url"=>"/system-configuration/user", "parent_page"=>1],
-                ["name"=>"user-edit", "page_url"=>"/system-configuration/user/edit/:id", "parent_page"=>1],
-                ["name"=>"user-delete", "page_url"=>"/system-configuration/user", "parent_page"=>1]
+                ["name"=>"user-create", "page_url"=>"/system-configuration/users/create", "parent_page"=>1],
+                ["name"=>"user-view", "page_url"=>"/system-configuration/users", "parent_page"=>1],
+                ["name"=>"user-edit", "page_url"=>"/system-configuration/users/edit/:id", "parent_page"=>1],
+                ["name"=>"user-delete", "page_url"=>"/system-configuration/users", "parent_page"=>1]
             ]
         ],
 
@@ -116,20 +116,34 @@ class PermissionSeeder extends Seeder
                 ["name"=>"role-view", "page_url"=>"/system-configuration/role", "parent_page"=>1],
                 ["name"=>"role-edit", "page_url"=>"/system-configuration/role/edit/:id", "parent_page"=>1],
                 ["name"=>"role-delete", "page_url"=>"/system-configuration/role", "parent_page"=>1],
-                ]
+
+                ["name"=>"role-permission", "page_url"=>"/system-configuration/role-permission", "parent_page"=>1],
+
+            ]
         ],
 
         [
-            'module_name' => $this->modulePermissionSystemConfiguration,
-            'sub_module_name' => $this->subDeviceRegistrationManagement,
+            'module_name' => $this->modulePermissionBudgetManagement,
+            'sub_module_name' => $this->budgetManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"device-create", "page_url"=>"/system-configuration/device/create", "parent_page"=>0],
-                ["name"=>"device-view", "page_url"=>"/system-configuration/device", "parent_page"=>0],
-                ["name"=>"device-edit", "page_url"=>"/system-configuration/device/edit/:id", "parent_page"=>0],
-                ["name"=>"device-delete", "page_url"=>"/system-configuration/device", "parent_page"=>0]
+                ["name"=>"budget-create", "page_url"=>"/budget/create", "parent_page"=>1],
+                ["name"=>"budget-view", "page_url"=>"/budget", "parent_page"=>1],
+                ["name"=>"budget-edit", "page_url"=>"/budget/edit/:id", "parent_page"=>1],
+                ["name"=>"budget-delete", "page_url"=>"/budget", "parent_page"=>1]
             ]
         ],
+            [
+                'module_name' => $this->modulePermissionAllotmentManagement,
+                'sub_module_name' => $this->allotmentManagement,
+                'guard_name' => $this->guard,
+                'permissions'=>[
+                    ["name"=>"allotment-create", "page_url"=>"/allotment/create", "parent_page"=>0],
+                    ["name"=>"allotment-view", "page_url"=>"/allotment", "parent_page"=>0],
+                    ["name"=>"allotment-edit", "page_url"=>"/allotment/edit/:id", "parent_page"=>0],
+                    ["name"=>"allotment-delete", "page_url"=>"/allotment", "parent_page"=>0]
+                ]
+            ],
         [
             'module_name' => $this->modulePermissionSystemConfiguration,
             'sub_module_name' => $this->menuManagement,
@@ -139,6 +153,17 @@ class PermissionSeeder extends Seeder
                 ["name"=> "menu-view", "page_url"=>"/system-configuration/menu", "parent_page"=>0],
                 ["name"=> "menu-edit", "page_url"=>"/system-configuration/menu/edit/:id", "parent_page"=>0],
                 ["name"=> "menu-delete", "page_url"=>"/system-configuration/menu", "parent_page"=>0]
+            ]
+        ],
+        [
+            'module_name' => $this->modulePermissionSystemConfiguration,
+            'sub_module_name' => $this->deviceRegistrationManagement,
+            'guard_name' => $this->guard,
+            'permissions' => [
+                ["name"=> "device-registration-create", "page_url"=>"/system-configuration/device-registration/create", "parent_page"=>0],
+                ["name"=> "device-registration-view", "page_url"=>"/system-configuration/device-registration", "parent_page"=>0],
+                ["name"=> "device-registration-edit", "page_url"=>"/system-configuration/device-registration/edit/:id", "parent_page"=>0],
+                ["name"=> "device-registration-delete", "page_url"=>"/system-configuration/device-registration", "parent_page"=>0]
             ]
         ],
 
@@ -345,6 +370,23 @@ class PermissionSeeder extends Seeder
                 ["name"=>"training-view", "page_url"=>"training-management/training", "parent_page"=>1],
                 ["name"=>"training-edit", "page_url"=>"training-management/training/edit/:id", "parent_page"=>1],
                 ["name"=>"training-delete", "page_url"=>"training-management/training", "parent_page"=>1]
+            ]
+
+        ],
+        [
+            'module_name' => $this->modulePermissionSettingManagement,
+            'sub_module_name' => $this->settingManagement,
+            'guard_name' => $this->guard,
+            'permissions'=>[
+                ["name"=>"general-setting-create", "page_url"=>"setting/general/create", "parent_page"=>0],
+                ["name"=>"general-setting-view", "page_url"=>"setting/general", "parent_page"=>0],
+                ["name"=>"general-setting-edit", "page_url"=>"setting/general/edit/:id", "parent_page"=>0],
+                ["name"=>"general-setting-delete", "page_url"=>"setting/general", "parent_page"=>0],
+
+                ["name"=>"global-setting-create", "page_url"=>"setting/global/create", "parent_page"=>0],
+                ["name"=>"global-setting-view", "page_url"=>"setting/global", "parent_page"=>0],
+                ["name"=>"global-setting-edit", "page_url"=>"setting/global/edit/:id", "parent_page"=>0],
+                ["name"=>"global-setting-delete", "page_url"=>"setting/global", "parent_page"=>0]
             ]
 
         ],

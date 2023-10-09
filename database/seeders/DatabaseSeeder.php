@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RolesSeeder::class);
         $this->call(LookUpSeeder::class);
         $this->call(AditionalFieldSeeder::class);
+        $this->call(MenuSeeder::class);
         // Model::reguard(); // Enable mass assignment
 
     }
