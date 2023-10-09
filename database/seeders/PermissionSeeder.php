@@ -100,10 +100,10 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subUserManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"user-create", "page_url"=>"/system-configuration/user/create", "parent_page"=>1],
-                ["name"=>"user-view", "page_url"=>"/system-configuration/user", "parent_page"=>1],
-                ["name"=>"user-edit", "page_url"=>"/system-configuration/user/edit/:id", "parent_page"=>1],
-                ["name"=>"user-delete", "page_url"=>"/system-configuration/user", "parent_page"=>1]
+                ["name"=>"user-create", "page_url"=>"/system-configuration/users/create", "parent_page"=>1],
+                ["name"=>"user-view", "page_url"=>"/system-configuration/users", "parent_page"=>1],
+                ["name"=>"user-edit", "page_url"=>"/system-configuration/users/edit/:id", "parent_page"=>1],
+                ["name"=>"user-delete", "page_url"=>"/system-configuration/users", "parent_page"=>1]
             ]
         ],
 
@@ -119,11 +119,6 @@ class PermissionSeeder extends Seeder
 
                 ["name"=>"role-permission", "page_url"=>"/system-configuration/role-permission", "parent_page"=>1],
 
-                ["name"=>"user-create", "page_url"=>"/system-configuration/users/create", "parent_page"=>1],
-                ["name"=>"user-list", "page_url"=>"/system-configuration/users", "parent_page"=>1],
-                ["name"=>"user-edit", "page_url"=>"/system-configuration/users/edit/:id", "parent_page"=>1],
-                ["name"=>"user-view", "page_url"=>"/system-configuration/users/details/:id", "parent_page"=>1],
-                ["name"=>"user-delete", "page_url"=>"/system-configuration/users", "parent_page"=>1]
             ]
         ],
 
@@ -133,9 +128,8 @@ class PermissionSeeder extends Seeder
             'guard_name' => $this->guard,
             'permissions'=>[
                 ["name"=>"budget-create", "page_url"=>"/budget/create", "parent_page"=>1],
-                ["name"=>"budget-list", "page_url"=>"/budget", "parent_page"=>1],
+                ["name"=>"budget-view", "page_url"=>"/budget", "parent_page"=>1],
                 ["name"=>"budget-edit", "page_url"=>"/budget/edit/:id", "parent_page"=>1],
-                ["name"=>"budget-view", "page_url"=>"/budget/details/:id", "parent_page"=>1],
                 ["name"=>"budget-delete", "page_url"=>"/budget", "parent_page"=>1]
             ]
         ],
@@ -145,9 +139,8 @@ class PermissionSeeder extends Seeder
                 'guard_name' => $this->guard,
                 'permissions'=>[
                     ["name"=>"allotment-create", "page_url"=>"/allotment/create", "parent_page"=>0],
-                    ["name"=>"allotment-list", "page_url"=>"/allotment", "parent_page"=>0],
+                    ["name"=>"allotment-view", "page_url"=>"/allotment", "parent_page"=>0],
                     ["name"=>"allotment-edit", "page_url"=>"/allotment/edit/:id", "parent_page"=>0],
-                    ["name"=>"allotment-view", "page_url"=>"/allotment/details/:id", "parent_page"=>0],
                     ["name"=>"allotment-delete", "page_url"=>"/allotment", "parent_page"=>0]
                 ]
             ],
@@ -168,9 +161,8 @@ class PermissionSeeder extends Seeder
             'guard_name' => $this->guard,
             'permissions' => [
                 ["name"=> "device-registration-create", "page_url"=>"/system-configuration/device-registration/create", "parent_page"=>0],
-                ["name"=> "device-registration-list", "page_url"=>"/system-configuration/device-registration", "parent_page"=>0],
+                ["name"=> "device-registration-view", "page_url"=>"/system-configuration/device-registration", "parent_page"=>0],
                 ["name"=> "device-registration-edit", "page_url"=>"/system-configuration/device-registration/edit/:id", "parent_page"=>0],
-                ["name"=> "device-registration-view", "page_url"=>"/system-configuration/device-registration/details/:id", "parent_page"=>0],
                 ["name"=> "device-registration-delete", "page_url"=>"/system-configuration/device-registration", "parent_page"=>0]
             ]
         ],
