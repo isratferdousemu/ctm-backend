@@ -11,7 +11,7 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,18 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            // 'full_name'                     => 'required|string|max:50',
+            // 'username'                     => 'required|string|unique:users,username,'.$this->id.',id,deleted_at,NULL',
+            // 'mobile'                     => 'required|numeric|unique:users,mobile,'.$this->id.',id,deleted_at,NULL|regex:/^8801[3-9]\d{8}$/',
+            // // 'email'                     => 'required|email|unique:users,email,'.$this->id.',id,deleted_at,NULL,deleted_at',
+            // 'status' => 'sometimes|integer|in:0,1',
+            // 'role_id' => 'required|array|exists:roles,id',
+            // 'office_type'                     => 'required|integer|exists:lookups,id',
+            // 'office_id'                     => 'required|integer|exists:offices,id',
+            // 'division_id' => 'sometimes|required_unless:division_id,null,id,deleted_at,NULL',
+            // 'district_id' => 'sometimes|required_unless:district_id,exists:locations,id,deleted_at,NULL',
+            // 'thana_id' => 'sometimes|required_unless:thana_id,exists:locations,id,deleted_at,NULL',
+            // 'city_corpo_id' => 'sometimes|required_unless:city_corpo_id,exists:locations,id,deleted_at,NULL',
         ];
     }
 }

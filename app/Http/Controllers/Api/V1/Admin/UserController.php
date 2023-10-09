@@ -309,9 +309,22 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request, $id)
     {
-        if ($request->_method == 'PUT')
+        
+        // $arrayName = array(
+        //     'data' => $request->method(),
+        //     // 'data1' => $request->all()
+        // );
+    
+        // return $arrayName;
+        if ($request->method() == 'PUT')
         {
-
+            
+            // $arrayName = array(
+            //     'data' => $request->all(),
+            //     // 'data1' => $request->all()
+            // );
+    
+            // return $arrayName;
             try {
 
                 if($request->has('role_id')){
