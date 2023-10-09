@@ -20,6 +20,7 @@ trait PermissionTrait
     private $modulePermissionTrainingManagement = "TrainingManagement";
     private $modulePermissionBudgetManagement = "BudgetManagement";
     private $modulePermissionAllotmentManagement = "AllotmentManagement";
+    private $modulePermissionSettingManagement = "SettingManagement";
 
     // sub modules list
 
@@ -64,5 +65,6 @@ trait PermissionTrait
 
     private $budgetManagement= "budget-management";
     private $allotmentManagement= "allotment-management";
+    private $settingManagement= "setting-management";
 
 }
