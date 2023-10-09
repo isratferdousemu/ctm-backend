@@ -69,7 +69,7 @@ class UserService
         DB::beginTransaction();
         try {
 
-            $user                       = User::findOrFail($id);
+            $user            = User::findOrFail($id);
             $user->full_name = $request->full_name;
             $user->username = $request->username;
             $user->mobile = $request->mobile;
@@ -101,12 +101,9 @@ class UserService
             }
 
             $user->office_id = $request->office_id;
-            // $user->user_type = $this->staffId;
-            // $user->user_id = $this->generateUserId();
-            // $user->email_verified_at = now();
             $user->save();
             // assign role to the user
-            // $user->assignRole([$request->role_id]);
+            $user->syncRoles([$request->role_id]);
 
             DB::commit();
             return $user;
