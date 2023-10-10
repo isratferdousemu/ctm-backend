@@ -378,15 +378,15 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->settingManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"general-setting-create", "page_url"=>"setting/general/create", "parent_page"=>0],
-                ["name"=>"general-setting-view", "page_url"=>"setting/general", "parent_page"=>0],
-                ["name"=>"general-setting-edit", "page_url"=>"setting/general/edit/:id", "parent_page"=>0],
-                ["name"=>"general-setting-delete", "page_url"=>"setting/general", "parent_page"=>0],
+                ["name"=>"general-setting-create", "page_url"=>"/setting/general/create", "parent_page"=>0],
+                ["name"=>"general-setting-view", "page_url"=>"/setting/general", "parent_page"=>0],
+                ["name"=>"general-setting-edit", "page_url"=>"/setting/general/edit/:id", "parent_page"=>0],
+                ["name"=>"general-setting-delete", "page_url"=>"/setting/general", "parent_page"=>0],
 
-                ["name"=>"global-setting-create", "page_url"=>"setting/global/create", "parent_page"=>0],
-                ["name"=>"global-setting-view", "page_url"=>"setting/global", "parent_page"=>0],
-                ["name"=>"global-setting-edit", "page_url"=>"setting/global/edit/:id", "parent_page"=>0],
-                ["name"=>"global-setting-delete", "page_url"=>"setting/global", "parent_page"=>0]
+                ["name"=>"global-setting-create", "page_url"=>"/setting/global/create", "parent_page"=>0],
+                ["name"=>"global-setting-view", "page_url"=>"/setting/global", "parent_page"=>0],
+                ["name"=>"global-setting-edit", "page_url"=>"/setting/global/edit/:id", "parent_page"=>0],
+                ["name"=>"global-setting-delete", "page_url"=>"/setting/global", "parent_page"=>0]
             ]
 
         ],
