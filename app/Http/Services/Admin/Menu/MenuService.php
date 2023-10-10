@@ -17,22 +17,24 @@ class MenuService
             $menu                       = New Menu;
             $menu->label_name_en          = $request->label_name_en;
             $menu->label_name_bn          = $request->label_name_bn;
-            $menu->order                  = $request->order;
             $menu->page_link_id           = $request->page_link_id;
             $menu->link_type              = $request->link_type;
             $menu->link                   = $request->link;
-
-            if ($request->parent_id == null)
+            // check order key exists or not in request if not exists then set total menu count + 1
+            if (!key_exists('order', $request->all()))
             {
-                if ($menu->save()) {
+                $menu->order = Menu::count()+1;
+            }else{
+                $menu->order = $request->order;
+            }
+            if (!key_exists('parent_id', $request->all()))
+            {
+
                     $menu->parent_id = null;
                     $menu->save();
-                }
             }else{
-                if ($menu->save()) {
                     $menu->parent_id = $request->parent_id;
                     $menu->save();
-                }
             }
 
 

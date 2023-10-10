@@ -27,12 +27,12 @@ Route::middleware('auth:sanctum')->group(function () {
         /* -------------------------------------------------------------------------- */
         Route::prefix('permission')->group(function () {
 
-            Route::get('roles/unassign',[RoleController::class, 'getUnAssignPermissionRole'])->middleware(['role_or_permission:super-admin|main-role-list']);
-            Route::get('roles/all',[RoleController::class, 'getAllRole'])->middleware(['role_or_permission:super-admin|main-role-list']);
-            Route::get('modules',[RoleController::class, 'getAllPermission'])->middleware(['role_or_permission:super-admin|main-permission-list']);
+            Route::get('roles/unassign',[RoleController::class, 'getUnAssignPermissionRole'])->middleware(['role_or_permission:super-admin|role-permission']);
+            Route::get('roles/all',[RoleController::class, 'getAllRole'])->middleware(['role_or_permission:super-admin|role-list']);
+            Route::get('modules',[RoleController::class, 'getAllPermission'])->middleware(['role_or_permission:super-admin|role-permission']);
 
-            Route::post('/assign', [RoleController::class, 'AssignPermissionRole'])->middleware(['role_or_permission:super-admin|main-role-store']);
-            Route::get('/role_permission_edit/{id}', [RoleController::class, 'rolePermissionEdit'])->middleware(['role_or_permission:super-admin|main-role-store']);
+            Route::post('/assign', [RoleController::class, 'AssignPermissionRole'])->middleware(['role_or_permission:super-admin|role-store']);
+            Route::get('/role_permission_edit/{id}', [RoleController::class, 'rolePermissionEdit'])->middleware(['role_or_permission:super-admin|role-store']);
 
         });
     });

@@ -82,6 +82,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
         Route::post('/insert', [MenuController::class, 'insertMenu'])->middleware(['role_or_permission:super-admin|menu-create']);
         Route::get('/get',[MenuController::class, 'getAllMenu']);
+        Route::get('/get-all',[MenuController::class, 'getMenus']);
         Route::get('/get_page_url', [MenuController::class, 'getPageUrl']);
         Route::get('/get_parent', [MenuController::class, 'getParent']);
         Route::get('/edit/{id}', [MenuController::class, 'edit']);
