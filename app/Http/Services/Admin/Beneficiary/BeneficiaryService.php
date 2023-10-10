@@ -132,11 +132,12 @@ class BeneficiaryService
 
             $committee ->save();
 
-            CommitteeMember::whereCommittee_id($request->id)->delete();
+            CommitteeMember::whereCommitteeId($request->id)->delete();
 
 
             $input = $request->members;
-
+            // store committee members
+            // $committee->members()->sync($input);
             foreach($input as $item) {
 
                  $member                     =  new CommitteeMember;
