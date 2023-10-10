@@ -104,7 +104,7 @@ class CommitteeController extends Controller
 
 
         })
-        ->with('program','division','district','office','members')
+        ->with('program','members','committeeType','location.parent.parent.parent')
         ->latest()
         ->paginate($perPage, ['*'], 'page');
 

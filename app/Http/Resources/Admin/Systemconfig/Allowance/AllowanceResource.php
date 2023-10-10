@@ -15,17 +15,6 @@ class AllowanceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return
-         [
-         'id'                  => $this->id,
-        'name_en'              => $this->name_en,
-        'name_bn'              => $this->name_bn,
-        'guideline'            => $this->guideline,
-        'description'          => $this->description,
-        'service_type'         =>LookupResource::make($this->whenLoaded('lookup')),
-
-    ];
-
-
+        return parent::toArray($request);
     }
 }
