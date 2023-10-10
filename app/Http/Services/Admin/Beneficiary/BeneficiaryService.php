@@ -71,7 +71,7 @@ class BeneficiaryService
                  $member                      = new CommitteeMember;
                  $member->committee_id        = $committee->id;
                  $member->member_name    	 = $item['member_name'];
-                 $member->designation    	 = $item['designation_id'];
+                 $member->designation_id    	 = $item['designation_id'];
                  $member->email    	         = $item['email'];
                  $member->address    	     = $item['address'];
                  $member->phone              = $item['phone'];
@@ -142,7 +142,7 @@ class BeneficiaryService
                  $member                     =  new CommitteeMember;
                  $member->committee_id        = $committee->id;
                  $member->member_name    	 = $item['member_name'];
-                 $member->designation    	 = $item['designation_id'];
+                 $member->designation_id    	 = $item['designation_id'];
                  $member->email    	         = $item['email'];
                  $member->address    	     = $item['address'];
                  $member->phone              = $item['phone'];
