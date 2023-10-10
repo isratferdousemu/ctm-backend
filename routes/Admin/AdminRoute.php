@@ -18,7 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/get',[RoleController::class, 'getAllRolePaginated'])->middleware(['role_or_permission:super-admin|role-list']);
         Route::post('/insert', [RoleController::class, 'insert'])->middleware(['role_or_permission:super-admin|role-create']);
-        Route::get('/edit/{id}', [RoleController::class, 'edit'])->middleware(['role_or_permission:super-admin|role-edit']);
+        Route::get('/edit/{id}', [RoleController::class, 'editRole'])->middleware(['role_or_permission:super-admin|role-edit']);
         Route::post('/update', [RoleController::class, 'updateRole'])->middleware(['role_or_permission:super-admin|role-update']);
         Route::delete('/destroy/{id}', [RoleController::class, 'destroyRole'])->middleware(['role_or_permission:super-admin|role-delete']);
 

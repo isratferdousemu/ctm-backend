@@ -2101,11 +2101,7 @@
                 ]
             }
         },
-<<<<<<< HEAD
-        "/admin/thana/get/{city_id}": {
-=======
         "/admin/thana/get/city/{city_id}": {
->>>>>>> 0c787bc5b7021ab335c2abeadc4bdfdde934aef8
             "get": {
                 "tags": [
                     "GEOGRAPHIC-THANA"
@@ -3105,6 +3101,48 @@
                 ]
             }
         },
+        "/admin/menu/get-all": {
+            "get": {
+                "tags": [
+                    "MENU-MANAGEMENT"
+                ],
+                "summary": "get all menus",
+                "description": "get all menus",
+                "operationId": "getMenus",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/menu/insert": {
             "post": {
                 "tags": [
@@ -3279,7 +3317,7 @@
                 ],
                 "summary": "update a menu",
                 "description": "update a menu",
-                "operationId": "update",
+                "operationId": "updateMenu",
                 "requestBody": {
                     "description": "enter inputs",
                     "required": true,
@@ -3362,7 +3400,7 @@
                 ],
                 "summary": "destroy menu",
                 "description": "destroy menu from menu lists",
-                "operationId": "destroy",
+                "operationId": "destroyMenu",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -3987,7 +4025,7 @@
                 ],
                 "summary": "get edit role data",
                 "description": "Returns Role Details by id",
-                "operationId": "edit",
+                "operationId": "editRole",
                 "parameters": [
                     {
                         "name": "id",
@@ -4338,6 +4376,48 @@
                 ]
             }
         },
+        "/admin/allowance/get_additional_field": {
+            "get": {
+                "tags": [
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
+                ],
+                "summary": "get addiontal field Allowances",
+                "description": "get addiontal field Allowances",
+                "operationId": "getAdditionalField",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/allowance/insert": {
             "post": {
                 "tags": [
@@ -4413,8 +4493,50 @@
                 ]
             }
         },
+        "/admin/allowance/edit/{id}": {
+            "get": {
+                "tags": [
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
+                ],
+                "summary": "get edit Allowances",
+                "description": "get edit Allowances",
+                "operationId": "edit",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/allowance/update": {
-            "post": {
+            "put": {
                 "tags": [
                     "ALLOWANCE-PROGRAM-MANAGEMENT"
                 ],
@@ -4493,7 +4615,7 @@
             }
         },
         "/admin/allowance/destroy/{id}": {
-            "get": {
+            "delete": {
                 "tags": [
                     "ALLOWANCE-PROGRAM-MANAGEMENT"
                 ],

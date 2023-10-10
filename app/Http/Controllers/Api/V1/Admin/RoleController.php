@@ -303,7 +303,7 @@ class RoleController extends Controller
     /**
      * @OA\Get(
      *      path="/admin/role/edit/{id}",
-     *      operationId="edit",
+     *      operationId="editRole",
      *      tags={"ADMIN-ROLE"},
      *      summary="get edit role data",
      *      description="Returns Role Details by id",
@@ -340,7 +340,7 @@ class RoleController extends Controller
      *      ),
      *     )
      */
-    public function edit(Request $request)
+    public function editRole(Request $request)
     {
 
          // return $id;
