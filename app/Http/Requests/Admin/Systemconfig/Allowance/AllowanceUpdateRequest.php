@@ -23,11 +23,7 @@ class AllowanceUpdateRequest extends FormRequest
     {
         return [
             'name_en'        => 'required|string|max:50',
-            'name_bn'        => 'required|string|max:50',
-            'guideline'      => 'required|string|max:120,Null',
-            'description'    => 'required|string|max:120,Null',
-            'service_type'   => 'required|integer|exists:lookups,id'
-
+            'name_bn'        => 'required|string|max:50'
         ];
     }
 }

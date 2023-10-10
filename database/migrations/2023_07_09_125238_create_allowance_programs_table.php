@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name_en',50);
             $table->string('name_bn',50);
-            $table->string('guideline',120)->nullable();
-            $table->integer('service_type');
-            $table->string('description',120)->nullable();
-            $table->integer("version")->default(1);
+            $table->string('payment_cycle', 40);
+            $table->tinyInteger('is_marital')->nullable()->default(0);
+            $table->string('marital_status', 40)->nullable();
+            $table->tinyInteger('is_active')->default(0);
+            $table->tinyInteger('is_age_limit')->nullable()->default(0);
+            $table->tinyInteger('is_amount')->default(0);
             $table->timestamps();
         });
     }
