@@ -18,9 +18,9 @@ class DatabaseSeeder extends Seeder
     {
         // Model::unguard();
         //role seeder with admin & super admin
-        $this->call(PermissionSeeder::class);
+        // $this->call(PermissionSeeder::class);
         $this->call(RolesSeeder::class);
-        $this->call(LookUpSeeder::class);
+        // $this->call(LookUpSeeder::class);
         // $this->call(LocationSeed::class);
         $this->call(AditionalFieldSeeder::class);
         $this->call(MenuSeeder::class);
