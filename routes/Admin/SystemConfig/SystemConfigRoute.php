@@ -43,8 +43,10 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
         Route::post('/insert', [SystemconfigController::class, 'insertallowance'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::get('/get',[SystemconfigController::class, 'getAllallowancePaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
-        Route::post('/update', [SystemconfigController::class, 'AllowanceUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
-        Route::get('/destroy/{id}', [SystemconfigController::class, 'destroyAllowance'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        Route::get('/get_additional_field',[SystemconfigController::class, 'getAdditionalField'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/edit/{id}',[SystemconfigController::class, 'edit'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::put('/update/{id}', [SystemconfigController::class, 'AllowanceUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
+        Route::delete('/destroy/{id}', [SystemconfigController::class, 'destroyAllowance'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
 
     /* -------------------------------------------------------------------------- */
