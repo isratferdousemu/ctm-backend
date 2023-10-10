@@ -224,10 +224,10 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subCommitteeInformation,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"committee-create", "page_url"=>"/beneficiary-management/committe/create", "parent_page"=>1],
-                ["name"=>"committee-view", "page_url"=>"/beneficiary-management/committe", "parent_page"=>1],
-                ["name"=>"committee-edit", "page_url"=>"/beneficiary-management/committe/edit/:id", "parent_page"=>1],
-                ["name"=>"committee-delete", "page_url"=>"/beneficiary-management/committe", "parent_page"=>1]
+                ["name"=>"committee-create", "page_url"=>"/beneficiary-management/committee/create", "parent_page"=>1],
+                ["name"=>"committee-view", "page_url"=>"/beneficiary-management/committee", "parent_page"=>1],
+                ["name"=>"committee-edit", "page_url"=>"/beneficiary-management/committee/edit/:id", "parent_page"=>1],
+                ["name"=>"committee-delete", "page_url"=>"/beneficiary-management/committee", "parent_page"=>1]
             ]
         ],
         [

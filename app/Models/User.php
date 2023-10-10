@@ -101,6 +101,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \App\Models\Lookup|null $office
  * @property-read \App\Models\Lookup|null $officeType
  * @method static \Illuminate\Database\Eloquent\Builder|User whereOfficeType($value)
+ * @property int $isDefaultPassword
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsDefaultPassword($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable

@@ -24,7 +24,7 @@ class OfficeController extends Controller
     * @OA\Get(
     *     path="/admin/office/get",
     *      operationId="getAllOfficePaginated",
-    *      tags={"SYSTEM-OFFICE MANAGEMENT"},
+    *      tags={"SYSTEM-OFFICE-MANAGEMENT"},
     *      summary="get paginated Offices",
     *      description="get paginated Offices",
     *      security={{"bearer_token":{}}},
@@ -368,7 +368,7 @@ class OfficeController extends Controller
      * @OA\Get(
      *      path="/admin/office/get/{district_id}",
      *      operationId="getAllOfficeByDistrictId",
-     *     tags={"SySTEM-OFFICE MANAGEMENT"},
+     *     tags={"SySTEM-OFFICE-MANAGEMENT"},
      *      summary=" get office by district",
      *      description="get office by district",
      *      security={{"bearer_token":{}}},

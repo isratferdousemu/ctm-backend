@@ -51,6 +51,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $version
  * @method static \Illuminate\Database\Eloquent\Builder|Office whereParentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Office whereVersion($value)
+ * @property int|null $assignLocationId
+ * @property-read \App\Models\Location|null $assignLocation
+ * @method static \Illuminate\Database\Eloquent\Builder|Office whereAssignLocationId($value)
  * @mixin \Eloquent
  */
 class Office extends Model

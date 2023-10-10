@@ -43,6 +43,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Committee whereProgramId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Committee whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Committee whereVersion($value)
+ * @property int|null $committeeType
+ * @method static \Illuminate\Database\Eloquent\Builder|Committee whereCommitteeType($value)
  * @mixin \Eloquent
  */
 class Committee extends Model

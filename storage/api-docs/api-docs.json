@@ -90,7 +90,7 @@
         "/admin/lookup/get/{type}": {
             "get": {
                 "tags": [
-                    "SYSTEM-OFFICE MANAGEMENT"
+                    "SYSTEM-OFFICE-MANAGEMENT"
                 ],
                 "summary": "get lookup by type",
                 "description": "get lookup by type",
@@ -380,7 +380,7 @@
         "/admin/committee/get": {
             "get": {
                 "tags": [
-                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                    "BENEFICIARY-COMMITTEE-MANAGEMENT"
                 ],
                 "summary": "get paginated Commitees with members",
                 "description": "get paginated Commitees",
@@ -448,7 +448,7 @@
         "/admin/committee/insert": {
             "post": {
                 "tags": [
-                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                    "BENEFICIARY-COMMITTEE-MANAGEMENT"
                 ],
                 "summary": "insert a Committee",
                 "description": "insert a Committee",
@@ -476,6 +476,10 @@
                                         "description": "insert Details ",
                                         "type": "integer"
                                     },
+                                    "committee_type": {
+                                        "description": "insert committee type ",
+                                        "type": "integer"
+                                    },
                                     "division_id": {
                                         "description": "insert division Id",
                                         "type": "integer"
@@ -484,19 +488,35 @@
                                         "description": "insert district Id",
                                         "type": "integer"
                                     },
-                                    "office_id": {
-                                        "description": "insert office_id",
+                                    "upazila_id": {
+                                        "description": "insert upazila Id",
                                         "type": "integer"
                                     },
-                                    "location_id": {
-                                        "description": "insert location_id",
+                                    "union_id": {
+                                        "description": "insert union Id",
+                                        "type": "integer"
+                                    },
+                                    "city_corpo_id": {
+                                        "description": "insert city corporation id",
+                                        "type": "integer"
+                                    },
+                                    "thana_id": {
+                                        "description": "insert thana id",
+                                        "type": "integer"
+                                    },
+                                    "ward_id": {
+                                        "description": "insert ward id",
+                                        "type": "integer"
+                                    },
+                                    "paurashava_id": {
+                                        "description": "insert Paurashava id",
                                         "type": "integer"
                                     },
                                     "members[0]['member_name]": {
-                                        "description": "insert memeber_name ",
+                                        "description": "insert member name ",
                                         "type": "text"
                                     },
-                                    "members[0]['designation]": {
+                                    "members[0]['designation_id]": {
                                         "description": "insert designation",
                                         "type": "text"
                                     },
@@ -555,7 +575,7 @@
         "/admin/committee/destroy/{id}": {
             "get": {
                 "tags": [
-                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                    "BENEFICIARY-COMMITTEE-MANAGEMENT"
                 ],
                 "summary": " destroy Committee",
                 "description": "Returns Committee destroy by id",
@@ -602,7 +622,7 @@
         "/admin/committee/{id}": {
             "get": {
                 "tags": [
-                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                    "BENEFICIARY-COMMITTEE-MANAGEMENT"
                 ],
                 "summary": " get committee by id",
                 "description": "get committee by id",
@@ -649,10 +669,10 @@
         "/admin/committee/update": {
             "post": {
                 "tags": [
-                    "BENEFICIARY-COMMITTEE MANAGEMENT"
+                    "BENEFICIARY-COMMITTEE-MANAGEMENT"
                 ],
                 "summary": "update a committee",
-                "description": "updatet a committee",
+                "description": "update a committee",
                 "operationId": "committeeUpdate",
                 "requestBody": {
                     "description": "enter inputs",
@@ -3438,7 +3458,7 @@
         "/admin/office/get": {
             "get": {
                 "tags": [
-                    "SYSTEM-OFFICE MANAGEMENT"
+                    "SYSTEM-OFFICE-MANAGEMENT"
                 ],
                 "summary": "get paginated Offices",
                 "description": "get paginated Offices",
@@ -3700,7 +3720,7 @@
         "/admin/office/get/{district_id}": {
             "get": {
                 "tags": [
-                    "SySTEM-OFFICE MANAGEMENT"
+                    "SySTEM-OFFICE-MANAGEMENT"
                 ],
                 "summary": " get office by district",
                 "description": "get office by district",
