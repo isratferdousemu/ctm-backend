@@ -35,6 +35,7 @@ trait LookupTrait
             ['id' => 8, 'name' => 'Education Status'],
             ['id' => 9, 'name' => 'Religion'],
             ['id' => 10, 'name' => 'Household Asset Own'],
+            ['id' => 10, 'name' => 'Household Asset Own'],
             ['id' => 11, 'name' => 'Disability Type'],
             ['id' => 12, 'name' => 'Disability Level'],
             ['id' => 13, 'name' => 'Bank Name'],
@@ -43,6 +44,7 @@ trait LookupTrait
             ['id' => 16, 'name' => 'Module Name'],
             ['id' => 17, 'name' => 'Committee Type'],
             ['id' => 18, 'name' => 'Organization'],
+            ['id' => 19, 'name' => 'Designation'],
         ];
 
         return collect($types);
