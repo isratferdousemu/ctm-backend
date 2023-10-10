@@ -41,6 +41,8 @@ trait LookupTrait
             ['id' => 14, 'name' => 'Branch Name'],
             ['id' => 15, 'name' => 'Complaint Category'],
             ['id' => 16, 'name' => 'Module Name'],
+            ['id' => 17, 'name' => 'Committee Type'],
+            ['id' => 18, 'name' => 'Organization'],
         ];
 
         return collect($types);

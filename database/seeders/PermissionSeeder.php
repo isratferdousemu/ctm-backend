@@ -366,10 +366,10 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->modulePermissionTrainingManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"training-create", "page_url"=>"training-management/training/create", "parent_page"=>1],
-                ["name"=>"training-view", "page_url"=>"training-management/training", "parent_page"=>1],
-                ["name"=>"training-edit", "page_url"=>"training-management/training/edit/:id", "parent_page"=>1],
-                ["name"=>"training-delete", "page_url"=>"training-management/training", "parent_page"=>1]
+                ["name"=>"training-create", "page_url"=>"/training-management/training/create", "parent_page"=>1],
+                ["name"=>"training-view", "page_url"=>"/training-management/training", "parent_page"=>1],
+                ["name"=>"training-edit", "page_url"=>"/training-management/training/edit/:id", "parent_page"=>1],
+                ["name"=>"training-delete", "page_url"=>"/training-management/training", "parent_page"=>1]
             ]
 
         ],

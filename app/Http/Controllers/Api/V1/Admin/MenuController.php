@@ -392,7 +392,7 @@ class MenuController extends Controller
 
 
 
-    public function edit($id)
+    public function menuEdit($id)
     {
         $menu = Menu::find($id);
 
@@ -405,7 +405,7 @@ class MenuController extends Controller
      *
      * @OA\Post(
      *      path="/admin/menu/update/{id}",
-     *      operationId="update",
+     *      operationId="updateMenu",
      *      tags={"MENU-MANAGEMENT"},
      *      summary="update a menu",
      *      description="update a menu",
@@ -490,7 +490,7 @@ class MenuController extends Controller
      *
      */
 
-    public function update(MenuUpdateRequest $request, $id)
+    public function updateMenu(MenuUpdateRequest $request, $id)
     {
         if ($request->_method == 'PUT')
         {
@@ -548,7 +548,7 @@ class MenuController extends Controller
     /**
      * @OA\Get(
      *     path="/admin/menu/destroy/{id}",
-     *      operationId="destroy",
+     *      operationId="destroyMenu",
      *      tags={"MENU-MANAGEMENT"},
      *      summary="destroy menu",
      *      description="destroy menu from menu lists",
@@ -578,8 +578,8 @@ class MenuController extends Controller
      *          )
      * )
      */
-    
-    public function destroy($id)
+
+    public function destroyMenu($id)
     {
         $menu = Menu::findOrFail($id);
         $menu->delete();

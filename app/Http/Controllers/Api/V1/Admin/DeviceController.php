@@ -231,7 +231,7 @@ class DeviceController extends Controller
         }
     }
 
-    public function edit($id)
+    public function deviceEdit($id)
     {
         $device = Device::where('id', $id)->first();
 
