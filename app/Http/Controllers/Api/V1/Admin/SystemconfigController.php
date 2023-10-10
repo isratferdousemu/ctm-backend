@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Models\AdditionalFields;
+use App\Models\AllowanceProgramAdditionalField;
+use App\Models\AllowanceProgramAge;
+use App\Models\AllowanceProgramAmount;
+use App\Models\AllowanceProgramGender;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -73,45 +78,85 @@ class SystemconfigController extends Controller
      *          )
     * )
     */
-
     public function getAllallowancePaginated(Request $request){
         // Retrieve the query parameters
-        $searchText = $request->query('searchText');
-        $perPage = $request->query('perPage');
-        $page = $request->query('page');
+        $allowance = new AllowanceProgram;
 
-        $filterArrayNameEn=[];
-        $filterArrayNameBn=[];
-        $filterArrayDesription=[];
-        $filterArrayGuideline=[];
-        $filterArrayServiceType=[];
-
-        if ($searchText) {
-            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayDesription[] = ['description', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayGuideline[] = ['guideline', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayServiceType[] = ['service_type', 'LIKE', '%' . $searchText . '%'];
-
+        if($request->has('sortBy'))
+        {
+            if($request->get('sortDesc') === true)
+            {
+                $allowance = $allowance->orderBy($request->get('sortBy'), 'desc');
+            }else{
+                $allowance = $allowance->orderBy($request->get('sortBy'), 'asc');
+            }
+        }else{
+            $allowance = $allowance->orderBy('id', 'desc');
         }
-        $office = AllowanceProgram::query()
-        ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayDesription,$filterArrayGuideline,$filterArrayServiceType) {
-            $query->where($filterArrayNameEn)
-                  ->orWhere($filterArrayNameBn)
-                  ->orWhere($filterArrayDesription)
-                  ->orWhere($filterArrayGuideline)
-                  ->orWhere($filterArrayServiceType);
-        })
-        ->with('lookup')
 
-        ->latest()
-        ->paginate($perPage, ['*'], 'page');
+        $searchValue = $request->input('search');
 
-        return AllowanceResource::collection($office)->additional([
-            'success' => true,
-            'message' => $this->fetchSuccessMessage,
-        ]);
+        if($searchValue)
+        {
+            $allowance->where(function($query) use ($searchValue) {
+                $query->where('name_en', 'like', '%' . $searchValue . '%');
+                $query->where('name_bn', 'like', '%' . $searchValue . '%');
+                $query->orWhere('payment_cycle', 'like', '%' . $searchValue . '%');
+            });
+        }
+
+        $itemsPerPage = 10;
+
+        if($request->has('itemsPerPage'))
+        {
+            $itemsPerPage = $request->get('itemsPerPage');
+        }
+
+        return $allowance->paginate($itemsPerPage);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/admin/allowance/get_additional_field",
+     *      operationId="getAdditionalField",
+     *     tags={"ALLOWANCE-PROGRAM-MANAGEMENT"},
+     *      summary="get addiontal field Allowances",
+     *      description="get addiontal field Allowances",
+     *      security={{"bearer_token":{}}},
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     * )
+     */
+    public function getAdditionalField()
+    {
+        $additional_fields = AdditionalFields::latest()->get();
+
+        return \response()->json([
+            'data' => $additional_fields
+        ],Response::HTTP_OK);
+    }
+
       /**
      *
      * @OA\Post(
@@ -195,24 +240,188 @@ class SystemconfigController extends Controller
      */
     public function insertAllowance(AllowanceRequest $request){
         // return $request->all();
-        try {
-            $allowance = $this->systemconfigService->createallowance($request);
-            activity("Allowance")
-            ->causedBy(auth()->user())
-            ->performedOn($allowance)
-            ->log('Allowance Created !');
-            return AllowanceResource::make($allowance)->additional([
-                'success' => true,
-                'message' => $this->insertSuccessMessage,
-            ]);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return $this->sendError($th->getMessage(), [], 500);
+
+        if ($request->isMethod('post'))
+        {
+            \DB::beginTransaction();
+
+            try {
+                $allowance_program = new AllowanceProgram();
+
+                $allowance_program->name_en = $request->name_en;
+                $allowance_program->name_bn = $request->name_bn;
+                $allowance_program->payment_cycle = $request->payment_cycle;
+
+                if ($request->is_marital == true)
+                {
+                    $allowance_program->is_marital = 1;
+                }else{
+                    $allowance_program->is_marital = 0;
+                }
+
+                $allowance_program->marital_status = $request->marital_status;
+
+                if ($request->is_active == true)
+                {
+                    $allowance_program->is_active = 1;
+                }else{
+                    $allowance_program->is_active = 0;
+                }
+
+                if ($request->is_age_limit == true)
+                {
+                    $allowance_program->is_age_limit = 1;
+                }else{
+                    $allowance_program->is_age_limit = 0;
+                }
+
+                if ($request->is_amount == true)
+                {
+                    $allowance_program->is_amount = 1;
+                }else{
+                    $allowance_program->is_amount = 0;
+                }
+
+                $allowance_program->save();
+
+                if ($request->input('gender') != null)
+                {
+                    foreach ($request->input('gender') as $item => $value) {
+
+                        $allowance_program_gender = new AllowanceProgramGender();
+
+                        $allowance_program_gender->allowance_program_id = $allowance_program->id;
+                        $allowance_program_gender->gender_id = $request->gender[$item];
+
+                        $allowance_program_gender->save();
+                    }
+                }
+
+
+                if ($request->input('gender_id') != null)
+                {
+                    foreach ($request->input('gender_id') as $item => $value) {
+
+                        $allowance_program_age = new AllowanceProgramAge();
+
+                        $allowance_program_age->allowance_program_id = $allowance_program->id;
+                        $allowance_program_age->gender_id = $request->gender_id[$item];
+                        $allowance_program_age->min_age = $request->min_age[$item];
+                        $allowance_program_age->max_age = $request->max_age[$item];
+
+                        $allowance_program_age->save();
+                    }
+                }
+
+                if ($request->input('type_id') != null)
+                {
+                    foreach ($request->input('type_id') as $item => $value) {
+
+                        $allowance_program_amount = new AllowanceProgramAmount();
+
+                        $allowance_program_amount->allowance_program_id = $allowance_program->id;
+                        $allowance_program_amount->type_id = $request->type_id[$item];
+                        $allowance_program_amount->amount = $request->amount[$item];
+
+                        $allowance_program_amount->save();
+                    }
+                }
+
+               if ($request->input('add_field_id') != null)
+               {
+                   foreach ($request->input('add_field_id') as $item => $value) {
+
+                       $allowance_program_add_field = new AllowanceProgramAdditionalField();
+
+                       $allowance_program_add_field->allowance_program_id = $allowance_program->id;
+                       $allowance_program_add_field->additional_field_id = $request->add_field_id[$item];
+
+                       $allowance_program_add_field->save();
+                   }
+               }
+
+                \DB::commit();
+
+
+                //$allowance = $this->systemconfigService->createallowance($request);
+                activity("Allowance")
+                    ->causedBy(auth()->user())
+                    ->performedOn($allowance_program)
+                    ->log('Allowance Created !');
+
+                return \response()->json([
+                    'success' => true,
+                    'message' => $this->insertSuccessMessage,
+                ],Response::HTTP_CREATED);
+
+            } catch (\Throwable $th) {
+                //throw $th;
+                \DB::rollBack();
+
+                return $this->sendError($th->getMessage(), [], 500);
+            }
         }
+
     }
+
+
+    /**
+     * @OA\Get(
+     *     path="/admin/allowance/edit/{id}",
+     *      operationId="edit",
+     *     tags={"ALLOWANCE-PROGRAM-MANAGEMENT"},
+     *      summary="get edit Allowances",
+     *      description="get edit Allowances",
+     *      security={{"bearer_token":{}}},
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     * )
+     */
+    public function edit($id)
+    {
+        $allowance = AllowanceProgram::findOrFail($id);
+
+        $allowance_gender = AllowanceProgramGender::where('allowance_program_id', $id)->get();
+
+        $allowance_age = AllowanceProgramAge::where('allowance_program_id', $id)->get();
+
+        $allowance_amount = AllowanceProgramAmount::where('allowance_program_id', $id)->get();
+
+        $allowance_field = AllowanceProgramAdditionalField::where('allowance_program_id', $id)->get();
+
+        return \response()->json([
+            'allowance' => $allowance,
+            'allowance_gender' => $allowance_gender,
+            'allowance_age_limit' => $allowance_age,
+            'allowance_amount' => $allowance_amount,
+            'allowance_field' => $allowance_field
+        ]);
+    }
+
     /**
      *
-     * @OA\Post(
+     * @OA\Put(
      *      path="/admin/allowance/update",
      *      operationId="allowanceUpdate",
      *      tags={"ALLOWANCE-PROGRAM-MANAGEMENT"},
@@ -297,26 +506,88 @@ class SystemconfigController extends Controller
      *     )
      *
      */
+     public function allowanceUpdate(AllowanceUpdateRequest $request, $id){
 
-     public function allowanceUpdate(AllowanceUpdateRequest $request){
+        if ($request->_method == 'PUT')
+        {
+            \DB::beginTransaction();
 
-        try {
-            $allowance = $this->systemconfigService->updateAllowance($request);
-            activity("Allowance")
-            ->causedBy(auth()->user())
-            ->performedOn($allowance)
-            ->log('Office Updated !');
-            return AllowanceResource::make($allowance)->additional([
-                'success' => true,
-                'message' => $this->updateSuccessMessage,
-            ]);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return $this->sendError($th->getMessage(), [], 500);
+            try {
+                $allowance_program = AllowanceProgram::findOrFail($id);
+
+                $allowance_program->name_en = $request->name_en;
+                $allowance_program->name_bn = $request->name_bn;
+                $allowance_program->payment_cycle = $request->payment_cycle;
+
+                if ($request->is_marital == true)
+                {
+                    $allowance_program->is_marital = 1;
+                }else{
+                    $allowance_program->is_marital = 0;
+                }
+
+                $allowance_program->marital_status = $request->marital_status;
+
+                if ($request->is_active == true)
+                {
+                    $allowance_program->is_active = 1;
+                }else{
+                    $allowance_program->is_active = 0;
+                }
+
+                if ($request->is_age_limit == true)
+                {
+                    $allowance_program->is_age_limit = 1;
+                }else{
+                    $allowance_program->is_age_limit = 0;
+                }
+
+                if ($request->is_amount == true)
+                {
+                    $allowance_program->is_amount = 1;
+                }else{
+                    $allowance_program->is_amount = 0;
+                }
+
+                $allowance_program->save();
+
+                if ($request->input('gender') != null)
+                {
+                    foreach ($request->input('gender') as $item => $value) {
+
+                        $allowance_program_gender = new AllowanceProgramGender();
+
+                        $allowance_program_gender->allowance_program_id = $allowance_program->id;
+                        $allowance_program_gender->gender_id = $request->gender[$item];
+
+                        $allowance_program_gender->save();
+                    }
+                }
+
+                \DB::commit();
+
+                activity("Allowance")
+                    ->causedBy(auth()->user())
+                    ->performedOn($allowance_program)
+                    ->log('Office Updated !');
+
+                return \response()->json([
+                    'success' => true,
+                    'message' => $this->updateSuccessMessage,
+                ],Response::HTTP_OK);
+
+            } catch (\Throwable $th) {
+                //throw $th;
+                \DB::rollBack();
+                return $this->sendError($th->getMessage(), [], 500);
+            }
         }
+
+
     }
+
      /**
-     * @OA\Get(
+     * @OA\Delete (
      *      path="/admin/allowance/destroy/{id}",
      *      operationId="destroyAllowance",
      *     tags={"ALLOWANCE-PROGRAM-MANAGEMENT"},
@@ -357,8 +628,6 @@ class SystemconfigController extends Controller
      */
     public function destroyAllowance($id)
     {
-
-
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:allowance_programs,id',
         ]);
@@ -366,6 +635,16 @@ class SystemconfigController extends Controller
         $validator->validated();
 
         $allowance = AllowanceProgram::whereId($id)->first();
+
+        AllowanceProgramAdditionalField::where('allowance_program_id', $id)->delete();
+
+        AllowanceProgramGender::where('allowance_program_id', $id)->delete();
+
+        AllowanceProgramAge::where('allowance_program_id', $id)->delete();
+
+        AllowanceProgramAmount::where('allowance_program_id', $id)->delete();
+
+
         if($allowance){
             $allowance->delete();
         }
