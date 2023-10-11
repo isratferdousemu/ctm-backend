@@ -9,6 +9,7 @@ use App\Http\Resources\Admin\Geographic\DistrictResource;
 use App\Http\Resources\Admin\Geographic\DivisionResource;
 
 use App\Http\Resources\Admin\Beneficiary\Committee\MemberResource;
+use App\Http\Resources\Admin\Lookup\LookupResource;
 use App\Http\Resources\Admin\Systemconfig\Allowance\AllowanceResource;
 
 class CommitteeResource extends JsonResource
@@ -21,14 +22,13 @@ class CommitteeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'             =>$this->id,
+            'id'               =>$this->id,
             'code'             =>$this->code,
             'name'             =>$this->name,
             'details'          =>$this->details,
             'program'          =>AllowanceResource::make($this->whenLoaded('program')),
-            'division'         =>DivisionResource::make($this->whenLoaded('division')),
-            'district'         =>DistrictResource::make($this->whenLoaded('district')),
-            'office'           =>OfficeResource::make($this->whenLoaded('office')),
+            'committeeType'    =>LookupResource::make($this->whenLoaded('committeeType')),
+            'location'         =>$this->location,
             'members'          =>MemberResource::collection($this->whenLoaded('members'))
         ];
     }

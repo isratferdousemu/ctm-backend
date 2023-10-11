@@ -90,21 +90,14 @@ class CommitteeController extends Controller
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
             $filterArrayName[] = ['name', 'LIKE', '%' . $searchText . '%'];
             $filterArrayDetails[] = ['details', 'LIKE', '%' . $searchText . '%'];
-
-
-
-
         }
         $committee = Committee::query()
         ->where(function ($query) use ($filterArrayCode,$filterArrayName,$filterArrayDetails) {
             $query->where($filterArrayCode)
                   ->orWhere($filterArrayName)
                   ->orWhere($filterArrayDetails);
-
-
-
         })
-        ->with('program','division','district','office','members')
+        ->with('program','members','committeeType','location.parent.parent.parent')
         ->latest()
         ->paginate($perPage, ['*'], 'page');
 
@@ -377,7 +370,7 @@ class CommitteeController extends Controller
 
 
 
-    $committee = Committee::whereId($id)->with('program','division','district','office','members')->first();
+    $committee = Committee::whereId($id)->with('program','members','committeeType','location.parent.parent.parent')->first();
 
     return CommitteeResource::make($committee)->additional([
         'success' => true,
@@ -408,63 +401,79 @@ class CommitteeController extends Controller
      *                      description="id of the Committee",
      *                      type="integer",
      *                   ),
-     *                    @OA\Property(
+      *                      @OA\Property(
      *                      property="code",
-     *                      description="Insert Code",
+     *                      description="insert code  of Committee",
+     *                      type="text",
+     *                   ),
+     *                    @OA\Property(
+     *                      property="name",
+     *                      description="insert Name  of Committee",
      *                      type="text",
      *
      *                   ),
      *                   @OA\Property(
-     *                    property="name",
-     *                    description="Insert Name",
-     *                    type="text",
-     *
-     *                   ),
-     *                    @OA\Property(
-     *                    property="program_id",
-     *                    description="Insert program_id",
-     *                    type="integer",
-     *
-     *                   ),
-     *                   @OA\Property(
-     *                    property="details",
-     *                    description="Insert details",
-     *                    type="text",
-     *
-     *                   ),
-     *                   @OA\Property(
-     *                    property="division_id",
-     *                    description="Insert division_id",
-     *                    type="integer",
-     *
-     *                   ),
-     *                   @OA\Property(
-     *                    property="district_id",
-     *                    description="Insert district_id",
-     *                    type="integer",
-     *
-     *                   ),
-     *                   @OA\Property(
-     *                    property="office_id",
-     *                    description="Insert office_id",
-     *                    type="integer",
-     *
-     *                   ),
-     *                    @OA\Property(
-     *                      property="location_id",
-     *                      description="insert location_id",
+     *                      property="program_id",
+     *                      description="insert Program Id",
      *                      type="integer",
-     *
      *                   ),
-     *
+     *                   @OA\Property(
+     *                      property="details",
+     *                      description="insert Details ",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="committee_type",
+     *                      description="insert committee type ",
+     *                      type="integer",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="division_id",
+     *                      description="insert division Id",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="district_id",
+     *                      description="insert district Id",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="upazila_id",
+     *                      description="insert upazila Id",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="union_id",
+     *                      description="insert union Id",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="city_corpo_id",
+     *                      description="insert city corporation id",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="thana_id",
+     *                      description="insert thana id",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="ward_id",
+     *                      description="insert ward id",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="paurashava_id",
+     *                      description="insert Paurashava id",
+     *                      type="integer",
+     *                   ),
      *                  @OA\Property(
      *                      property="members[0]['member_name]",
-     *                      description="insert memeber_name ",
+     *                      description="insert member name ",
      *                      type="text",
-     *
      *                   ),
      *                 @OA\Property(
-     *                      property="members[0]['designation]",
+     *                      property="members[0]['designation_id]",
      *                      description="insert designation",
      *                      type="text",
      *

@@ -23,7 +23,7 @@ class CommitteeRequest extends FormRequest
     {
         return [
             'code'             =>'required|integer|unique:committees,deleted_at,NULL',
-            'name'             =>'required|string|max:50,deleted_at,NULL',
+            // 'name'             =>'required|string|max:50,deleted_at,NULL',
             'details'          =>'required|string|max:120,deleted_at,NULL',
             'program_id'       =>'required|integer|exists:allowance_programs,id',
             'division_id'      =>'sometimes|integer|exists:locations,id',

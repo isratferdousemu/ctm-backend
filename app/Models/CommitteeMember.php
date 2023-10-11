@@ -36,10 +36,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CommitteeMember extends Model
 {
-    
+
     public function committee(){
-
         return $this->belongsTo(Committee::class,'committee_id');
+    }
 
+    public function designation(){
+        return $this->belongsTo(Lookup::class,'designation_id');
     }
 }
