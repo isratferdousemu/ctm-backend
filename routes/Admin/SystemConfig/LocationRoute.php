@@ -76,6 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/insert', [LocationController::class, 'insertWard'])->middleware(['role_or_permission:super-admin|ward-create']);
         Route::get('/get',[LocationController::class, 'getAllWardPaginated']);
+        Route::get('/get/city/{city_id}',[LocationController::class, 'getAllWardByCityId']);
         Route::post('/update', [LocationController::class, 'wardUpdate'])->middleware(['role_or_permission:super-admin|ward-update']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyWard'])->middleware(['role_or_permission:super-admin|ward-delete']);
     });
