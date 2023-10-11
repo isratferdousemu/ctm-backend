@@ -663,8 +663,6 @@ class SystemconfigController extends Controller
 
         AllowanceProgramAdditionalField::where('allowance_program_id', $id)->delete();
 
-        AllowanceProgramGender::where('allowance_program_id', $id)->delete();
-
         AllowanceProgramAge::where('allowance_program_id', $id)->delete();
 
         AllowanceProgramAmount::where('allowance_program_id', $id)->delete();
