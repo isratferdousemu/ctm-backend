@@ -41,9 +41,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AllowanceProgram extends Model
 {
-
     public function lookup()
     {
         return $this->belongsTo(Lookup::class,'service_type');
+    }
+
+    public function addtionalfield()
+    {
+        return $this->belongsToMany(AdditionalFields::class, 'additional_fields_allowance_program', 'allowance_program_id','field_id');
     }
 }

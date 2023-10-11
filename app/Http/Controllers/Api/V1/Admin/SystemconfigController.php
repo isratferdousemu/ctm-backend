@@ -6,7 +6,7 @@ use App\Models\AdditionalFields;
 use App\Models\AllowanceProgramAdditionalField;
 use App\Models\AllowanceProgramAge;
 use App\Models\AllowanceProgramAmount;
-use App\Models\AllowanceProgramGender;
+use Carbon\Carbon;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -284,20 +284,6 @@ class SystemconfigController extends Controller
 
                 $allowance_program->save();
 
-                if ($request->input('gender') != null)
-                {
-                    foreach ($request->input('gender') as $item => $value) {
-
-                        $allowance_program_gender = new AllowanceProgramGender();
-
-                        $allowance_program_gender->allowance_program_id = $allowance_program->id;
-                        $allowance_program_gender->gender_id = $request->gender[$item];
-
-                        $allowance_program_gender->save();
-                    }
-                }
-
-
                 if ($request->input('gender_id') != null)
                 {
                     foreach ($request->input('gender_id') as $item => $value) {
@@ -334,7 +320,7 @@ class SystemconfigController extends Controller
                        $allowance_program_add_field = new AllowanceProgramAdditionalField();
 
                        $allowance_program_add_field->allowance_program_id = $allowance_program->id;
-                       $allowance_program_add_field->additional_field_id = $request->add_field_id[$item];
+                       $allowance_program_add_field->field_id = $request->add_field_id[$item];
 
                        $allowance_program_add_field->save();
                    }
@@ -402,13 +388,13 @@ class SystemconfigController extends Controller
     {
         $allowance = AllowanceProgram::findOrFail($id);
 
-        $allowance_gender = AllowanceProgramGender::where('allowance_program_id', $id)->get();
+        $allowance_gender = AllowanceProgramAge::where('allowance_program_id', $id)->pluck('gender_id')->toArray();
 
         $allowance_age = AllowanceProgramAge::where('allowance_program_id', $id)->get();
 
         $allowance_amount = AllowanceProgramAmount::where('allowance_program_id', $id)->get();
 
-        $allowance_field = AllowanceProgramAdditionalField::where('allowance_program_id', $id)->get();
+        $allowance_field = AllowanceProgramAdditionalField::where('allowance_program_id', $id)->pluck('field_id')->toArray();
 
         return \response()->json([
             'allowance' => $allowance,
@@ -513,6 +499,7 @@ class SystemconfigController extends Controller
             \DB::beginTransaction();
 
             try {
+
                 $allowance_program = AllowanceProgram::findOrFail($id);
 
                 $allowance_program->name_en = $request->name_en;
@@ -549,41 +536,79 @@ class SystemconfigController extends Controller
                     $allowance_program->is_amount = 0;
                 }
 
-                $allowance_program->save();
 
-                if ($request->input('gender') != null)
+                $age_limit = json_decode($request->input('age_limit'), true);
+
+                if ($age_limit != null)
                 {
-                    foreach ($request->input('gender') as $item => $value) {
-
-                        $allowance_program_gender = new AllowanceProgramGender();
-
-                        $allowance_program_gender->allowance_program_id = $allowance_program->id;
-                        $allowance_program_gender->gender_id = $request->gender[$item];
-
-                        $allowance_program_gender->save();
+                    foreach ($age_limit as $al)
+                    {
+                        AllowanceProgramAge::updateOrInsert(
+                            ["id" => $al['id']],
+                            [
+                                "allowance_program_id" => $al['allowance_program_id'],
+                                "gender_id" => $al['gender_id'],
+                                "min_age" => $al['min_age'],
+                                "max_age" => $al['max_age'],
+                                "created_at" => Carbon::now(),
+                                "updated_at" => Carbon::now()
+                            ]
+                        );
                     }
                 }
+
+                $amounts = json_decode($request->input('amount'), true);
+
+                if ($amounts != null)
+                {
+                    foreach ($amounts as $a)
+                    {
+                        AllowanceProgramAmount::updateOrInsert(
+                            ['id' => $a['id']],
+                            [
+                                "allowance_program_id" => $allowance_program->id,
+                                "type_id" => $a['type_id'],
+                                "amount" => $a['amount'],
+                                "created_at" => Carbon::now(),
+                                "updated_at" => Carbon::now()
+                            ]
+                        );
+                    }
+                }
+
+                $result = [];
+
+                $updateAddField = $request->input('add_field_id');
+
+                foreach ($updateAddField as $up)
+                {
+                    $result[] = array(
+                        "field_id" => $up,
+                        "created_at" => Carbon::now(),
+                        "updated_at" => Carbon::now()
+                    );
+                }
+
+                $allowance_program->addtionalfield()->sync($result);
 
                 \DB::commit();
 
                 activity("Allowance")
                     ->causedBy(auth()->user())
                     ->performedOn($allowance_program)
-                    ->log('Office Updated !');
+                    ->log('Allowance Updated !');
 
                 return \response()->json([
                     'success' => true,
                     'message' => $this->updateSuccessMessage,
                 ],Response::HTTP_OK);
 
-            } catch (\Throwable $th) {
-                //throw $th;
+            }catch (\Throwable $th){
                 \DB::rollBack();
+
                 return $this->sendError($th->getMessage(), [], 500);
             }
         }
-
-
     }
 
      /**
