@@ -25,7 +25,9 @@ class AllowanceRequest extends FormRequest
 
         return [
             'name_en'        => 'required|string|max:50',
-            'name_bn'        => 'required|string|max:50'
+            'name_bn'        => 'required|string|max:50',
+            'gender_id.*'      => 'required|unique:allowance_program_ages,gender_id',
+            'type_id.*'        => 'required|unique:allowance_program_amounts,type_id'
         ];
     }
 }
