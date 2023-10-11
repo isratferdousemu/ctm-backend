@@ -71,7 +71,7 @@ class BeneficiaryService
                  $member                      = new CommitteeMember;
                  $member->committee_id        = $committee->id;
                  $member->member_name    	 = $item['member_name'];
-                 $member->designation    	 = $item['designation_id'];
+                 $member->designation_id    	 = $item['designation_id'];
                  $member->email    	         = $item['email'];
                  $member->address    	     = $item['address'];
                  $member->phone              = $item['phone'];
@@ -132,17 +132,18 @@ class BeneficiaryService
 
             $committee ->save();
 
-            CommitteeMember::whereCommittee_id($request->id)->delete();
+            CommitteeMember::whereCommitteeId($request->id)->delete();
 
 
             $input = $request->members;
-
+            // store committee members
+            // $committee->members()->sync($input);
             foreach($input as $item) {
 
                  $member                     =  new CommitteeMember;
                  $member->committee_id        = $committee->id;
                  $member->member_name    	 = $item['member_name'];
-                 $member->designation    	 = $item['designation_id'];
+                 $member->designation_id    	 = $item['designation_id'];
                  $member->email    	         = $item['email'];
                  $member->address    	     = $item['address'];
                  $member->phone              = $item['phone'];
