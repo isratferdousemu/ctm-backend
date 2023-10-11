@@ -23,7 +23,7 @@ class CommitteeUpdateRequest extends FormRequest
     {
         return [
             'id'               => 'required|exists:committees,id',
-            'code'             =>'required|integer|unique:committees,'.$this->id.',id,deleted_at,NULL',
+            // 'code'             =>'required|integer|unique:committees,'.$this->id.',id,deleted_at,NULL',
             'details'          =>'required|string|max:120,deleted_at,NULL',
             'program_id'       =>'required|integer|exists:allowance_programs,id',
             'division_id'      =>'sometimes|integer|exists:locations,id',

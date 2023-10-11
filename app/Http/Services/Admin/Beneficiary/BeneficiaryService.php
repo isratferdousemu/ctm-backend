@@ -33,7 +33,7 @@ class BeneficiaryService
         try {
 
             $committee                         = new Committee;
-            $committee->code                   = $request->code;
+            $committee->code                   = mt_rand(100000, 999999);
             $committee->details                = $request->details;
             $committee->committee_type             = $request->committee_type;
             $committee->program_id              = $request->program_id;
