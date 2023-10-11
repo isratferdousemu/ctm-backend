@@ -224,10 +224,10 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subCommitteeInformation,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"committee-create", "page_url"=>"/beneficiary-management/committe/create", "parent_page"=>1],
-                ["name"=>"committee-view", "page_url"=>"/beneficiary-management/committe", "parent_page"=>1],
-                ["name"=>"committee-edit", "page_url"=>"/beneficiary-management/committe/edit/:id", "parent_page"=>1],
-                ["name"=>"committee-delete", "page_url"=>"/beneficiary-management/committe", "parent_page"=>1]
+                ["name"=>"committee-create", "page_url"=>"/beneficiary-management/committee/create", "parent_page"=>1],
+                ["name"=>"committee-view", "page_url"=>"/beneficiary-management/committee", "parent_page"=>1],
+                ["name"=>"committee-edit", "page_url"=>"/beneficiary-management/committee/edit/:id", "parent_page"=>1],
+                ["name"=>"committee-delete", "page_url"=>"/beneficiary-management/committee", "parent_page"=>1]
             ]
         ],
         [
@@ -366,10 +366,10 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->modulePermissionTrainingManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"training-create", "page_url"=>"training-management/training/create", "parent_page"=>1],
-                ["name"=>"training-view", "page_url"=>"training-management/training", "parent_page"=>1],
-                ["name"=>"training-edit", "page_url"=>"training-management/training/edit/:id", "parent_page"=>1],
-                ["name"=>"training-delete", "page_url"=>"training-management/training", "parent_page"=>1]
+                ["name"=>"training-create", "page_url"=>"/training-management/training/create", "parent_page"=>1],
+                ["name"=>"training-view", "page_url"=>"/training-management/training", "parent_page"=>1],
+                ["name"=>"training-edit", "page_url"=>"/training-management/training/edit/:id", "parent_page"=>1],
+                ["name"=>"training-delete", "page_url"=>"/training-management/training", "parent_page"=>1]
             ]
 
         ],
@@ -378,15 +378,15 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->settingManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"general-setting-create", "page_url"=>"setting/general/create", "parent_page"=>0],
-                ["name"=>"general-setting-view", "page_url"=>"setting/general", "parent_page"=>0],
-                ["name"=>"general-setting-edit", "page_url"=>"setting/general/edit/:id", "parent_page"=>0],
-                ["name"=>"general-setting-delete", "page_url"=>"setting/general", "parent_page"=>0],
+                ["name"=>"general-setting-create", "page_url"=>"/setting/general/create", "parent_page"=>0],
+                ["name"=>"general-setting-view", "page_url"=>"/setting/general", "parent_page"=>0],
+                ["name"=>"general-setting-edit", "page_url"=>"/setting/general/edit/:id", "parent_page"=>0],
+                ["name"=>"general-setting-delete", "page_url"=>"/setting/general", "parent_page"=>0],
 
-                ["name"=>"global-setting-create", "page_url"=>"setting/global/create", "parent_page"=>0],
-                ["name"=>"global-setting-view", "page_url"=>"setting/global", "parent_page"=>0],
-                ["name"=>"global-setting-edit", "page_url"=>"setting/global/edit/:id", "parent_page"=>0],
-                ["name"=>"global-setting-delete", "page_url"=>"setting/global", "parent_page"=>0]
+                ["name"=>"global-setting-create", "page_url"=>"/setting/global/create", "parent_page"=>0],
+                ["name"=>"global-setting-view", "page_url"=>"/setting/global", "parent_page"=>0],
+                ["name"=>"global-setting-edit", "page_url"=>"/setting/global/edit/:id", "parent_page"=>0],
+                ["name"=>"global-setting-delete", "page_url"=>"/setting/global", "parent_page"=>0]
             ]
 
         ],

@@ -30,14 +30,18 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereMemberName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereUpdatedAt($value)
+ * @property int|null $designationId
+ * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereDesignationId($value)
  * @mixin \Eloquent
  */
 class CommitteeMember extends Model
 {
-    
+
     public function committee(){
-
         return $this->belongsTo(Committee::class,'committee_id');
+    }
 
+    public function designation(){
+        return $this->belongsTo(Lookup::class,'designation_id');
     }
 }

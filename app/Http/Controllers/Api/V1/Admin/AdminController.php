@@ -110,7 +110,7 @@ class AdminController extends Controller
      * @OA\Get(
      *      path="/admin/lookup/get/{type}",
      *      operationId="getLookupByType",
-     *      tags={"SYSTEM-OFFICE MANAGEMENT"},
+     *      tags={"SYSTEM-OFFICE-MANAGEMENT"},
      *      summary="get lookup by type",
      *      description="get lookup by type",
      *      security={{"bearer_token":{}}},

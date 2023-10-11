@@ -43,35 +43,28 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Committee whereProgramId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Committee whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Committee whereVersion($value)
+ * @property int|null $committeeType
+ * @method static \Illuminate\Database\Eloquent\Builder|Committee whereCommitteeType($value)
  * @mixin \Eloquent
  */
 class Committee extends Model
 {
 
-    public function division(){
-
-        return $this->belongsTo(Location::class,'division_id');
-
-    }
-    public function district(){
-
-        return $this->belongsTo(Location::class,'district_id');
-
-    }
     public function program(){
 
         return $this->belongsTo(AllowanceProgram::class,'program_id');
 
     }
-    public function office(){
-
-        return $this->belongsTo(Office::class,'office_id');
-
-    }
     public function members(){
         return $this->hasMany(CommitteeMember::class);
-
-       
-
     }
+
+    public function location(){
+        return $this->belongsTo(Location::class,'location_id');
+    }
+
+    public function committeeType(){
+        return $this->belongsTo(Lookup::class,'committee_type');
+    }
+    
 }

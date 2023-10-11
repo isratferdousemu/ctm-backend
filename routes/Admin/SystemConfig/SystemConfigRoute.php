@@ -69,7 +69,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::post('/insert', [DeviceController::class, 'insertDevice'])->middleware(['role_or_permission:super-admin|device-create']);
         Route::get('/get',[DeviceController::class, 'getAllDevicePaginated'])->middleware(['role_or_permission:super-admin|device-list']);
         Route::get('/get_users',[DeviceController::class, 'getUsers'])->middleware(['role_or_permission:super-admin|device-list']);
-        Route::get('/edit/{id}',[DeviceController::class, 'edit'])->middleware(['role_or_permission:super-admin|device-list']);
+        Route::get('/edit/{id}',[DeviceController::class, 'deviceEdit'])->middleware(['role_or_permission:super-admin|device-list']);
         Route::post('/update', [DeviceController::class, 'deviceUpdate'])->middleware(['role_or_permission:super-admin|device-update']);
         Route::delete('/destroy/{id}', [DeviceController::class, 'destroyDevice'])->middleware(['role_or_permission:super-admin|device-destroy']);
     });
@@ -85,9 +85,9 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::get('/get-all',[MenuController::class, 'getMenus']);
         Route::get('/get_page_url', [MenuController::class, 'getPageUrl']);
         Route::get('/get_parent', [MenuController::class, 'getParent']);
-        Route::get('/edit/{id}', [MenuController::class, 'edit']);
-        Route::put('/update/{id}', [MenuController::class, 'update']);
-        Route::delete('/destroy/{id}', [MenuController::class, 'destroy'])->middleware(['role_or_permission:super-admin|menu-destroy']);
+        Route::get('/edit/{id}', [MenuController::class, 'menuEdit']);
+        Route::put('/update/{id}', [MenuController::class, 'updateMenu']);
+        Route::delete('/destroy/{id}', [MenuController::class, 'destroyMenu'])->middleware(['role_or_permission:super-admin|menu-destroy']);
     });
 
 
