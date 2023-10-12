@@ -67,10 +67,10 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subAllowanceProgramManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["name"=>"allowance-create", "page_url"=>"/system-configuration/allowance/create", "parent_page"=>0],
-                ["name"=>"allowance-view", "page_url"=>"/system-configuration/allowance", "parent_page"=>0],
-                ["name"=>"allowance-edit", "page_url"=>"/system-configuration/allowance/edit/:id", "parent_page"=>0],
-                ["name"=>"allowance-delete", "page_url"=>"/system-configuration/allowance", "parent_page"=>0]
+                ["name"=>"allowance-create", "page_url"=>"/system-configuration/allowance-program/create", "parent_page"=>0],
+                ["name"=>"allowance-view", "page_url"=>"/system-configuration/allowance-program", "parent_page"=>0],
+                ["name"=>"allowance-edit", "page_url"=>"/system-configuration/allowance-program/edit/:id", "parent_page"=>0],
+                ["name"=>"allowance-delete", "page_url"=>"/system-configuration/allowance-program", "parent_page"=>0]
             ]
         ],
         [

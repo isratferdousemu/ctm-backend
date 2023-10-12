@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
         $this->call(RolesSeeder::class);
         $this->call(LookUpSeeder::class);
-        // $this->call(LocationSeed::class);
+        //$this->call(LocationSeed::class);
         $this->call(AditionalFieldSeeder::class);
         $this->call(MenuSeeder::class);
         // Model::reguard(); // Enable mass assignment
