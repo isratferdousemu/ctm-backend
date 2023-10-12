@@ -686,42 +686,62 @@
                                         "type": "integer"
                                     },
                                     "code": {
-                                        "description": "Insert Code",
+                                        "description": "insert code  of Committee",
                                         "type": "text"
                                     },
                                     "name": {
-                                        "description": "Insert Name",
+                                        "description": "insert Name  of Committee",
                                         "type": "text"
                                     },
                                     "program_id": {
-                                        "description": "Insert program_id",
+                                        "description": "insert Program Id",
                                         "type": "integer"
                                     },
                                     "details": {
-                                        "description": "Insert details",
+                                        "description": "insert Details ",
                                         "type": "text"
                                     },
+                                    "committee_type": {
+                                        "description": "insert committee type ",
+                                        "type": "integer"
+                                    },
                                     "division_id": {
-                                        "description": "Insert division_id",
+                                        "description": "insert division Id",
                                         "type": "integer"
                                     },
                                     "district_id": {
-                                        "description": "Insert district_id",
+                                        "description": "insert district Id",
                                         "type": "integer"
                                     },
-                                    "office_id": {
-                                        "description": "Insert office_id",
+                                    "upazila_id": {
+                                        "description": "insert upazila Id",
                                         "type": "integer"
                                     },
-                                    "location_id": {
-                                        "description": "insert location_id",
+                                    "union_id": {
+                                        "description": "insert union Id",
+                                        "type": "integer"
+                                    },
+                                    "city_corpo_id": {
+                                        "description": "insert city corporation id",
+                                        "type": "integer"
+                                    },
+                                    "thana_id": {
+                                        "description": "insert thana id",
+                                        "type": "integer"
+                                    },
+                                    "ward_id": {
+                                        "description": "insert ward id",
+                                        "type": "integer"
+                                    },
+                                    "paurashava_id": {
+                                        "description": "insert Paurashava id",
                                         "type": "integer"
                                     },
                                     "members[0]['member_name]": {
-                                        "description": "insert memeber_name ",
+                                        "description": "insert member name ",
                                         "type": "text"
                                     },
-                                    "members[0]['designation]": {
+                                    "members[0]['designation_id]": {
                                         "description": "insert designation",
                                         "type": "text"
                                     },
@@ -2773,19 +2793,19 @@
                 ]
             }
         },
-        "/admin/ward/get/city/{city_id}": {
+        "/admin/ward/get/thana/{thana_id}": {
             "get": {
                 "tags": [
                     "GEOGRAPHIC-WARD"
                 ],
-                "summary": " get ward by city id",
-                "description": "get ward by city id",
-                "operationId": "getAllWardBycityId",
+                "summary": " get ward by thana id",
+                "description": "get ward by thana id",
+                "operationId": "getAllWardByThanaId",
                 "parameters": [
                     {
-                        "name": "city_id",
+                        "name": "thana_id",
                         "in": "path",
-                        "description": "id of city to return",
+                        "description": "id of thana to return",
                         "schema": {
                             "type": "integer"
                         }

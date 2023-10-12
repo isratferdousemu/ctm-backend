@@ -35,7 +35,7 @@ class CommitteeRequest extends FormRequest
             'ward_id'      =>'sometimes|integer|exists:locations,id',
             'paurashava_id'      =>'sometimes|integer|exists:locations,id',
             'committee_type'      =>'required|integer|exists:lookups,id',
-
+            
             'members.*.member_name'      =>'required|string|max:50',
             'members.*.designation_id'       =>'required|integer|exists:lookups,id',
             'members.*.email'             =>'required|email|max:50',
@@ -43,9 +43,6 @@ class CommitteeRequest extends FormRequest
             // phone number must be 11 or 13 digits and start with 01 or 8801
             // 'members.*.phone'             =>'required|regex:/^(01|8801)[3-9]{1}{8}$/',
             'members.*.phone'            =>'required|regex:/^01[3-9]\d{8}$/'
-
-
-
         ];
     }
 }
