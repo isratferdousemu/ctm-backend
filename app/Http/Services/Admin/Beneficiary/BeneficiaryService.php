@@ -58,6 +58,10 @@ class BeneficiaryService
                         $committee->location_id = $request->district_id;
                     }
                 }
+                if ($request->committee_type == 18 || $request->committee_type == 19) {
+                    $committee->location_id = '-1'; // -1 Stands of Over Bangladesh
+                }
+
             }
             $committee->name = $this->committeeName($request->committee_type, $request->program_id, $committee->location_id);
 
@@ -91,10 +95,16 @@ class BeneficiaryService
     public function committeeName($committee_type, $program_id, $location_id)
     {
         $program = AllowanceProgram::find($program_id);
-        $location = Location::find($location_id);
         $committee_type = Lookup::find($committee_type);
-        $name = $committee_type->value_en . '_' . $location->name_en . '_' . $program->name_en;
+        if ($location_id == '-1') {
+            $location = 'Bangladesh';
+            $name = $committee_type->value_en . '_' . $location . '_' . $program->name_en;
+        } else {
+            $location = Location::find($location_id);
+            $name = $committee_type->value_en . '_' . $location->name_en . '_' . $program->name_en;
+        }
         return $name;
+        
     }
 
     public function updateCommitee(Request $request){
