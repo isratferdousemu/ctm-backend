@@ -135,7 +135,7 @@ class UserController extends Controller
                 //and assign_location_id location one child down user office head
                 $query->orWhere('assign_location_id',auth()->user()->office?->location?->parent_id);
                 })
-                ->with('office','assign_location','office_type','roles')
+                ->with('office','assign_location.parent.parent.parent','office_type', 'roles')
                 ->latest()
                 ->paginate($perPage, ['*'], 'page');
             }else{
@@ -148,7 +148,7 @@ class UserController extends Controller
               ->orWhere($filterArrayOfficeId)
               ->orWhere($filterArrayPhone);
     })
-    ->with('office','assign_location','office_type','roles')
+    ->with('office','assign_location.parent.parent.parent','office_type','roles')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
 }
@@ -309,9 +309,22 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request, $id)
     {
-        if ($request->_method == 'PUT')
+        
+        // $arrayName = array(
+        //     'data' => $request->method(),
+        //     // 'data1' => $request->all()
+        // );
+    
+        // return $arrayName;
+        if ($request->method() == 'PUT')
         {
-
+            
+            // $arrayName = array(
+            //     'data' => $request->all(),
+            //     // 'data1' => $request->all()
+            // );
+    
+            // return $arrayName;
             try {
 
                 if($request->has('role_id')){

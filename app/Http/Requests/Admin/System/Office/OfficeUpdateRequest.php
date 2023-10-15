@@ -30,7 +30,7 @@ class OfficeUpdateRequest extends FormRequest
             'name_bn'             => 'required|string|max:50',
             'office_type'         => 'required|integer|exists:lookups,id',
             'office_address'      => 'required|string',
-            'comment'             => 'required|string|max:120,Null',
+            'comment'             => 'string|max:120,Null',
             'status'              => 'required|boolean',
 
         ];

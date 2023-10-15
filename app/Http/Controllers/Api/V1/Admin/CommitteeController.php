@@ -370,7 +370,7 @@ class CommitteeController extends Controller
 
 
 
-    $committee = Committee::whereId($id)->with('program','members','committeeType','location.parent.parent.parent')->first();
+    $committee = Committee::whereId($id)->with('program','members','committeeType','location.parent.parent.parent.parent')->first();
 
     return CommitteeResource::make($committee)->additional([
         'success' => true,

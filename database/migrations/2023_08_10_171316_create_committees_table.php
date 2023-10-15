@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('program_id');
             $table->bigInteger('division_id');
             $table->bigInteger('district_id');
-            $table->bigInteger('office_id');
+            // $table->bigInteger('office_id');
             $table->bigInteger('location_id')->nullable();
             $table->integer("version")->default(1);
             $table->softDeletes();

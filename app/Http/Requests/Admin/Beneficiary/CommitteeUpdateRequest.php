@@ -23,7 +23,7 @@ class CommitteeUpdateRequest extends FormRequest
     {
         return [
             'id'               => 'required|exists:committees,id',
-            'code'             =>'required|integer|unique:committees,'.$this->id.',id,deleted_at,NULL',
+            // 'code'             =>'required|integer|unique:committees,'.$this->id.',id,deleted_at,NULL',
             'details'          =>'required|string|max:120,deleted_at,NULL',
             'program_id'       =>'required|integer|exists:allowance_programs,id',
             'division_id'      =>'sometimes|integer|exists:locations,id',
@@ -41,7 +41,7 @@ class CommitteeUpdateRequest extends FormRequest
             'members.*.email'             =>'required|email|max:50',
             'members.*.address'           =>'required|string|max:120',
             // phone number must be 11 or 13 digits and start with 01 or 8801
-            'members.*.phone'             =>'required|regex:/^(01|8801)[3-9]{1}(\d){8}$/',
+            'members.*.phone'            =>'required|regex:/^01[3-9]\d{8}$/'
         ];
     }
 }
