@@ -33,6 +33,9 @@ class LookUpSeeder extends Seeder
             ['id' => 17, 'type' => 17, 'value_en' => 'District Committee', 'value_bn' => 'District Committee','default'=>1],
             ['id' => 18, 'type' => 17, 'value_en' => 'Coordination and Monitoring Committee', 'value_bn' => 'Coordination and Monitoring Committee','default'=>1],
             ['id' => 19, 'type' => 17, 'value_en' => 'National Steering Committee', 'value_bn' => 'National Steering Committee','default'=>1],
+            ['id' => 20, 'type' => 18, 'value_en' => 'President', 'value_bn' => 'President','default'=>1],
+            ['id' => 21, 'type' => 18, 'value_en' => 'Vice President', 'value_bn' => 'Vice President','default'=>1],
+            ['id' => 22, 'type' => 18, 'value_en' => 'Member', 'value_bn' => 'Member','default'=>1],
         ];
         foreach ($lookups as $value) {
             $lookup = new Lookup;

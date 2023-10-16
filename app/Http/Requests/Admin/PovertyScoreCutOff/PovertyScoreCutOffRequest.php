@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Role;
+namespace App\Http\Requests\Admin\PovertyScoreCutOff;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RoleUpdateRequest extends FormRequest
+class PovertyScoreCutOffRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,15 +19,14 @@ class RoleUpdateRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
+
+
     public function rules(): array
     {
         return [
-            'id'                          =>'required|exists:roles,id',
-            'name_en'                     => 'required|string|max:50',
-            'name_bn'                     => 'required|string|max:50',
-            'status' => 'sometimes',
-            'comment' => 'sometimes|string|max:120',
-            'code' => 'required|string|max:6'
+            'type'          => 'required|integer',
+            'location_id'   => 'required|integer',
+            'score'         => 'required|numeric',
         ];
     }
 }

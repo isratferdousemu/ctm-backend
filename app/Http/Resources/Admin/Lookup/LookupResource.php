@@ -20,6 +20,7 @@ class LookupResource extends JsonResource
             'value_en'            =>      $this->value_en,
             'value_bn'            =>      $this->value_bn,
             'keyword'             =>      $this->keyword,
+            'default'             =>      $this->default,
 
         ];
     }

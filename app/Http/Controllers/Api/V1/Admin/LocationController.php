@@ -2136,6 +2136,57 @@ class LocationController extends Controller
 
     /**
      * @OA\Get(
+     *      path="/admin/ward/get/thana/{thana_id}",
+     *      operationId="getAllWardByThanaId",
+     *      tags={"GEOGRAPHIC-WARD"},
+     *      summary=" get ward by thana id",
+     *      description="get ward by thana id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of thana to return",
+     *         in="path",
+     *         name="thana_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+ public function getAllWardByThanaId($thana_id){
+
+
+    $wards = Location::whereParentId($thana_id)->whereType($this->ward)->get();
+
+    return DistrictResource::collection($wards)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
+    /**
+     * @OA\Get(
      *      path="/admin/ward/get/{union_id}",
      *      operationId="getAllWardByUnionId",
      *      tags={"GEOGRAPHIC-WARD"},

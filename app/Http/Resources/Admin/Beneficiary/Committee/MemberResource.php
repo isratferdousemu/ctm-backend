@@ -19,7 +19,8 @@ class MemberResource extends JsonResource
         return [
             // 'commitee'        =>CommitteeResource::make($this->whenLoaded('committee')),
             'member_name'     =>$this->member_name,
-            'designation'     =>LookupResource::make($this->whenLoaded('designation')),
+            'designation'     =>LookupResource::make($this->designation),
+            // 'designation'     =>LookupResource::make($this->whenLoaded('designation')),
             'email'           =>$this->email,
             'address'         =>$this->address,
             'details'         =>$this->details,
