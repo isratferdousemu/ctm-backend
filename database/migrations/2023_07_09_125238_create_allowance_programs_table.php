@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('marital_status', 40)->nullable();
             $table->tinyInteger('is_active')->default(0);
             $table->tinyInteger('is_age_limit')->nullable()->default(0);
-            $table->tinyInteger('is_amount')->default(0);
+            $table->tinyInteger('is_disable_class')->default(0);
             $table->timestamps();
         });
     }

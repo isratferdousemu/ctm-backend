@@ -275,45 +275,51 @@ class SystemconfigController extends Controller
                     $allowance_program->is_age_limit = 0;
                 }
 
-                if ($request->is_amount == true)
+                if ($request->is_disable_class == true)
                 {
-                    $allowance_program->is_amount = 1;
+                    $allowance_program->is_disable_class = 1;
                 }else{
-                    $allowance_program->is_amount = 0;
+                    $allowance_program->is_disable_class = 0;
                 }
 
                 $allowance_program->save();
 
-                if ($request->input('gender_id') != null)
-                {
-                    foreach ($request->input('gender_id') as $item => $value) {
 
+                $age_limit = json_decode($request->input('age_limit'), true);
+
+                if ($age_limit != null)
+                {
+                    foreach ($age_limit as $al)
+                    {
                         $allowance_program_age = new AllowanceProgramAge();
 
                         $allowance_program_age->allowance_program_id = $allowance_program->id;
-                        $allowance_program_age->gender_id = $request->gender_id[$item];
-                        $allowance_program_age->min_age = $request->min_age[$item];
-                        $allowance_program_age->max_age = $request->max_age[$item];
+                        $allowance_program_age->gender_id = $al['gender_id'];
+                        $allowance_program_age->min_age = $al['min_age'];
+                        $allowance_program_age->max_age = $al['max_age'];
+                        $allowance_program_age->amount = $al['amount'];
 
                         $allowance_program_age->save();
                     }
                 }
 
-                if ($request->input('type_id') != null)
-                {
-                    foreach ($request->input('type_id') as $item => $value) {
+                $amounts = json_decode($request->input('amount'), true);
 
+                if ($amounts != null)
+                {
+                    foreach ($amounts as $a)
+                    {
                         $allowance_program_amount = new AllowanceProgramAmount();
 
                         $allowance_program_amount->allowance_program_id = $allowance_program->id;
-                        $allowance_program_amount->type_id = $request->type_id[$item];
-                        $allowance_program_amount->amount = $request->amount[$item];
+                        $allowance_program_amount->type_id = $a['type_id'];
+                        $allowance_program_amount->amount = $a['amount'];
 
                         $allowance_program_amount->save();
                     }
                 }
 
-               if ($request->input('add_field_id') != null)
+                if ($request->input('add_field_id') != null)
                {
                    foreach ($request->input('add_field_id') as $item => $value) {
 
@@ -329,7 +335,6 @@ class SystemconfigController extends Controller
                 \DB::commit();
 
 
-                //$allowance = $this->systemconfigService->createallowance($request);
                 activity("Allowance")
                     ->causedBy(auth()->user())
                     ->performedOn($allowance_program)
@@ -550,6 +555,7 @@ class SystemconfigController extends Controller
                                 "gender_id" => $al['gender_id'],
                                 "min_age" => $al['min_age'],
                                 "max_age" => $al['max_age'],
+                                "amount" => $al['amount'],
                                 "created_at" => Carbon::now(),
                                 "updated_at" => Carbon::now()
                             ]
