@@ -33,4 +33,9 @@ class AdditionalFields extends Model
     {
         return $this->belongsToMany(AllowanceProgram::class);
     }
+
+    public function additional_field_value()
+    {
+        return $this->hasMany(AdditionalFieldValues::class,'additional_field_id');
+    }
 }

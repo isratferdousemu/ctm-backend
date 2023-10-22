@@ -50,4 +50,6 @@ class AllowanceProgram extends Model
     {
         return $this->belongsToMany(AdditionalFields::class, 'additional_fields_allowance_program', 'allowance_program_id','field_id');
     }
+
+
 }
