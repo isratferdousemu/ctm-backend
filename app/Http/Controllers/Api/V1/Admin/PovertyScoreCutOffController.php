@@ -19,6 +19,7 @@ use App\Http\Requests\Admin\Lookup\LookupRequest;
 use App\Http\Services\Admin\Lookup\LookupService;
 use App\Http\Resources\Admin\Lookup\LookupResource;
 use App\Http\Requests\Admin\Lookup\LookupUpdateRequest;
+use App\Models\Location;
 
 class PovertyScoreCutOffController extends Controller
 {
@@ -194,9 +195,12 @@ class PovertyScoreCutOffController extends Controller
             $type = $request->type;
         }
 
-        if (!$this->check_if_exists($financial_year_id, $type)){ 
-           	// entry all division/district values with that financial ID and load the table table to be editable
-         }       
+        if ($request->has('financial_year_id') && $request->has('type')) {
+            if (!$this->check_if_exists($financial_year_id, $type)) {
+                // entry all division/district values with that financial ID and load the table table to be editable
+                $this->insertPovertyScoreCutOff($financial_year_id, $type);
+            }
+        }
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -231,19 +235,51 @@ class PovertyScoreCutOffController extends Controller
     private function check_if_exists($financial_year_id, $type)
     {
         $data = PovertyScoreCutOff::get()
-                    ->where('financial_year_id', $financial_year_id)
-                    ->where('type', $type);
+            ->where('financial_year_id', $financial_year_id)
+            ->where('type', $type);
+
+        if (count($data) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function insertPovertyScoreCutOff($financial_year_id, $type)
+    {
+        // THIS FUNCTION POVERTY CUT OFF INSERT 
+        // IF NOT EXISTED FOR A SPECIFIC FINANCIAL YEAR
+
+        if ($type == 0) {
         
-            if (count($data) > 0) {
-                return true;
-            }else{
-                return false;
+            // ALL OVER BANGLADESH CUTTOFF
+            $poverty_score_cut_offs = new PovertyScoreCutOff;
+            $poverty_score_cut_offs->type         = $type;
+            $poverty_score_cut_offs->financial_year_id  = $financial_year_id;
+            $poverty_score_cut_offs->score        = 0;
+            $poverty_score_cut_offs->save();
+            // END ALL OVER BANGLADESH CUTTOFF
+        
+        } else {
+            if ($type == 1) {
+                $locations = Location::get()->where('type', 'division'); // DIVISION CUTTOFF
             }
+            if ($type == 2) {
+                $locations = Location::get()->where('type', 'district'); //DISTRICT CUTTOFF
+            }
+
+            foreach ($locations as $value) {
+
+                $poverty_score_cut_offs = new PovertyScoreCutOff;
+                $poverty_score_cut_offs->type         = $type;
+                $poverty_score_cut_offs->location_id  = $value['id'];
+                $poverty_score_cut_offs->financial_year_id  = $financial_year_id;
+                $poverty_score_cut_offs->score        = 0;
+                $poverty_score_cut_offs->save();
+            }
+        }
     }
 
-    private function insertPovertyScoreCutOff($financial_year_id, $type){
-
-    }
     /**
      *
      * @OA\Post(
