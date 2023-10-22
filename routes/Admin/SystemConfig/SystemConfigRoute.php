@@ -48,6 +48,8 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::get('/edit/{id}',[SystemconfigController::class, 'edit'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::put('/update/{id}', [SystemconfigController::class, 'AllowanceUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
         Route::delete('/destroy/{id}', [SystemconfigController::class, 'destroyAllowance'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        Route::post('/gender_delete', [SystemconfigController::class, 'destroyGender'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        Route::post('/disable_delete/{id}', [SystemconfigController::class, 'destroyDisable'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
 
     /* -------------------------------------------------------------------------- */

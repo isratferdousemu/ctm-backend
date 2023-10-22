@@ -682,4 +682,33 @@ class SystemconfigController extends Controller
         ->log('Allowance Deleted!!');
          return $this->sendResponse($allowance, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
+
+    public function destroyGender(Request $request)
+    {
+        $gender_id = [];
+
+        $allowance_age = json_decode($request->input('gender_age'), true);
+
+        $allowance_program_id = $request->input('allowance_program_id');
+
+        foreach ($allowance_age as $aa)
+        {
+            $gender_id[] = $aa['gender_id'];
+        }
+
+        AllowanceProgramAge::where('allowance_program_id', $allowance_program_id)->whereNotIn('gender_id', $gender_id)->delete();
+
+        return \response()->json([
+            'message' => 'Delete success'
+        ],Response::HTTP_OK);
+    }
+
+    public function destroyDisable($id)
+    {
+        AllowanceProgramAmount::where('id', $id)->delete();
+
+        return \response()->json([
+            'message' => 'Delete success'
+        ],Response::HTTP_OK);
+    }
 }
