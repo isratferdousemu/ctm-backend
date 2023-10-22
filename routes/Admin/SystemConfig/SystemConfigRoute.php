@@ -24,7 +24,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
     });
 
     /* -------------------------------------------------------------------------- */
-    /*                               Lookup Management Routes                              */
+    /*                               Lookup Management Routes                     */
     /* -------------------------------------------------------------------------- */
 
     Route::prefix('admin/lookup')->group(function () {
@@ -35,8 +35,9 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::get('/get/{type}',[AdminController::class, 'getAllLookupByType']);
         Route::get('/destroy/{id}', [AdminController::class, 'destroyLookup'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
     });
+
     /* -------------------------------------------------------------------------- */
-    /*                               Allowance program Management  Routes                              */
+    /*                               Allowance program Management  Routes         */
     /* -------------------------------------------------------------------------- */
 
     Route::prefix('admin/allowance')->group(function () {
