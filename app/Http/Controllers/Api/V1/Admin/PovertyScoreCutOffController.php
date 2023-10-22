@@ -91,16 +91,29 @@ class PovertyScoreCutOffController extends Controller
         $page = $request->query('page');
 
         $filterArrayNameEn = [];
-        $filterArrayNameBn = [];
-        $filterArrayComment = [];
-        $filterArrayAddress = [];
+        // $filterArrayNameBn = [];
+        // $filterArrayComment = [];
+        // $filterArrayAddress = [];
 
         if ($searchText) {
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayComment[] = ['comment', 'LIKE', '%' . $searchText . '%'];
+            // $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            // $filterArrayComment[] = ['comment', 'LIKE', '%' . $searchText . '%'];
         }
-        $office = PovertyScoreCutOff::query()
+        // $menu = Menu::select(
+        //     'menus.*',
+        //     'permissions.page_url as link'
+        // )
+        // ->leftJoin('permissions', function ($join) {
+        //     $join->on('menus.page_link_id', '=', 'permissions.id');
+        // });
+        $office = PovertyScoreCutOff::select(
+            'poverty_score_cut_offs.*',
+            'locations.name_en',
+        )
+            ->leftJoin('locations', function ($join) {
+                $join->on('poverty_score_cut_offs.location_id', '=', 'locations.id');
+            })
             ->where(function ($query) use ($filterArrayNameEn) {
                 $query->where($filterArrayNameEn)
                     // ->orWhere($filterArrayNameBn)
@@ -251,7 +264,7 @@ class PovertyScoreCutOffController extends Controller
         // IF NOT EXISTED FOR A SPECIFIC FINANCIAL YEAR
 
         if ($type == 0) {
-        
+
             // ALL OVER BANGLADESH CUTTOFF
             $poverty_score_cut_offs = new PovertyScoreCutOff;
             $poverty_score_cut_offs->type         = $type;
@@ -259,7 +272,7 @@ class PovertyScoreCutOffController extends Controller
             $poverty_score_cut_offs->score        = 0;
             $poverty_score_cut_offs->save();
             // END ALL OVER BANGLADESH CUTTOFF
-        
+
         } else {
             if ($type == 1) {
                 $locations = Location::get()->where('type', 'division'); // DIVISION CUTTOFF
