@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Http\Services\Admin\PovertyScoreCutOff;
-
+namespace App\Http\Services\Admin\PMTScore;
 use App\Models\PovertyScoreCutOff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

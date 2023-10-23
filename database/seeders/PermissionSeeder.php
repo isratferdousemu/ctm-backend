@@ -200,10 +200,10 @@ class PermissionSeeder extends Seeder
                 ["name"=>"approval-view-edit", "page_url"=>"/application-management/approval/edit/:id", "parent_page"=>1],
                 ["name"=>"approval-view-delete", "page_url"=>"/application-management/approval", "parent_page"=>1],
 
-                ["name"=>"division-cut-off-score-view-create", "page_url"=>"/application-management/division-cut-off-score/create", "parent_page"=>1],
-                ["name"=>"division-cut-off-score-view-view", "page_url"=>"/application-management/division-cut-off-score", "parent_page"=>1],
-                ["name"=>"division-cut-off-score-view-edit", "page_url"=>"/application-management/division-cut-off-score/edit/:id", "parent_page"=>1],
-                ["name"=>"division-cut-off-score-view-delete", "page_url"=>"/application-management/division-cut-off-score", "parent_page"=>1],
+                ["name"=>"poverty-cut-off-score-view-create", "page_url"=>"/application-management/poverty-cut-off-score/create", "parent_page"=>1],
+                ["name"=>"poverty-cut-off-score-view-view", "page_url"=>"/application-management/poverty-cut-off-score", "parent_page"=>1],
+                ["name"=>"poverty-cut-off-score-view-edit", "page_url"=>"/application-management/poverty-cut-off-score/edit/:id", "parent_page"=>1],
+                ["name"=>"poverty-cut-off-score-view-delete", "page_url"=>"/application-management/poverty-cut-off-score", "parent_page"=>1],
 
                 ["name"=>"district-cut-off-score-view-create", "page_url"=>"/application-management/district-cut-off-score/create", "parent_page"=>1],
                 ["name"=>"district-cut-off-score-view-view", "page_url"=>"/application-management/district-cut-off-score", "parent_page"=>1],
