@@ -107,21 +107,26 @@ class PovertyScoreCutOffController extends Controller
         // ->leftJoin('permissions', function ($join) {
         //     $join->on('menus.page_link_id', '=', 'permissions.id');
         // });
-        $office = PovertyScoreCutOff::select(
-            'poverty_score_cut_offs.*',
-            'locations.name_en',
-        )
+            $office = PovertyScoreCutOff::select(
+                'poverty_score_cut_offs.*',
+                'locations.name_en',
+            )
             ->leftJoin('locations', function ($join) {
                 $join->on('poverty_score_cut_offs.location_id', '=', 'locations.id');
             })
-            ->where(function ($query) use ($filterArrayNameEn) {
-                $query->where($filterArrayNameEn)
-                    // ->orWhere($filterArrayNameBn)
-                    // ->orWhere($filterArrayComment)
-                    // ->orWhere($filterArrayAddress)
-                ;
-            })
+            // ->where('name_en', 'LIKE', '%Dhaka%')
+            // ->where(function ($query) use ($filterArrayNameEn) {
+            //     $query->where($filterArrayNameEn)
+            //         // ->orWhere($filterArrayNameBn)
+            //         // ->orWhere($filterArrayComment)
+            //         // ->orWhere($filterArrayAddress)
+            //     ;
+            // })
             ->with('assign_location.parent.parent.parent', 'assign_location.locationType')
+            ->with(['assign_location' => function ($query) use ($searchText) {
+                // $query->where('name_en', 'LIKE', '%Dhaka%');
+                $query->where('assign_location.name_en','Dhaka');
+            }])
             ->latest()
             ->paginate($perPage, ['*'], 'page');
 
