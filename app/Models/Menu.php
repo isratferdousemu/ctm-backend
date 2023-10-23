@@ -50,7 +50,8 @@ class Menu extends Model
     public function newQuery($excludeDeleted = true)
     {
         return parent::newQuery($excludeDeleted)
-            ->orderBy('label_name_en', 'asc');
+            ->orderBy('order', 'asc');
+            // ->orderBy('label_name_en', 'asc');
     }
     protected $fillable = [
         'page_link_id',
