@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Admin\PovertyScoreCutOff;
+namespace App\Http\Resources\Admin\PMTScore;
 
 use App\Models\Location;
 use Illuminate\Http\Request;

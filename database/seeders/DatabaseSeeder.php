@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DeviceSeeder::class);
         $this->call(FinancialYearSeeder::class);
         $this->call(PovertyScoreCutOffSeeder::class);
+        $this->call(DistrictFixedEffectSeeder::class);
 
         // Model::reguard(); // Enable mass assignment
 
