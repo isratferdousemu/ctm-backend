@@ -46,6 +46,6 @@ trait AdditionalFieldTrait
     private $nameOfTheInstitute = 20;
     private $nameOfTheInstituteType='text';
     private $class = 21;
-    private $classType='text';
+    private $classType='dropdown';
 
 }

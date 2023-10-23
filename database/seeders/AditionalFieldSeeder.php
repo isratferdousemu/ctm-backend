@@ -35,7 +35,7 @@ class AditionalFieldSeeder extends Seeder
              ['id' => 18,'name_en' => 'Date of Enrollment in Garden', 'name_bn' => 'বাগানে তালিকাভুক্তির তারিখ','type' => 'date'],
              ['id' => 19,'name_en' => 'Guardian Name', 'name_bn' => 'অভিভাবকের নাম','type' => 'text'],
              ['id' => 20,'name_en' => 'Name of the Institute', 'name_bn' => 'প্রতিষ্ঠানের নাম','type' => 'text'],
-             ['id' => 21,'name_en' => 'Class', 'name_bn' => 'শ্রেণী','type' => 'text'],
+             ['id' => 21,'name_en' => 'Class', 'name_bn' => 'শ্রেণী','type' => 'dropdown'],
         ];
         foreach ($addition_field as $value) {
             $addition_field = new AdditionalFields;
