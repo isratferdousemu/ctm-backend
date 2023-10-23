@@ -41,7 +41,11 @@ use Illuminate\Database\Eloquent\Model;
 class PovertyScoreCutOff extends Model
 {
     use HasFactory;
-
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('score', 'asc');
+    }
     protected $table = 'poverty_score_cut_offs';
 
     protected $fillable = [

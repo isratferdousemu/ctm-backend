@@ -34,4 +34,9 @@ use Illuminate\Database\Eloquent\Model;
 class Lookup extends Model
 {
     use HasFactory;
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('value_en', 'asc');
+    }
 }

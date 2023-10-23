@@ -47,7 +47,11 @@ use Spatie\Permission\Models\Permission;
 class Menu extends Model
 {
     use HasFactory,SoftDeletes;
-
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('label_name_en', 'asc');
+    }
     protected $fillable = [
         'page_link_id',
         'parent_id',

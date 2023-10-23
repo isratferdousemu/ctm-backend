@@ -27,7 +27,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AdditionalFields extends Model
 {
-    use HasFactory;
+    use HasFactory; 
+
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('name_en', 'asc');
+    }
 
     public function allowanceprogram()
     {
