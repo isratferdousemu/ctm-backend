@@ -6,7 +6,7 @@ use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PovertyScoreCutOffResource extends JsonResource
+class PMTScoreResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
