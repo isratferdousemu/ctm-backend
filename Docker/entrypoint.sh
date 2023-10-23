@@ -13,6 +13,8 @@ php artisan config:clear
 php artisan config:cache
 php artisan cache:clear
 php artisan optimize:clear
+php artisan l5-swagger:generate
+
 
 php artisan serve --port=$PORT --host=0.0.0.0 --env=.env
 exec docker-php-entrypoint "$@"
