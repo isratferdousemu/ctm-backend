@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\PovertyScoreCutOff;
+use App\Models\PMTScore;
 
-class PovertyScoreCutOffSeeder extends Seeder
+class PMTScoreSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -88,7 +88,7 @@ class PovertyScoreCutOffSeeder extends Seeder
 
         ];
         foreach ($poverty_score_cut_offs as $value) {
-            $poverty_score_cut_offs = new PovertyScoreCutOff;
+            $poverty_score_cut_offs = new PMTScore;
             $poverty_score_cut_offs->id           = $value['id'];
             $poverty_score_cut_offs->type         = $value['type'];
             $poverty_score_cut_offs->location_id  = $value['location_id'];

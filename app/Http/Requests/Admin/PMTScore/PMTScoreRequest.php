@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\PMTScore;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PovertyScoreCutOffRequest extends FormRequest
+class PMTScoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
