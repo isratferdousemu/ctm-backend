@@ -38,4 +38,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class FinancialYear extends Model
 {
     use HasFactory,SoftDeletes;
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('start_date', 'asc');
+    }
 }

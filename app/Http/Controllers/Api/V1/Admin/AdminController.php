@@ -97,6 +97,7 @@ class AdminController extends Controller
               ->orWhere($filterArrayNameBn)
               ->orWhere($filterArrayKeyWord);
     })
+    ->orderBy('value_en', 'asc')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
 
@@ -153,7 +154,7 @@ class AdminController extends Controller
         ]);
 
         $validator->validated();
-        $lookup = Lookup::whereType($type)->get();
+        $lookup = Lookup::whereType($type->orderBy('value_en', 'asc'))->get();
         return LookupResource::collection($lookup)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
@@ -399,7 +400,7 @@ class AdminController extends Controller
 
 
     public function getAllLookupByType($type){
-    $lookup =Lookup::whereType($type)->get();
+    $lookup =Lookup::whereType($type)->orderBy('value_en', 'asc')->get();
 
     return LookupResource::collection($lookup)->additional([
         'success' => true,

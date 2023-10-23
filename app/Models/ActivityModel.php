@@ -67,6 +67,15 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ActivityModel extends Activity
 {
     use SoftDeletes;
+
+    // default ordering ASC for this model
+    // protected $defaultOrderColumn = 'log_name';
+    // protected $defaultOrderDirection = 'asc';
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('log_name', 'asc');
+    }
     public function subject(): MorphTo
     {
         if (config('activitylog.subject_returns_soft_deleted_models')) {
