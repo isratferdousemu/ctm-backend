@@ -3881,7 +3881,7 @@
         "/admin/poverty/get": {
             "get": {
                 "tags": [
-                    "Poverty-Score-Management"
+                    "PMT-Score"
                 ],
                 "summary": "get paginated PovertyScoreCutOffs",
                 "description": "get paginated PovertyScoreCutOffs",
@@ -3946,10 +3946,78 @@
                 ]
             }
         },
-        "/admin/poverty/division-cut-off/filter": {
+        "/admin/poverty/get/district-fixed-effect": {
+            "get": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "get paginated PovertyScoreCutOffs",
+                "description": "get paginated PovertyScoreCutOffs",
+                "operationId": "getAllDistrictFixedEffectPaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/poverty-cut-off/filter": {
             "post": {
                 "tags": [
-                    "Poverty-Score-Management"
+                    "PMT-Score"
                 ],
                 "summary": "filter a povertyPovertyScoreCutOff",
                 "description": "filter a povertyPovertyScoreCutOff",
@@ -4009,14 +4077,14 @@
                 ]
             }
         },
-        "/admin/poverty/division-cut-off/update": {
+        "/admin/poverty/poverty-cut-off/update": {
             "post": {
                 "tags": [
-                    "Poverty-Score-Management"
+                    "PMT-Score"
                 ],
                 "summary": "update a povertyPovertyScoreCutOff",
                 "description": "update a povertyPovertyScoreCutOff",
-                "operationId": "updateDivisionCutOff",
+                "operationId": "updatePovertyScoreCutOff",
                 "requestBody": {
                     "description": "enter inputs",
                     "required": true,
@@ -4085,10 +4153,78 @@
                 ]
             }
         },
-        "/admin/poverty/division-cut-off/insert": {
+        "/admin/poverty/district-fixed-effect/update": {
             "post": {
                 "tags": [
-                    "Poverty-Score-Management"
+                    "PMT-Score"
+                ],
+                "summary": "update a povertyDistrictFixedEffect",
+                "description": "update a povertyDistrictFixedEffect",
+                "operationId": "updateDistrictFixedEffect",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id",
+                                        "type": "integer"
+                                    },
+                                    "score": {
+                                        "description": "score",
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "default": {
+                                        "description": "default=1 for District Fixed Effect",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/poverty-cut-off/insert": {
+            "post": {
+                "tags": [
+                    "PMT-Score"
                 ],
                 "summary": "insert a povertyPovertyScoreCutOff",
                 "description": "insert a povertyPovertyScoreCutOff",
