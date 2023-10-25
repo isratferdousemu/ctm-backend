@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('gender_id')->nullable();
             $table->bigInteger('min_age')->nullable();
             $table->bigInteger('max_age')->nullable();
-            $table->double('amount')->nullable();
+            $table->double('amount', 8,2)->nullable();
             $table->timestamps();
         });
     }
