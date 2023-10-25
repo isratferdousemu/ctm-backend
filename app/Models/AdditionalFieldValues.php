@@ -26,4 +26,9 @@ use Illuminate\Database\Eloquent\Model;
 class AdditionalFieldValues extends Model
 {
     use HasFactory;
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('value', 'asc');
+    }
 }

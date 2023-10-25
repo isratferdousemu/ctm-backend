@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\Admin\PovertyScoreCutOff;
+namespace App\Http\Requests\Admin\Application;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PovertyScoreCutOffRequest extends FormRequest
+class ApplicationUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -19,14 +19,10 @@ class PovertyScoreCutOffRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-
-
     public function rules(): array
     {
         return [
-            'type'          => 'required|integer',
-            'location_id'   => 'required|integer',
-            'score'         => 'required|numeric',
+            //
         ];
     }
 }

@@ -3881,11 +3881,11 @@
         "/admin/poverty/get": {
             "get": {
                 "tags": [
-                    "Poverty-Score-Management"
+                    "PMT-Score"
                 ],
-                "summary": "get paginated PovertyScoreCutOffs",
-                "description": "get paginated PovertyScoreCutOffs",
-                "operationId": "getAllPovertyScoreCutOffPaginated",
+                "summary": "get paginated PMTScores",
+                "description": "get paginated PMTScores",
+                "operationId": "getAllPMTScorePaginated",
                 "parameters": [
                     {
                         "name": "searchText",
@@ -3946,14 +3946,145 @@
                 ]
             }
         },
-        "/admin/poverty/division-cut-off/update": {
+        "/admin/poverty/get/district-fixed-effect": {
+            "get": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "get paginated PMTScores",
+                "description": "get paginated PMTScores",
+                "operationId": "getAllDistrictFixedEffectPaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/poverty-cut-off/filter": {
             "post": {
                 "tags": [
-                    "Poverty-Score-Management"
+                    "PMT-Score"
                 ],
-                "summary": "update a povertyPovertyScoreCutOff",
-                "description": "update a povertyPovertyScoreCutOff",
-                "operationId": "updateDivisionCutOff",
+                "summary": "filter a povertyPMTScore",
+                "description": "filter a povertyPMTScore",
+                "operationId": "filterDivisionCutOff",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "financial_year_id": {
+                                        "description": "filter type",
+                                        "type": "integer"
+                                    },
+                                    "type": {
+                                        "description": "filter type",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/poverty-cut-off/update": {
+            "post": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "update a povertyPMTScore",
+                "description": "update a povertyPMTScore",
+                "operationId": "updatePMTScore",
                 "requestBody": {
                     "description": "enter inputs",
                     "required": true,
@@ -4022,13 +4153,81 @@
                 ]
             }
         },
-        "/admin/poverty/division-cut-off/insert": {
+        "/admin/poverty/district-fixed-effect/update": {
             "post": {
                 "tags": [
-                    "Poverty-Score-Management"
+                    "PMT-Score"
                 ],
-                "summary": "insert a povertyPovertyScoreCutOff",
-                "description": "insert a povertyPovertyScoreCutOff",
+                "summary": "update a povertyDistrictFixedEffect",
+                "description": "update a povertyDistrictFixedEffect",
+                "operationId": "updateDistrictFixedEffect",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id",
+                                        "type": "integer"
+                                    },
+                                    "score": {
+                                        "description": "score",
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "default": {
+                                        "description": "default=1 for District Fixed Effect",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/poverty-cut-off/insert": {
+            "post": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "insert a povertyPMTScore",
+                "description": "insert a povertyPMTScore",
                 "operationId": "insertDivisionCutOff",
                 "requestBody": {
                     "description": "enter inputs",
@@ -5267,6 +5466,554 @@
                 ]
             }
         },
+        "/admin/poverty/get/variable": {
+            "get": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "get paginated Variables",
+                "description": "get paginated Variables",
+                "operationId": "getAllVariablePaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/get/sub-variable/variable-list": {
+            "get": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "get paginated Variables",
+                "description": "get paginated Variables",
+                "operationId": "getAllVariableListForSubVariable",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/get/sub-variable": {
+            "get": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "get paginated subVariables",
+                "description": "get paginated subVariables",
+                "operationId": "getAllSubVariablePaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/variable/filter": {
+            "post": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "filter a povertyVariable",
+                "description": "filter a povertyVariable",
+                "operationId": "filterVariable",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "financial_year_id": {
+                                        "description": "filter type",
+                                        "type": "integer"
+                                    },
+                                    "type": {
+                                        "description": "filter type",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/variable/update": {
+            "post": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "update a povertyVariable",
+                "description": "update a povertyVariable",
+                "operationId": "updateVariable",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id",
+                                        "type": "integer"
+                                    },
+                                    "type": {
+                                        "description": "update type",
+                                        "type": "integer"
+                                    },
+                                    "division_id": {
+                                        "description": "update division_id",
+                                        "type": "integer"
+                                    },
+                                    "location_id": {
+                                        "description": "update location_id",
+                                        "type": "integer"
+                                    },
+                                    "score": {
+                                        "description": "score",
+                                        "type": "number",
+                                        "format": "float"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/variable/insert": {
+            "post": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "insert a povertyVariable",
+                "description": "insert a povertyVariable",
+                "operationId": "insertVariable",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name_en": {
+                                        "description": "insert name_en",
+                                        "type": "integer"
+                                    },
+                                    "field_type": {
+                                        "description": "insert field_type",
+                                        "type": "integer"
+                                    },
+                                    "score": {
+                                        "description": "insert score",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/sub-variable/insert": {
+            "post": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "insert a povertyVariable",
+                "description": "insert a povertyVariable",
+                "operationId": "insertSubVariable",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "variable_id": {
+                                        "description": "Variable ID",
+                                        "type": "integer"
+                                    },
+                                    "name_en": {
+                                        "description": "sub variable name_en",
+                                        "type": "integer"
+                                    },
+                                    "score": {
+                                        "description": "score",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/sub-variable/update": {
+            "post": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "update a SubVariable",
+                "description": "update a SubVariable",
+                "operationId": "updateSubVariable",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id",
+                                        "type": "integer"
+                                    },
+                                    "variable_id": {
+                                        "description": "Variable ID",
+                                        "type": "integer"
+                                    },
+                                    "name_en": {
+                                        "description": "sub variable name_en",
+                                        "type": "integer"
+                                    },
+                                    "score": {
+                                        "description": "score",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/financial-year/get": {
             "get": {
                 "tags": [
@@ -5892,6 +6639,80 @@
                         "bearer_token": []
                     }
                 ]
+            }
+        },
+        "/global/program": {
+            "get": {
+                "tags": [
+                    "GLOBAL"
+                ],
+                "summary": "get all program",
+                "description": "get all program",
+                "operationId": "getAllProgram",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
+        "/global/pmt": {
+            "get": {
+                "tags": [
+                    "GLOBAL"
+                ],
+                "summary": "get all PMT variable with sub-variable",
+                "description": "get all PMT variable with sub-variables",
+                "operationId": "getAllPMTVariableWithSub",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
             }
         },
         "/notifications-system/save-token": {

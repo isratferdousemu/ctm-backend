@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\PovertyScoreCutOff;
+namespace App\Http\Requests\Admin\Application;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PovertyScoreCutOffUpdateRequest extends FormRequest
+class ApplicationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

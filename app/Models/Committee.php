@@ -49,6 +49,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Committee extends Model
 {
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('name', 'asc');
+    }
 
     public function program(){
 
@@ -66,5 +71,5 @@ class Committee extends Model
     public function committeeType(){
         return $this->belongsTo(Lookup::class,'committee_type');
     }
-    
+
 }

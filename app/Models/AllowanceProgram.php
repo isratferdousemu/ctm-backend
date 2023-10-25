@@ -41,6 +41,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AllowanceProgram extends Model
 {
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('name_en', 'asc');
+    }
     public function lookup()
     {
         return $this->belongsTo(Lookup::class,'service_type');
@@ -50,4 +55,6 @@ class AllowanceProgram extends Model
     {
         return $this->belongsToMany(AdditionalFields::class, 'additional_fields_allowance_program', 'allowance_program_id','field_id');
     }
+
+
 }

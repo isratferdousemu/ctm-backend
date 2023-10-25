@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('poverty_score_cut_offs', function (Blueprint $table) {
             $table->id();
             $table->integer('type')->nullable();
-            $table->unsignedBigInteger('location_id');
+            $table->unsignedBigInteger('location_id')->nullable();
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('restrict');
+            $table->unsignedBigInteger('financial_year_id')->nullable();
+            $table->foreign('financial_year_id')->references('id')->on('financial_years')->onDelete('restrict');
             $table->float('score');
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
