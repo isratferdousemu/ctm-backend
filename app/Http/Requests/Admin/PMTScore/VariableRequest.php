@@ -23,6 +23,7 @@ class VariableRequest extends FormRequest
     {
         return [
             'name_en'          => 'required',
+            'score'          => 'numeric',
         ];
     }
 }
