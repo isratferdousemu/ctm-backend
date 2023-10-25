@@ -117,6 +117,102 @@ class VariableController extends Controller
 
     /**
      * @OA\Get(
+     *     path="/admin/poverty/get/sub-variable/variable-list",
+     *      operationId="getAllVariableListForSubVariable",
+     *      tags={"PMT-Score"},
+     *      summary="get paginated Variables",
+     *      description="get paginated Variables",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search by name",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of division per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     * )
+     */
+
+    public function getAllVariableListForSubVariable(Request $request)
+    {
+        // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
+
+        $filterArrayNameEn = [];
+        // $filterArrayNameBn = [];
+        // $filterArrayComment = [];
+        // $filterArrayAddress = [];
+
+        if ($searchText) {
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+            // $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            // $filterArrayComment[] = ['comment', 'LIKE', '%' . $searchText . '%'];
+        }
+        // $menu = Menu::select(
+        //     'menus.*',
+        //     'permissions.page_url as link'
+        // )
+        // ->leftJoin('permissions', function ($join) {
+        //     $join->on('menus.page_link_id', '=', 'permissions.id');
+        // });
+        $office = Variable::query()
+            ->where(function ($query) use ($filterArrayNameEn) {
+                $query->where($filterArrayNameEn)
+                    // ->orWhere($filterArrayNameBn)
+                    // ->orWhere($filterArrayComment)
+                    // ->orWhere($filterArrayAddress)
+                ;
+            })
+            // ->with('assign_location.parent.parent.parent', 'assign_location.locationType')
+            ->latest()
+            ->where('parent_id', null) // Variable
+            ->where('score', null) // Variable
+            ->paginate($perPage, ['*'], 'page');
+
+        return VariableResource::collection($office)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
+
+    /**
+     * @OA\Get(
      *     path="/admin/poverty/get/sub-variable",
      *      operationId="getAllSubVariablePaginated",
      *      tags={"PMT-Score"},
@@ -495,6 +591,16 @@ class VariableController extends Controller
      *                      description="insert name_en",
      *                      type="integer",
      *                   ),
+     *                    @OA\Property(
+     *                      property="field_type",
+     *                      description="insert field_type",
+     *                      type="integer",
+     *                   ),
+     *                    @OA\Property(
+     *                      property="score",
+     *                      description="insert score",
+     *                      type="integer",
+     *                   ),
      *                 ),
      *             ),
      *
@@ -566,7 +672,7 @@ class VariableController extends Controller
      *           @OA\Schema(
 
      *                    @OA\Property(
-     *                      property="parent_id",
+     *                      property="variable_id",
      *                      description="Variable ID",
      *                      type="integer",
      *                   ),
@@ -625,6 +731,96 @@ class VariableController extends Controller
             return VariableResource::make($Variable)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/poverty/sub-variable/update",
+     *      operationId="updateSubVariable",
+     *      tags={"PMT-Score"},
+     *      summary="update a SubVariable",
+     *      description="update a SubVariable",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+
+     *                    @OA\Property(
+     *                      property="id",
+     *                      description="id",
+     *                      type="integer",
+     *                   ),
+     *                    @OA\Property(
+     *                      property="variable_id",
+     *                      description="Variable ID",
+     *                      type="integer",
+     *                   ),
+     *                    @OA\Property(
+     *                      property="name_en",
+     *                      description="sub variable name_en",
+     *                      type="integer",
+     *                   ),
+     *                    @OA\Property(
+     *                      property="score",
+     *                      description="score",
+     *                      type="integer",
+     *                   ),
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+    public function updateSubVariable(VariableRequest $request)
+    {
+
+        try {
+            $Variable = $this->VariableService->updateSubVariable($request);
+            activity("Variable")
+                ->causedBy(auth()->user())
+                ->performedOn($Variable)
+                ->log('Variable Created !');
+            return VariableResource::make($Variable)->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
             ]);
         } catch (\Throwable $th) {
             //throw $th;

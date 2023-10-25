@@ -5534,6 +5534,74 @@
                 ]
             }
         },
+        "/admin/poverty/get/sub-variable/variable-list": {
+            "get": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "get paginated Variables",
+                "description": "get paginated Variables",
+                "operationId": "getAllVariableListForSubVariable",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of division per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/poverty/get/sub-variable": {
             "get": {
                 "tags": [
@@ -5759,6 +5827,14 @@
                                     "name_en": {
                                         "description": "insert name_en",
                                         "type": "integer"
+                                    },
+                                    "field_type": {
+                                        "description": "insert field_type",
+                                        "type": "integer"
+                                    },
+                                    "score": {
+                                        "description": "insert score",
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -5815,7 +5891,78 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
-                                    "parent_id": {
+                                    "variable_id": {
+                                        "description": "Variable ID",
+                                        "type": "integer"
+                                    },
+                                    "name_en": {
+                                        "description": "sub variable name_en",
+                                        "type": "integer"
+                                    },
+                                    "score": {
+                                        "description": "score",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/poverty/sub-variable/update": {
+            "post": {
+                "tags": [
+                    "PMT-Score"
+                ],
+                "summary": "update a SubVariable",
+                "description": "update a SubVariable",
+                "operationId": "updateSubVariable",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id",
+                                        "type": "integer"
+                                    },
+                                    "variable_id": {
                                         "description": "Variable ID",
                                         "type": "integer"
                                     },
