@@ -44,7 +44,9 @@ Route::middleware('auth:sanctum')->group(function () {
         //////////////////////////
         
         Route::get('/get/sub-variable', [VariableController::class, 'getAllSubVariablePaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/get/sub-variable/variable-list', [VariableController::class, 'getAllVariableListForSubVariable'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::post('/sub-variable/insert', [VariableController::class, 'insertSubVariable'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
+        Route::post('/sub-variable/update', [VariableController::class, 'updateSubVariable'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         
         
         // Route::post('/poverty-cut-off/insert', [PMTScoreController::class, 'insertDivisionCutOff'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);

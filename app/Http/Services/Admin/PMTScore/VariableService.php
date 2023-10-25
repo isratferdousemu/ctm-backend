@@ -25,6 +25,7 @@ class VariableService
             $Variable                         = new Variable();
             $Variable->name_en                   = $request->name_en;
             $Variable->score              = $request->score;
+            $Variable->field_type              = $request->field_type;
 
             $Variable->save();
 
@@ -45,6 +46,8 @@ class VariableService
             $Variable                         = Variable::find($request->id);;
             $Variable->name_en                   = $request->name_en;
             $Variable->score              = $request->score;
+            $Variable->field_type              = $request->field_type;
+
 
             $Variable->save();
 
@@ -68,7 +71,7 @@ class VariableService
 
             $Variable                         = new Variable();
             $Variable->name_en                   = $request->name_en;
-            $Variable->parent_id                   = $request->parent_id;
+            $Variable->parent_id                   = $request->variable_id;
             $Variable->score              = $request->score;
 
             $Variable->save();
@@ -89,7 +92,7 @@ class VariableService
 
             $Variable                         = Variable::find($request->id);;
             $Variable->name_en                   = $request->name_en;
-            $Variable->parent_id                   = $request->parent_id;
+            $Variable->parent_id                   = $request->variable_id;
             $Variable->score              = $request->score;
 
             $Variable->save();

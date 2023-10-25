@@ -22,7 +22,7 @@ class DistrictFixedEffectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'score' => 'required|numeric',
         ];
     }
 }
