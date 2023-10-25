@@ -14,4 +14,5 @@ Route::prefix('global')->group(function () {
     Route::get('/thana/get/{district_id}',[LocationController::class, 'getAllThanaByDistrictId']);
     Route::get('/city/get/{district_id}/{location_type}',[LocationController::class, 'getAllCityByDistrictId']);
     Route::get('/thana/get/city/{city_id}',[LocationController::class, 'getAllThanaByCityId']);
+    Route::get('/pmt',[GlobalController::class, 'getAllPMTVariableWithSub']);
 });
