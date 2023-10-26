@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\PMTScore;
+namespace App\Http\Requests\Admin\Allotment;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class VariableRequest extends FormRequest
+class AlotmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,13 +17,12 @@ class VariableRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'name_en'          => 'required',
-            'score'          => 'numeric',
+            //
         ];
     }
 }
