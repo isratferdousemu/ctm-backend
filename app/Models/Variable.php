@@ -15,6 +15,12 @@ class Variable extends Model
         'score',
     ];
 
+    // public function newQuery($excludeDeleted = true)
+    // {
+    //     return parent::newQuery($excludeDeleted)
+    //         ->orderBy('name_en', 'asc');
+    // }
+
     public function parent()
     {
         return $this->belongsTo(Variable::class, 'parent_id');
