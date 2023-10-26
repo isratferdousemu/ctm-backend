@@ -510,9 +510,16 @@ class SystemconfigController extends Controller
                 }
 
                 $allowance_program->marital_status = $request->marital_status;
-                $allowance_program->is_active = $request->is_active;
 
+                if ($request->is_active == "false")
+                {
+                    $allowance_program->is_active = 0;
+                }
 
+                if ($request->is_active == "true")
+                {
+                    $allowance_program->is_active = 1;
+                }
 
                 if ($request->is_age_limit == true)
                 {

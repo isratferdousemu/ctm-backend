@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AllowanceProgram;
 use App\Models\AllowanceProgramAge;
 use App\Models\AllowanceProgramAmount;
+use App\Models\Location;
 use Illuminate\Http\Response;
 
 class AllotmentController extends Controller
@@ -47,6 +48,15 @@ class AllotmentController extends Controller
                 'is_disable' => $allowance->is_disable_class
             ],Response::HTTP_OK);
         }
+    }
+
+    public function getDistrict()
+    {
+        $districts = Location::where('type','=','district')->get();
+
+        return response()->json([
+            'data' => $districts
+        ],Response::HTTP_OK);
     }
 
     public function store()
