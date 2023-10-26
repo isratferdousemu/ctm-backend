@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\AdminController;
+use App\Http\Controllers\Api\V1\Admin\ApplicationController;
 use App\Http\Controllers\Api\V1\Admin\LocationController;
 use App\Http\Controllers\Api\V1\GlobalController;
 
@@ -15,4 +16,8 @@ Route::prefix('global')->group(function () {
     Route::get('/city/get/{district_id}/{location_type}',[LocationController::class, 'getAllCityByDistrictId']);
     Route::get('/thana/get/city/{city_id}',[LocationController::class, 'getAllThanaByCityId']);
     Route::get('/pmt',[GlobalController::class, 'getAllPMTVariableWithSub']);
+
+    // online application
+    Route::post('/online-application/card-verification',[ApplicationController::class, 'onlineApplicationVerifyCard']);
+    Route::post('/online-application/dis-card-verification',[ApplicationController::class, 'onlineApplicationVerifyDISCard']);
 });

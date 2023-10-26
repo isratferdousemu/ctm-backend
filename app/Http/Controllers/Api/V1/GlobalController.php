@@ -56,7 +56,7 @@ class GlobalController extends Controller
     * )
     */
     public function getAllProgram(){
-        $data = AllowanceProgram::with('lookup','addtionalfield.additional_field_value')->get();
+        $data = AllowanceProgram::where('is_active',1)->with('lookup','addtionalfield.additional_field_value')->get();
         return AllowanceResource::collection($data)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
