@@ -86,5 +86,8 @@ class Location extends Model
         return $this->belongsTo(Lookup::class, 'location_type');
     }
 
-
+    public function office()
+    {
+        return $this->hasMany(Office::class, 'assign_location_id');
+    }
 }

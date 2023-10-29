@@ -21,8 +21,23 @@ class AlotmentRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        if (\Request::routeIs('allotment.store'))
+        {
+            return [
+                'program_id' => 'required',
+                'location_id' => 'required',
+                'financial_year_id' => 'required',
+            ];
+        }
+
+        if (\Request::routeIs('allotment.update'))
+        {
+            return [
+                'program_id' => 'required',
+                'location_id' => 'required',
+                'financial_year_id' => 'required',
+            ];
+        }
+
     }
 }
