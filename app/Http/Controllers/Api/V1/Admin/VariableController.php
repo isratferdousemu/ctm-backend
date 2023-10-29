@@ -9,6 +9,8 @@ use App\Http\Services\Admin\PMTScore\VariableService;
 use App\Http\Traits\MessageTrait;
 use App\Models\Variable;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Validator;
 
 class VariableController extends Controller
 {
@@ -826,5 +828,171 @@ class VariableController extends Controller
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/poverty/variable/destroy",
+     *      operationId="destroyVariable",
+     *      tags={"PMT-Score"},
+     *      summary="delete Variable",
+     *      description="delete Variable",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                    @OA\Property(
+     *                      property="id",
+     *                      description="id",
+     *                      type="integer",
+     *                   ),
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+    public function destroyVariable()
+    {
+
+        $validator = Validator::make(['id' => request()->id], [
+            'id' => 'required|exists:variables,id,deleted_at,NULL',
+        ]);
+
+        $validator->validated();
+
+        $variable = Variable::whereId(request()->id)->first();
+
+        // check if variable has any child if yes then return exception else delete
+        if ($variable->children->count() > 0) {
+
+            return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
+        }
+
+
+        if ($variable) {
+            $variable->delete();
+        }
+
+        activity("Variable")
+            ->causedBy(auth()->user())
+            ->log('Variable Deleted!!');
+        return $this->sendResponse($variable, $this->deleteSuccessMessage, Response::HTTP_OK);
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/poverty/sub-variable/destroy",
+     *      operationId="destroySubVariable",
+     *      tags={"PMT-Score"},
+     *      summary="delete Sub Variable",
+     *      description="delete Sub Variable",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                    @OA\Property(
+     *                      property="id",
+     *                      description="id",
+     *                      type="integer",
+     *                   ),
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+    public function destroySubVariable()
+    {
+
+        $validator = Validator::make(['id' => request()->id], [
+            'id' => 'required|exists:variables,id,deleted_at,NULL',
+        ]);
+
+        $validator->validated();
+
+        $variable = Variable::whereId(request()->id)->first();
+
+        // check if variable has any child if yes then return exception else delete
+        if ($variable->children->count() > 0) {
+
+            return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
+        }
+
+
+        if ($variable) {
+            $variable->delete();
+        }
+
+        activity("Variable")
+            ->causedBy(auth()->user())
+            ->log('Variable Deleted!!');
+        return $this->sendResponse($variable, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 }

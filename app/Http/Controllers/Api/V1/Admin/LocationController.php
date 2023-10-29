@@ -354,7 +354,7 @@ class LocationController extends Controller
         // check if division has any child if yes then return exception else delete
         if($division->children->count() > 0){
 
-            return $this->sendError('you cannot delete this because it has child', [], 500);
+            return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
 
 
@@ -748,7 +748,7 @@ class LocationController extends Controller
         $district = Location::whereId($id)->whereType($this->district)->first();
         if($district->children->count() > 0){
 
-            return $this->sendError('you cannot delete this because it has child', [], 500);
+            return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
         if($district){
             $district->delete();
@@ -1161,7 +1161,7 @@ class LocationController extends Controller
         $city = Location::whereId($id)->whereType($this->city)->first();
         if($city->children->count() > 0){
 
-            return $this->sendError('you cannot delete this because it has child', [], 500);
+            return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
         if($city){
             $city->delete();
@@ -1625,7 +1625,7 @@ class LocationController extends Controller
         $thana = Location::whereId($id)->whereType($this->thana)->first();
         if($thana->children->count() > 0){
 
-            return $this->sendError('you cannot delete this because it has child', [], 500);
+            return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
         if($thana){
             $thana->delete();
@@ -2032,7 +2032,7 @@ class LocationController extends Controller
         $union = Location::whereId($id)->whereType($this->union)->first();
         if($union->children->count() > 0){
 
-            return $this->sendError('you cannot delete this because it has child', [], 500);
+            return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
         if($union){
             $union->delete();
@@ -2521,7 +2521,7 @@ class LocationController extends Controller
         $ward = Location::whereId($id)->whereType($this->ward)->first();
         if($ward->children->count() > 0){
 
-            return $this->sendError('you cannot delete this because it has child', [], 500);
+            return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
         if($ward){
             $ward->delete();
