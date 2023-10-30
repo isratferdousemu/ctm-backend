@@ -75,5 +75,4 @@ class Office extends Model
 
     }
 
-
 }

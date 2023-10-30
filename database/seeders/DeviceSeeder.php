@@ -19,7 +19,7 @@ class DeviceSeeder extends Seeder
                 'user_id' => 1000,
                 'name' => 'juned_laptop',
                 'device_name' => 'MSI',
-                'device_id' => '903b624e16a7c55c70d287a7ecc7432b',
+                'device_id' => '464bce6fa106822739d1d367907c33d9',
                 'ip_address' => '127.0.0.1',
                 'createdBy' => 1,
                 'device_type' => 1,
