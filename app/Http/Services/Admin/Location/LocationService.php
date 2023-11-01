@@ -232,6 +232,9 @@ class LocationService
 
             $location                       = Location::find($request->id);
             $location->parent_id              = $request->district_id;
+            if ($request->location_type == 2 ) {
+                $location->type =  $this->thana;
+            }
             $location->location_type          = $request->location_type;
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;
