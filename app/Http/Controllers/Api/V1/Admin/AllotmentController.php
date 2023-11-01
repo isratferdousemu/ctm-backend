@@ -12,6 +12,7 @@ use App\Models\AllowanceProgramAge;
 use App\Models\AllowanceProgramAmount;
 use App\Models\FinancialYear;
 use App\Models\Location;
+use App\Models\Office;
 use Illuminate\Http\Response;
 
 class AllotmentController extends Controller
@@ -66,13 +67,35 @@ class AllotmentController extends Controller
 
     public function getLocation($id)
     {
+        $result = [];
+
         //$locations = Location::whereId($id)->with(['children.children.office','children.office'])->get();
 
         $locations = Location::whereId($id)->with(['children.children'])->get();
 
-        return response()->json([
-            'data' => $locations
-        ],Response::HTTP_OK);
+        $office = Office::latest()->get();
+
+        foreach ($office as $o)
+        {
+            foreach ($locations as $l)
+            {
+                if ($o->assign_location_id == $l->id)
+                {
+                    $result[] = $o->name;
+                }else{
+                    foreach ($l->children as $cl)
+                    {
+                        if ($o->assign_location_id == $cl->id)
+                        {
+                            $result[] = $o;
+                            $result["location"][] = $cl;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 
     public function getFinancialYear()
