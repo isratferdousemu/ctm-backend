@@ -60,8 +60,8 @@ trait PermissionTrait
 
 
     // module 5 sub modules
-    private $subGrievanceCategoryInformation= "grievance-category-information";
-    private $subGrievanceInformation= "grievance-information";
+    private $subGrievanceSetting= "grievance-setting";
+    private $subGrievanceList= "grievance-list";
 
 
     // module 6 sub modules

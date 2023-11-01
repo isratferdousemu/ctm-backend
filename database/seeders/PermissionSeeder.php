@@ -374,24 +374,24 @@ class PermissionSeeder extends Seeder
         /* -------------------------------------------------------------------------- */
         [
             'module_name' => $this->modulePermissionGrievanceManagement,
-            'sub_module_name' => $this->subGrievanceCategoryInformation,
-            'guard_name' => $this->guard,
+            'sub_module_name' => $this->subGrievanceSetting,
+            'guard_name' => $this->guard, 
             'permissions'=>[
-                ["id" => 137, "name"=>"grievanceCategory-create", "page_url"=>"/grievance-management/grievance-category/create", "parent_page"=>1],
-                ["id" => 138, "name"=>"grievanceCategory-view", "page_url"=>"/grievance-management/grievance-category", "parent_page"=>1],
-                ["id" => 139, "name"=>"grievanceCategory-edit", "page_url"=>"/grievance-management/grievance-category/edit/:id", "parent_page"=>1],
-                ["id" => 140, "name"=>"grievanceCategory-delete", "page_url"=>"/grievance-management/grievance-category", "parent_page"=>1]
+                ["id" => 137, "name"=>"grievance-setting-create", "page_url"=>"/grievance-management/grievance-setting/create", "parent_page"=>1],
+                ["id" => 138, "name"=>"grievance-setting-view", "page_url"=>"/grievance-management/grievance-setting", "parent_page"=>1],
+                ["id" => 139, "name"=>"grievance-setting-edit", "page_url"=>"/grievance-management/grievance-setting/edit/:id", "parent_page"=>1],
+                ["id" => 140, "name"=>"grievance-setting-delete", "page_url"=>"/grievance-management/grievance-setting", "parent_page"=>1]
             ]
         ],
         [
             'module_name' => $this->modulePermissionGrievanceManagement,
-            'sub_module_name' => $this->subGrievanceInformation,
+            'sub_module_name' => $this->subGrievanceList,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["id" => 141, "name"=>"grievanceInfo-create", "page_url"=>"/grievance-management/grievance-info/create", "parent_page"=>1],
-                ["id" => 142, "name"=>"grievanceInfo-view", "page_url"=>"/grievance-management/grievance-info", "parent_page"=>1],
-                ["id" => 143, "name"=>"grievanceInfo-edit", "page_url"=>"/grievance-management/grievance-info/edit/:id", "parent_page"=>1],
-                ["id" => 144, "name"=>"grievanceInfo-delete", "page_url"=>"/grievance-management/grievance-info", "parent_page"=>1]
+                ["id" => 141, "name"=>"grievance-list-create", "page_url"=>"/grievance-management/grievance-list/create", "parent_page"=>1],
+                ["id" => 142, "name"=>"grievance-list-view", "page_url"=>"/grievance-management/grievance-list", "parent_page"=>1],
+                ["id" => 143, "name"=>"grievance-list-edit", "page_url"=>"/grievance-management/grievance-list/edit/:id", "parent_page"=>1],
+                ["id" => 144, "name"=>"grievance-list-delete", "page_url"=>"/grievance-management/grievance-list", "parent_page"=>1]
             ]
         ],
 
@@ -403,11 +403,26 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->modulePermissionReportingSystem,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["id" => 145, "name"=>"reporting-system-create", "page_url"=>"/reporting-management/reporting-system/create", "parent_page"=>1],
-                ["id" => 146, "name"=>"reporting-system-view", "page_url"=>"/reporting-management/reporting-system", "parent_page"=>1],
-                ["id" => 147, "name"=>"reporting-system-edit", "page_url"=>"/reporting-management/reporting-system/edit/:id", "parent_page"=>1],
-                ["id" => 148, "name"=>"reporting-system-delete", "page_url"=>"/reporting-management/reporting-system", "parent_page"=>1]
+                ["id" => 145, "name"=>"reporting-list-create", "page_url"=>"/reporting-management/reporting-list/create", "parent_page"=>1],
+                ["id" => 146, "name"=>"reporting-list-view", "page_url"=>"/reporting-management/reporting-list", "parent_page"=>1],
+                ["id" => 147, "name"=>"reporting-list-edit", "page_url"=>"/reporting-management/reporting-list/edit/:id", "parent_page"=>1],
+                ["id" => 148, "name"=>"reporting-list-delete", "page_url"=>"/reporting-management/reporting-list", "parent_page"=>1],
+                
+                ["id" => 149, "name"=>"reporting-survey-view", "page_url"=> "/reporting-management/reporting-survey", "parent_page"=>1],
+                ["id" => 150, "name"=>"reporting-survey-edit", "page_url"=>"/reporting-management/reporting-survey/edit/:id", "parent_page"=>1],
+                ["id" => 151, "name"=>"reporting-survey-delete", "page_url"=>"/reporting-management/reporting-survey", "parent_page"=>1],
+                ["id" => 152, "name"=>"reporting-survey-delete", "page_url"=>"/reporting-management/reporting-survey", "parent_page"=>1],
 
+                ["id" => 149, "name"=>"reporting-report-view", "page_url"=>"/reporting-management/reporting-report", "parent_page"=>1],
+                ["id" => 150, "name"=>"reporting-report-edit", "page_url"=>"/reporting-management/reporting-report/edit/:id", "parent_page"=>1],
+                ["id" => 151, "name"=>"reporting-report-delete", "page_url"=>"/reporting-management/reporting-report", "parent_page"=>1],
+                ["id" => 152, "name"=>"reporting-report-delete", "page_url"=>"/reporting-management/reporting-report", "parent_page"=>1],
+
+                ["id" => 149, "name"=>"reporting-bireport-view", "page_url"=>"/reporting-management/reporting-bireport", "parent_page"=>1],
+                ["id" => 150, "name"=>"reporting-bireport-edit", "page_url"=>"/reporting-management/reporting-bireport/edit/:id", "parent_page"=>1],
+                ["id" => 151, "name"=>"reporting-bireport-delete", "page_url"=>"/reporting-management/reporting-bireport", "parent_page"=>1],
+                ["id" => 152, "name"=>"reporting-bireport-delete", "page_url"=>"/reporting-management/reporting-bireport", "parent_page"=>1]
+,
             ]
         ],
 
