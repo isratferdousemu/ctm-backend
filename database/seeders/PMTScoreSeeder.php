@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\PovertyScoreCutOff;
+use App\Models\PMTScore;
 
-class PovertyScoreCutOffSeeder extends Seeder
+class PMTScoreSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -19,6 +19,7 @@ class PovertyScoreCutOffSeeder extends Seeder
                 'type' => 0,
                 'location_id' => null, //Bangladesh
                 'financial_year_id' => 1, //Bangladesh
+                'default' => 0, //Bangladesh
                 'score' => '795',
             ],
 
@@ -27,6 +28,7 @@ class PovertyScoreCutOffSeeder extends Seeder
                 'type' => 1,
                 'location_id' => 4, //Barishal
                 'financial_year_id' => 1, //Barishal
+                'default' => 0, //Barishal
                 'score' => '795',
             ],
 
@@ -35,6 +37,7 @@ class PovertyScoreCutOffSeeder extends Seeder
                 'type' => 1,
                 'location_id' => 1, //Chattagram
                 'financial_year_id' => 1, //Chattagram
+                'default' => 0, //Chattagram
                 'score' => '800',
             ],
 
@@ -43,6 +46,7 @@ class PovertyScoreCutOffSeeder extends Seeder
                 'type' => 1,
                 'location_id' => 6, //Dhaka
                 'financial_year_id' => 1, //Dhaka
+                'default' => 0, //Dhaka
                 'score' => '810',
             ],
 
@@ -51,6 +55,7 @@ class PovertyScoreCutOffSeeder extends Seeder
                 'type' => 1,
                 'location_id' => 3, //Khulna
                 'financial_year_id' => 1, //Khulna
+                'default' => 0, //Khulna
                 'score' => '785',
             ],
 
@@ -59,6 +64,7 @@ class PovertyScoreCutOffSeeder extends Seeder
                 'type' => 1,
                 'location_id' => 8, //Mymensignh
                 'financial_year_id' => 1, //Mymensignh
+                'default' => 0, //Mymensignh
                 'score' => '780',
             ],
 
@@ -67,6 +73,7 @@ class PovertyScoreCutOffSeeder extends Seeder
                 'type' => 1,
                 'location_id' => 2, //Rajshahi
                 'financial_year_id' => 1, //Rajshahi
+                'default' => 0, //Rajshahi
                 'score' => '790',
             ],
 
@@ -75,12 +82,13 @@ class PovertyScoreCutOffSeeder extends Seeder
                 'type' => 1,
                 'location_id' => 7, //Rangpur
                 'financial_year_id' => 1, //Rangpur
+                'default' => 0, //Rangpur
                 'score' => '775',
             ],
 
         ];
         foreach ($poverty_score_cut_offs as $value) {
-            $poverty_score_cut_offs = new PovertyScoreCutOff;
+            $poverty_score_cut_offs = new PMTScore;
             $poverty_score_cut_offs->id           = $value['id'];
             $poverty_score_cut_offs->type         = $value['type'];
             $poverty_score_cut_offs->location_id  = $value['location_id'];

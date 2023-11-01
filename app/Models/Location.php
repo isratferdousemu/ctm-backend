@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -62,10 +63,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Location extends Model
 {
     use HasFactory,SoftDeletes;
+    // protected $defaultOrderColumn = 'name_en';
+    // protected $defaultOrderDirection = 'asc';
 
-
-
-
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('name_en', 'asc');
+    }
     public function children()
     {
         return $this->hasMany(Location::class, 'parent_id');
@@ -81,5 +86,8 @@ class Location extends Model
         return $this->belongsTo(Lookup::class, 'location_type');
     }
 
-
+    public function office()
+    {
+        return $this->hasMany(Office::class, 'assign_location_id');
+    }
 }

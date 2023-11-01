@@ -109,7 +109,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable,SoftDeletes,HasRoles;
     protected $guard_name = 'sanctum';
-
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('full_name', 'asc');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

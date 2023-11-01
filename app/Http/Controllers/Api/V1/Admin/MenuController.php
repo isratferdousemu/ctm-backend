@@ -83,14 +83,6 @@ class MenuController extends Controller
 
     public function getAllMenu(Request $request)
     {
-
-
-//    $menus = Menu::with("children.children.pageLink","children.pageLink","pageLink")->whereParentId(null)->get();
-//
-//    return MenuResource::collection($menus)->additional([
-//        'success' => true,
-//        'message' => $this->fetchSuccessMessage,
-//    ]);
         $menu = Menu::select(
             'menus.*',
             'permissions.page_url as link'
@@ -128,12 +120,10 @@ class MenuController extends Controller
         if($request->has('itemsPerPage'))
         {
             $itemsPerPage = $request->get('itemsPerPage');
-        return $menu->paginate($itemsPerPage);
-        }else{
-        return $menu->get();
-
+            //return $menu->paginate($itemsPerPage);
         }
 
+        return $menu->paginate($itemsPerPage);
     }
 
     /**
@@ -365,13 +355,8 @@ class MenuController extends Controller
      */
     public function getParent()
     {
-       // $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn')->where('parent_id', null)->get();
-    // get manu list with total 3 level parent child in only one list without using with method
-        $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn','page_link_id')->get();
+        $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn','page_link_id')->orderBy('label_name_en')->get();
         $parents = $this->getMenuList($parents);
-
-
-
 
         return \response()->json([
             'parents' => $parents
@@ -389,8 +374,6 @@ class MenuController extends Controller
         }
         return $menuList;
     }
-
-
 
     public function menuEdit($id)
     {

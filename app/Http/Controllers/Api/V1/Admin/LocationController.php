@@ -1255,7 +1255,7 @@ class LocationController extends Controller
     ->with('parent.parent.parent','locationType')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
-    // return $thana; 
+    // return $thana;
     return CityResource::collection($thana)->additional([
         'success' => true,
         'message' => $this->fetchSuccessMessage,
@@ -1359,7 +1359,6 @@ class LocationController extends Controller
 
 
     $thanas = Location::whereParentId($city_id)->whereType($this->thana)->whereLocationType(3)->get();
-
     return DistrictResource::collection($thanas)->additional([
         'success' => true,
         'message' => $this->fetchSuccessMessage,

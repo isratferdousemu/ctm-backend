@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\PovertyScoreCutOff;
+namespace App\Http\Requests\Admin\PMTScore;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PovertyScoreCutOffRequest extends FormRequest
+class VariableRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,16 +17,13 @@ class PovertyScoreCutOffRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-
-
     public function rules(): array
     {
         return [
-            'type'          => 'required|integer',
-            'location_id'   => 'required|integer',
-            'score'         => 'required|numeric',
+            'name_en'          => 'required',
+            'score'          => 'numeric',
         ];
     }
 }

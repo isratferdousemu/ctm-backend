@@ -23,7 +23,22 @@ class AllowanceUpdateRequest extends FormRequest
     {
         return [
             'name_en'        => 'required|string|max:50',
-            'name_bn'        => 'required|string|max:50'
+            'name_bn'        => 'required|string|max:50',
+            'is_active'      => 'sometimes',
+            'age_limit'      => 'required|array',
+            'age_limit.*.gender_id'      => 'required|exists:lookups,id',
+            'age_limit.*.min_age'      => 'required|numeric|min:0|max:110',
+            'age_limit.*.max_age'      => 'required|numeric|min:0|max:110',
+            'amount.*.type_id'        => 'required|exists:lookups,id',
+            'amount.*.amount'        => 'required|numeric|min:0'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'age_limit.*.min_age' => 'Minimum age will not use any negative number or character',
+            'age_limit.*.max_age' => 'Maximum age will not use any negative number or character',
         ];
     }
 }

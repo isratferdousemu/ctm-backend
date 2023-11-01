@@ -30,4 +30,9 @@ use Illuminate\Database\Eloquent\Model;
 class AllowanceProgramAge extends Model
 {
     use HasFactory;
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('min_age', 'asc');
+    }
 }

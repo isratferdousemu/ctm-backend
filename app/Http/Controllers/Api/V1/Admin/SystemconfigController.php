@@ -239,8 +239,6 @@ class SystemconfigController extends Controller
      *
      */
     public function insertAllowance(AllowanceRequest $request){
-        // return $request->all();
-
         if ($request->isMethod('post'))
         {
             \DB::beginTransaction();
@@ -260,13 +258,7 @@ class SystemconfigController extends Controller
                 }
 
                 $allowance_program->marital_status = $request->marital_status;
-
-                if ($request->is_active == true)
-                {
-                    $allowance_program->is_active = 1;
-                }else{
-                    $allowance_program->is_active = 0;
-                }
+                $allowance_program->is_active = 0;
 
                 if ($request->is_age_limit == true)
                 {
@@ -275,21 +267,14 @@ class SystemconfigController extends Controller
                     $allowance_program->is_age_limit = 0;
                 }
 
-                if ($request->is_disable_class == true)
-                {
-                    $allowance_program->is_disable_class = 1;
-                }else{
-                    $allowance_program->is_disable_class = 0;
-                }
+                $allowance_program->is_disable_class = $request->is_disable_class;
 
                 $allowance_program->save();
 
 
-                $age_limit = json_decode($request->input('age_limit'), true);
-
-                if ($age_limit != null)
+                if ($request->age_limit != null)
                 {
-                    foreach ($age_limit as $al)
+                    foreach ($request->age_limit as $al)
                     {
                         $allowance_program_age = new AllowanceProgramAge();
 
@@ -498,9 +483,9 @@ class SystemconfigController extends Controller
      *
      */
      public function allowanceUpdate(AllowanceUpdateRequest $request, $id){
-
         if ($request->_method == 'PUT')
         {
+
             \DB::beginTransaction();
 
             try {
@@ -520,11 +505,14 @@ class SystemconfigController extends Controller
 
                 $allowance_program->marital_status = $request->marital_status;
 
-                if ($request->is_active == true)
+                if ($request->is_active == "false")
+                {
+                    $allowance_program->is_active = 0;
+                }
+
+                if ($request->is_active == "true")
                 {
                     $allowance_program->is_active = 1;
-                }else{
-                    $allowance_program->is_active = 0;
                 }
 
                 if ($request->is_age_limit == true)
@@ -534,28 +522,38 @@ class SystemconfigController extends Controller
                     $allowance_program->is_age_limit = 0;
                 }
 
-                if ($request->is_amount == true)
+                if ($request->is_disable_class == true)
                 {
-                    $allowance_program->is_amount = 1;
+                    $allowance_program->is_disable_class = 1;
                 }else{
-                    $allowance_program->is_amount = 0;
+                    $allowance_program->is_disable_class = 0;
                 }
 
 
-                $age_limit = json_decode($request->input('age_limit'), true);
+                $allowance_program->save();
 
-                if ($age_limit != null)
+
+                if ($request->input('age_limit') != null)
                 {
-                    foreach ($age_limit as $al)
+                    foreach ($request->input('age_limit') as $al)
                     {
+                        $new_amount = 0;
+
+                        if ($al['amount'] == null)
+                        {
+                            $new_amount = null;
+                        }else{
+                            $new_amount = $al['amount'];
+                        }
+
                         AllowanceProgramAge::updateOrInsert(
                             ["id" => $al['id']],
                             [
-                                "allowance_program_id" => $al['allowance_program_id'],
+                                "allowance_program_id" => $allowance_program->id,
                                 "gender_id" => $al['gender_id'],
                                 "min_age" => $al['min_age'],
                                 "max_age" => $al['max_age'],
-                                "amount" => $al['amount'],
+                                "amount" => $new_amount,
                                 "created_at" => Carbon::now(),
                                 "updated_at" => Carbon::now()
                             ]
@@ -563,11 +561,10 @@ class SystemconfigController extends Controller
                     }
                 }
 
-                $amounts = json_decode($request->input('amount'), true);
 
-                if ($amounts != null)
+                if ($request->input('amount') != null)
                 {
-                    foreach ($amounts as $a)
+                    foreach ($request->input('amount') as $a)
                     {
                         AllowanceProgramAmount::updateOrInsert(
                             ['id' => $a['id']],

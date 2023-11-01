@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('allowance_program_id')->unsigned();
             $table->integer('type_id')->nullable();
-            $table->double('amount', 8,2);
+            $table->double('amount', 8,2)->nullable();
             $table->timestamps();
         });
     }

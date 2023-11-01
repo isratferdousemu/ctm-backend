@@ -59,7 +59,11 @@ use Illuminate\Database\Eloquent\Model;
 class Office extends Model
 {
 
-
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('name_en', 'asc');
+    }
 
     public function officeType(){
         return $this->belongsTo(Lookup::class,'office_type');
@@ -70,6 +74,5 @@ class Office extends Model
         return $this->belongsTo(Location::class,'assign_location_id');
 
     }
-
 
 }

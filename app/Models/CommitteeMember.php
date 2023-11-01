@@ -36,6 +36,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CommitteeMember extends Model
 {
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('member_name', 'asc');
+    }
 
     public function committee(){
         return $this->belongsTo(Committee::class,'committee_id');
