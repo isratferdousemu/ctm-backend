@@ -37,6 +37,20 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $version
  * @property-read \App\Models\Lookup|null $lookup
  * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram whereVersion($value)
+ * @property string $paymentCycle
+ * @property int|null $isMarital
+ * @property string|null $maritalStatus
+ * @property int $isActive
+ * @property int|null $isAgeLimit
+ * @property int $isDisableClass
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AdditionalFields> $addtionalfield
+ * @property-read int|null $addtionalfieldCount
+ * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram whereIsAgeLimit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram whereIsDisableClass($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram whereIsMarital($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram whereMaritalStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgram wherePaymentCycle($value)
  * @mixin \Eloquent
  */
 class AllowanceProgram extends Model
@@ -54,6 +68,10 @@ class AllowanceProgram extends Model
     public function addtionalfield()
     {
         return $this->belongsToMany(AdditionalFields::class, 'additional_fields_allowance_program', 'allowance_program_id','field_id');
+    }
+
+    public function ages(){
+        return $this->hasMany(AllowanceProgramAge::class,'allowance_program_id');
     }
 
 

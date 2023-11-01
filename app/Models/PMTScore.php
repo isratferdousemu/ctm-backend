@@ -35,6 +35,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $link
  * @method static \Illuminate\Database\Eloquent\Builder|PMTScore whereLink($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PMTScore whereLinkType($value)
+ * @property int|null $type
+ * @property int|null $locationId
+ * @property int|null $financialYearId
+ * @property int $default
+ * @property-read \App\Models\Location|null $assignLocation
+ * @method static \Illuminate\Database\Eloquent\Builder|PMTScore whereDefault($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PMTScore whereFinancialYearId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PMTScore whereLocationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PMTScore whereScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PMTScore whereType($value)
  * @mixin \Eloquent
  */
 

@@ -270,7 +270,7 @@ class AuthService
                 $this->clearLoginAttempts($request);
                 if($type==1){
                         // check device registration
-                $device = Device::whereUserId($user->user_id)->whereDeviceId($request->device_token)->first();
+                $device = Device::whereUserId($user->user_id)->whereStatus(1)->whereDeviceId($request->device_token)->first();
                 if(!$device){
                     throw new AuthBasicErrorException(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -292,7 +292,7 @@ class AuthService
                         );
                     }
                 // check device registration
-                $device = Device::whereUserId($user->user_id)->whereDeviceId($request->device_token)->first();
+                $device = Device::whereUserId($user->user_id)->whereStatus(1)->whereDeviceId($request->device_token)->first();
                 if(!$device){
                     throw new AuthBasicErrorException(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
