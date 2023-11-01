@@ -17,7 +17,7 @@ Route::prefix('v1')->group(function () {
     include "Admin/SystemConfig/SystemConfigRoute.php";
     include "Admin/allotment_budget/AllotmentBudgetRoute.php";
     include "Admin/Beneficiary/BeneficiaryRoute.php";
-    include "Admin/Application/Poverty/PovertyScoreCutOffRoute.php";
+    include "Admin/Application/Poverty/PMTScoreRoute.php";
     include "Admin/GlobalSetting/GlobalSettingRoute.php";
 
 });
