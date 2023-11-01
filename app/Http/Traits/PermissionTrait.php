@@ -15,6 +15,7 @@ trait PermissionTrait
     private $modulePermissionApplicationSelection = "ApplicationSelection";
     private $modulePermissionBeneficiaryManagement = "BeneficiaryManagement";
     private $modulePermissionPayrollManagement = "PayrollManagement";
+    private $modulePermissionEmergencyManagement = "EmergencyManagement";
     private $modulePermissionGrievanceManagement = "GrievanceManagement";
     private $modulePermissionReportingSystem = "ReportingSystem";
     private $modulePermissionTrainingManagement = "TrainingManagement";
@@ -37,6 +38,7 @@ trait PermissionTrait
     private $deviceRegistrationManagement = "device-registration";
 
     // module 2 sub modules
+    private $subPovertyScoreManagement = "poverty-score-management";
     private $subOnlineApplicationManagement = "online-application-management";
     private $subBeneficiarySelectionManagement   = "beneficiary-selection-management";
 
@@ -47,6 +49,7 @@ trait PermissionTrait
     private $subBeneficiaryInformationManagement= "beneficiary-information-management";
     private $subBeneficiaryReplacement= "beneficiary-replacement";
     private $subBeneficiaryIDCard= "beneficiary-id-card";
+    private $subBeneficiaryIDShifting= "beneficiary-id-shifting";
 
 
     // module 4 sub modules
@@ -57,8 +60,8 @@ trait PermissionTrait
 
 
     // module 5 sub modules
-    private $subGrievanceCategoryInformation= "grievance-category-information";
-    private $subGrievanceInformation= "grievance-information";
+    private $subGrievanceSetting= "grievance-setting";
+    private $subGrievanceList= "grievance-list";
 
 
     // module 6 sub modules

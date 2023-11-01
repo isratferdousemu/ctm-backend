@@ -82,16 +82,14 @@ class SystemconfigController extends Controller
         // Retrieve the query parameters
         $allowance = new AllowanceProgram;
 
-        if($request->has('sortBy'))
-        {
-            if($request->get('sortDesc') === true)
-            {
-                $allowance = $allowance->orderBy($request->get('sortBy'), 'desc');
-            }else{
-                $allowance = $allowance->orderBy($request->get('sortBy'), 'asc');
-            }
-        }else{
-            $allowance = $allowance->orderBy('id', 'desc');
+        if ($request->has('sortBy') && $request->has('sortDesc')) {
+            $sortBy = $request->query('sortBy');
+
+            $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+
+            $allowance = $allowance->orderBy($sortBy, $sortDesc);
+        } else {
+            $allowance = $allowance->orderBy('name_en', 'asc');
         }
 
         $searchValue = $request->input('search');
@@ -103,16 +101,26 @@ class SystemconfigController extends Controller
                 $query->where('name_bn', 'like', '%' . $searchValue . '%');
                 $query->orWhere('payment_cycle', 'like', '%' . $searchValue . '%');
             });
+
+            $itemsPerPage = 10;
+
+            if($request->has('itemsPerPage')) {
+                $itemsPerPage = $request->get('itemsPerPage');
+
+                return $allowance->paginate($itemsPerPage, ['*'], $request->get('page'));
+            }
+        }else{
+            $itemsPerPage = 10;
+
+            if($request->has('itemsPerPage'))
+            {
+                $itemsPerPage = $request->get('itemsPerPage');
+
+                return $allowance->paginate($itemsPerPage);
+            }
         }
 
-        $itemsPerPage = 10;
 
-        if($request->has('itemsPerPage'))
-        {
-            $itemsPerPage = $request->get('itemsPerPage');
-        }
-
-        return $allowance->paginate($itemsPerPage);
     }
 
     /**
