@@ -54,9 +54,9 @@ use Illuminate\Database\Eloquent\Model;
 class Device extends Model
 {
     use HasFactory;
-    public function newQuery($excludeDeleted = true)
-    {
-        return parent::newQuery($excludeDeleted)
-            ->orderBy('name', 'asc');
-    }
+//    public function newQuery($excludeDeleted = true)
+//    {
+//        return parent::newQuery($excludeDeleted)
+//            ->orderBy('name', 'asc');
+//    }
 }

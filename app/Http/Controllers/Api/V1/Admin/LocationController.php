@@ -97,7 +97,7 @@ class LocationController extends Controller
         // Retrieve the query parameters
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
-        $page = $request->query('page');
+        $page = $request->get('page');
 
         $filterArrayNameEn=[];
         $filterArrayNameBn=[];
