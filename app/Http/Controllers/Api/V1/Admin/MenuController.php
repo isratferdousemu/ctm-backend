@@ -83,6 +83,7 @@ class MenuController extends Controller
 
     public function getAllMenu(Request $request)
     {
+
         $menu = Menu::select(
             'menus.*',
             'permissions.page_url as link'
@@ -91,39 +92,45 @@ class MenuController extends Controller
                 $join->on('menus.page_link_id', '=', 'permissions.id');
             });
 
+        if ($request->has('sortBy') && $request->has('sortDesc')) {
+            $sortBy = $request->query('sortBy');
 
-        if($request->has('sortBy'))
-        {
-            if($request->get('sortDesc') === true)
-            {
-                $menu = $menu->orderBy($request->get('sortBy'), 'desc');
-            }else{
-                $menu = $menu->orderBy($request->get('sortBy'), 'asc');
+            $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+
+            if ($sortBy === 'link') {
+                $menu = $menu->orderBy('permissions.page_url', $sortDesc);
+            } else {
+                $menu = $menu->orderBy($sortBy, $sortDesc);
             }
-        }else{
+        } else {
             $menu = $menu->orderBy('order', 'asc');
         }
 
         $searchValue = $request->input('search');
 
-        if($searchValue)
-        {
-            $menu->where(function($query) use ($searchValue) {
-                $query->where('label_name_en', 'like', '%' . $searchValue . '%');
-                $query->orWhere('label_name_bn', 'like', '%' . $searchValue . '%');
-                $query->orWhere('link_type', 'like', '%' . $searchValue . '%');
+        if ($searchValue) {
+            $menu->where(function ($query) use ($searchValue) {
+                $query->where('label_name_en', 'like', '%' . $searchValue . '%')
+                    ->orWhere('label_name_bn', 'like', '%' . $searchValue . '%')
+                    ->orWhere('permissions.page_url', 'like', '%' . $searchValue . '%');
             });
+
+            $itemsPerPage = 10;
+
+            if($request->has('itemsPerPage')) {
+                $itemsPerPage = $request->get('itemsPerPage');
+
+                return $menu->paginate($itemsPerPage, ['*'], $request->get('page'));
+            }
+        }else{
+            $itemsPerPage = 10;
+
+            if($request->has('itemsPerPage')) {
+                $itemsPerPage = $request->get('itemsPerPage');
+
+                return $menu->paginate($itemsPerPage);
+            }
         }
-
-        $itemsPerPage = 10;
-
-        if($request->has('itemsPerPage'))
-        {
-            $itemsPerPage = $request->get('itemsPerPage');
-            //return $menu->paginate($itemsPerPage);
-        }
-
-        return $menu->paginate($itemsPerPage);
     }
 
     /**
