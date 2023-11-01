@@ -27,8 +27,8 @@ class AllowanceUpdateRequest extends FormRequest
             'is_active'      => 'sometimes',
             'age_limit'      => 'required|array',
             'age_limit.*.gender_id'      => 'required|exists:lookups,id',
-            'age_limit.*.min_age'      => 'required|numeric|min:0',
-            'age_limit.*.max_age'      => 'required|numeric|min:0',
+            'age_limit.*.min_age'      => 'required|numeric|min:0|max:110',
+            'age_limit.*.max_age'      => 'required|numeric|min:0|max:110',
             'amount.*.type_id'        => 'required|exists:lookups,id',
             'amount.*.amount'        => 'required|numeric|min:0'
         ];

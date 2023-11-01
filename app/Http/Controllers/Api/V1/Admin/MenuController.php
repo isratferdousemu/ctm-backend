@@ -84,13 +84,6 @@ class MenuController extends Controller
     public function getAllMenu(Request $request)
     {
 
-
-//    $menus = Menu::with("children.children.pageLink","children.pageLink","pageLink")->whereParentId(null)->get();
-//
-//    return MenuResource::collection($menus)->additional([
-//        'success' => true,
-//        'message' => $this->fetchSuccessMessage,
-//    ]);
         $menu = Menu::select(
             'menus.*',
             'permissions.page_url as link'
@@ -99,41 +92,45 @@ class MenuController extends Controller
                 $join->on('menus.page_link_id', '=', 'permissions.id');
             });
 
+        if ($request->has('sortBy') && $request->has('sortDesc')) {
+            $sortBy = $request->query('sortBy');
 
-        if($request->has('sortBy'))
-        {
-            if($request->get('sortDesc') === true)
-            {
-                $menu = $menu->orderBy($request->get('sortBy'), 'desc');
-            }else{
-                $menu = $menu->orderBy($request->get('sortBy'), 'asc');
+            $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+
+            if ($sortBy === 'link') {
+                $menu = $menu->orderBy('permissions.page_url', $sortDesc);
+            } else {
+                $menu = $menu->orderBy($sortBy, $sortDesc);
             }
-        }else{
+        } else {
             $menu = $menu->orderBy('order', 'asc');
         }
 
         $searchValue = $request->input('search');
 
-        if($searchValue)
-        {
-            $menu->where(function($query) use ($searchValue) {
-                $query->where('label_name_en', 'like', '%' . $searchValue . '%');
-                $query->orWhere('label_name_bn', 'like', '%' . $searchValue . '%');
-                $query->orWhere('link_type', 'like', '%' . $searchValue . '%');
+        if ($searchValue) {
+            $menu->where(function ($query) use ($searchValue) {
+                $query->where('label_name_en', 'like', '%' . $searchValue . '%')
+                    ->orWhere('label_name_bn', 'like', '%' . $searchValue . '%')
+                    ->orWhere('permissions.page_url', 'like', '%' . $searchValue . '%');
             });
-        }
 
-        $itemsPerPage = 10;
+            $itemsPerPage = 10;
 
-        if($request->has('itemsPerPage'))
-        {
-            $itemsPerPage = $request->get('itemsPerPage');
-        return $menu->paginate($itemsPerPage);
+            if($request->has('itemsPerPage')) {
+                $itemsPerPage = $request->get('itemsPerPage');
+
+                return $menu->paginate($itemsPerPage, ['*'], $request->get('page'));
+            }
         }else{
-        return $menu->get();
+            $itemsPerPage = 10;
 
+            if($request->has('itemsPerPage')) {
+                $itemsPerPage = $request->get('itemsPerPage');
+
+                return $menu->paginate($itemsPerPage);
+            }
         }
-
     }
 
     /**
@@ -365,13 +362,8 @@ class MenuController extends Controller
      */
     public function getParent()
     {
-       // $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn')->where('parent_id', null)->get();
-    // get manu list with total 3 level parent child in only one list without using with method
-        $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn','page_link_id')->get();
+        $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn','page_link_id')->orderBy('label_name_en')->get();
         $parents = $this->getMenuList($parents);
-
-
-
 
         return \response()->json([
             'parents' => $parents
@@ -389,8 +381,6 @@ class MenuController extends Controller
         }
         return $menuList;
     }
-
-
 
     public function menuEdit($id)
     {

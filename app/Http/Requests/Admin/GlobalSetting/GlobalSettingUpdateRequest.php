@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Device;
+namespace App\Http\Requests\Admin\GlobalSetting;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeviceRequest extends FormRequest
+class GlobalSettingUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,9 @@ class DeviceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => "required|exists:users,user_id",
-            'ip_address' => "required|ip",
-            'name' => "required",
-            'device_id' => "required|unique:devices,device_id",
-            'device_type' => "required",
-            'purpose_use' => "sometimes",
+               'id'               => 'required|exists:global_settings,id',
+               'area_type'        => 'required|integer|exists:lookups,id',
+               'value'            => 'required|string|max:50',
         ];
     }
 }

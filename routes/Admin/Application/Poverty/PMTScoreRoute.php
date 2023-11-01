@@ -36,8 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get/variable', [VariableController::class, 'getAllVariablePaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::post('/variable/insert', [VariableController::class, 'insertVariable'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::post('/variable/update', [VariableController::class, 'updateVariable'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
-        
-        
+        Route::post('/variable/destroy', [VariableController::class, 'destroyVariable'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         
         //////////////////////////
         ///         SUB VARIABLE
@@ -47,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get/sub-variable/variable-list', [VariableController::class, 'getAllVariableListForSubVariable'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::post('/sub-variable/insert', [VariableController::class, 'insertSubVariable'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::post('/sub-variable/update', [VariableController::class, 'updateSubVariable'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
+        Route::post('/sub-variable/destroy', [VariableController::class, 'destroySubVariable'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         
         
         // Route::post('/poverty-cut-off/insert', [PMTScoreController::class, 'insertDivisionCutOff'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);

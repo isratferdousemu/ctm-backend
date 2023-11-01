@@ -23,7 +23,8 @@ class MenuUpdateRequest extends FormRequest
     {
         return [
             'label_name_en' => 'required',
-            'label_name_bn' => 'required'
+            'label_name_bn' => 'required',
+            "link" => "required|required_if:link_type,1,2|string",
         ];
     }
 }
