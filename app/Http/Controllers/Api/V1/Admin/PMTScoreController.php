@@ -122,7 +122,7 @@ class PMTScoreController extends Controller
                     // ->orWhere($filterArrayAddress)
                 ;
             })
-            ->where('default','0') // Cut Off
+            ->where('default', '0') // Cut Off
             ->with('assign_location.parent.parent.parent', 'assign_location.locationType')
             ->latest()
             ->paginate($perPage, ['*'], 'page');
@@ -223,7 +223,7 @@ class PMTScoreController extends Controller
                     // ->orWhere($filterArrayAddress)
                 ;
             })
-            ->where('default','1') // Cut Off
+            ->where('default', '1') // Cut Off
             ->with('assign_location.parent.parent.parent', 'assign_location.locationType')
             ->latest()
             ->paginate($perPage, ['*'], 'page');
@@ -686,4 +686,5 @@ class PMTScoreController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
 }

@@ -80,7 +80,10 @@ class VariableSeeder extends Seeder
     (63, 15, 'Mobile', 0.10, '2023-10-25 09:15:11', '2023-10-25 09:15:11', NULL),
     (64, 15, 'Camera', 0.15, '2023-10-25 09:15:16', '2023-10-25 09:15:16', NULL),
     (65, 15, 'Power pump or hand pump for water', 0.09, '2023-10-25 09:15:25', '2023-10-25 09:15:25', NULL),
-    (66, 15, 'Powertiller', 0.02, '2023-10-25 09:15:34', '2023-10-25 09:15:34', NULL);";
+    (66, 15, 'Powertiller', 0.02, '2023-10-25 09:15:34', '2023-10-25 09:15:34', NULL);
+    "
+    
+    ;
 
         // Execute the SQL query
         \DB::statement($menus);

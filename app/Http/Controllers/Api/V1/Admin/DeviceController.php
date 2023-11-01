@@ -79,16 +79,14 @@ class DeviceController extends Controller
 
      $device = new Device;
 
-     if($request->has('sortBy'))
-     {
-         if($request->get('sortDesc') === true)
-         {
-             $device = $device->orderBy($request->get('sortBy'), 'desc');
-         }else{
-             $device = $device->orderBy($request->get('sortBy'), 'asc');
-         }
-     }else{
-         $device = $device->orderBy('id', 'desc');
+     if ($request->has('sortBy') && $request->has('sortDesc')) {
+         $sortBy = $request->query('sortBy');
+
+         $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+
+         $device = $device->orderBy($sortBy, $sortDesc);
+     } else {
+         $device = $device->orderBy('name', 'asc');
      }
 
      $searchValue = $request->input('search');
@@ -100,17 +98,24 @@ class DeviceController extends Controller
              $query->orWhere('ip_address', 'like', '%' . $searchValue . '%');
              $query->orWhere('device_type', 'like', '%' . $searchValue . '%');
          });
+
+         $itemsPerPage = 10;
+
+         if($request->has('itemsPerPage')) {
+             $itemsPerPage = $request->get('itemsPerPage');
+
+             return $device->paginate($itemsPerPage, ['*'], $request->get('page'));
+         }
+     }else{
+         $itemsPerPage = 10;
+
+         if($request->has('itemsPerPage'))
+         {
+             $itemsPerPage = $request->get('itemsPerPage');
+
+             return $device->paginate($itemsPerPage);
+         }
      }
-
-     $itemsPerPage = 10;
-
-     if($request->has('itemsPerPage'))
-     {
-         $itemsPerPage = $request->get('itemsPerPage');
-     }
-
-     return $device->paginate($itemsPerPage);
-
     }
 
     public function getUsers()
