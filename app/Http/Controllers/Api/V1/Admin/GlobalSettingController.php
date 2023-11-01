@@ -93,6 +93,7 @@ class GlobalSettingController extends Controller
             $query->where($filterArrayValue);
                   
         })
+        ->with('areaType')
         ->latest()
         ->paginate($perPage, ['*'], 'page');
 

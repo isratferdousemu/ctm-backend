@@ -18,7 +18,8 @@ class GlobalSettingResource extends JsonResource
         return [
             'id'                   => $this->id,
             'value'                => $this->value,
-            'areaType'  => LookupResource::make($this->whenLoaded('areaType')),
+            'area_type'  => LookupResource::make($this->whenLoaded('areaType')),
+            'default'                => $this->default,
         ];
     }
 }
