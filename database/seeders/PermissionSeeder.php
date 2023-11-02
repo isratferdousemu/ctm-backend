@@ -355,15 +355,15 @@ class PermissionSeeder extends Seeder
                 ["id" => 135, "name"=>"emergency-allotment-edit", "page_url"=>"/payroll-management/emergency-allotment/edit/:id", "parent_page"=>1],
                 ["id" => 136, "name"=>"emergency-allotment-delete", "page_url"=>"/payroll-management/emergency-allotment", "parent_page"=>1],
                 
-                ["id" => 161, "name"=>"emergency-beneficiary-create", "page_url"=>"/payroll-management/emergency-beneficiary/create", "parent_page"=>1],
-                ["id" => 162, "name"=>"emergency-beneficiary-view", "page_url"=>"/payroll-management/emergency-beneficiary", "parent_page"=>1],
-                ["id" => 163, "name"=>"emergency-beneficiary-edit", "page_url"=>"/payroll-management/emergency-beneficiary/edit/:id", "parent_page"=>1],
-                ["id" => 164, "name"=>"emergency-beneficiary-delete", "page_url"=>"/payroll-management/emergency-beneficiary", "parent_page"=>1],
+                ["id" => 137, "name"=>"emergency-beneficiary-create", "page_url"=>"/payroll-management/emergency-beneficiary/create", "parent_page"=>1],
+                ["id" => 138, "name"=>"emergency-beneficiary-view", "page_url"=>"/payroll-management/emergency-beneficiary", "parent_page"=>1],
+                ["id" => 139, "name"=>"emergency-beneficiary-edit", "page_url"=>"/payroll-management/emergency-beneficiary/edit/:id", "parent_page"=>1],
+                ["id" => 140, "name"=>"emergency-beneficiary-delete", "page_url"=>"/payroll-management/emergency-beneficiary", "parent_page"=>1],
                             
-                ["id" => 165, "name"=>"emergency-payroll-create", "page_url"=>"/payroll-management/emergency-payroll/create", "parent_page"=>1],
-                ["id" => 166, "name"=>"emergency-payroll-view", "page_url"=>"/payroll-management/emergency-payroll", "parent_page"=>1],
-                ["id" => 167, "name"=>"emergency-payroll-edit", "page_url"=>"/payroll-management/emergency-payroll/edit/:id", "parent_page"=>1],
-                ["id" => 168, "name"=>"emergency-payroll-delete", "page_url"=>"/payroll-management/emergency-payroll", "parent_page"=>1]
+                ["id" => 141, "name"=>"emergency-payroll-create", "page_url"=>"/payroll-management/emergency-payroll/create", "parent_page"=>1],
+                ["id" => 142, "name"=>"emergency-payroll-view", "page_url"=>"/payroll-management/emergency-payroll", "parent_page"=>1],
+                ["id" => 143, "name"=>"emergency-payroll-edit", "page_url"=>"/payroll-management/emergency-payroll/edit/:id", "parent_page"=>1],
+                ["id" => 144, "name"=>"emergency-payroll-delete", "page_url"=>"/payroll-management/emergency-payroll", "parent_page"=>1]
             
                 ]
         ],
@@ -377,10 +377,10 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subGrievanceSetting,
             'guard_name' => $this->guard, 
             'permissions'=>[
-                ["id" => 137, "name"=>"grievance-setting-create", "page_url"=>"/grievance-management/grievance-setting/create", "parent_page"=>1],
-                ["id" => 138, "name"=>"grievance-setting-view", "page_url"=>"/grievance-management/grievance-setting", "parent_page"=>1],
-                ["id" => 139, "name"=>"grievance-setting-edit", "page_url"=>"/grievance-management/grievance-setting/edit/:id", "parent_page"=>1],
-                ["id" => 140, "name"=>"grievance-setting-delete", "page_url"=>"/grievance-management/grievance-setting", "parent_page"=>1]
+                ["id" => 145, "name"=>"grievance-setting-create", "page_url"=>"/grievance-management/grievance-setting/create", "parent_page"=>1],
+                ["id" => 146, "name"=>"grievance-setting-view", "page_url"=>"/grievance-management/grievance-setting", "parent_page"=>1],
+                ["id" => 147, "name"=>"grievance-setting-edit", "page_url"=>"/grievance-management/grievance-setting/edit/:id", "parent_page"=>1],
+                ["id" => 148, "name"=>"grievance-setting-delete", "page_url"=>"/grievance-management/grievance-setting", "parent_page"=>1]
             ]
         ],
         [
@@ -388,10 +388,10 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->subGrievanceList,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["id" => 141, "name"=>"grievance-list-create", "page_url"=>"/grievance-management/grievance-list/create", "parent_page"=>1],
-                ["id" => 142, "name"=>"grievance-list-view", "page_url"=>"/grievance-management/grievance-list", "parent_page"=>1],
-                ["id" => 143, "name"=>"grievance-list-edit", "page_url"=>"/grievance-management/grievance-list/edit/:id", "parent_page"=>1],
-                ["id" => 144, "name"=>"grievance-list-delete", "page_url"=>"/grievance-management/grievance-list", "parent_page"=>1]
+                ["id" => 149, "name"=>"grievance-list-create", "page_url"=>"/grievance-management/grievance-list/create", "parent_page"=>1],
+                ["id" => 150, "name"=>"grievance-list-view", "page_url"=>"/grievance-management/grievance-list", "parent_page"=>1],
+                ["id" => 151, "name"=>"grievance-list-edit", "page_url"=>"/grievance-management/grievance-list/edit/:id", "parent_page"=>1],
+                ["id" => 152, "name"=>"grievance-list-delete", "page_url"=>"/grievance-management/grievance-list", "parent_page"=>1]
             ]
         ],
 
@@ -403,26 +403,25 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->modulePermissionReportingSystem,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["id" => 145, "name"=>"reporting-list-create", "page_url"=>"/reporting-management/reporting-list/create", "parent_page"=>1],
-                ["id" => 146, "name"=>"reporting-list-view", "page_url"=>"/reporting-management/reporting-list", "parent_page"=>1],
-                ["id" => 147, "name"=>"reporting-list-edit", "page_url"=>"/reporting-management/reporting-list/edit/:id", "parent_page"=>1],
-                ["id" => 148, "name"=>"reporting-list-delete", "page_url"=>"/reporting-management/reporting-list", "parent_page"=>1],
+                ["id" => 153, "name"=>"reporting-list-create", "page_url"=>"/reporting-management/reporting-list/create", "parent_page"=>1],
+                ["id" => 154, "name"=>"reporting-list-view", "page_url"=>"/reporting-management/reporting-list", "parent_page"=>1],
+                ["id" => 155, "name"=>"reporting-list-edit", "page_url"=>"/reporting-management/reporting-list/edit/:id", "parent_page"=>1],
+                ["id" => 156, "name"=>"reporting-list-delete", "page_url"=>"/reporting-management/reporting-list/delete", "parent_page"=>1],
                 
-                ["id" => 149, "name"=>"reporting-survey-view", "page_url"=> "/reporting-management/reporting-survey", "parent_page"=>1],
-                ["id" => 150, "name"=>"reporting-survey-edit", "page_url"=>"/reporting-management/reporting-survey/edit/:id", "parent_page"=>1],
-                ["id" => 151, "name"=>"reporting-survey-delete", "page_url"=>"/reporting-management/reporting-survey", "parent_page"=>1],
-                ["id" => 152, "name"=>"reporting-survey-delete", "page_url"=>"/reporting-management/reporting-survey", "parent_page"=>1],
+                ["id" => 157, "name"=>"reporting-survey-create", "page_url"=> "/reporting-management/reporting-survey", "parent_page"=>1],
+                ["id" => 158, "name"=>"reporting-survey-view", "page_url"=>"/reporting-management/reporting-survey", "parent_page"=>1],
+                ["id" => 159, "name"=>"reporting-survey-edit", "page_url"=>"/reporting-management/reporting-survey/edit/:id", "parent_page"=>1],
+                ["id" => 160, "name"=>"reporting-survey-delete", "page_url"=>"/reporting-management/reporting-survey/delete", "parent_page"=>1],
 
-                ["id" => 149, "name"=>"reporting-report-view", "page_url"=>"/reporting-management/reporting-report", "parent_page"=>1],
-                ["id" => 150, "name"=>"reporting-report-edit", "page_url"=>"/reporting-management/reporting-report/edit/:id", "parent_page"=>1],
-                ["id" => 151, "name"=>"reporting-report-delete", "page_url"=>"/reporting-management/reporting-report", "parent_page"=>1],
-                ["id" => 152, "name"=>"reporting-report-delete", "page_url"=>"/reporting-management/reporting-report", "parent_page"=>1],
+                ["id" => 161, "name"=>"reporting-report-create", "page_url"=>"/reporting-management/reporting-report", "parent_page"=>1],
+                ["id" => 162, "name"=>"reporting-report-view", "page_url"=>"/reporting-management/reporting-report", "parent_page"=>1],
+                ["id" => 163, "name"=>"reporting-report-edit", "page_url"=>"/reporting-management/reporting-report/edit/:id", "parent_page"=>1],
+                ["id" => 164, "name"=>"reporting-report-delete", "page_url"=>"/reporting-management/reporting-report/delete", "parent_page"=>1],
 
-                ["id" => 149, "name"=>"reporting-bireport-view", "page_url"=>"/reporting-management/reporting-bireport", "parent_page"=>1],
-                ["id" => 150, "name"=>"reporting-bireport-edit", "page_url"=>"/reporting-management/reporting-bireport/edit/:id", "parent_page"=>1],
-                ["id" => 151, "name"=>"reporting-bireport-delete", "page_url"=>"/reporting-management/reporting-bireport", "parent_page"=>1],
-                ["id" => 152, "name"=>"reporting-bireport-delete", "page_url"=>"/reporting-management/reporting-bireport", "parent_page"=>1]
-,
+                ["id" => 165, "name"=>"reporting-bireport-create", "page_url"=>"/reporting-management/reporting-bireport", "parent_page"=>1],
+                ["id" => 166, "name"=>"reporting-bireport-view", "page_url"=>"/reporting-management/reporting-bireport", "parent_page"=>1],
+                ["id" => 167, "name"=>"reporting-bireport-edit", "page_url"=>"/reporting-management/reporting-bireport/edit/:id", "parent_page"=>1],
+                ["id" => 168, "name"=>"reporting-bireport-delete", "page_url"=>"/reporting-management/reporting-bireport/delete", "parent_page"=>1],
             ]
         ],
 
@@ -434,10 +433,10 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->modulePermissionTrainingManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["id" => 149, "name"=>"training-create", "page_url"=>"/training-management/training/create", "parent_page"=>1],
-                ["id" => 150, "name"=>"training-view", "page_url"=>"/training-management/training", "parent_page"=>1],
-                ["id" => 151, "name"=>"training-edit", "page_url"=>"/training-management/training/edit/:id", "parent_page"=>1],
-                ["id" => 152, "name"=>"training-delete", "page_url"=>"/training-management/training", "parent_page"=>1]
+                ["id" => 169, "name"=>"training-create", "page_url"=>"/training-management/training/create", "parent_page"=>1],
+                ["id" => 170, "name"=>"training-view", "page_url"=>"/training-management/training", "parent_page"=>1],
+                ["id" => 171, "name"=>"training-edit", "page_url"=>"/training-management/training/edit/:id", "parent_page"=>1],
+                ["id" => 172, "name"=>"training-delete", "page_url"=>"/training-management/training", "parent_page"=>1]
             ]
 
         ],
@@ -446,15 +445,15 @@ class PermissionSeeder extends Seeder
             'sub_module_name' => $this->settingManagement,
             'guard_name' => $this->guard,
             'permissions'=>[
-                ["id" => 153, "name"=>"general-setting-create", "page_url"=>"/setting/general/create", "parent_page"=>0],
-                ["id" => 154, "name"=>"general-setting-view", "page_url"=>"/setting/general", "parent_page"=>0],
-                ["id" => 155, "name"=>"general-setting-edit", "page_url"=>"/setting/general/edit/:id", "parent_page"=>0],
-                ["id" => 156, "name"=>"general-setting-delete", "page_url"=>"/setting/general", "parent_page"=>0],
+                ["id" => 173, "name"=>"general-setting-create", "page_url"=>"/setting/general/create", "parent_page"=>0],
+                ["id" => 174, "name"=>"general-setting-view", "page_url"=>"/setting/general", "parent_page"=>0],
+                ["id" => 175, "name"=>"general-setting-edit", "page_url"=>"/setting/general/edit/:id", "parent_page"=>0],
+                ["id" => 176, "name"=>"general-setting-delete", "page_url"=>"/setting/general", "parent_page"=>0],
 
-                ["id" => 157, "name"=>"global-setting-create", "page_url"=>"/setting/global/create", "parent_page"=>0],
-                ["id" => 158, "name"=>"global-setting-view", "page_url"=>"/setting/global", "parent_page"=>0],
-                ["id" => 159, "name"=>"global-setting-edit", "page_url"=>"/setting/global/edit/:id", "parent_page"=>0],
-                ["id" => 160, "name"=>"global-setting-delete", "page_url"=>"/setting/global", "parent_page"=>0]
+                // ["id" => 177, "name"=>"global-setting-create", "page_url"=>"/setting/global/create", "parent_page"=>0],
+                // ["id" => 178, "name"=>"global-setting-view", "page_url"=>"/setting/global", "parent_page"=>0],
+                // ["id" => 179, "name"=>"global-setting-edit", "page_url"=>"/setting/global/edit/:id", "parent_page"=>0],
+                // ["id" => 180, "name"=>"global-setting-delete", "page_url"=>"/setting/global", "parent_page"=>0]
             ]
 
         ],
