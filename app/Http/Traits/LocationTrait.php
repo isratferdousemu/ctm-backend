@@ -11,5 +11,6 @@ trait LocationTrait
     private $districtPouroshava = "district-pouroshava";
     private $thana = "thana";
     private $union = "union";
+    private $pouro = "pouro";
     private $ward = "ward";
 }
