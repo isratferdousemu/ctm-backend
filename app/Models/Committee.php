@@ -45,6 +45,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Committee whereVersion($value)
  * @property int|null $committeeType
  * @method static \Illuminate\Database\Eloquent\Builder|Committee whereCommitteeType($value)
+ * @property-read \App\Models\Location|null $location
  * @mixin \Eloquent
  */
 class Committee extends Model

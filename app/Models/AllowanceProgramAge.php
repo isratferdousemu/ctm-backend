@@ -25,6 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgramAge whereMaxAge($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgramAge whereMinAge($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgramAge whereUpdatedAt($value)
+ * @property float|null $amount
+ * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgramAge whereAmount($value)
  * @mixin \Eloquent
  */
 class AllowanceProgramAge extends Model
