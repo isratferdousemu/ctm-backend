@@ -63,6 +63,10 @@ trait MessageTrait
     private $authUserAccountBannedTextErrorCode = "user_account_banned";
     private $authUserAccountRejectedTextErrorCode = "user_account_rejected";
     private $authUserAccountDeactivateTextErrorCode = "user_account_deactivate";
+    private $applicantMaritalStatusTextErrorCode = "applicant_marital_status";
+    private $applicantGenderTypeTextErrorCode = "applicant_gender_type";
+    private $applicantAgeLimitTextErrorCode = "applicant_age_limit";
+
     private $authExpiredCodeTextErrorCode = 'expired_code';
     private $authInvalidCodeTextErrorCode = 'invalid_code';
 
@@ -72,6 +76,10 @@ trait MessageTrait
     private $authUserAccountNotPendingTextErrorCode = 'user_account_not_pending';
 
     private $userAccountNotPendingMessage = 'User Account Not Pending';
+
+    private $applicantMaritalStatusMessage = 'Applicant Marital Status dose not match!';
+    private $applicantAgeLimitMessage = 'Applicant Age Limit dose not match!';
+    private $applicationGenderTypeMessage = 'Applicant Gender Type dose not allow!';
     private $authExpiredCodeMessage = 'Expired Code!';
     private $authInvalidCodeMessage = 'Invalid Code!';
 

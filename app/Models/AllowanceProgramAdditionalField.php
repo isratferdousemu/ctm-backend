@@ -21,6 +21,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgramAdditionalField whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgramAdditionalField whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgramAdditionalField whereUpdatedAt($value)
+ * @property int $fieldId
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AdditionalFields> $additionalfield
+ * @property-read int|null $additionalfieldCount
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AllowanceProgram> $allowanceprogram
+ * @property-read int|null $allowanceprogramCount
+ * @method static \Illuminate\Database\Eloquent\Builder|AllowanceProgramAdditionalField whereFieldId($value)
  * @mixin \Eloquent
  */
 class AllowanceProgramAdditionalField extends Model

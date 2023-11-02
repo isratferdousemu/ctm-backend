@@ -23,6 +23,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|AdditionalFields whereNameEn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdditionalFields whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdditionalFields whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AdditionalFieldValues> $additionalFieldValue
+ * @property-read int|null $additionalFieldValueCount
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AllowanceProgram> $allowanceprogram
+ * @property-read int|null $allowanceprogramCount
  * @mixin \Eloquent
  */
 class AdditionalFields extends Model

@@ -302,7 +302,7 @@ class MenuSeeder extends Seeder
         //         'created_at' => '2023-10-07 04:04:30',
         //         'updated_at' => '2023-10-22 04:03:44',
         //     ],
-            
+
         //     // ********************************
         //     // System Configuration---> User Management
         //     // ********************************
@@ -384,7 +384,7 @@ class MenuSeeder extends Seeder
         //         'created_at' => '2023-10-07 10:27:07',
         //         'updated_at' => '2023-10-21 23:45:39',
         //     ],
-                        
+
         //     // // ********************************
         //     // // Budget Management---> User Management
         //     // // ********************************
