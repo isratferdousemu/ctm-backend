@@ -114,4 +114,7 @@ use Illuminate\Database\Eloquent\Model;
 class Application extends Model
 {
     use HasFactory;
+
+    // hide these fields from json response
+    protected $hidden = ['score'];
 }

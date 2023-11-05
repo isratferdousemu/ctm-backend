@@ -164,9 +164,7 @@ class ApplicationService
         try {
             foreach ($application_pmt as $key => $value) {
 
-                $ApplicationPovertyValues = new ApplicationPovertyValues;
-                $ApplicationPovertyValues->application_id = $application_id;
-                $ApplicationPovertyValues->variable_id = $value->variable_id;
+
                 // check sub_variables is array or not
                 if (is_array($value->sub_variables)) {
                     // insert multiple values
@@ -178,9 +176,12 @@ class ApplicationService
                         $sub_variables->save();
                     }
                 }else{
+                    $ApplicationPovertyValues = new ApplicationPovertyValues;
+                    $ApplicationPovertyValues->application_id = $application_id;
+                    $ApplicationPovertyValues->variable_id = $value->variable_id;
                     $ApplicationPovertyValues->sub_variable_id = $value->sub_variables!=0?$value->sub_variables:null;
+                    $ApplicationPovertyValues->save();
                 }
-                $ApplicationPovertyValues->save();
             }
             DB::commit();
         } catch (\Throwable $th) {
@@ -244,6 +245,16 @@ class ApplicationService
         $file_name = time() . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('uploads/' . $folder), $file_name);
         return $file_name;
+    }
+
+    // application PMTValues total calculation
+    public function applicationPMTValuesTotal($application_id){
+        $applicationPMTValues = ApplicationPovertyValues::where('application_id', $application_id)->get();
+        $total = 0;
+        foreach ($applicationPMTValues as $key => $value) {
+            $total += $value->sub_variable_id!=null?$value->sub_variable->score:$value->variable->score;
+        }
+        return $total;
     }
 
 }
