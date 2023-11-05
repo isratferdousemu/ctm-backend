@@ -117,4 +117,22 @@ class Application extends Model
 
     // hide these fields from json response
     protected $hidden = ['score'];
+
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('score', 'asc');
+    }
+
+
+    public static function permanentDistrict($location_id){
+        // permanent_location_id get this parent_id parent_id rations location id by maintaining chain
+        $permanentLocation = Location::find($location_id);
+        // check location type and then again and again check parent id and type while not get type = district
+        while($permanentLocation->type != 'district'){
+            $permanentLocation = Location::find($permanentLocation->parent_id);
+        }
+        return $permanentLocation;
+    }
+
 }

@@ -7,6 +7,7 @@ use App\Http\Traits\ApplicationTrait;
 use App\Models\Application;
 use App\Models\ApplicationAllowanceValues;
 use App\Models\ApplicationPovertyValues;
+use App\Models\PMTScore;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Auth;
@@ -150,6 +151,7 @@ class ApplicationService
             }
 
             DB::commit();
+            $this->applicationPMTValuesTotal($application->id);
             return $application;
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -252,9 +254,35 @@ class ApplicationService
         $applicationPMTValues = ApplicationPovertyValues::where('application_id', $application_id)->get();
         $total = 0;
         foreach ($applicationPMTValues as $key => $value) {
+            if($value->sub_variable_id!=null){
+            Log::info('total sub-variable: '.$value->sub_variable->score);
+
+        }else{
+            Log::info('total variable: '.$value->variable->score);
+        }
             $total += $value->sub_variable_id!=null?$value->sub_variable->score:$value->variable->score;
         }
-        return $total;
+        Log::info('total score: '.$total);
+
+        // Poverty score = [(Constant + Sum of the coefficients of all applicable variables + District FE)*100]
+        $constant = $this->povertyConstant;
+        $districtFE = 0;
+        // districtFE get by application permanent_location_id district
+        $districtFE = $this->getDistrictFE($application_id);
+        $povertyScore = ($constant + $total + $districtFE)*100;
+        $application = Application::find($application_id);
+        $application->score = $povertyScore;
+        $application->save();
+    }
+
+    public function getDistrictFE($application_id){
+        $application = Application::find($application_id);
+        $districtFE = 0;
+        $district = Application::permanentDistrict($application->permanent_location_id);
+        $districtFE = PMTScore::where('location_id', $district->id)->where('default',1)->first();
+        Log::info('districtFE'.$districtFE);
+        $districtFE = $districtFE->score;
+        return $districtFE;
     }
 
 }

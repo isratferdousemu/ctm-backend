@@ -90,4 +90,5 @@ class Location extends Model
     {
         return $this->hasMany(Office::class, 'assign_location_id');
     }
+ 
 }
