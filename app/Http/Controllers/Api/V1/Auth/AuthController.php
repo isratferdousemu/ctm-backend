@@ -644,4 +644,69 @@ class AuthController extends Controller
             //throw $th;
         }
     }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/auth/token/check",
+     *      operationId="checkToken",
+     *      tags={"Auth"},
+     *      summary="Check the token is valid or not",
+     *      description="Check the token is valid or not",
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="pass the client side token.example='10|qb8x9c7QEuYGgdaQMm7xBDg9JwwOwGtv3D7y7bq3'",
+     *
+     *           @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *
+     *                   @OA\Property(
+     *                      property="token",
+     *                      description="the client side sanctum token",
+     *                      type="text",
+     *
+     *                   ),
+     *               ),
+     *               ),
+     *
+     *         ),
+     *
+     *
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function checkToken(Request $request)
+    {
+        $token = $request->token;
+        $personalAccessToken =  PersonalAccessToken::findToken($token);
+
+        if ($personalAccessToken) {
+            return $this->sendResponse([], 'Token is Valid', 200);
+        } else {
+            return $this->sendError('Token is Invalid', [], 401);
+        }
+    }
 }

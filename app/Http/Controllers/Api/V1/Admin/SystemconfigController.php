@@ -599,8 +599,8 @@ class SystemconfigController extends Controller
                         "updated_at" => Carbon::now()
                     );
                 }
-
-                $allowance_program->addtionalfield()->sync($result);
+                $allowance_program->addtionalfield()->syncWithoutDetaching($result);
+                // $allowance_program->addtionalfield()->sync($result);
 
                 \DB::commit();
 
