@@ -28,8 +28,9 @@ class DatabaseSeeder extends Seeder
         $this->call(FinancialYearSeeder::class);
         $this->call(PMTScoreSeeder::class);
         $this->call(DistrictFixedEffectSeeder::class);
-
         $this->call(VariableSeeder::class);
+        $this->call(AllotmentSetupSeeder::class);
+
 
         // Model::reguard(); // Enable mass assignment
 
