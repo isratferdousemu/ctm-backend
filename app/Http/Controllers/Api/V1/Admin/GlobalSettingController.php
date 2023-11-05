@@ -94,7 +94,7 @@ class GlobalSettingController extends Controller
                   
         })
         ->with('areaType')
-        ->latest()
+        ->orderBy('value')
         ->paginate($perPage, ['*'], 'page');
 
         return GlobalSettingResource::collection($globalsetting)->additional([
