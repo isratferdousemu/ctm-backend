@@ -570,8 +570,30 @@ class SystemconfigController extends Controller
                 }
 
 
+
                 if ($request->input('amount') != null)
                 {
+                    $allowanceProgramId = $allowance_program->id; // Assuming $allowance_program->id holds the ID you're working with
+
+                    $arrayOfIds = [/* Your array of IDs */]; // Populate this array with your list of IDs
+
+                    // Get the IDs existing in the database for the specified allowance_program_id
+                    $existingIdsInDatabase = AllowanceProgramAmount::where('allowance_program_id', $allowanceProgramId)
+                        ->pluck('id')
+                        ->toArray();
+
+                    // Find the IDs that exist in the database but not in the provided array
+                    $idsToDelete = array_diff($existingIdsInDatabase, $arrayOfIds);
+
+                    // Delete the records that are in the database but not in the provided array
+                    if (!empty($idsToDelete)) {
+                        AllowanceProgramAmount::where('allowance_program_id', $allowanceProgramId)
+                            ->whereIn('id', $idsToDelete)
+                            ->delete();
+                    } else {
+                        //
+                    }
+
                     foreach ($request->input('amount') as $a)
                     {
                         AllowanceProgramAmount::updateOrInsert(
