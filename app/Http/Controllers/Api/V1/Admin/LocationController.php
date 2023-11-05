@@ -34,40 +34,41 @@ use Validator;
 
 class LocationController extends Controller
 {
-    use MessageTrait,UserTrait,LocationTrait;
+    use MessageTrait, UserTrait, LocationTrait;
     private $locationService;
 
-    public function __construct(LocationService $locationService) {
+    public function __construct(LocationService $locationService)
+    {
         $this->locationService = $locationService;
     }
 
     /**
-    * @OA\Get(
-    *     path="/admin/division/get",
-    *      operationId="getAllDivisionPaginated",
-    *      tags={"GEOGRAPHIC-DIVISION"},
-    *      summary="get paginated Divisions",
-    *      description="get paginated Divisions",
-    *      security={{"bearer_token":{}}},
-    *     @OA\Parameter(
-    *         name="searchText",
-    *         in="query",
-    *         description="search by name",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="perPage",
-    *         in="query",
-    *         description="number of division per page",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="page",
-    *         in="query",
-    *         description="page number",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *      @OA\Response(
+     * @OA\Get(
+     *     path="/admin/division/get",
+     *      operationId="getAllDivisionPaginated",
+     *      tags={"GEOGRAPHIC-DIVISION"},
+     *      summary="get paginated Divisions",
+     *      description="get paginated Divisions",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search by name",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of division per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -90,18 +91,19 @@ class LocationController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
+     * )
+     */
 
- public function getAllDivisionPaginated(Request $request){
+    public function getAllDivisionPaginated(Request $request)
+    {
         // Retrieve the query parameters
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->get('page');
 
-        $filterArrayNameEn=[];
-        $filterArrayNameBn=[];
-        $filterArrayCode=[];
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayCode = [];
 
         if ($searchText) {
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
@@ -109,20 +111,20 @@ class LocationController extends Controller
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
         }
         $division = Location::query()
-        ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
-            $query->where($filterArrayNameEn)
-                  ->orWhere($filterArrayNameBn)
-                  ->orWhere($filterArrayCode);
-        })
-        ->whereParentId(null)
-        ->latest()
-        ->paginate($perPage, ['*'], 'page');
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode);
+            })
+            ->whereParentId(null)
+            ->latest()
+            ->paginate($perPage, ['*'], 'page');
 
         return DivisionResource::collection($division)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
         ]);
- }
+    }
 
 
     /**
@@ -193,14 +195,15 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function insertDivision(DivisionRequest $request){
+    public function insertDivision(DivisionRequest $request)
+    {
 
         try {
             $division = $this->locationService->createDivision($request);
             activity("Division")
-            ->causedBy(auth()->user())
-            ->performedOn($division)
-            ->log('Division Created !');
+                ->causedBy(auth()->user())
+                ->performedOn($division)
+                ->log('Division Created !');
             return DivisionResource::make($division)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -282,14 +285,15 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function divisionUpdate(DivisionUpdateRequest $request){
+    public function divisionUpdate(DivisionUpdateRequest $request)
+    {
 
         try {
             $division = $this->locationService->updateDivision($request);
             activity("Division")
-            ->causedBy(auth()->user())
-            ->performedOn($division)
-            ->log('Division Update !');
+                ->causedBy(auth()->user())
+                ->performedOn($division)
+                ->log('Division Update !');
             return DivisionResource::make($division)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -300,7 +304,7 @@ class LocationController extends Controller
         }
     }
 
-     /**
+    /**
      * @OA\Get(
      *      path="/admin/division/destroy/{id}",
      *      operationId="destroyDivision",
@@ -352,20 +356,20 @@ class LocationController extends Controller
         $division = Location::whereId($id)->first();
 
         // check if division has any child if yes then return exception else delete
-        if($division->children->count() > 0){
+        if ($division->children->count() > 0) {
 
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
 
 
-        if($division){
+        if ($division) {
             $division->delete();
         }
 
         activity("Division")
-        ->causedBy(auth()->user())
-        ->log('Division Deleted!!');
-         return $this->sendResponse($division, $this->deleteSuccessMessage, Response::HTTP_OK);
+            ->causedBy(auth()->user())
+            ->log('Division Deleted!!');
+        return $this->sendResponse($division, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
 
@@ -375,32 +379,32 @@ class LocationController extends Controller
 
 
     /**
-    * @OA\Get(
-    *     path="/admin/district/get",
-    *      operationId="getAllDistrictPaginated",
-    *      tags={"GEOGRAPHIC-DISTRICT"},
-    *      summary="get paginated Districts",
-    *      description="get paginated Districts",
-    *      security={{"bearer_token":{}}},
-    *     @OA\Parameter(
-    *         name="searchText",
-    *         in="query",
-    *         description="search by name",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="perPage",
-    *         in="query",
-    *         description="number of Districts per page",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="page",
-    *         in="query",
-    *         description="page number",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *      @OA\Response(
+     * @OA\Get(
+     *     path="/admin/district/get",
+     *      operationId="getAllDistrictPaginated",
+     *      tags={"GEOGRAPHIC-DISTRICT"},
+     *      summary="get paginated Districts",
+     *      description="get paginated Districts",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search by name",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of Districts per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -423,39 +427,39 @@ class LocationController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
+     * )
+     */
 
- public function getAllDistrictPaginated(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
+    public function getAllDistrictPaginated(Request $request)
+    {
+        // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
 
-    $filterArrayNameEn=[];
-    $filterArrayNameBn=[];
-    $filterArrayCode=[];
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayCode = [];
 
-    if ($searchText) {
-        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-    }
-    $district = Location::query()
-    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
-        $query->where($filterArrayNameEn)
-              ->orWhere($filterArrayNameBn)
-              ->orWhere($filterArrayCode);
-    })
-    ->whereType($this->district)
-    ->with('parent')
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
-    return DistrictResource::collection($district)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-
+        if ($searchText) {
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+        }
+        $district = Location::query()
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode);
+            })
+            ->whereType($this->district)
+            ->with('parent')
+            ->latest()
+            ->paginate($perPage, ['*'], 'page');
+        return DistrictResource::collection($district)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
     }
 
     /**
@@ -530,14 +534,15 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function insertDistrict(DistrictRequest $request){
+    public function insertDistrict(DistrictRequest $request)
+    {
 
         try {
             $District = $this->locationService->createDistrict($request);
             activity("District")
-            ->causedBy(auth()->user())
-            ->performedOn($District)
-            ->log('District Created !');
+                ->causedBy(auth()->user())
+                ->performedOn($District)
+                ->log('District Created !');
             return DivisionResource::make($District)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -624,14 +629,15 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function districtUpdate(DistrictUpdateRequest $request){
+    public function districtUpdate(DistrictUpdateRequest $request)
+    {
 
         try {
             $district = $this->locationService->updateDistrict($request);
             activity("District")
-            ->causedBy(auth()->user())
-            ->performedOn($district)
-            ->log('District Update !');
+                ->causedBy(auth()->user())
+                ->performedOn($district)
+                ->log('District Update !');
             return DistrictResource::make($district->load('parent'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -642,7 +648,7 @@ class LocationController extends Controller
         }
     }
 
-        /**
+    /**
      * @OA\Get(
      *      path="/admin/district/get/{division_id}",
      *      operationId="getAllDistrictByDivisionId",
@@ -683,19 +689,20 @@ class LocationController extends Controller
      *     )
      */
 
- public function getAllDistrictByDivisionId($division_id){
+    public function getAllDistrictByDivisionId($division_id)
+    {
 
 
-    $district = Location::whereParentId($division_id)->whereType($this->district)->get();
+        $district = Location::whereParentId($division_id)->whereType($this->district)->get();
 
-    return DistrictResource::collection($district)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
+        return DistrictResource::collection($district)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
 
 
-     /**
+    /**
      * @OA\Get(
      *      path="/admin/district/destroy/{id}",
      *      operationId="destroyDistrict",
@@ -746,17 +753,17 @@ class LocationController extends Controller
         $validator->validated();
 
         $district = Location::whereId($id)->whereType($this->district)->first();
-        if($district->children->count() > 0){
+        if ($district->children->count() > 0) {
 
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
-        if($district){
+        if ($district) {
             $district->delete();
         }
         activity("District")
-        ->causedBy(auth()->user())
-        ->log('District Deleted!!');
-         return $this->sendResponse($district, $this->deleteSuccessMessage, Response::HTTP_OK);
+            ->causedBy(auth()->user())
+            ->log('District Deleted!!');
+        return $this->sendResponse($district, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
     /* -------------------------------------------------------------------------- */
@@ -765,33 +772,33 @@ class LocationController extends Controller
 
 
 
-        /**
-    * @OA\Get(
-    *     path="/admin/city/get",
-    *      operationId="getAllCityPaginated",
-    *      tags={"GEOGRAPHIC-CITY"},
-    *      summary="get paginated city",
-    *      description="get paginated city",
-    *      security={{"bearer_token":{}}},
-    *     @OA\Parameter(
-    *         name="searchText",
-    *         in="query",
-    *         description="search by name",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="perPage",
-    *         in="query",
-    *         description="number of city per page",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="page",
-    *         in="query",
-    *         description="page number",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *      @OA\Response(
+    /**
+     * @OA\Get(
+     *     path="/admin/city/get",
+     *      operationId="getAllCityPaginated",
+     *      tags={"GEOGRAPHIC-CITY"},
+     *      summary="get paginated city",
+     *      description="get paginated city",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search by name",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of city per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -814,39 +821,40 @@ class LocationController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
+     * )
+     */
 
- public function getAllCityPaginated(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
+    public function getAllCityPaginated(Request $request)
+    {
+        // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
 
-    $filterArrayNameEn=[];
-    $filterArrayNameBn=[];
-    $filterArrayCode=[];
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayCode = [];
 
-    if ($searchText) {
-        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-    }
-    $district = Location::query()
-    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
-        $query->where($filterArrayNameEn)
-              ->orWhere($filterArrayNameBn)
-              ->orWhere($filterArrayCode);
-    })
-    ->whereType($this->city)
-    ->with('parent.parent','locationType')
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
-    return CityResource::collection($district)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-
+        if ($searchText) {
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+        }
+        $district = Location::query()
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode);
+            })
+            // ->whereType($this->city)
+            ->whereIn('type', [$this->city, $this->thana])
+            ->with('parent.parent', 'locationType')
+            ->latest()
+            ->paginate($perPage, ['*'], 'page');
+        return CityResource::collection($district)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
     }
 
     /**
@@ -898,16 +906,17 @@ class LocationController extends Controller
      *     )
      */
 
- public function getAllCityByDistrictId($district_id,$location_type=3){
+    public function getAllCityByDistrictId($district_id, $location_type = 3)
+    {
 
 
-    $cities = Location::whereParentId($district_id)->whereType($this->city)->whereLocationType($location_type)->get();
+        $cities = Location::whereParentId($district_id)->whereType($this->city)->whereLocationType($location_type)->get();
 
-    return DistrictResource::collection($cities)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
+        return DistrictResource::collection($cities)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
 
     /**
      *
@@ -991,15 +1000,16 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function insertCity(CityRequest $request){
+    public function insertCity(CityRequest $request)
+    {
 
         try {
             $city = $this->locationService->createCity($request);
             // activity($request->location_type==3?$this->city:$this->districtPouroshava)
             activity($this->city)
-            ->causedBy(auth()->user())
-            ->performedOn($city)
-            ->log($request->location_type==3?$this->city:$this->districtPouroshava.' Created !');
+                ->causedBy(auth()->user())
+                ->performedOn($city)
+                ->log($request->location_type == 3 ? $this->city : $this->districtPouroshava . ' Created !');
             return CityResource::make($city->load('parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -1091,14 +1101,15 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function cityUpdate(CityUpdateRequest $request){
+    public function cityUpdate(CityUpdateRequest $request)
+    {
 
         try {
             $city = $this->locationService->updateCity($request);
             activity("City")
-            ->causedBy(auth()->user())
-            ->performedOn($city)
-            ->log('City Update !');
+                ->causedBy(auth()->user())
+                ->performedOn($city)
+                ->log('City Update !');
             return CityResource::make($city->load('parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -1110,7 +1121,7 @@ class LocationController extends Controller
     }
 
 
-         /**
+    /**
      * @OA\Get(
      *      path="/admin/city/destroy/{id}",
      *      operationId="destroyCity",
@@ -1159,17 +1170,17 @@ class LocationController extends Controller
         $validator->validated();
 
         $city = Location::whereId($id)->whereType($this->city)->first();
-        if($city->children->count() > 0){
+        if ($city->children->count() > 0) {
 
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
-        if($city){
+        if ($city) {
             $city->delete();
         }
         activity("City")
-        ->causedBy(auth()->user())
-        ->log('City Deleted!!');
-         return $this->sendResponse($city, $this->deleteSuccessMessage, Response::HTTP_OK);
+            ->causedBy(auth()->user())
+            ->log('City Deleted!!');
+        return $this->sendResponse($city, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
 
@@ -1178,33 +1189,33 @@ class LocationController extends Controller
     /* -------------------------------------------------------------------------- */
 
 
-        /**
-    * @OA\Get(
-    *     path="/admin/thana/get",
-    *      operationId="getAllThanaPaginated",
-    *      tags={"GEOGRAPHIC-THANA"},
-    *      summary="get paginated thana",
-    *      description="get paginated thana",
-    *      security={{"bearer_token":{}}},
-    *     @OA\Parameter(
-    *         name="searchText",
-    *         in="query",
-    *         description="search by name",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="perPage",
-    *         in="query",
-    *         description="number of thana per page",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="page",
-    *         in="query",
-    *         description="page number",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *      @OA\Response(
+    /**
+     * @OA\Get(
+     *     path="/admin/thana/get",
+     *      operationId="getAllThanaPaginated",
+     *      tags={"GEOGRAPHIC-THANA"},
+     *      summary="get paginated thana",
+     *      description="get paginated thana",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search by name",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of thana per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -1227,43 +1238,43 @@ class LocationController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
+     * )
+     */
 
- public function getAllThanaPaginated(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
+    public function getAllThanaPaginated(Request $request)
+    {
+        // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
 
-    $filterArrayNameEn=[];
-    $filterArrayNameBn=[];
-    $filterArrayCode=[];
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayCode = [];
 
-    if ($searchText) {
-        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+        if ($searchText) {
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+        }
+        $thana = Location::query()
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode);
+            })
+            ->whereType($this->thana)
+            ->with('parent.parent.parent', 'locationType')
+            ->latest()
+            ->paginate($perPage, ['*'], 'page');
+        // return $thana;
+        return CityResource::collection($thana)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
     }
-    $thana = Location::query()
-    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
-        $query->where($filterArrayNameEn)
-              ->orWhere($filterArrayNameBn)
-              ->orWhere($filterArrayCode);
-    })
-    ->whereType($this->thana)
-    ->with('parent.parent.parent','locationType')
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
-    // return $thana;
-    return CityResource::collection($thana)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
 
-    }
-
-        /**
+    /**
      * @OA\Get(
      *      path="/admin/thana/get/{district_id}",
      *      operationId="getAllThanaByDistrictId",
@@ -1304,17 +1315,18 @@ class LocationController extends Controller
      *     )
      */
 
- public function getAllThanaByDistrictId($district_id){
+    public function getAllThanaByDistrictId($district_id)
+    {
 
 
-    $thanas = Location::whereParentId($district_id)->whereType($this->thana)->whereLocationType(2)->get();
+        $thanas = Location::whereParentId($district_id)->whereType($this->thana)->whereLocationType(2)->get();
 
-    return DistrictResource::collection($thanas)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
-        /**
+        return DistrictResource::collection($thanas)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
+    /**
      * @OA\Get(
      *      path="/admin/thana/get/city/{city_id}",
      *      operationId="getAllThanaByCityId",
@@ -1355,15 +1367,16 @@ class LocationController extends Controller
      *     )
      */
 
- public function getAllThanaByCityId($city_id){
+    public function getAllThanaByCityId($city_id)
+    {
 
 
-    $thanas = Location::whereParentId($city_id)->whereType($this->thana)->whereLocationType(3)->get();
-    return DistrictResource::collection($thanas)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
+        $thanas = Location::whereParentId($city_id)->whereType($this->thana)->whereLocationType(3)->get();
+        return DistrictResource::collection($thanas)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
 
     /**
      *
@@ -1452,15 +1465,16 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function insertThana(ThanaRequest $request){
+    public function insertThana(ThanaRequest $request)
+    {
 
         try {
             $thana = $this->locationService->createThana($request);
             activity("Thana")
-            ->causedBy(auth()->user())
-            ->performedOn($thana)
-            ->log('Thana Created !');
-            return CityResource::make($thana->load('parent.parent','locationType'))->additional([
+                ->causedBy(auth()->user())
+                ->performedOn($thana)
+                ->log('Thana Created !');
+            return CityResource::make($thana->load('parent.parent', 'locationType'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
             ]);
@@ -1556,14 +1570,15 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function thanaUpdate(ThanaUpdateRequest $request){
+    public function thanaUpdate(ThanaUpdateRequest $request)
+    {
 
         try {
             $thana = $this->locationService->updateThana($request);
             activity("Thana")
-            ->causedBy(auth()->user())
-            ->performedOn($thana)
-            ->log('Thana Update !');
+                ->causedBy(auth()->user())
+                ->performedOn($thana)
+                ->log('Thana Update !');
             return CityResource::make($thana->load('parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -1574,7 +1589,7 @@ class LocationController extends Controller
         }
     }
 
-         /**
+    /**
      * @OA\Get(
      *      path="/admin/thana/destroy/{id}",
      *      operationId="destroyThana",
@@ -1623,17 +1638,17 @@ class LocationController extends Controller
         $validator->validated();
 
         $thana = Location::whereId($id)->whereType($this->thana)->first();
-        if($thana->children->count() > 0){
+        if ($thana->children->count() > 0) {
 
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
-        if($thana){
+        if ($thana) {
             $thana->delete();
         }
         activity("Thana")
-        ->causedBy(auth()->user())
-        ->log('Thana Deleted!!');
-         return $this->sendResponse($thana, $this->deleteSuccessMessage, Response::HTTP_OK);
+            ->causedBy(auth()->user())
+            ->log('Thana Deleted!!');
+        return $this->sendResponse($thana, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
     /* -------------------------------------------------------------------------- */
@@ -1641,33 +1656,33 @@ class LocationController extends Controller
     /* -------------------------------------------------------------------------- */
 
 
-            /**
-    * @OA\Get(
-    *     path="/admin/union/get",
-    *      operationId="getAllUnionPaginated",
-    *      tags={"GEOGRAPHIC-UNION"},
-    *      summary="get paginated union",
-    *      description="get paginated union",
-    *      security={{"bearer_token":{}}},
-    *     @OA\Parameter(
-    *         name="searchText",
-    *         in="query",
-    *         description="search by name",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="perPage",
-    *         in="query",
-    *         description="number of union per page",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="page",
-    *         in="query",
-    *         description="page number",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *      @OA\Response(
+    /**
+     * @OA\Get(
+     *     path="/admin/union/get",
+     *      operationId="getAllUnionPaginated",
+     *      tags={"GEOGRAPHIC-UNION"},
+     *      summary="get paginated union",
+     *      description="get paginated union",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search by name",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of union per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -1690,39 +1705,40 @@ class LocationController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
+     * )
+     */
 
- public function getAllUnionPaginated(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
+    public function getAllUnionPaginated(Request $request)
+    {
+        // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
 
-    $filterArrayNameEn=[];
-    $filterArrayNameBn=[];
-    $filterArrayCode=[];
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayCode = [];
 
-    if ($searchText) {
-        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-    }
-    $union = Location::query()
-    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
-        $query->where($filterArrayNameEn)
-              ->orWhere($filterArrayNameBn)
-              ->orWhere($filterArrayCode);
-    })
-    ->whereType($this->union)
-    ->with('parent.parent.parent')
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
-    return UnionResource::collection($union)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-
+        if ($searchText) {
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+        }
+        $union = Location::query()
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode);
+            })
+            // ->whereType($this->union)
+            ->whereIn('type', [$this->pouro, $this->union])
+            ->with('parent.parent.parent')
+            ->latest()
+            ->paginate($perPage, ['*'], 'page');
+        return UnionResource::collection($union)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
     }
 
     /**
@@ -1766,16 +1782,17 @@ class LocationController extends Controller
      *     )
      */
 
- public function getAllUnionByThanaId($thana_id){
+    public function getAllUnionByThanaId($thana_id)
+    {
 
 
-    $unions = Location::whereParentId($thana_id)->whereType($this->union)->get();
+        $unions = Location::whereParentId($thana_id)->whereType($this->union)->get();
 
-    return DistrictResource::collection($unions)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
+        return DistrictResource::collection($unions)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
 
     /**
      *
@@ -1859,14 +1876,15 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function insertUnion(UnionRequest $request){
+    public function insertUnion(UnionRequest $request)
+    {
 
         try {
             $union = $this->locationService->createUnion($request);
             activity("Union")
-            ->causedBy(auth()->user())
-            ->performedOn($union)
-            ->log('Union Created !');
+                ->causedBy(auth()->user())
+                ->performedOn($union)
+                ->log('Union Created !');
             return UnionResource::make($union->load('parent.parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -1963,14 +1981,15 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function unionUpdate(UnionUpdateRequest $request){
+    public function unionUpdate(UnionUpdateRequest $request)
+    {
 
         try {
             $union = $this->locationService->updateUnion($request);
             activity("Union")
-            ->causedBy(auth()->user())
-            ->performedOn($union)
-            ->log('Union Update !');
+                ->causedBy(auth()->user())
+                ->performedOn($union)
+                ->log('Union Update !');
             return UnionResource::make($union->load('parent.parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -1981,7 +2000,7 @@ class LocationController extends Controller
         }
     }
 
-         /**
+    /**
      * @OA\Get(
      *      path="/admin/union/destroy/{id}",
      *      operationId="destroyUnion",
@@ -2030,17 +2049,17 @@ class LocationController extends Controller
         $validator->validated();
 
         $union = Location::whereId($id)->whereType($this->union)->first();
-        if($union->children->count() > 0){
+        if ($union->children->count() > 0) {
 
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
-        if($union){
+        if ($union) {
             $union->delete();
         }
         activity("Union")
-        ->causedBy(auth()->user())
-        ->log('Union Deleted!!');
-         return $this->sendResponse($union, $this->deleteSuccessMessage, Response::HTTP_OK);
+            ->causedBy(auth()->user())
+            ->log('Union Deleted!!');
+        return $this->sendResponse($union, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
     /* -------------------------------------------------------------------------- */
@@ -2048,33 +2067,33 @@ class LocationController extends Controller
     /* -------------------------------------------------------------------------- */
 
 
-            /**
-    * @OA\Get(
-    *     path="/admin/ward/get",
-    *      operationId="getAllWardPaginated",
-    *      tags={"GEOGRAPHIC-WARD"},
-    *      summary="get paginated ward",
-    *      description="get paginated ward",
-    *      security={{"bearer_token":{}}},
-    *     @OA\Parameter(
-    *         name="searchText",
-    *         in="query",
-    *         description="search by name",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="perPage",
-    *         in="query",
-    *         description="number of ward per page",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="page",
-    *         in="query",
-    *         description="page number",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *      @OA\Response(
+    /**
+     * @OA\Get(
+     *     path="/admin/ward/get",
+     *      operationId="getAllWardPaginated",
+     *      tags={"GEOGRAPHIC-WARD"},
+     *      summary="get paginated ward",
+     *      description="get paginated ward",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search by name",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of ward per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -2097,39 +2116,39 @@ class LocationController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
+     * )
+     */
 
- public function getAllWardPaginated(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
+    public function getAllWardPaginated(Request $request)
+    {
+        // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
 
-    $filterArrayNameEn=[];
-    $filterArrayNameBn=[];
-    $filterArrayCode=[];
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayCode = [];
 
-    if ($searchText) {
-        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-    }
-    $ward = Location::query()
-    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayCode) {
-        $query->where($filterArrayNameEn)
-              ->orWhere($filterArrayNameBn)
-              ->orWhere($filterArrayCode);
-    })
-    ->whereType($this->ward)
-    ->with('parent.parent.parent.parent','locationType')
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
-    return WardResource::collection($ward)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-
+        if ($searchText) {
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+        }
+        $ward = Location::query()
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode);
+            })
+            ->whereType($this->ward)
+            ->with('parent.parent.parent.parent', 'locationType')
+            ->latest()
+            ->paginate($perPage, ['*'], 'page');
+        return WardResource::collection($ward)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
     }
 
 
@@ -2174,16 +2193,17 @@ class LocationController extends Controller
      *     )
      */
 
- public function getAllWardByThanaId($thana_id){
+    public function getAllWardByThanaId($thana_id)
+    {
 
 
-    $wards = Location::whereParentId($thana_id)->whereType($this->ward)->get();
+        $wards = Location::whereParentId($thana_id)->whereType($this->ward)->get();
 
-    return DistrictResource::collection($wards)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
+        return DistrictResource::collection($wards)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
     /**
      * @OA\Get(
      *      path="/admin/ward/get/{union_id}",
@@ -2225,16 +2245,17 @@ class LocationController extends Controller
      *     )
      */
 
- public function getAllWardByUnionId($union_id){
+    public function getAllWardByUnionId($union_id)
+    {
 
 
-    $wards = Location::whereParentId($union_id)->whereType($this->ward)->get();
+        $wards = Location::whereParentId($union_id)->whereType($this->ward)->get();
 
-    return DistrictResource::collection($wards)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
+        return DistrictResource::collection($wards)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
 
     /**
      *
@@ -2343,14 +2364,15 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function insertWard(WardRequest $request){
+    public function insertWard(WardRequest $request)
+    {
 
         try {
             $ward = $this->locationService->createWard($request);
             activity("Ward")
-            ->causedBy(auth()->user())
-            ->performedOn($ward)
-            ->log('Ward Created !');
+                ->causedBy(auth()->user())
+                ->performedOn($ward)
+                ->log('Ward Created !');
             return WardResource::make($ward->load('parent.parent.parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -2452,14 +2474,15 @@ class LocationController extends Controller
      *     )
      *
      */
-    public function wardUpdate(WardUpdateRequest $request){
+    public function wardUpdate(WardUpdateRequest $request)
+    {
 
         try {
             $ward = $this->locationService->updateWard($request);
             activity("Ward")
-            ->causedBy(auth()->user())
-            ->performedOn($ward)
-            ->log('Ward Update !');
+                ->causedBy(auth()->user())
+                ->performedOn($ward)
+                ->log('Ward Update !');
             return WardResource::make($ward->load('parent.parent.parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -2470,7 +2493,7 @@ class LocationController extends Controller
         }
     }
 
-         /**
+    /**
      * @OA\Get(
      *      path="/admin/ward/destroy/{id}",
      *      operationId="destroyWard",
@@ -2519,18 +2542,16 @@ class LocationController extends Controller
         $validator->validated();
 
         $ward = Location::whereId($id)->whereType($this->ward)->first();
-        if($ward->children->count() > 0){
+        if ($ward->children->count() > 0) {
 
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         }
-        if($ward){
+        if ($ward) {
             $ward->delete();
         }
         activity("Ward")
-        ->causedBy(auth()->user())
-        ->log('Ward Deleted!!');
-         return $this->sendResponse($ward, $this->deleteSuccessMessage, Response::HTTP_OK);
+            ->causedBy(auth()->user())
+            ->log('Ward Deleted!!');
+        return $this->sendResponse($ward, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
-
-
 }
