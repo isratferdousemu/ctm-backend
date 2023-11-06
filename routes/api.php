@@ -5,8 +5,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /************* APP Routes */
-
 Route::prefix('v1')->group(function () {
+
 
     include "Admin/Auth/AuthRoute.php";
     include "Admin/AdminRoute.php";
@@ -18,6 +18,7 @@ Route::prefix('v1')->group(function () {
     include "Admin/allotment_budget/AllotmentBudgetRoute.php";
     include "Admin/Beneficiary/BeneficiaryRoute.php";
     include "Admin/Application/Poverty/PMTScoreRoute.php";
+    include "Admin/Application/application-selection/applicationSelectionRoute.php";
     include "Admin/GlobalSetting/GlobalSettingRoute.php";
 
 });

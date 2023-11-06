@@ -135,4 +135,20 @@ class Application extends Model
         return $permanentLocation;
     }
 
+    public function current_location()
+    {
+        return $this->belongsTo(Location::class,'current_location_id','id');
+    }
+    public function permanent_location()
+    {
+        return $this->belongsTo(Location::class,'permanent_location_id','id');
+    }
+
+    public function program(){
+        return $this->belongsTo(AllowanceProgram::class,'program_id','id');
+    }
+    public function gender(){
+        return $this->belongsTo(Lookup::class,'gender_id','id');
+    }
+
 }

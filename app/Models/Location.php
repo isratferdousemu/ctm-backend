@@ -66,11 +66,11 @@ class Location extends Model
     // protected $defaultOrderColumn = 'name_en';
     // protected $defaultOrderDirection = 'asc';
 
-    public function newQuery($excludeDeleted = true)
-    {
-        return parent::newQuery($excludeDeleted)
-            ->orderBy('name_en', 'asc');
-    }
+    // public function newQuery($excludeDeleted = true)
+    // {
+    //     return parent::newQuery($excludeDeleted)
+    //         ->orderBy('name_en', 'asc');
+    // }
     public function children()
     {
         return $this->hasMany(Location::class, 'parent_id');
@@ -90,5 +90,5 @@ class Location extends Model
     {
         return $this->hasMany(Office::class, 'assign_location_id');
     }
- 
+
 }
