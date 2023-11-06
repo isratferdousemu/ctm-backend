@@ -28,4 +28,13 @@ use Illuminate\Database\Eloquent\Model;
 class ApplicationPovertyValues extends Model
 {
     use HasFactory;
+
+    public function sub_variable()
+    {
+        return $this->belongsTo(Variable::class, 'sub_variable_id', 'id');
+    }
+    public function variable()
+    {
+        return $this->belongsTo(Variable::class, 'variable_id', 'id');
+    }
 }

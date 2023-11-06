@@ -513,12 +513,12 @@ class SystemconfigController extends Controller
 
                 $allowance_program->marital_status = $request->marital_status;
 
-                if ($request->is_active == "false")
+                if ($request->is_active == "0" || $request->is_active == false)
                 {
                     $allowance_program->is_active = 0;
                 }
 
-                if ($request->is_active == "true")
+                if ($request->is_active == true)
                 {
                     $allowance_program->is_active = 1;
                 }
@@ -543,10 +543,11 @@ class SystemconfigController extends Controller
 
                 if ($request->input('age_limit') != null)
                 {
+                    $prevAges = $allowance_program->ages()->delete();
+
                     foreach ($request->input('age_limit') as $al)
                     {
                         $new_amount = 0;
-
                         if ($al['amount'] == null)
                         {
                             $new_amount = null;
@@ -554,24 +555,43 @@ class SystemconfigController extends Controller
                             $new_amount = $al['amount'];
                         }
 
-                        AllowanceProgramAge::updateOrInsert(
-                            ["id" => $al['id']],
-                            [
+                        AllowanceProgramAge::Insert(
+                    [
                                 "allowance_program_id" => $allowance_program->id,
                                 "gender_id" => $al['gender_id'],
                                 "min_age" => $al['min_age'],
                                 "max_age" => $al['max_age'],
                                 "amount" => $new_amount,
-                                "created_at" => Carbon::now(),
-                                "updated_at" => Carbon::now()
                             ]
                         );
                     }
                 }
 
 
+
                 if ($request->input('amount') != null)
                 {
+                    $allowanceProgramId = $allowance_program->id; // Assuming $allowance_program->id holds the ID you're working with
+
+                    $arrayOfIds = [/* Your array of IDs */]; // Populate this array with your list of IDs
+
+                    // Get the IDs existing in the database for the specified allowance_program_id
+                    $existingIdsInDatabase = AllowanceProgramAmount::where('allowance_program_id', $allowanceProgramId)
+                        ->pluck('id')
+                        ->toArray();
+
+                    // Find the IDs that exist in the database but not in the provided array
+                    $idsToDelete = array_diff($existingIdsInDatabase, $arrayOfIds);
+
+                    // Delete the records that are in the database but not in the provided array
+                    if (!empty($idsToDelete)) {
+                        AllowanceProgramAmount::where('allowance_program_id', $allowanceProgramId)
+                            ->whereIn('id', $idsToDelete)
+                            ->delete();
+                    } else {
+                        //
+                    }
+
                     foreach ($request->input('amount') as $a)
                     {
                         AllowanceProgramAmount::updateOrInsert(
@@ -591,15 +611,46 @@ class SystemconfigController extends Controller
 
                 $updateAddField = $request->input('add_field_id');
 
+                // check $updateAddField ids are exists in AllowanceProgramAdditionalField table or not if not exists then insert
+
                 foreach ($updateAddField as $up)
                 {
-                    $result[] = array(
-                        "field_id" => $up,
-                        "created_at" => Carbon::now(),
-                        "updated_at" => Carbon::now()
-                    );
+                    $check = AllowanceProgramAdditionalField::where('allowance_program_id', $id)->where('field_id', $up)->first();
+
+                    if ($check == null)
+                    {
+                        $result[] = array(
+                            "allowance_program_id" => $id,
+                            "field_id" => $up,
+                            "created_at" => Carbon::now(),
+                            "updated_at" => Carbon::now()
+                        );
+                    }
                 }
-                $allowance_program->addtionalfield()->syncWithoutDetaching($result);
+                $fields = AllowanceProgramAdditionalField::where('allowance_program_id', $id)->pluck('field_id')->toArray();
+
+                // check fields ids are exists in $updateAddField or not if not exists then delete
+                foreach ($fields as $field)
+                {
+                    if (!in_array($field, $updateAddField))
+                    {
+                        AllowanceProgramAdditionalField::where('allowance_program_id', $id)->where('field_id', $field)->delete();
+                    }
+                }
+
+                AllowanceProgramAdditionalField::insert($result);
+
+                // foreach ($updateAddField as $up)
+                // {
+                //     $result[] = array(
+                //         "field_id" => $up,
+                //         "created_at" => Carbon::now(),
+                //         "updated_at" => Carbon::now()
+                //     );
+
+                // }
+
+                // $allowance_program->addtionalfield()->syncWithoutDetaching($result);
                 // $allowance_program->addtionalfield()->sync($result);
 
                 \DB::commit();
