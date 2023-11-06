@@ -1795,6 +1795,59 @@ class LocationController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *      path="/admin/union/pouro/get/{upazila_id}",
+     *      operationId="getAllPouroByThanaId",
+     *      tags={"GEOGRAPHIC-UNION"},
+     *      summary=" get pouro by upazila id",
+     *      description="get pouro by upazila id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of pouro to return",
+     *         in="path",
+     *         name="upazila_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+    public function getAllPouroByThanaId($upazila_id)
+    {
+
+
+        $pouros = Location::whereParentId($upazila_id)->whereType($this->pouro)->get();
+
+        return DistrictResource::collection($pouros)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
+
+    /**
      *
      * @OA\Post(
      *      path="/admin/union/insert",
@@ -2198,6 +2251,59 @@ class LocationController extends Controller
 
 
         $wards = Location::whereParentId($thana_id)->whereType($this->ward)->get();
+
+        return DistrictResource::collection($wards)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/admin/ward/get/pouro/{pouro_id}",
+     *      operationId="getAllWardByPouroId",
+     *      tags={"GEOGRAPHIC-WARD"},
+     *      summary=" get ward by pouro id",
+     *      description="get ward by pouro id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of pouro to return",
+     *         in="path",
+     *         name="pouro_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+    public function getAllWardByPouroId($pouro_id)
+    {
+
+
+        $wards = Location::whereParentId($pouro_id)->whereType($this->ward)->get();
 
         return DistrictResource::collection($wards)->additional([
             'success' => true,

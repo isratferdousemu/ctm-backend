@@ -363,6 +363,9 @@ class LocationService
             if($request->has('union_id')){
                 $location->parent_id              = $request->union_id;
             }
+            if($request->has('pouro_id')){
+                $location->parent_id              = $request->pouro_id;
+            }
             $location->location_type          = $request->location_type;
             $location->name_en                = $request->name_en;
             $location->name_bn                = $request->name_bn;

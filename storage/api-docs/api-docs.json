@@ -2877,6 +2877,53 @@
                 ]
             }
         },
+        "/admin/union/pouro/get/{upazila_id}": {
+            "get": {
+                "tags": [
+                    "GEOGRAPHIC-UNION"
+                ],
+                "summary": " get pouro by upazila id",
+                "description": "get pouro by upazila id",
+                "operationId": "getAllPouroByThanaId",
+                "parameters": [
+                    {
+                        "name": "upazila_id",
+                        "in": "path",
+                        "description": "id of pouro to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/union/insert": {
             "post": {
                 "tags": [
@@ -3167,6 +3214,53 @@
                         "name": "thana_id",
                         "in": "path",
                         "description": "id of thana to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/ward/get/pouro/{pouro_id}": {
+            "get": {
+                "tags": [
+                    "GEOGRAPHIC-WARD"
+                ],
+                "summary": " get ward by pouro id",
+                "description": "get ward by pouro id",
+                "operationId": "getAllWardByPouroId",
+                "parameters": [
+                    {
+                        "name": "pouro_id",
+                        "in": "path",
+                        "description": "id of pouro to return",
                         "schema": {
                             "type": "integer"
                         }
@@ -7118,6 +7212,52 @@
                         "bearer_token": []
                     }
                 ]
+            }
+        },
+        "/auth/token/check": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Check the token is valid or not",
+                "description": "Check the token is valid or not",
+                "operationId": "checkToken",
+                "requestBody": {
+                    "description": "pass the client side token.example='10|qb8x9c7QEuYGgdaQMm7xBDg9JwwOwGtv3D7y7bq3'",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "token": {
+                                        "description": "the client side sanctum token",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
             }
         },
         "/global/program": {
