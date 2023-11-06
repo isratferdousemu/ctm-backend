@@ -7120,6 +7120,52 @@
                 ]
             }
         },
+        "/auth/token/check": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Check the token is valid or not",
+                "description": "Check the token is valid or not",
+                "operationId": "checkToken",
+                "requestBody": {
+                    "description": "pass the client side token.example='10|qb8x9c7QEuYGgdaQMm7xBDg9JwwOwGtv3D7y7bq3'",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "token": {
+                                        "description": "the client side sanctum token",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
         "/global/program": {
             "get": {
                 "tags": [
