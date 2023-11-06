@@ -1754,10 +1754,10 @@
         "/admin/district/get": {
             "get": {
                 "tags": [
-                    "GEOGRAPHIC-DISTRICT"
+                    "DISTRICT-MANAGEMENT"
                 ],
-                "summary": "get paginated Districts",
-                "description": "get paginated Districts",
+                "summary": "get all districts",
+                "description": "get all districts",
                 "operationId": "getAllDistrictPaginated",
                 "parameters": [
                     {
@@ -1771,7 +1771,7 @@
                     {
                         "name": "perPage",
                         "in": "query",
-                        "description": "number of Districts per page",
+                        "description": "number of division per page",
                         "schema": {
                             "type": "integer"
                         }
