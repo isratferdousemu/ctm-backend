@@ -7,6 +7,7 @@ use App\Http\Traits\ApplicationTrait;
 use App\Models\Application;
 use App\Models\ApplicationAllowanceValues;
 use App\Models\ApplicationPovertyValues;
+use App\Models\PMTScore;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Auth;
@@ -150,6 +151,7 @@ class ApplicationService
             }
 
             DB::commit();
+            $this->applicationPMTValuesTotal($application->id);
             return $application;
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -164,9 +166,7 @@ class ApplicationService
         try {
             foreach ($application_pmt as $key => $value) {
 
-                $ApplicationPovertyValues = new ApplicationPovertyValues;
-                $ApplicationPovertyValues->application_id = $application_id;
-                $ApplicationPovertyValues->variable_id = $value->variable_id;
+
                 // check sub_variables is array or not
                 if (is_array($value->sub_variables)) {
                     // insert multiple values
@@ -178,9 +178,12 @@ class ApplicationService
                         $sub_variables->save();
                     }
                 }else{
+                    $ApplicationPovertyValues = new ApplicationPovertyValues;
+                    $ApplicationPovertyValues->application_id = $application_id;
+                    $ApplicationPovertyValues->variable_id = $value->variable_id;
                     $ApplicationPovertyValues->sub_variable_id = $value->sub_variables!=0?$value->sub_variables:null;
+                    $ApplicationPovertyValues->save();
                 }
-                $ApplicationPovertyValues->save();
             }
             DB::commit();
         } catch (\Throwable $th) {
@@ -244,6 +247,42 @@ class ApplicationService
         $file_name = time() . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('uploads/' . $folder), $file_name);
         return $file_name;
+    }
+
+    // application PMTValues total calculation
+    public function applicationPMTValuesTotal($application_id){
+        $applicationPMTValues = ApplicationPovertyValues::where('application_id', $application_id)->get();
+        $total = 0;
+        foreach ($applicationPMTValues as $key => $value) {
+            if($value->sub_variable_id!=null){
+            Log::info('total sub-variable: '.$value->sub_variable->score);
+
+        }else{
+            Log::info('total variable: '.$value->variable->score);
+        }
+            $total += $value->sub_variable_id!=null?$value->sub_variable->score:$value->variable->score;
+        }
+        Log::info('total score: '.$total);
+
+        // Poverty score = [(Constant + Sum of the coefficients of all applicable variables + District FE)*100]
+        $constant = $this->povertyConstant;
+        $districtFE = 0;
+        // districtFE get by application permanent_location_id district
+        $districtFE = $this->getDistrictFE($application_id);
+        $povertyScore = ($constant + $total + $districtFE)*100;
+        $application = Application::find($application_id);
+        $application->score = $povertyScore;
+        $application->save();
+    }
+
+    public function getDistrictFE($application_id){
+        $application = Application::find($application_id);
+        $districtFE = 0;
+        $district = Application::permanentDistrict($application->permanent_location_id);
+        $districtFE = PMTScore::where('location_id', $district->id)->where('default',1)->first();
+        Log::info('districtFE'.$districtFE);
+        $districtFE = $districtFE->score;
+        return $districtFE;
     }
 
 }
