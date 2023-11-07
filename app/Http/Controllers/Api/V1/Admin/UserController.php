@@ -92,7 +92,7 @@ class UserController extends Controller
     * )
     */
 
- public function getAllUserPaginated(Request $request){
+    public function getAllUserPaginated(Request $request){
     // Retrieve the query parameters
     $searchText = $request->query('searchText');
     $userId = $request->query('userId');
