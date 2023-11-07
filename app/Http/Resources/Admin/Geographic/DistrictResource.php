@@ -19,6 +19,7 @@ class DistrictResource extends JsonResource
             'name_en'              => $this->name_en,
             'name_bn'              => $this->name_bn,
             'code'                 => $this->code,
+            'type'                 => $this->type,
             'division'  => DivisionResource::make($this->whenLoaded('parent')),
         ];
     }
