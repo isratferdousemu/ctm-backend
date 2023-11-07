@@ -414,6 +414,18 @@ class LocationController extends Controller
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
+     *         name="sortBy",
+     *         in="query",
+     *         description="sort by asc, or desc",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="orderBy",
+     *         in="query",
+     *         description="order by column name",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
      *         name="perPage",
      *         in="query",
      *         description="number of Districts per page",
@@ -457,6 +469,8 @@ class LocationController extends Controller
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
+        $sortBy = $request->query('sortBy')??'name_en';
+        $orderBy = $request->query('orderBy')??'asc';
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -466,7 +480,12 @@ class LocationController extends Controller
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
             $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+            if($searchText!=null){
+                $page = 1;
+            }
         }
+
+
         $district = Location::query()
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
                 $query->where($filterArrayNameEn)
@@ -475,10 +494,11 @@ class LocationController extends Controller
             })
             ->whereType($this->district)
             ->with('parent')
+            ->orderBy($sortBy, $orderBy)
             ->latest()
-  
-            ->paginate($perPage, ['*'], 'page');
-          
+            ->paginate($perPage, ['*'], 'page', $page);
+            // ->paginate($perPage, ['*'], $page);
+
         return DistrictResource::collection($district)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,

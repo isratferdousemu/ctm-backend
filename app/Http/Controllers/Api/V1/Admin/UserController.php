@@ -92,7 +92,7 @@ class UserController extends Controller
     * )
     */
 
- public function getAllUserPaginated(Request $request){
+    public function getAllUserPaginated(Request $request){
     // Retrieve the query parameters
     $searchText = $request->query('searchText');
     $userId = $request->query('userId');
@@ -309,21 +309,21 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request, $id)
     {
-        
+
         // $arrayName = array(
         //     'data' => $request->method(),
         //     // 'data1' => $request->all()
         // );
-    
+
         // return $arrayName;
         if ($request->method() == 'PUT')
         {
-            
+
             // $arrayName = array(
             //     'data' => $request->all(),
             //     // 'data1' => $request->all()
             // );
-    
+
             // return $arrayName;
             try {
 
@@ -436,6 +436,7 @@ class UserController extends Controller
                     $query->where($getAssignLocationId)
                         ->where('office_type', $request->office_type_id);
                 })
+                ->whereStatus(1)
                 ->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType')
                 ->get();
 

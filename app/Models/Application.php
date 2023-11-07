@@ -116,7 +116,7 @@ class Application extends Model
     use HasFactory;
 
     // hide these fields from json response
-    protected $hidden = ['score'];
+    // protected $hidden = ['score'];
 
     public function newQuery($excludeDeleted = true)
     {
@@ -133,6 +133,22 @@ class Application extends Model
             $permanentLocation = Location::find($permanentLocation->parent_id);
         }
         return $permanentLocation;
+    }
+
+    public function current_location()
+    {
+        return $this->belongsTo(Location::class,'current_location_id','id');
+    }
+    public function permanent_location()
+    {
+        return $this->belongsTo(Location::class,'permanent_location_id','id');
+    }
+
+    public function program(){
+        return $this->belongsTo(AllowanceProgram::class,'program_id','id');
+    }
+    public function gender(){
+        return $this->belongsTo(Lookup::class,'gender_id','id');
     }
 
 }

@@ -103,7 +103,7 @@ class MenuController extends Controller
                 $menu = $menu->orderBy($sortBy, $sortDesc);
             }
         } else {
-            $menu = $menu->orderBy('order', 'asc');
+            $menu = $menu->orderBy('label_name_en', 'asc');
         }
 
         $searchValue = $request->input('search');
@@ -362,7 +362,7 @@ class MenuController extends Controller
      */
     public function getParent()
     {
-        $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn','page_link_id')->orderBy('label_name_en')->get();
+        $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn','page_link_id')->orderBy('order','asc')->get();
         $parents = $this->getMenuList($parents);
 
         return \response()->json([
