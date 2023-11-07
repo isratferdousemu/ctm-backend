@@ -603,7 +603,7 @@ class ApplicationController extends Controller
         })
         ->with('current_location','permanent_location.parent.parent.parent','program','gender')
         ->latest()
-        ->orderBy('score', 'asc')
+        // ->orderBy('score', 'asc')
         ->paginate($perPage, ['*'], 'page',$page);
         return $applications;
 
