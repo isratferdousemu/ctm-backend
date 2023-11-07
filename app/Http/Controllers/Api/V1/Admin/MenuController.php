@@ -362,7 +362,7 @@ class MenuController extends Controller
      */
     public function getParent()
     {
-        $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn','page_link_id')->orderBy('label_name_en')->get();
+        $parents = Menu::select('id', 'parent_id', 'label_name_en', 'label_name_bn','page_link_id')->orderBy('order','asc')->get();
         $parents = $this->getMenuList($parents);
 
         return \response()->json([
