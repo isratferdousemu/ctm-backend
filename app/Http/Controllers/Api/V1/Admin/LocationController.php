@@ -396,13 +396,13 @@ class LocationController extends Controller
      *         name="sortBy",
      *         in="query",
      *         description="sort by asc, or desc",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         name="orderBy",
      *         in="query",
      *         description="order by column name",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         name="perPage",
@@ -448,7 +448,9 @@ class LocationController extends Controller
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
-        $sortBy = $request->query('sortBy')??'name_en';
+        $sortBy = 'name_en';
+        // $sortBy = 'division.name_en';
+        // $sortBy = $request->query('sortBy')??'name_en';
         $orderBy = $request->query('orderBy')??'asc';
 
         $filterArrayNameEn = [];
@@ -466,22 +468,28 @@ class LocationController extends Controller
 
 
         $district = Location::query()
+        // ->join('locations AS parent', 'parent.id', '=', 'locations.parent_id')
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
                 $query->where($filterArrayNameEn)
                     ->orWhere($filterArrayNameBn)
                     ->orWhere($filterArrayCode);
             })
             ->whereType($this->district)
+            // ->orderBy('name_en', $orderBy)
+            // ->latest()
             ->with('parent')
-            ->orderBy($sortBy, $orderBy)
-            ->latest()
             ->paginate($perPage, ['*'], 'page', $page);
-            // ->paginate($perPage, ['*'], $page);
+        // ->paginate($perPage, ['*'], $page);
+        // $categoryTags->tags = $categoryTags->tags->sortBy('name');
 
-        return DistrictResource::collection($district)->additional([
-            'success' => true,
-            'message' => $this->fetchSuccessMessage,
-        ]);
+         $data = DistrictResource::collection($district);
+        // return $data->sortByDesc('division.name_en')->values()->all();
+        //  return DistrictResource::collection($district)->additional([
+        //     'success' => true,
+        //     'message' => $this->fetchSuccessMessage,
+        // ]);
+
+        // return
     }
 
     /**

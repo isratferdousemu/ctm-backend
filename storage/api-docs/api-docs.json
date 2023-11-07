@@ -1934,10 +1934,10 @@
         "/admin/district/get": {
             "get": {
                 "tags": [
-                    "DISTRICT-MANAGEMENT"
+                    "GEOGRAPHIC-DISTRICT"
                 ],
-                "summary": "get all districts",
-                "description": "get all districts",
+                "summary": "get paginated Districts",
+                "description": "get paginated Districts",
                 "operationId": "getAllDistrictPaginated",
                 "parameters": [
                     {
@@ -1949,9 +1949,25 @@
                         }
                     },
                     {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "sort by asc, or desc",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "order by column name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "perPage",
                         "in": "query",
-                        "description": "number of division per page",
+                        "description": "number of Districts per page",
                         "schema": {
                             "type": "integer"
                         }
