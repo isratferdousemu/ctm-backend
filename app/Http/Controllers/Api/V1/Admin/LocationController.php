@@ -429,12 +429,15 @@ class LocationController extends Controller
      * )
      */
 
+
     public function getAllDistrictPaginated(Request $request)
     {
         // Retrieve the query parameters
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
+        $sortBy = $request->query('sortBy') ?? 'name_en';
+        $orderBy = $request->query('orderBy') ?? 'asc';
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -444,7 +447,12 @@ class LocationController extends Controller
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
             $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+            if ($searchText != null) {
+                $page = 1;
+            }
         }
+
+
         $district = Location::query()
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
                 $query->where($filterArrayNameEn)
@@ -453,8 +461,11 @@ class LocationController extends Controller
             })
             ->whereType($this->district)
             ->with('parent')
+            ->orderBy($sortBy, $orderBy)
             ->latest()
-            ->paginate($perPage, ['*'], 'page');
+            ->paginate($perPage, ['*'], 'page', $page);
+        // ->paginate($perPage, ['*'], $page);
+
         return DistrictResource::collection($district)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
@@ -466,6 +477,7 @@ class LocationController extends Controller
         //     'message' => $this->fetchSuccessMessage,
         // ]);
     }
+
 
     /**
      *
