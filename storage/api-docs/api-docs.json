@@ -493,6 +493,186 @@
                 }
             }
         },
+        "/admin/application/get": {
+            "get": {
+                "tags": [
+                    "APPLICATION-SELECTION"
+                ],
+                "summary": "get paginated Applications with advance search",
+                "description": "get paginated applications with advance search",
+                "operationId": "getAllApplicationPaginated",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "search by name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "application_id",
+                        "in": "query",
+                        "description": "search by application id",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "nominee_name",
+                        "in": "query",
+                        "description": "search by nominee name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "account_no",
+                        "in": "query",
+                        "description": "search by account number",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "nid_no",
+                        "in": "query",
+                        "description": "search by nid number",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "list_type_id",
+                        "in": "query",
+                        "description": "search by list type name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "program_id",
+                        "in": "query",
+                        "description": "search by program name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "division_id",
+                        "in": "query",
+                        "description": "search by division name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "district_id",
+                        "in": "query",
+                        "description": "search by district name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "location_type_id",
+                        "in": "query",
+                        "description": "search by location type name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "thana_id",
+                        "in": "query",
+                        "description": "search by thana name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "union_id",
+                        "in": "query",
+                        "description": "search by union name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "search by city name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "city_thana_id",
+                        "in": "query",
+                        "description": "search by city thana name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "district_pouro_id",
+                        "in": "query",
+                        "description": "search by district pouro name",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of committee per page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/committee/get": {
             "get": {
                 "tags": [
@@ -1766,6 +1946,22 @@
                         "description": "search by name",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "sort by asc, or desc",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "order by column name",
+                        "schema": {
+                            "type": "integer"
                         }
                     },
                     {
@@ -7118,6 +7314,52 @@
                         "bearer_token": []
                     }
                 ]
+            }
+        },
+        "/auth/token/check": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Check the token is valid or not",
+                "description": "Check the token is valid or not",
+                "operationId": "checkToken",
+                "requestBody": {
+                    "description": "pass the client side token.example='10|qb8x9c7QEuYGgdaQMm7xBDg9JwwOwGtv3D7y7bq3'",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "token": {
+                                        "description": "the client side sanctum token",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
             }
         },
         "/global/program": {

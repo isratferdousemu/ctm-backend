@@ -148,10 +148,4 @@ class User extends Authenticatable
         return $this->belongsTo(Location::class,'assign_location_id','id');
     }
 
-
-
-
-
-
-
 }

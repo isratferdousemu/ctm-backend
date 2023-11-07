@@ -513,12 +513,12 @@ class SystemconfigController extends Controller
 
                 $allowance_program->marital_status = $request->marital_status;
 
-                if ($request->is_active == "false")
+                if ($request->is_active == "0" || $request->is_active == false)
                 {
                     $allowance_program->is_active = 0;
                 }
 
-                if ($request->is_active == "true")
+                if ($request->is_active == true)
                 {
                     $allowance_program->is_active = 1;
                 }
@@ -543,10 +543,11 @@ class SystemconfigController extends Controller
 
                 if ($request->input('age_limit') != null)
                 {
+                    $prevAges = $allowance_program->ages()->delete();
+
                     foreach ($request->input('age_limit') as $al)
                     {
                         $new_amount = 0;
-
                         if ($al['amount'] == null)
                         {
                             $new_amount = null;
@@ -554,16 +555,13 @@ class SystemconfigController extends Controller
                             $new_amount = $al['amount'];
                         }
 
-                        AllowanceProgramAge::updateOrInsert(
-                            ["id" => $al['id']],
-                            [
+                        AllowanceProgramAge::Insert(
+                    [
                                 "allowance_program_id" => $allowance_program->id,
                                 "gender_id" => $al['gender_id'],
                                 "min_age" => $al['min_age'],
                                 "max_age" => $al['max_age'],
                                 "amount" => $new_amount,
-                                "created_at" => Carbon::now(),
-                                "updated_at" => Carbon::now()
                             ]
                         );
                     }
@@ -613,15 +611,46 @@ class SystemconfigController extends Controller
 
                 $updateAddField = $request->input('add_field_id');
 
+                // check $updateAddField ids are exists in AllowanceProgramAdditionalField table or not if not exists then insert
+
                 foreach ($updateAddField as $up)
                 {
-                    $result[] = array(
-                        "field_id" => $up,
-                        "created_at" => Carbon::now(),
-                        "updated_at" => Carbon::now()
-                    );
+                    $check = AllowanceProgramAdditionalField::where('allowance_program_id', $id)->where('field_id', $up)->first();
+
+                    if ($check == null)
+                    {
+                        $result[] = array(
+                            "allowance_program_id" => $id,
+                            "field_id" => $up,
+                            "created_at" => Carbon::now(),
+                            "updated_at" => Carbon::now()
+                        );
+                    }
                 }
-                $allowance_program->addtionalfield()->syncWithoutDetaching($result);
+                $fields = AllowanceProgramAdditionalField::where('allowance_program_id', $id)->pluck('field_id')->toArray();
+
+                // check fields ids are exists in $updateAddField or not if not exists then delete
+                foreach ($fields as $field)
+                {
+                    if (!in_array($field, $updateAddField))
+                    {
+                        AllowanceProgramAdditionalField::where('allowance_program_id', $id)->where('field_id', $field)->delete();
+                    }
+                }
+
+                AllowanceProgramAdditionalField::insert($result);
+
+                // foreach ($updateAddField as $up)
+                // {
+                //     $result[] = array(
+                //         "field_id" => $up,
+                //         "created_at" => Carbon::now(),
+                //         "updated_at" => Carbon::now()
+                //     );
+
+                // }
+
+                // $allowance_program->addtionalfield()->syncWithoutDetaching($result);
                 // $allowance_program->addtionalfield()->sync($result);
 
                 \DB::commit();

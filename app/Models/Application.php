@@ -114,4 +114,41 @@ use Illuminate\Database\Eloquent\Model;
 class Application extends Model
 {
     use HasFactory;
+
+    // hide these fields from json response
+    // protected $hidden = ['score'];
+
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('score', 'asc');
+    }
+
+
+    public static function permanentDistrict($location_id){
+        // permanent_location_id get this parent_id parent_id rations location id by maintaining chain
+        $permanentLocation = Location::find($location_id);
+        // check location type and then again and again check parent id and type while not get type = district
+        while($permanentLocation->type != 'district'){
+            $permanentLocation = Location::find($permanentLocation->parent_id);
+        }
+        return $permanentLocation;
+    }
+
+    public function current_location()
+    {
+        return $this->belongsTo(Location::class,'current_location_id','id');
+    }
+    public function permanent_location()
+    {
+        return $this->belongsTo(Location::class,'permanent_location_id','id');
+    }
+
+    public function program(){
+        return $this->belongsTo(AllowanceProgram::class,'program_id','id');
+    }
+    public function gender(){
+        return $this->belongsTo(Lookup::class,'gender_id','id');
+    }
+
 }

@@ -9,5 +9,8 @@ trait ApplicationTrait
 
     // application status
     private $Submitted = 1;
-    
+
+
+    // proverty constant value
+    private $povertyConstant = 8.15;
 }
