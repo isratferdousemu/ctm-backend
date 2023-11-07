@@ -1953,7 +1953,7 @@
                         "in": "query",
                         "description": "sort by asc, or desc",
                         "schema": {
-                            "type": "integer"
+                            "type": "text"
                         }
                     },
                     {

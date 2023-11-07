@@ -395,13 +395,13 @@ class LocationController extends Controller
      *     @OA\Parameter(
      *         name="sortBy",
      *         in="query",
-     *         description="sort by asc, or desc",
-     *         @OA\Schema(type="integer")
+     *         description="sort by column name",
+     *         @OA\Schema(type="text")
      *     ),
      *     @OA\Parameter(
      *         name="orderBy",
      *         in="query",
-     *         description="order by column name",
+     *         description="order by asc, or desc",
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
@@ -463,8 +463,6 @@ class LocationController extends Controller
                 $page = 1;
             }
         }
-
-
         $district = Location::query()
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
                 $query->where($filterArrayNameEn)
@@ -476,7 +474,6 @@ class LocationController extends Controller
             ->orderBy($sortBy, $orderBy)
             ->latest()
             ->paginate($perPage, ['*'], 'page', $page);
-            // ->paginate($perPage, ['*'], $page);
 
         return DistrictResource::collection($district)->additional([
             'success' => true,
