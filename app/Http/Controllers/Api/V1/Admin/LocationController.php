@@ -393,18 +393,6 @@ class LocationController extends Controller
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
-     *         name="sortBy",
-     *         in="query",
-     *         description="sort by asc, or desc",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="orderBy",
-     *         in="query",
-     *         description="order by column name",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
      *         name="perPage",
      *         in="query",
      *         description="number of Districts per page",
@@ -448,10 +436,6 @@ class LocationController extends Controller
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
-        // $sortBy = 'division.name_en';
-        $sortBy = $request->query('sortBy');
-        $sortDesc = $request->query('sortDesc');
-        $orderBy = $request->query('orderBy') ?? 'asc';
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -461,62 +445,21 @@ class LocationController extends Controller
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
             $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-            if ($searchText != null) {
-                $page = 1;
-            }
         }
-
         $district = Location::query()
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
                 $query->where($filterArrayNameEn)
                     ->orWhere($filterArrayNameBn)
                     ->orWhere($filterArrayCode);
-            $query->whereHas('parent', function ($district) use ($ ) {
-
-                $district->orderBy('name_en', $orderBy);
-
             })
-            })
-           
-        ->with('parent')
-            ->whereType($this->district);
-        // ->orderBy('name_en', $orderBy)
-        // ->latest()
-        // });
-        
-        // $district->whereHas('permanent_location', function ($query) use ($division_id) {
-        //     $query->where('id', $division_id)
-        //     ->orWhereHas('parent', function ($query) use ($division_id) {
-        //         $query->where('id', $division_id)
-        //         ->orWhereHas('parent', function ($query) use ($division_id) {
-        //             $query->where('id', $division_id)
-        //             ->orWhereHas('parent', function ($query) use ($division_id) {
-        //                 $query->where('id', $division_id)
-        //                 ->where('type', $this->division);
-        //             });
-        //         });
-        //     });
-        // });
-
-            // $district->paginate($perPage, ['*'], 'page', $page);
-        // ->paginate($perPage, ['*'], $page);
-
-        $data = DistrictResource::collection($district);
-
-        // if ($sortDesc == true) {
-        //     $data->sortByDesc($sortBy)->values()->all(); //DESC
-        // }else{
-        //     $data->sortBy($sortBy)->values()->all(); //ASC
-        // }
-
-        $data->additional([
+            ->whereType($this->district)
+            ->with('parent')
+            ->latest()
+            ->paginate($perPage, ['*'], 'page');
+        return DistrictResource::collection($district)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
-            'sortBy' => $sortBy,
-            'sortDesc' => $sortDesc,
         ]);
-
-        return $data;
     }
 
     /**
