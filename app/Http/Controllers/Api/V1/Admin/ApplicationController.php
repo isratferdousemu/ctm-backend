@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Application\ApplicationRequest;
 use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
 use App\Http\Services\Admin\Application\ApplicationService;
 use App\Http\Traits\BeneficiaryTrait;
+use App\Http\Traits\LocationTrait;
 use App\Http\Traits\MessageTrait;
 use App\Models\AllowanceProgram;
 use App\Models\Application;
@@ -16,7 +17,7 @@ use Illuminate\Http\Response;
 
 class ApplicationController extends Controller
 {
-    use MessageTrait, BeneficiaryTrait;
+    use MessageTrait, BeneficiaryTrait,LocationTrait;
     private $applicationService;
 
     public function __construct(ApplicationService $applicationService) {
@@ -406,14 +407,6 @@ class ApplicationController extends Controller
         $filterArrayNidNo = [];
         $filterArrayListTypeId = [];
         $filterArrayProgramId = [];
-        $filterArrayDivisionId = [];
-        $filterArrayDistrictId = [];
-        $filterArrayLocationTypeId = [];
-        $filterArrayThanaId = [];
-        $filterArrayUnionId = [];
-        $filterArrayCityId = [];
-        $filterArrayCityThanaId = [];
-        $filterArrayDistrictPouroId = [];
 
         if($searchText){
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
@@ -422,80 +415,59 @@ class ApplicationController extends Controller
             $filterArrayMotherNameBn[] = ['mother_name_bn', 'LIKE', '%' . $searchText . '%'];
             $filterArrayFatherNameEn[] = ['father_name_en', 'LIKE', '%' . $searchText . '%'];
             $filterArrayFatherNameBn[] = ['father_name_bn', 'LIKE', '%' . $searchText . '%'];
+            $page = 1;
+
         }
 
         if($application_id){
             $filterArrayApplicationId[] = ['application_id', 'LIKE', '%' . $application_id . '%'];
+            $page = 1;
+
         }
 
         if($nominee_name){
             $filterArrayNomineeNameEn[] = ['nominee_en', 'LIKE', '%' . $nominee_name . '%'];
             $filterArrayNomineeNameBn[] = ['nominee_bn', 'LIKE', '%' . $nominee_name . '%'];
+            $page = 1;
+
         }
 
         if($account_no){
             $filterArrayAccountNo[] = ['account_number', 'LIKE', '%' . $account_no . '%'];
+            $page = 1;
+
         }
 
         if($nid_no){
             $filterArrayNidNo[] = ['verification_number', 'LIKE', '%' . $nid_no . '%'];
+            $page = 1;
+
         }
 
         if($list_type_id){
             $filterArrayListTypeId[] = ['forward_committee_id', '=', $list_type_id];
+            $page = 1;
+
         }
 
         if($program_id){
             $filterArrayProgramId[] = ['program_id', '=', $program_id];
-        }
+            $page = 1;
 
-        if($division_id){
-            $filterArrayDivisionId[] = ['division_id', '=', $division_id];
-        }
-
-        if($district_id){
-            $filterArrayDistrictId[] = ['district_id', '=', $district_id];
         }
 
         if($location_type_id){
             $filterArrayLocationTypeId[] = ['location_type_id', '=', $location_type_id];
         }
 
-        if($thana_id){
-            $filterArrayThanaId[] = ['thana_id', '=', $thana_id];
-        }
 
-        if($union_id){
-            $filterArrayUnionId[] = ['union_id', '=', $union_id];
-        }
-
-        if($city_id){
-            $filterArrayCityId[] = ['city_id', '=', $city_id];
-        }
-
-        if($city_thana_id){
-            $filterArrayCityThanaId[] = ['city_thana_id', '=', $city_thana_id];
-        }
-
-        if($district_pouro_id){
-            $filterArrayDistrictPouroId[] = ['district_pouro_id', '=', $district_pouro_id];
-        }
-
-        $applications = Application::query()->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayApplicationId, $filterArrayNomineeNameEn, $filterArrayNomineeNameBn, $filterArrayAccountNo, $filterArrayNidNo, $filterArrayListTypeId, $filterArrayProgramId, $filterArrayDivisionId, $filterArrayDistrictId, $filterArrayLocationTypeId, $filterArrayThanaId, $filterArrayUnionId, $filterArrayCityId, $filterArrayCityThanaId, $filterArrayDistrictPouroId) {
+        $applications = Application::query()->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayApplicationId, $filterArrayNomineeNameEn, $filterArrayNomineeNameBn, $filterArrayAccountNo, $filterArrayNidNo, $filterArrayListTypeId, $filterArrayProgramId, $district_id, $division_id, $thana_id, $union_id, $city_id, $city_thana_id, $district_pouro_id) {
             $query->where($filterArrayNameEn)
                 ->orWhere($filterArrayNameBn)
                 ->orWhere($filterArrayFatherNameEn)
                 ->orWhere($filterArrayFatherNameBn)
                 ->orWhere($filterArrayMotherNameEn)
                 ->orWhere($filterArrayMotherNameBn)
-                ->orWhereHas('permanent_location', function ($query) {
-                    $location = $query->dd();
-
-                    while ($location && $location->type !== 'district') {
-                        $location = $location->parent;
-                    }
-                    return $location !== null;
-                })
                 ->orWhere($filterArrayApplicationId)
                 ->orWhere($filterArrayNomineeNameEn)
                 ->orWhere($filterArrayNomineeNameBn)
@@ -503,10 +475,136 @@ class ApplicationController extends Controller
                 ->orWhere($filterArrayNidNo)
                 ->orWhere($filterArrayListTypeId)
                 ->orWhere($filterArrayProgramId);
+                if($division_id){
+                $page = 1;
+
+                    $query->whereHas('permanent_location', function ($query) use ($division_id) {
+                        $query->where('id', $division_id)
+                        ->orWhereHas('parent', function ($query) use ($division_id) {
+                            $query->where('id', $division_id)
+                                ->orWhereHas('parent', function ($query) use ($division_id) {
+                                    $query->where('id', $division_id)
+                                        ->orWhereHas('parent', function ($query) use ($division_id) {
+                                            $query->where('id', $division_id)
+                                                ->where('type', $this->division);
+                                        });
+                                });
+                        });
+                    });
+                }
+                if ($district_id) {
+                $page = 1;
+
+                    $query->whereHas('permanent_location', function ($query) use ($district_id) {
+                        $query->where('id', $district_id)
+                        ->orWhereHas('parent', function ($query) use ($district_id) {
+                            $query->where('id', $district_id)
+                                ->orWhereHas('parent', function ($query) use ($district_id) {
+                                    $query->where('id', $district_id)
+                                        ->orWhereHas('parent', function ($query) use ($district_id) {
+                                            $query->where('id', $district_id)
+                                                ->where('type', $this->district);
+                                        });
+                                });
+                        });
+                    });
+                }
+
+                if($thana_id){
+                $page = 1;
+
+                    $query->whereHas('permanent_location', function ($query) use ($thana_id) {
+                        $query->where('id', $thana_id)
+                        ->orWhereHas('parent', function ($query) use ($thana_id) {
+                            $query->where('id', $thana_id)
+                                ->orWhereHas('parent', function ($query) use ($thana_id) {
+                                    $query->where('id', $thana_id)
+                                        ->orWhereHas('parent', function ($query) use ($thana_id) {
+                                            $query->where('id', $thana_id)
+                                                ->where('type', $this->thana);
+                                        });
+                                });
+                        });
+                    });
+                }
+
+                if($union_id){
+                $page = 1;
+
+                    $query->whereHas('permanent_location', function ($query) use ($union_id) {
+                        $query->where('id', $union_id)
+                        ->orWhereHas('parent', function ($query) use ($union_id) {
+                            $query->where('id', $union_id)
+                                ->orWhereHas('parent', function ($query) use ($union_id) {
+                                    $query->where('id', $union_id)
+                                        ->orWhereHas('parent', function ($query) use ($union_id) {
+                                            $query->where('id', $union_id)
+                                                ->where('type', $this->union);
+                                        });
+                                });
+                        });
+                    });
+                }
+
+                if($city_id){
+                $page = 1;
+
+                    $query->whereHas('permanent_location', function ($query) use ($city_id) {
+                        $query->where('id', $city_id)
+                        ->orWhereHas('parent', function ($query) use ($city_id) {
+                            $query->where('id', $city_id)
+                                ->orWhereHas('parent', function ($query) use ($city_id) {
+                                    $query->where('id', $city_id)
+                                        ->orWhereHas('parent', function ($query) use ($city_id) {
+                                            $query->where('id', $city_id)
+                                                ->where('type', $this->city);
+                                        });
+                                });
+                        });
+                    });
+                }
+
+                if($city_thana_id){
+                $page = 1;
+
+                    $query->whereHas('permanent_location', function ($query) use ($city_thana_id) {
+                        $query->where('id', $city_thana_id)
+                        ->orWhereHas('parent', function ($query) use ($city_thana_id) {
+                            $query->where('id', $city_thana_id)
+                                ->orWhereHas('parent', function ($query) use ($city_thana_id) {
+                                    $query->where('id', $city_thana_id)
+                                        ->orWhereHas('parent', function ($query) use ($city_thana_id) {
+                                            $query->where('id', $city_thana_id)
+                                                ->where('type', $this->thana);
+                                        });
+                                });
+                        });
+                    });
+                }
+
+                if($district_pouro_id){
+                $page = 1;
+
+                    $query->whereHas('permanent_location', function ($query) use ($district_pouro_id) {
+                        $query->where('id', $district_pouro_id)
+                        ->orWhereHas('parent', function ($query) use ($district_pouro_id) {
+                            $query->where('id', $district_pouro_id)
+                                ->orWhereHas('parent', function ($query) use ($district_pouro_id) {
+                                    $query->where('id', $district_pouro_id)
+                                        ->orWhereHas('parent', function ($query) use ($district_pouro_id) {
+                                            $query->where('id', $district_pouro_id)
+                                                ->where('type', $this->districtPouroshava);
+                                        });
+                                });
+                        });
+                    });
+                }
+
         })
         ->with('current_location','permanent_location.parent.parent.parent','program','gender')
         ->latest()
-        ->paginate($perPage, ['*'], 'page');
+        ->orderBy('score', 'asc')
+        ->paginate($perPage, ['*'], 'page',$page);
         return $applications;
         // if has district_id then get application current_location_id is this district locations
 

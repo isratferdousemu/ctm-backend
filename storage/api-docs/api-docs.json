@@ -1949,6 +1949,22 @@
                         }
                     },
                     {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "sort by asc, or desc",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "order by column name",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "perPage",
                         "in": "query",
                         "description": "number of Districts per page",
