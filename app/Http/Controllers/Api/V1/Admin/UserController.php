@@ -91,7 +91,6 @@ class UserController extends Controller
      *          )
     * )
     */
-
     public function getAllUserPaginated(Request $request){
     // Retrieve the query parameters
     $searchText = $request->query('searchText');
@@ -496,7 +495,6 @@ class UserController extends Controller
      *     )
      *
      */
-
     public function destroyUser($id)
     {
         try {
