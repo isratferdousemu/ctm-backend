@@ -448,10 +448,10 @@ class LocationController extends Controller
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
-        $sortBy = 'name_en';
         // $sortBy = 'division.name_en';
-        // $sortBy = $request->query('sortBy')??'name_en';
-        $orderBy = $request->query('orderBy')??'asc';
+        $sortBy = $request->query('sortBy');
+        $sortDesc = $request->query('sortDesc');
+        $orderBy = $request->query('orderBy') ?? 'asc';
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -461,35 +461,62 @@ class LocationController extends Controller
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
             $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-            if($searchText!=null){
+            if ($searchText != null) {
                 $page = 1;
             }
         }
 
-
         $district = Location::query()
-        // ->join('locations AS parent', 'parent.id', '=', 'locations.parent_id')
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
                 $query->where($filterArrayNameEn)
                     ->orWhere($filterArrayNameBn)
                     ->orWhere($filterArrayCode);
+            $query->whereHas('parent', function ($district) use ($ ) {
+
+                $district->orderBy('name_en', $orderBy);
+
             })
-            ->whereType($this->district)
-            // ->orderBy('name_en', $orderBy)
-            // ->latest()
-            ->with('parent')
-            ->paginate($perPage, ['*'], 'page', $page);
+            })
+           
+        ->with('parent')
+            ->whereType($this->district);
+        // ->orderBy('name_en', $orderBy)
+        // ->latest()
+        // });
+        
+        // $district->whereHas('permanent_location', function ($query) use ($division_id) {
+        //     $query->where('id', $division_id)
+        //     ->orWhereHas('parent', function ($query) use ($division_id) {
+        //         $query->where('id', $division_id)
+        //         ->orWhereHas('parent', function ($query) use ($division_id) {
+        //             $query->where('id', $division_id)
+        //             ->orWhereHas('parent', function ($query) use ($division_id) {
+        //                 $query->where('id', $division_id)
+        //                 ->where('type', $this->division);
+        //             });
+        //         });
+        //     });
+        // });
+
+            // $district->paginate($perPage, ['*'], 'page', $page);
         // ->paginate($perPage, ['*'], $page);
-        // $categoryTags->tags = $categoryTags->tags->sortBy('name');
 
-         $data = DistrictResource::collection($district);
-        // return $data->sortByDesc('division.name_en')->values()->all();
-        //  return DistrictResource::collection($district)->additional([
-        //     'success' => true,
-        //     'message' => $this->fetchSuccessMessage,
-        // ]);
+        $data = DistrictResource::collection($district);
 
-        // return
+        // if ($sortDesc == true) {
+        //     $data->sortByDesc($sortBy)->values()->all(); //DESC
+        // }else{
+        //     $data->sortBy($sortBy)->values()->all(); //ASC
+        // }
+
+        $data->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+            'sortBy' => $sortBy,
+            'sortDesc' => $sortDesc,
+        ]);
+
+        return $data;
     }
 
     /**
