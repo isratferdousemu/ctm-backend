@@ -501,7 +501,7 @@ class DeviceController extends Controller
             ->log('Device Status Updated!!');
 
             return response()->json([
-                'message' => 'Device De-activate Successful'
+                'message' => 'Device Inactive Successful'
             ],Response::HTTP_OK);
         }
     }

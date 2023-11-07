@@ -103,7 +103,7 @@ class MenuController extends Controller
                 $menu = $menu->orderBy($sortBy, $sortDesc);
             }
         } else {
-            $menu = $menu->orderBy('order', 'asc');
+            $menu = $menu->orderBy('label_name_en', 'asc');
         }
 
         $searchValue = $request->input('search');

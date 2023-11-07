@@ -28,13 +28,7 @@ class RoleService
             $role->name_en=$request->name_en;
             $role->name_bn=$request->name_bn;
             $role->code=$request->code;
-            if($request->status == true)
-            {
-                $role->status=1;
-            }else{
-                $role->status=0;
-            }
-
+            $role->status=0;
             $role->comment = $request->comment;
 
             $role->save();
@@ -68,7 +62,7 @@ class RoleService
                 $role->status = $role->status;
             }
 
-            if ($request->status == true)
+            if ($request->status == "true")
             {
                 $role->status= 1;
             }else{

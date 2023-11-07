@@ -20,13 +20,8 @@ class MenuService
             $menu->page_link_id           = $request->page_link_id;
             $menu->link_type              = $request->link_type;
             $menu->link                   = $request->link;
-            // check order key exists or not in request if not exists then set total menu count + 1
-            if (!key_exists('order', $request->all()))
-            {
-                $menu->order = Menu::count()+1;
-            }else{
-                $menu->order = $request->order;
-            }
+
+
             if (!key_exists('parent_id', $request->all()))
             {
 
