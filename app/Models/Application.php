@@ -116,7 +116,7 @@ class Application extends Model
     use HasFactory;
 
     // hide these fields from json response
-    protected $hidden = ['score'];
+    // protected $hidden = ['score'];
 
     public function newQuery($excludeDeleted = true)
     {

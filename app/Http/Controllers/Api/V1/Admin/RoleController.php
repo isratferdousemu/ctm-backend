@@ -76,43 +76,49 @@ class RoleController extends Controller
      *          )
     * )
     */
+    public function getAllRolePaginated(Request $request){
+        // Retrieve the query parameters
+         $role = new Role;
 
- public function getAllRolePaginated(Request $request){
-    // Retrieve the query parameters
-     $role = new Role;
+        if ($request->has('sortBy') && $request->has('sortDesc')) {
+            $sortBy = $request->query('sortBy');
 
-     if($request->has('sortBy'))
-     {
-         if($request->get('sortDesc') === true)
+            $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+
+            $role = $role->orderBy($sortBy, $sortDesc);
+        } else {
+            $role = $role->orderBy('name_en', 'asc');
+        }
+
+        $searchValue = $request->input('search');
+
+         if($searchValue)
          {
-             $role = $role->orderBy($request->get('sortBy'), 'desc');
+             $role->where(function($query) use ($searchValue) {
+                 $query->orWhere('name_en', 'like', '%' . $searchValue . '%');
+                 $query->orWhere('code', 'like', '%' . $searchValue . '%');
+                 $query->orWhere('name_bn', 'like', '%' . $searchValue . '%');
+             });
+
+             $itemsPerPage = 10;
+
+             if($request->has('itemsPerPage')) {
+                 $itemsPerPage = $request->get('itemsPerPage');
+
+                 return $role->paginate($itemsPerPage, ['*'], $request->get('page'));
+             }
          }else{
-             $role = $role->orderBy($request->get('sortBy'), 'asc');
+             $itemsPerPage = 10;
+
+             if($request->has('itemsPerPage'))
+             {
+                 $itemsPerPage = $request->get('itemsPerPage');
+
+                 return $role->paginate($itemsPerPage);
+             }
          }
-     }else{
-         $role = $role->orderBy('id', 'desc');
-     }
 
-     $searchValue = $request->input('search');
-
-     if($searchValue)
-     {
-         $role->where(function($query) use ($searchValue) {
-             $query->orWhere('name_bn', 'like', '%' . $searchValue . '%');
-             $query->orWhere('code', 'like', '%' . $searchValue . '%');
-             $query->orWhere('name_en', 'like', '%' . $searchValue . '%');
-         });
-     }
-
-     $itemsPerPage = 10;
-
-     if($request->has('itemsPerPage'))
-     {
-         $itemsPerPage = $request->get('itemsPerPage');
-     }
-
-     return $role->paginate($itemsPerPage);
-}
+    }
     /**
     * @OA\Get(
     *     path="/admin/role/permission/roles/unassign",
@@ -148,7 +154,7 @@ class RoleController extends Controller
     * )
     */
 
- public function getUnAssignPermissionRole(){
+    public function getUnAssignPermissionRole(){
 
     //$role =Role::whereDoesntHave('permissions')->get();
     $role =Role::where('name','!=','super-admin')->where('name', '!=', 'office-head')->get();
@@ -194,7 +200,7 @@ class RoleController extends Controller
     * )
     */
 
- public function getAllRole(){
+    public function getAllRole(){
 
     $role = Role::with('permissions')->get();
 
@@ -553,8 +559,7 @@ class RoleController extends Controller
      *          )
     * )
     */
-
- public function getAllPermission(Request $request){
+    public function getAllPermission(Request $request){
         // Retrieve the query parameters
 
         $permissions = Permission::get();

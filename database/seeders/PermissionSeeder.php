@@ -20,9 +20,9 @@ class PermissionSeeder extends Seeder
      */
 
 
-     ///LATEST MENU ID = 160 
+     ///LATEST MENU ID = 160
      //  IF YOU ADD A NEW Permission the ID will start from one greater than the LAST MENU ID
-    
+
      public function run()
     {
         $per = ['create', 'list', 'edit','delete'];
@@ -120,10 +120,7 @@ class PermissionSeeder extends Seeder
                 ["id" => 41, "name"=>"role-create", "page_url"=>"/system-configuration/role/create", "parent_page"=>1],
                 ["id" => 42, "name"=>"role-view", "page_url"=>"/system-configuration/role", "parent_page"=>1],
                 ["id" => 43, "name"=>"role-edit", "page_url"=>"/system-configuration/role/edit/:id", "parent_page"=>1],
-                ["id" => 44, "name"=>"role-delete", "page_url"=>"/system-configuration/role", "parent_page"=>1],
-
-                ["id" => 45, "name"=>"role-permission", "page_url"=>"/system-configuration/role-permission", "parent_page"=>1],
-
+                ["id" => 44, "name"=>"role-delete", "page_url"=>"/system-configuration/role", "parent_page"=>1]
             ]
         ],
 
@@ -223,7 +220,7 @@ class PermissionSeeder extends Seeder
                 ["id" => 89, "name"=>"variable-create", "page_url"=>"/application-management/variable/create", "parent_page"=>1],
                 ["id" => 90, "name"=>"variable-view", "page_url"=>"/application-management/variable", "parent_page"=>1],
                 ["id" => 91, "name"=>"variable-edit", "page_url"=>"/application-management/variable/edit/:id", "parent_page"=>1],
-                ["id" => 92, "name"=>"variable-delete", "page_url"=>"/application-management/variable", "parent_page"=>1],                
+                ["id" => 92, "name"=>"variable-delete", "page_url"=>"/application-management/variable", "parent_page"=>1],
 
                 ["id" => 93, "name"=>"sub-variable-create", "page_url"=>"/application-management/sub-variable/create", "parent_page"=>1],
                 ["id" => 94, "name"=>"sub-variable-view", "page_url"=>"/application-management/sub-variable", "parent_page"=>1],
@@ -354,17 +351,17 @@ class PermissionSeeder extends Seeder
                 ["id" => 134, "name"=>"emergency-allotment-view", "page_url"=>"/payroll-management/emergency-allotment", "parent_page"=>1],
                 ["id" => 135, "name"=>"emergency-allotment-edit", "page_url"=>"/payroll-management/emergency-allotment/edit/:id", "parent_page"=>1],
                 ["id" => 136, "name"=>"emergency-allotment-delete", "page_url"=>"/payroll-management/emergency-allotment", "parent_page"=>1],
-                
+
                 ["id" => 137, "name"=>"emergency-beneficiary-create", "page_url"=>"/payroll-management/emergency-beneficiary/create", "parent_page"=>1],
                 ["id" => 138, "name"=>"emergency-beneficiary-view", "page_url"=>"/payroll-management/emergency-beneficiary", "parent_page"=>1],
                 ["id" => 139, "name"=>"emergency-beneficiary-edit", "page_url"=>"/payroll-management/emergency-beneficiary/edit/:id", "parent_page"=>1],
                 ["id" => 140, "name"=>"emergency-beneficiary-delete", "page_url"=>"/payroll-management/emergency-beneficiary", "parent_page"=>1],
-                            
+
                 ["id" => 141, "name"=>"emergency-payroll-create", "page_url"=>"/payroll-management/emergency-payroll/create", "parent_page"=>1],
                 ["id" => 142, "name"=>"emergency-payroll-view", "page_url"=>"/payroll-management/emergency-payroll", "parent_page"=>1],
                 ["id" => 143, "name"=>"emergency-payroll-edit", "page_url"=>"/payroll-management/emergency-payroll/edit/:id", "parent_page"=>1],
                 ["id" => 144, "name"=>"emergency-payroll-delete", "page_url"=>"/payroll-management/emergency-payroll", "parent_page"=>1]
-            
+
                 ]
         ],
 
@@ -375,7 +372,7 @@ class PermissionSeeder extends Seeder
         [
             'module_name' => $this->modulePermissionGrievanceManagement,
             'sub_module_name' => $this->subGrievanceSetting,
-            'guard_name' => $this->guard, 
+            'guard_name' => $this->guard,
             'permissions'=>[
                 ["id" => 145, "name"=>"grievance-setting-create", "page_url"=>"/grievance-management/grievance-setting/create", "parent_page"=>1],
                 ["id" => 146, "name"=>"grievance-setting-view", "page_url"=>"/grievance-management/grievance-setting", "parent_page"=>1],
@@ -407,7 +404,7 @@ class PermissionSeeder extends Seeder
                 ["id" => 154, "name"=>"reporting-list-view", "page_url"=>"/reporting-management/reporting-list", "parent_page"=>1],
                 ["id" => 155, "name"=>"reporting-list-edit", "page_url"=>"/reporting-management/reporting-list/edit/:id", "parent_page"=>1],
                 ["id" => 156, "name"=>"reporting-list-delete", "page_url"=>"/reporting-management/reporting-list/delete", "parent_page"=>1],
-                
+
                 ["id" => 157, "name"=>"reporting-survey-create", "page_url"=> "/reporting-management/reporting-survey", "parent_page"=>1],
                 ["id" => 158, "name"=>"reporting-survey-view", "page_url"=>"/reporting-management/reporting-survey", "parent_page"=>1],
                 ["id" => 159, "name"=>"reporting-survey-edit", "page_url"=>"/reporting-management/reporting-survey/edit/:id", "parent_page"=>1],
