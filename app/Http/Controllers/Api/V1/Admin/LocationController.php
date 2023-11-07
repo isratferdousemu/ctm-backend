@@ -97,14 +97,9 @@ class LocationController extends Controller
     public function getAllDivisionPaginated(Request $request)
     {
         // Retrieve the query parameters
-        // $searchText = $request->query('searchText');
-        //  $perPage = $request->query('perPage');
-        //  $page = $request->get('page');
-
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
-        // $page = $request->get('page');
-        $page = $request->get('page', 1); 
+        $page = $request->get('page');
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -115,38 +110,21 @@ class LocationController extends Controller
             $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
         }
-
-        
         $division = Location::query()
-           ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
-       
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
                 $query->where($filterArrayNameEn)
                     ->orWhere($filterArrayNameBn)
                     ->orWhere($filterArrayCode);
             })
-        
             ->whereParentId(null)
             ->latest()
             ->paginate($perPage, ['*'], 'page');
-        
 
         return DivisionResource::collection($division)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
-            // 'perpage'=>$perPage ,
-            // 'page'=>$page ,
-            // 'search'=> $searchText,
-            // 'Div'=>$division
-            
-
-         
-          
         ]);
-
-
-        
     }
-
 
     /**
      *
