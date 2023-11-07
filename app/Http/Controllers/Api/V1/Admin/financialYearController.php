@@ -70,11 +70,29 @@ class financialYearController extends Controller
 
  public function getFinancialPaginated(Request $request){
     // Retrieve the query parameters
+    $searchText = $request->query('searchText');
     $perPage = $request->query('perPage');
     $page = $request->query('page');
 
+   
+    
 
+        $filterFinancialYear = [];
+        $filterStartDate = [];
+        $filterEndDate = [];
+
+
+        if ($searchText) {
+            $filterFinancialYear[] = ['financial_year', 'LIKE', '%' . $searchText . '%'];
+            $filterStartDate[] = ['start_date', 'LIKE', '%' . $searchText . '%'];
+            $filterEndDate[] = ['end_date', 'LIKE', '%' . $searchText . '%'];
+        }
     $financial = FinancialYear::query()
+     ->where(function ($query) use ($filterFinancialYear, $filterStartDate, $filterEndDate) {
+                $query->where($filterFinancialYear)
+                    ->orWhere($filterStartDate)
+                    ->orWhere($filterEndDate);
+            })
     ->latest()
     ->paginate($perPage, ['*'], 'page');
 
