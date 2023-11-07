@@ -126,7 +126,6 @@ class LocationController extends Controller
         ]);
     }
 
-
     /**
      *
      * @OA\Post(
@@ -482,6 +481,12 @@ class LocationController extends Controller
             'success' => true,
             'message' => $this->fetchSuccessMessage,
         ]);
+        // $district = Location::with("parent")->whereType($this->district)->get();
+
+        // return DistrictResource::collection($district)->additional([
+        //     'success' => true,
+        //     'message' => $this->fetchSuccessMessage,
+        // ]);
     }
 
     /**
