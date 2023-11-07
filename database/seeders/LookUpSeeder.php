@@ -36,23 +36,23 @@ class LookUpSeeder extends Seeder
             ['id' => 20, 'type' => 18, 'value_en' => 'President', 'value_bn' => 'President','default'=>1],
             ['id' => 21, 'type' => 18, 'value_en' => 'Vice President', 'value_bn' => 'Vice President','default'=>1],
             ['id' => 22, 'type' => 18, 'value_en' => 'Member', 'value_bn' => 'Member','default'=>1],
-           
-            ///GENDER Seeder           
+
+            ///GENDER Seeder
             ['id' => 23, 'type' => 2, 'value_en' => 'Male', 'value_bn' => 'পুরুষ','default'=>1],
             ['id' => 24, 'type' => 2, 'value_en' => 'Female', 'value_bn' => 'মহিলা','default'=>1],
-        
+
             ///CLASS Seeder
-            ['id' => 25, 'type' => 20, 'value_en' => 'One', 'value_bn' => 'এক','default'=>1],
-            ['id' => 26, 'type' => 20, 'value_en' => 'Two', 'value_bn' => 'দুই','default'=>1],
-            ['id' => 27, 'type' => 20, 'value_en' => 'Three', 'value_bn' => 'তিন','default'=>1],
-            ['id' => 28, 'type' => 20, 'value_en' => 'Four', 'value_bn' => 'চার','default'=>1],
-            ['id' => 29, 'type' => 20, 'value_en' => 'Five', 'value_bn' => 'পাঁচ','default'=>1],
-            ['id' => 30, 'type' => 20, 'value_en' => 'Six', 'value_bn' => 'ছয়','default'=>1],
-            ['id' => 31, 'type' => 20, 'value_en' => 'Seven', 'value_bn' => 'সাত','default'=>1],
-            ['id' => 32, 'type' => 20, 'value_en' => 'Eight', 'value_bn' => 'আট','default'=>1],
-            ['id' => 33, 'type' => 20, 'value_en' => 'Nine', 'value_bn' => 'নয়','default'=>1],
-            ['id' => 34, 'type' => 20, 'value_en' => 'Ten', 'value_bn' => 'দশ','default'=>1],
-        
+            ['id' => 25, 'type' => 20, 'value_en' => '1', 'value_bn' => 'এক','default'=>1],
+            ['id' => 26, 'type' => 20, 'value_en' => '2', 'value_bn' => 'দুই','default'=>1],
+            ['id' => 27, 'type' => 20, 'value_en' => '3', 'value_bn' => 'তিন','default'=>1],
+            ['id' => 28, 'type' => 20, 'value_en' => '4', 'value_bn' => 'চার','default'=>1],
+            ['id' => 29, 'type' => 20, 'value_en' => '5', 'value_bn' => 'পাঁচ','default'=>1],
+            ['id' => 30, 'type' => 20, 'value_en' => '6', 'value_bn' => 'ছয়','default'=>1],
+            ['id' => 31, 'type' => 20, 'value_en' => '7', 'value_bn' => 'সাত','default'=>1],
+            ['id' => 32, 'type' => 20, 'value_en' => '8', 'value_bn' => 'আট','default'=>1],
+            ['id' => 33, 'type' => 20, 'value_en' => '9', 'value_bn' => 'নয়','default'=>1],
+            ['id' => 34, 'type' => 20, 'value_en' => '10', 'value_bn' => 'দশ','default'=>1],
+
         ];
         foreach ($lookups as $value) {
             $lookup = new Lookup;
