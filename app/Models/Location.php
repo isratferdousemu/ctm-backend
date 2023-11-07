@@ -79,7 +79,7 @@ class Location extends Model
 
     public function parent()
     {
-        return $this->belongsTo(Location::class, 'parent_id');
+        return $this->belongsTo(Location::class, 'parent_id') ->orderBy('name_en', 'asc');
     }
     public function locationType()
     {

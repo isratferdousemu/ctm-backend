@@ -606,7 +606,6 @@ class ApplicationController extends Controller
         ->orderBy('score', 'asc')
         ->paginate($perPage, ['*'], 'page',$page);
         return $applications;
-        // if has district_id then get application current_location_id is this district locations
 
 
     }
