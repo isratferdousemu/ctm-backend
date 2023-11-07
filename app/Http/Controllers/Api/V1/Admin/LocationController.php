@@ -392,18 +392,6 @@ class LocationController extends Controller
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
-     *         name="sortBy",
-     *         in="query",
-     *         description="sort by asc, or desc",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="orderBy",
-     *         in="query",
-     *         description="order by column name",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
      *         name="perPage",
      *         in="query",
      *         description="number of Districts per page",
@@ -441,14 +429,15 @@ class LocationController extends Controller
      * )
      */
 
+
     public function getAllDistrictPaginated(Request $request)
     {
         // Retrieve the query parameters
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
-        $sortBy = $request->query('sortBy')??'name_en';
-        $orderBy = $request->query('orderBy')??'asc';
+        $sortBy = $request->query('sortBy') ?? 'name_en';
+        $orderBy = $request->query('orderBy') ?? 'asc';
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -458,7 +447,7 @@ class LocationController extends Controller
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
             $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-            if($searchText!=null){
+            if ($searchText != null) {
                 $page = 1;
             }
         }
@@ -475,7 +464,7 @@ class LocationController extends Controller
             ->orderBy($sortBy, $orderBy)
             ->latest()
             ->paginate($perPage, ['*'], 'page', $page);
-            // ->paginate($perPage, ['*'], $page);
+        // ->paginate($perPage, ['*'], $page);
 
         return DistrictResource::collection($district)->additional([
             'success' => true,
@@ -488,6 +477,7 @@ class LocationController extends Controller
         //     'message' => $this->fetchSuccessMessage,
         // ]);
     }
+
 
     /**
      *
@@ -1822,6 +1812,59 @@ class LocationController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *      path="/admin/union/pouro/get/{upazila_id}",
+     *      operationId="getAllPouroByThanaId",
+     *      tags={"GEOGRAPHIC-UNION"},
+     *      summary=" get pouro by upazila id",
+     *      description="get pouro by upazila id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of pouro to return",
+     *         in="path",
+     *         name="upazila_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+    public function getAllPouroByThanaId($upazila_id)
+    {
+
+
+        $pouros = Location::whereParentId($upazila_id)->whereType($this->pouro)->get();
+
+        return DistrictResource::collection($pouros)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
+
+    /**
      *
      * @OA\Post(
      *      path="/admin/union/insert",
@@ -2225,6 +2268,59 @@ class LocationController extends Controller
 
 
         $wards = Location::whereParentId($thana_id)->whereType($this->ward)->get();
+
+        return DistrictResource::collection($wards)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/admin/ward/get/pouro/{pouro_id}",
+     *      operationId="getAllWardByPouroId",
+     *      tags={"GEOGRAPHIC-WARD"},
+     *      summary=" get ward by pouro id",
+     *      description="get ward by pouro id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of pouro to return",
+     *         in="path",
+     *         name="pouro_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+    public function getAllWardByPouroId($pouro_id)
+    {
+
+
+        $wards = Location::whereParentId($pouro_id)->whereType($this->ward)->get();
 
         return DistrictResource::collection($wards)->additional([
             'success' => true,

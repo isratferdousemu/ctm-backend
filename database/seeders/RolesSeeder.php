@@ -29,6 +29,7 @@ class RolesSeeder extends Seeder
                     'guard_name' => $guard,
                     'code' => "278932",
                     'default' => 1,
+                    'status'  =>1,
                     'name_en' => $this->superAdmin,
                     'name_bn' => $this->superAdmin,
                     'name' => $this->superAdmin
@@ -38,6 +39,7 @@ class RolesSeeder extends Seeder
                     'guard_name' => $guard,
                     'code' => "10001",
                     'default' => 1,
+                    'status'  =>1,
                     'name_en' => $this->officeHead,
                     'name_bn' => $this->officeHead,
                     'name' => $this->officeHead
