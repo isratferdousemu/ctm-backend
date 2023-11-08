@@ -446,7 +446,7 @@ class LocationController extends Controller
     {
         // Retrieve the query parameters
         $searchText = $request->query('searchText');
-        $perPage = $request->query('perPage')??10;
+        $perPage = $request->query('perPage') ?? 10;
         $page = $request->query('page');
         $sortBy = $request->query('sortBy') ?? 'district.name_en';
         $orderBy = $request->query('orderBy') ?? 'asc';
@@ -468,13 +468,13 @@ class LocationController extends Controller
                 $page = 1;
             }
         }
-        
-        if($sortBy=='parent.name_en'){
-            $sortBy='locations.name_en';
-        }else if($sortBy=='name_bn'){
-            $sortBy='district.name_bn';
-        }else if($sortBy=='parent.code'){
-            $sortBy='locations.code';
+
+        if ($sortBy == 'parent.name_en') {
+            $sortBy = 'locations.name_en';
+        } else if ($sortBy == 'name_bn') {
+            $sortBy = 'district.name_bn';
+        } else if ($sortBy == 'parent.code') {
+            $sortBy = 'locations.code';
         }
 
         $district = Location::query()
@@ -484,8 +484,8 @@ class LocationController extends Controller
                     ->orWhere($filterArrayCode);
             })
             ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
-            ->select('locations.*', 'district.name_en as district_name_en', 'district.name_bn as district_name_bn', 'district.code as district_code','district.type as district_type','district.id as district_id','district.parent_id as district_parent_id','district.location_type as district_location_type')
-            ->where('district.type','=',$this->district)
+            ->select('locations.*', 'district.name_en as district_name_en', 'district.name_bn as district_name_bn', 'district.code as district_code', 'district.type as district_type', 'district.id as district_id', 'district.parent_id as district_parent_id', 'district.location_type as district_location_type')
+            ->where('district.type', '=', $this->district)
             ->orderBy($sortBy, $orderBy)
             ->with('districtParent')
             ->paginate($perPage, ['*'], 'page', $page);
@@ -867,32 +867,100 @@ class LocationController extends Controller
 
     public function getAllCityPaginated(Request $request)
     {
+        // // Retrieve the query parameters
+        // $searchText = $request->query('searchText');
+        // $perPage = $request->query('perPage');
+        // $page = $request->query('page');
+
+        // $filterArrayNameEn = [];
+        // $filterArrayNameBn = [];
+        // $filterArrayCode = [];
+
+        // if ($searchText) {
+        //     $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+        //     $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+        //     $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+        // }
+        // $district = Location::query()
+        //     ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+        //         $query->where($filterArrayNameEn)
+        //             ->orWhere($filterArrayNameBn)
+        //             ->orWhere($filterArrayCode);
+        //     })
+        //     // ->whereType($this->city)
+        //     ->whereIn('type', [$this->city, $this->thana])
+        //     ->with('parent.parent', 'locationType')
+        //     ->latest()
+        //     ->paginate($perPage, ['*'], 'page');
+        // return CityResource::collection($district)->additional([
+        //     'success' => true,
+        //     'message' => $this->fetchSuccessMessage,
+        // ]);
+
         // Retrieve the query parameters
         $searchText = $request->query('searchText');
-        $perPage = $request->query('perPage');
+        $perPage = $request->query('perPage') ?? 10;
         $page = $request->query('page');
+        $sortBy = $request->query('sortBy') ?? 'city.name_en';
+        $orderBy = $request->query('orderBy') ?? 'asc';
+        // if($orderBy){
+        //     $orderBy='desc';
+        // }else{
+        //     $orderBy='asc';
+        // }
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
         $filterArrayCode = [];
 
         if ($searchText) {
-            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+            // $filterArrayNameEn[] = ['city.name_en', 'LIKE', '%' . $searchText . '%'];
+            // $filterArrayNameBn[] = ['city.name_bn', 'LIKE', '%' . $searchText . '%'];
+            // $filterArrayCode[] = ['city.code', 'LIKE', '%' . $searchText . '%'];
+
+            $filterArrayNameBn[] = ['district.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['district.name_bn', 'LIKE', '%' . $searchText . '%'];
+            if ($searchText != null) {
+                $page = 1;
+            }
         }
-        $district = Location::query()
+
+        if ($sortBy == 'parent.name_en') {
+            $sortBy = 'locations.name_en';
+        } 
+        else if ($sortBy == 'name_bn') {
+            $sortBy = 'city.name_bn';
+        } 
+        else if ($sortBy == 'parent.code') {
+            $sortBy = 'locations.code';
+        }
+
+        $city = Location::query()
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
                 $query->where($filterArrayNameEn)
                     ->orWhere($filterArrayNameBn)
                     ->orWhere($filterArrayCode);
             })
-            // ->whereType($this->city)
-            ->whereIn('type', [$this->city, $this->thana])
-            ->with('parent.parent', 'locationType')
-            ->latest()
-            ->paginate($perPage, ['*'], 'page');
-        return CityResource::collection($district)->additional([
+            ->leftJoin('locations as division', 'division.parent_id', '=', 'locations.id')
+            ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
+            ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
+            ->select(
+                'locations.*',
+                // 'city.name_en as city_name_en',
+                // 'city.name_bn as city_name_bn',
+                // 'city.code as city_code',
+                // 'city.type as city_type',
+                // 'city.id as city_id',
+                // 'city.parent_id as city_parent_id',
+                // 'city.location_type as city_location_type'
+            )
+            ->where('locations.type', '=', $this->city)
+            ->orderBy($sortBy, $orderBy)
+            ->with('parent.parent')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return $city;
+        return CityResource::collection($city)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
         ]);

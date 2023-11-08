@@ -20,7 +20,8 @@ class CityResource extends JsonResource
             'name_en'              => $this->name_en,
             'name_bn'              => $this->name_bn,
             'code'                 => $this->code,
-            'district'  => DistrictResource::make($this->whenLoaded('parent')),
+            // 'district'  => DistrictResource::make($this->whenLoaded('parent')),
+            'parent'  => DistrictResource::make($this->whenLoaded('cityParent')),
             'locationType'  => LookupResource::make($this->whenLoaded('locationType')),
         ];
     }
