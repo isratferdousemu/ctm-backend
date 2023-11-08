@@ -515,7 +515,7 @@
                         "in": "query",
                         "description": "search by application id",
                         "schema": {
-                            "type": "string"
+                            "type": "text"
                         }
                     },
                     {
@@ -523,7 +523,7 @@
                         "in": "query",
                         "description": "search by nominee name",
                         "schema": {
-                            "type": "string"
+                            "type": "text"
                         }
                     },
                     {

@@ -734,7 +734,7 @@ class LocationController extends Controller
 
 
         $district = Location::whereParentId($division_id)->whereType($this->district)->get();
-
+        // return $district;
         return DistrictResource::collection($district)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
