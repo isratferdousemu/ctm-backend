@@ -1949,22 +1949,6 @@
                         }
                     },
                     {
-                        "name": "sortBy",
-                        "in": "query",
-                        "description": "sort by asc, or desc",
-                        "schema": {
-                            "type": "text"
-                        }
-                    },
-                    {
-                        "name": "orderBy",
-                        "in": "query",
-                        "description": "order by column name",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "name": "perPage",
                         "in": "query",
                         "description": "number of Districts per page",
@@ -3073,6 +3057,53 @@
                 ]
             }
         },
+        "/admin/union/pouro/get/{upazila_id}": {
+            "get": {
+                "tags": [
+                    "GEOGRAPHIC-UNION"
+                ],
+                "summary": " get pouro by upazila id",
+                "description": "get pouro by upazila id",
+                "operationId": "getAllPouroByThanaId",
+                "parameters": [
+                    {
+                        "name": "upazila_id",
+                        "in": "path",
+                        "description": "id of pouro to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/union/insert": {
             "post": {
                 "tags": [
@@ -3363,6 +3394,53 @@
                         "name": "thana_id",
                         "in": "path",
                         "description": "id of thana to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/ward/get/pouro/{pouro_id}": {
+            "get": {
+                "tags": [
+                    "GEOGRAPHIC-WARD"
+                ],
+                "summary": " get ward by pouro id",
+                "description": "get ward by pouro id",
+                "operationId": "getAllWardByPouroId",
+                "parameters": [
+                    {
+                        "name": "pouro_id",
+                        "in": "path",
+                        "description": "id of pouro to return",
                         "schema": {
                             "type": "integer"
                         }
