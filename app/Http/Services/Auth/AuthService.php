@@ -141,14 +141,14 @@ class AuthService
                     }
 
                 }
-                if (Hash::check($request->password, $user->password)) {
+                if (Hash::check($user->salt . $request->password, $user->password)) {
                     return $this->authSuccessCode;
                 }
             } else {
                 return $this->nonAllowedUserErrorCode;
             }
         }
-        if (Hash::check($request->password, $user->password)) {
+        if (Hash::check($user->salt . $request->password, $user->password)) {
             return $this->authSuccessCode;
         }
 
@@ -180,7 +180,9 @@ class AuthService
                 "Verification code invalid !",
             );
         }
-        $user->password=Hash::make($request->password);
+    $user->salt = Helper::generateSalt();
+        // password encryption with salt
+        $user->password = bcrypt($user->salt . $request->password);
         $user->save();
         $cachedCode = Cache::forget($this->userLoginOtpPrefix . $user->id);
 
@@ -219,7 +221,9 @@ class AuthService
 
                 if($user->is_default_password==1){
                     if (Hash::check($request->old_password, $user->password)) {
-                        $user->password=Hash::make($request->password);
+                        $user->salt = Helper::generateSalt();
+                        // password encryption with salt
+                        $user->password = bcrypt($user->salt . $request->password);
                         $user->is_default_password=0;
                         $user->save();
                         return $user;

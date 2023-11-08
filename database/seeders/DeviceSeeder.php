@@ -30,7 +30,7 @@ class DeviceSeeder extends Seeder
                 'user_id' => 1000,
                 'name' => 'tarikul',
                 'device_name' => 'laptop',
-                'device_id' => 'c0393ba4a620b63012af4136b17eb797',
+                'device_id' => '82431752d5f6807aeeaa87a24eb0251b',
                 'ip_address' => '127.0.0.1',
                 'createdBy' => 1,
                 'device_type' => 1,

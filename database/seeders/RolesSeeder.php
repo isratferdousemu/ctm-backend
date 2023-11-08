@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\Helper;
 use App\Http\Traits\RoleTrait;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -45,14 +46,15 @@ class RolesSeeder extends Seeder
                     'name' => $this->officeHead
                 ]);
                 $officeHeadRole->givePermissionTo(Permission::all());
-
+        $salt = Helper::generateSalt();
         $admin = User::create(
             [
                 'full_name'            => 'CTM',
                 'username'            => 'ctm-01',
                 'user_id'            => 1000,
                 'email'                 => 'admin@ctm.com',
-                'password'              => bcrypt('12345678'),
+                'salt'                  =>$salt,
+                'password'              => bcrypt($salt . '12345678') ,
                 'user_type'               => $this->superAdminId,
                 'remember_token'        => Str::random(10),
                 'status'            => 1,
