@@ -257,13 +257,13 @@ class ApplicationController extends Controller
     *         name="application_id",
     *         in="query",
     *         description="search by application id",
-    *         @OA\Schema(type="number")
+    *         @OA\Schema(type="text")
     *     ),
     *     @OA\Parameter(
     *         name="nominee_name",
     *         in="query",
     *         description="search by nominee name",
-    *         @OA\Schema(type="number")
+    *         @OA\Schema(type="text")
     *     ),
     *     @OA\Parameter(
     *         name="account_no",
@@ -603,7 +603,7 @@ class ApplicationController extends Controller
         })
         ->with('current_location','permanent_location.parent.parent.parent','program','gender')
         ->latest()
-        ->orderBy('score', 'asc')
+        // ->orderBy('score', 'asc')
         ->paginate($perPage, ['*'], 'page',$page);
         return $applications;
 

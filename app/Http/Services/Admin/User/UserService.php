@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Admin\User;
 
+use App\Helpers\Helper;
 use App\Http\Traits\RoleTrait;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -49,7 +50,11 @@ class UserService
             }
             $user->office_id = $request->office_id;
             $user->user_type = $this->staffId;
-            $user->password = bcrypt($password);
+            $user->salt = Helper::generateSalt();
+
+            // password encryption with salt
+            $user->password = bcrypt($user->salt . $password);
+
             $user->user_id = $this->generateUserId();
             $user->email_verified_at = now();
             $user->save();
@@ -115,7 +120,7 @@ class UserService
 
     // public function upddateUser(Request $request, $id)
     // {
-        
+
     //     DB::beginTransaction();
     //     try {
     //         $user = User::findOrFail($id);
@@ -146,7 +151,7 @@ class UserService
     //         //         }
     //         //     }
     //         // }
-            
+
     //         // Save the updated user record
     //         $user->save();
 

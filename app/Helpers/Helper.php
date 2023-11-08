@@ -32,4 +32,11 @@ class Helper{
         return "{$startOfFinancialYear}-{$endOfFinancialYear}";
     }
 
+    public static function generateSalt(){
+
+        $salt = Str::random(20) . Str::random(10);
+        return $salt;
+
+    }
+
 }
