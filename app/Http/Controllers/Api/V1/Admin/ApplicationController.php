@@ -257,13 +257,13 @@ class ApplicationController extends Controller
     *         name="application_id",
     *         in="query",
     *         description="search by application id",
-    *         @OA\Schema(type="number")
+    *         @OA\Schema(type="string")
     *     ),
     *     @OA\Parameter(
     *         name="nominee_name",
     *         in="query",
     *         description="search by nominee name",
-    *         @OA\Schema(type="number")
+    *         @OA\Schema(type="string")
     *     ),
     *     @OA\Parameter(
     *         name="account_no",

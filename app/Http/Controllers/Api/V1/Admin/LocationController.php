@@ -403,6 +403,18 @@ class LocationController extends Controller
      *         description="page number",
      *         @OA\Schema(type="integer")
      *     ),
+     *     @OA\Parameter(
+     *         name="sortBy",
+     *         in="query",
+     *         description="sortBy column name",
+     *         @OA\Schema(type="text")
+     *     ),
+     *     @OA\Parameter(
+     *         name="orderBy",
+     *         in="query",
+     *         description="asc or desc",
+     *         @OA\Schema(type="text")
+     *     ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -434,10 +446,15 @@ class LocationController extends Controller
     {
         // Retrieve the query parameters
         $searchText = $request->query('searchText');
-        $perPage = $request->query('perPage');
+        $perPage = $request->query('perPage')??10;
         $page = $request->query('page');
-        $sortBy = $request->query('sortBy') ?? 'name_en';
+        $sortBy = $request->query('sortBy') ?? 'district.name_en';
         $orderBy = $request->query('orderBy') ?? 'asc';
+        // if($orderBy){
+        //     $orderBy='desc';
+        // }else{
+        //     $orderBy='asc';
+        // }
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -451,7 +468,13 @@ class LocationController extends Controller
                 $page = 1;
             }
         }
-
+        if($sortBy=='parent.name_en'){
+            $sortBy='locations.name_en';
+        }else if($sortBy=='name_bn'){
+            $sortBy='district.name_bn';
+        }else if($sortBy=='parent.code'){
+            $sortBy='locations.code';
+        }
 
         $district = Location::query()
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
@@ -459,23 +482,23 @@ class LocationController extends Controller
                     ->orWhere($filterArrayNameBn)
                     ->orWhere($filterArrayCode);
             })
-            ->whereType($this->district)
-            ->with('parent')
+            ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
+            ->select('locations.*', 'district.name_en as district_name_en', 'district.name_bn as district_name_bn', 'district.code as district_code','district.type as district_type','district.id as district_id','district.parent_id as district_parent_id','district.location_type as district_location_type')
+            ->where('district.type','=',$this->district)
             ->orderBy($sortBy, $orderBy)
-            ->latest()
+            ->with('districtParent')
             ->paginate($perPage, ['*'], 'page', $page);
-        // ->paginate($perPage, ['*'], $page);
+        // return $district;
+        // return DistrictResource::collection($district)->additional([
+        //     'success' => true,
+        //     'message' => $this->fetchSuccessMessage,
+        // ]);
+        // $district = Location::with("parent")->whereType($this->district)->get();
 
         return DistrictResource::collection($district)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
         ]);
-        // $district = Location::with("parent")->whereType($this->district)->get();
-
-        // return DistrictResource::collection($district)->additional([
-        //     'success' => true,
-        //     'message' => $this->fetchSuccessMessage,
-        // ]);
     }
 
 
