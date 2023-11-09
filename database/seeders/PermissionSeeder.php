@@ -120,7 +120,10 @@ class PermissionSeeder extends Seeder
                 ["id" => 41, "name"=>"role-create", "page_url"=>"/system-configuration/role/create", "parent_page"=>1],
                 ["id" => 42, "name"=>"role-view", "page_url"=>"/system-configuration/role", "parent_page"=>1],
                 ["id" => 43, "name"=>"role-edit", "page_url"=>"/system-configuration/role/edit/:id", "parent_page"=>1],
-                ["id" => 44, "name"=>"role-delete", "page_url"=>"/system-configuration/role", "parent_page"=>1]
+                ["id" => 44, "name"=>"role-delete", "page_url"=>"/system-configuration/role", "parent_page"=>1],
+
+                ["id" => 45, "name"=>"role-permission", "page_url"=>"/system-configuration/role-permission", "parent_page"=>1],
+
             ]
         ],
 

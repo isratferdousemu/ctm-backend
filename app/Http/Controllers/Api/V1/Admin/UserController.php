@@ -280,7 +280,9 @@ class UserController extends Controller
                     $query->where('name', $this->officeHead);
                 })->first();
                 if($officeHead){
-                    return $this->sendError('This office already has a office head', [], 500);
+                    return $this->sendError('This office already has a office head', [
+                        'office_id'=>'This office already has a office head',
+                    ], 422);
                 }
             }
         }
