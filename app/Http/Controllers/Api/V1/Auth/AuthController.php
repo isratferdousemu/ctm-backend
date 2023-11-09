@@ -6,6 +6,7 @@ use App\Events\RealTimeMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminAuthResource;
 use App\Http\Services\Auth\AuthService;
+use App\Http\Services\Notification\SMSservice;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\UserTrait;
 use App\Models\User;
@@ -20,10 +21,13 @@ class AuthController extends Controller
 {
     use UserTrait, MessageTrait;
     private $authService;
+    private $SMSservice;
     public function __construct(
-        AuthService $authService
+        AuthService $authService,
+        SMSservice $SMSservice
     ) {
         $this->authService = $authService;
+        $this->SMSservice = $SMSservice;
         // $this->middleware('permission:user-list|user-create|user-edit|user-delete', ['only' => ['index', 'store']]);
         // $this->middleware('permission:user-create', ['only' => ['create', 'store']]);
         // $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
@@ -89,7 +93,7 @@ class AuthController extends Controller
          $this->authService->validatePhone($request);
          //forgot password
          $data = $this->authService->AdminForgotPassword($request);
-
+        return $this->SMSservice->sendSms($request->phone, $data);
          activity("Forgot")
          ->log('Forgot Password OTP Send!!');
 
