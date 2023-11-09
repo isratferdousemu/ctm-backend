@@ -830,7 +830,7 @@ class LocationController extends Controller
      *     @OA\Parameter(
      *         name="perPage",
      *         in="query",
-     *         description="number of city per page",
+     *         description="number of Districts per page",
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
@@ -838,6 +838,18 @@ class LocationController extends Controller
      *         in="query",
      *         description="page number",
      *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="sortBy",
+     *         in="query",
+     *         description="sortBy column name",
+     *         @OA\Schema(type="text")
+     *     ),
+     *     @OA\Parameter(
+     *         name="orderBy",
+     *         in="query",
+     *         description="asc or desc",
+     *         @OA\Schema(type="text")
      *     ),
      *      @OA\Response(
      *          response=200,
@@ -901,8 +913,10 @@ class LocationController extends Controller
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage') ?? 10;
         $page = $request->query('page');
-        $sortBy = $request->query('sortBy') ?? 'city.name_en';
+        $sortBy = $request->query('sortBy') ?? 'name_en';
         $orderBy = $request->query('orderBy') ?? 'asc';
+        // $sortBy = $request->query('sortBy') ?? 'city.name_en';
+        // $orderBy = $request->query('orderBy') ?? 'asc';
         // if($orderBy){
         //     $orderBy='desc';
         // }else{
@@ -913,50 +927,201 @@ class LocationController extends Controller
         $filterArrayNameBn = [];
         $filterArrayCode = [];
 
-        if ($searchText) {
-            // $filterArrayNameEn[] = ['city.name_en', 'LIKE', '%' . $searchText . '%'];
-            // $filterArrayNameBn[] = ['city.name_bn', 'LIKE', '%' . $searchText . '%'];
-            // $filterArrayCode[] = ['city.code', 'LIKE', '%' . $searchText . '%'];
+        $parent2filterArrayNameEn = [];
+        $parent2filterArrayNameBn = [];
+        $parent2filterArrayCode = [];
 
-            $filterArrayNameBn[] = ['district.name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayNameBn[] = ['district.name_bn', 'LIKE', '%' . $searchText . '%'];
+        $parent1filterArrayNameEn = [];
+        $parent1filterArrayNameBn = [];
+        $parent1filterArrayCode = [];
+
+        if ($searchText) {
+            $filterArrayNameEn[] = ['locations.name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['locations.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayCode[]   = ['locations.code', 'LIKE', '%' . $searchText . '%'];
+
+            $parent2filterArrayNameEn[] = ['parent2.name_en', 'LIKE', '%' . $searchText . '%'];
+            $parent2filterArrayNameBn[] = ['parent2.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $parent2filterArrayCode[]   = ['parent2.code', 'LIKE', '%' . $searchText . '%'];
+
+            $parent1filterArrayNameEn[] = ['parent1.name_en', 'LIKE', '%' . $searchText . '%'];
+            $parent1filterArrayNameBn[] = ['parent1.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $parent1filterArrayCode[]   = ['parent1.code', 'LIKE', '%' . $searchText . '%'];
+
+            // $filterArrayNameEn[] = ['parent.name', 'LIKE', '%' . $searchText . '%'];
+            // $filterArrayNameBn[] = ['district.name_bn', 'LIKE', '%' . $searchText . '%'];
+
+
+            // $filterArrayNameBn[] = ['district.name_bn', 'LIKE', '%' . $searchText . '%'];
+            // $filterArrayNameBn[] = ['district.name_bn', 'LIKE', '%' . $searchText . '%'];
             if ($searchText != null) {
                 $page = 1;
             }
         }
 
+        // 
+        // this is a 3 Level Search/Sorting
+        // so this will start from name which is at level 3
+        // then parent.name which is at level 2
+        // then parent.parent.name which is at level 1
+        // 
+
+        // Level 3
+        if ($sortBy == 'name_en') {
+            $sortBy = 'name_en';
+        }
+        // Level 2
         if ($sortBy == 'parent.name_en') {
-            $sortBy = 'locations.name_en';
-        } 
-        else if ($sortBy == 'name_bn') {
-            $sortBy = 'city.name_bn';
-        } 
-        else if ($sortBy == 'parent.code') {
-            $sortBy = 'locations.code';
+            $sortBy = 'parent2.name_en';
+        }
+        // Level 1
+        if ($sortBy == 'parent.parent.name_en') {
+            $sortBy = 'parent1.name_en';
         }
 
+        // $city = Location::query()
+        //     ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+        //         $query->where($filterArrayNameEn)
+        //             ->orWhere($filterArrayNameBn)
+        //             ->orWhere($filterArrayCode);
+        //     })
+        //     // ->leftJoin('locations as division', 'division.parent_id', '=', 'locations.id')
+        //     ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
+        //     ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
+        //     ->select(
+        //         'city.*',
+        //         'district.name_en AS district_name',
+        //         // 'city.name_en as city_name_en',
+        //         // 'city.name_bn as city_name_bn',
+        //         // 'city.code as city_code',
+        //         // 'city.type as city_type',
+        //         // 'city.id as city_id',
+        //         // 'city.parent_id as city_parent_id',
+        //         // 'city.location_type as city_location_type'
+        //     )
+        //     ->where($this->city.'.type', '=', $this->city)
+        //     ->orderBy($sortBy, $orderBy)
+        //     ->with('parent')
+        //     // ->with('cityParent.districtParent.parent')
+        //     ->paginate($perPage, ['*'], 'page', $page);
+
+        // remove Metas
+
+        ///
+        // parent4
+        // parent3
+        // parent2
+        // parent1
+        /// JOIN and Search in Nested 1 is Nested of 2 which means parent2.parent1
+
         $city = Location::query()
-            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
-                $query->where($filterArrayNameEn)
-                    ->orWhere($filterArrayNameBn)
-                    ->orWhere($filterArrayCode);
-            })
-            ->leftJoin('locations as division', 'division.parent_id', '=', 'locations.id')
-            ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
-            ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
+            ->join('locations as parent2', 'locations.parent_id', '=', 'parent2.id') // Join with the parent table
+            ->join('locations as parent1', 'parent2.parent_id', '=', 'parent1.id') // Join with the grandparent table
+            // ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
+            // ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
             ->select(
                 'locations.*',
-                // 'city.name_en as city_name_en',
-                // 'city.name_bn as city_name_bn',
-                // 'city.code as city_code',
-                // 'city.type as city_type',
-                // 'city.id as city_id',
-                // 'city.parent_id as city_parent_id',
-                // 'city.location_type as city_location_type'
+                // 'parent.name_en as parent_name_en', 
+                // 'parent.name_bn as parent_name_bn', 
+                // 'parent.code as parent_code', 
+                // 'parent.type as parent_type', 
+                // 'parent.id as parent_id', 
+                // 'parent.parent_id as parent_parent_id', 
+                // 'parent.type as parent_type', 
+                // 'parent.location_type as parent_location_type' 
+                // 'district.name_en AS district_name'
             )
+
+            // ->where($this->city.'.type', '=', $this->city)
+            // ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+            //     $query->where($filterArrayNameEn)
+            //         ->orWhere($filterArrayNameBn)
+            //         ->orWhere($filterArrayCode);
+            // })
+
+            // ->whereHas('parent', function ($query) use ($searchText) {
+            //     $query->where('name_en', 'LIKE', '%' . $searchText . '%'); // Direct District Search        
+            //     $query->orWhereHas('parent', function ($query) use ($searchText) {
+            //         $query->where('name_en', 'LIKE', '%' . $searchText . '%'); // Direct Division Search        
+            //     });
+            // })
+
+            //Works
+            // ->where(function ($query) use ($searchText) {
+            //     $query->where('name_en', 'LIKE', '%' . $searchText . '%') // Direct Division Search
+            //         ->orWhereHas('parent', function ($query) use ($searchText) {
+            //             $query->where('name_en', 'LIKE', '%' . $searchText . '%'); // Direct District Search
+            //             $query->orWhereHas('parent', function ($query) use ($searchText) {
+            //                 $query->where('name_en', 'LIKE', '%' . $searchText . '%'); // Direct Division Search
+            //             });
+            //         });
+            // })
+            //Works
+
+            //Works
+            ->where(function ($query) use (
+                $filterArrayNameEn,
+                $filterArrayNameBn,
+                $filterArrayCode,
+                $parent2filterArrayNameEn,
+                $parent2filterArrayNameBn,
+                $parent2filterArrayCode,
+                $parent1filterArrayNameEn,
+                $parent1filterArrayNameBn,
+                $parent1filterArrayCode
+            ) {
+
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode) // City Search
+
+                    ->orWhereHas('parent', function ($query) use (
+                        $parent2filterArrayNameEn,
+                        $parent2filterArrayNameBn,
+                        $parent2filterArrayCode,
+                        $parent1filterArrayNameEn,
+                        $parent1filterArrayNameBn,
+                        $parent1filterArrayCode
+                    ) {
+                        $query->where($parent2filterArrayNameEn)
+                            ->orWhere($parent2filterArrayNameBn)
+                            ->orWhere($parent2filterArrayCode) // District Search
+
+                            ->orWhereHas('parent', function ($query) use ($parent1filterArrayNameEn, $parent1filterArrayNameBn, $parent1filterArrayCode) {
+                                $query->where($parent1filterArrayNameEn)
+                                    ->orWhere($parent1filterArrayNameBn)
+                                    ->orWhere($parent1filterArrayCode); // Division Search
+                            });
+                    });
+            })
+            //Works
+
+
+
+
+
             ->where('locations.type', '=', $this->city)
+            ->whereIn('locations.type', [$this->city, $this->thana])
+
+
+            // ->where($this->city.'.type', '=', $this->city)
+            // ->whereIn('type', [$this->city, $this->thana])
+            // $sortBy = 'name_en'; 
+            // $orderBy = 'asc';
+
+            // ->orderBy('name_en', 'asc') // Main Page Column Sorting
+            // ->orderBy('parent2.name_en', 'asc') // Main Page Column Sorting
+
+
+            // ->orderBy(function ($query) use ($sortBy,$orderBy) {
+            //     $query->orderBy('name_en', 'desc');
+            // })
+
             ->orderBy($sortBy, $orderBy)
-            ->with('parent.parent')
+            ->with('parent.parent', 'locationType')
+
+            // ->distinct() 
+            // ->groupBy($this->city.'.type')
             ->paginate($perPage, ['*'], 'page', $page);
 
         return $city;
