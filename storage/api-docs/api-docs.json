@@ -4960,7 +4960,7 @@
                 ]
             }
         },
-        "/admin/role/all/filtered": {
+        "/admin/role/get": {
             "get": {
                 "tags": [
                     "ADMIN-ROLE"

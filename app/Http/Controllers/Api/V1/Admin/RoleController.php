@@ -25,9 +25,10 @@ class RoleController extends Controller
 
     }
 
+    // *     path="/admin/role/all/filtered",
     /**
     * @OA\Get(
-    *     path="/admin/role/all/filtered",
+    *     path="/admin/role/get",
     *      operationId="getAllRolePaginated",
     *      tags={"ADMIN-ROLE"},
     *      summary="get paginated role",
@@ -78,7 +79,7 @@ class RoleController extends Controller
     */
     public function getAllRolePaginated(Request $request){
         // Retrieve the query parameters
-         $role = new Role;
+         $role = Role::query();
 
         if ($request->has('sortBy') && $request->has('sortDesc')) {
             $sortBy = $request->query('sortBy');
@@ -114,8 +115,8 @@ class RoleController extends Controller
              {
                  $itemsPerPage = $request->get('itemsPerPage');
 
-                 return $role->paginate($itemsPerPage);
-             }
+                }
+                return $role->paginate($itemsPerPage);
          }
 
     }

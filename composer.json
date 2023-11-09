@@ -22,7 +22,8 @@
         "spatie/laravel-permission": "^5.7",
         "spatie/laravel-query-builder": "^5.6",
         "symfony/process": "^6.3",
-        "twilio/sdk": "^6.44"
+        "twilio/sdk": "^6.44",
+        "infobip/infobip-api-php-client": "5.0.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.12",
