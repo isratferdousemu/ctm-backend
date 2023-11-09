@@ -334,7 +334,7 @@ class UserController extends Controller
                         $officeHead = User::where('office_id',$request->office_id)->whereHas('roles', function ($query) {
                             $query->where('name', $this->officeHead);
                         })->first();
-                        if($officeHead){
+                        if($officeHead && $officeHead->id != $id){
                             return $this->sendError('This office already has a office head', [], 500);
                         }
                     }
