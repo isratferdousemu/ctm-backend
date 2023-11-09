@@ -1963,6 +1963,22 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "sortBy column name",
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "asc or desc",
+                        "schema": {
+                            "type": "text"
+                        }
                     }
                 ],
                 "responses": {

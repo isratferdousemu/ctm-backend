@@ -32,6 +32,7 @@ trait PermissionTrait
     private $subFinancialInformationManagement = "financial-information-management";
     private $subUserManagement = "user-management";
     private $subRoleManagement = "role-management";
+    private $subRolePermissionManagement = "role-permission-management";
     private $subDeviceRegistrationManagement = "device-registration-management";
 
     private $menuManagement = "menu-management";
