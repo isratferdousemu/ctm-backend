@@ -128,6 +128,15 @@ class PermissionSeeder extends Seeder
         ],
 
         [
+            'module_name' => $this->modulePermissionSystemConfiguration,
+            'sub_module_name' => $this->subRolePermissionManagement,
+            'guard_name' => $this->guard,
+            'permissions'=>[
+                ["id" => 45, "name"=>"role-permission-create", "page_url"=>"/system-configuration/role-permission", "parent_page"=>1],
+            ]
+        ],
+
+        [
             'module_name' => $this->modulePermissionBudgetManagement,
             'sub_module_name' => $this->budgetManagement,
             'guard_name' => $this->guard,

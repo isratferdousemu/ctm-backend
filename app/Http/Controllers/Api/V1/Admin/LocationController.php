@@ -461,13 +461,14 @@ class LocationController extends Controller
         $filterArrayCode = [];
 
         if ($searchText) {
-            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameEn[] = ['district.name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['district.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayCode[] = ['district.code', 'LIKE', '%' . $searchText . '%'];
             if ($searchText != null) {
                 $page = 1;
             }
         }
+        
         if($sortBy=='parent.name_en'){
             $sortBy='locations.name_en';
         }else if($sortBy=='name_bn'){
