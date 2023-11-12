@@ -51,6 +51,8 @@ class AdminAuthResource extends JsonResource
             'email_verified_at'             => $this->email_verified_at,
             'phone'                         => $this->phone,
             'profile'                         => $this->profile,
+            'location'                         => $this->assign_location,
+            'office'                         => $this->office,
             'roles'                         => RoleResource::collection($this->roles),
             'roleNames'                     => $this->getRoleNames(),
             'status'            => $this->status,
