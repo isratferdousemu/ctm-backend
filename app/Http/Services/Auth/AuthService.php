@@ -220,7 +220,7 @@ class AuthService
             if($user->user_type == $this->staffType){
 
                 if($user->is_default_password==1){
-                    if (Hash::check($request->old_password, $user->password)) {
+                    if (Hash::check($user->salt . $request->old_password, $user->password)) {
                         $user->salt = Helper::generateSalt();
                         // password encryption with salt
                         $user->password = bcrypt($user->salt . $request->password);
