@@ -2019,7 +2019,7 @@ class LocationController extends Controller
 
         $union = Location::query()
             ->join('locations as parent3', 'locations.parent_id', '=', 'parent3.id') // Join with the parent table
-            ->join('locations as parent2', 'locations.parent_id', '=', 'parent2.id') // Join with the parent table
+            ->join('locations as parent2', 'parent3.parent_id', '=', 'parent2.id') // Join with the parent table
             ->join('locations as parent1', 'parent2.parent_id', '=', 'parent1.id') // Join with the grandparent table
             // ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
             // ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
