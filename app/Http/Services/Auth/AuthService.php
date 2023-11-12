@@ -308,7 +308,7 @@ class AuthService
                     //logging in
                     $token = $user->createToken($this->generateTokenKey($request) . $user->id)->plainTextToken;
                     return [
-                        'user'      => $user->load('roles'),
+                        'user'      => $user->load('roles','assign_location','office'),
                         'token'     => $token,
                     ];
                 }
