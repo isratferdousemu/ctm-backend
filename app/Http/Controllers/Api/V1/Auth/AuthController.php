@@ -184,8 +184,7 @@ class AuthController extends Controller
     /**
      *
      * @OA\Post(
-     *      path="/admin/reset/password",
-     *      operationId="resetPassword",
+     *      path="/admin/reset/password", *      operationId="resetPassword",
      *      tags={"Auth"},
      *      summary="reset default password the Application",
      *      description="reset default password to the application user",
