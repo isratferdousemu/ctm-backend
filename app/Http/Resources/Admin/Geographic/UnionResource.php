@@ -21,7 +21,7 @@ class UnionResource extends JsonResource
             'code'                 => $this->code,
             'type'                 => $this->type,
             'location_type'        => $this->location_type,
-            'thana'  => CityResource::make($this->whenLoaded('parent')),
+            'parent'  => CityResource::make($this->whenLoaded('parent')),
         ];
     }
 }
