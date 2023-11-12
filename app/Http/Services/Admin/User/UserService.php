@@ -33,15 +33,15 @@ class UserService
                         if ($request->has('division_id')) {
                             $user->assign_location_id = $request->division_id;
                         }
-                    } elseif ($request->office_type == 7) {
+                    } else if ($request->office_type == 7) {
                         if ($request->has('district_id')) {
                             $user->assign_location_id = $request->district_id;
                         }
-                    } elseif ($request->office_type == 8 || $request->office_type == 10 || $request->office_type == 11) {
+                    } else if ($request->office_type == 8 || $request->office_type == 10 || $request->office_type == 11) {
                         if ($request->has('thana_id')) {
                             $user->assign_location_id = $request->thana_id;
                         }
-                    } elseif ($request->office_type == 9) {
+                    } else if ($request->office_type == 9) {
                         if ($request->has('city_corpo_id')) {
                             $user->assign_location_id = $request->city_corpo_id;
                         }

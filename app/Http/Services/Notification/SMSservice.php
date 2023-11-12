@@ -17,6 +17,11 @@ class SMSservice
             apiKey: '62dbca44587176113a2b2e96273f156a-6e09a3d9-eada-4e7d-8eba-03a27f00aeff'
         );
         $sendSmsApi = new SmsApi(config: $configuration);
+        // check mobile number is valid or not has 88 or not if not add 88
+        if (substr($mobile, 0, 2) != '88') {
+            $mobile = '88' . $mobile;
+        }
+
 
         $message = new SmsTextualMessage(
             destinations: [
