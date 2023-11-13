@@ -120,8 +120,8 @@ class Application extends Model
 
     public function newQuery($excludeDeleted = true)
     {
-        return parent::newQuery($excludeDeleted)
-            ->orderBy('score', 'asc');
+        return parent::newQuery($excludeDeleted);
+            // ->orderBy('score', 'asc');
     }
 
 

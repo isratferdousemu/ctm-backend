@@ -116,8 +116,9 @@ class SystemconfigController extends Controller
             {
                 $itemsPerPage = $request->get('itemsPerPage');
 
-                return $allowance->paginate($itemsPerPage);
             }
+            
+        return $allowance->paginate($itemsPerPage);
         }
 
 
