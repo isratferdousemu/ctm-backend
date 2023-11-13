@@ -27,7 +27,8 @@ class DistrictResource extends JsonResource
                 'parent_id'                 => $this->parent_id,
                 'parent'  => DivisionResource::make($this->whenLoaded('districtParent')),
             ];
-        }
+        }else{
+
 
 
         return [
@@ -36,8 +37,10 @@ class DistrictResource extends JsonResource
             'name_bn'              => $this->name_bn,
             'code'                 => $this->code,
             'type'                 => $this->type,
+            'parent'  => DivisionResource::make($this->whenLoaded('districtParent')),
             'division'  => DivisionResource::make($this->whenLoaded('parent')),
         ];
+    }
 
     }
 

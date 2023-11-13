@@ -495,7 +495,7 @@ class LocationController extends Controller
         //     'message' => $this->fetchSuccessMessage,
         // ]);
         // $district = Location::with("parent")->whereType($this->district)->get();
-
+            // return $district;
         return DistrictResource::collection($district)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
@@ -946,12 +946,12 @@ class LocationController extends Controller
             }
         }
 
-        // 
+        //
         // this is a 3 Level Search/Sorting
         // so this will start from name which is at level 3
         // then parent.name which is at level 2
         // then parent.parent.name which is at level 1
-        // 
+        //
 
         // Level 3
         if ($sortBy == 'name_en') {
@@ -980,14 +980,14 @@ class LocationController extends Controller
             // ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
             ->select(
                 'locations.*',
-                // 'parent.name_en as parent_name_en', 
-                // 'parent.name_bn as parent_name_bn', 
-                // 'parent.code as parent_code', 
-                // 'parent.type as parent_type', 
-                // 'parent.id as parent_id', 
-                // 'parent.parent_id as parent_parent_id', 
-                // 'parent.type as parent_type', 
-                // 'parent.location_type as parent_location_type' 
+                // 'parent.name_en as parent_name_en',
+                // 'parent.name_bn as parent_name_bn',
+                // 'parent.code as parent_code',
+                // 'parent.type as parent_type',
+                // 'parent.id as parent_id',
+                // 'parent.parent_id as parent_parent_id',
+                // 'parent.type as parent_type',
+                // 'parent.location_type as parent_location_type'
                 // 'district.name_en AS district_name'
             )
 
@@ -1986,12 +1986,12 @@ class LocationController extends Controller
             }
         }
 
-        // 
+        //
         // this is a 3 Level Search/Sorting
         // so this will start from name which is at level 3
         // then parent.name which is at level 2
         // then parent.parent.name which is at level 1
-        // 
+        //
 
         // Level 3
         if ($sortBy == 'name_en') {
@@ -2025,14 +2025,14 @@ class LocationController extends Controller
             // ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
             ->select(
                 'locations.*',
-                // 'parent.name_en as parent_name_en', 
-                // 'parent.name_bn as parent_name_bn', 
-                // 'parent.code as parent_code', 
-                // 'parent.type as parent_type', 
-                // 'parent.id as parent_id', 
-                // 'parent.parent_id as parent_parent_id', 
-                // 'parent.type as parent_type', 
-                // 'parent.location_type as parent_location_type' 
+                // 'parent.name_en as parent_name_en',
+                // 'parent.name_bn as parent_name_bn',
+                // 'parent.code as parent_code',
+                // 'parent.type as parent_type',
+                // 'parent.id as parent_id',
+                // 'parent.parent_id as parent_parent_id',
+                // 'parent.type as parent_type',
+                // 'parent.location_type as parent_location_type'
                 // 'district.name_en AS district_name'
             )
 
@@ -2640,12 +2640,12 @@ class LocationController extends Controller
             }
         }
 
-        // 
+        //
         // this is a 3 Level Search/Sorting
         // so this will start from name which is at level 3
         // then parent.name which is at level 2
         // then parent.parent.name which is at level 1
-        // 
+        //
 
         // Level 3
         if ($sortBy == 'name_en') {
@@ -2684,14 +2684,14 @@ class LocationController extends Controller
             // ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
             ->select(
                 'locations.*',
-                // 'parent.name_en as parent_name_en', 
-                // 'parent.name_bn as parent_name_bn', 
-                // 'parent.code as parent_code', 
-                // 'parent.type as parent_type', 
-                // 'parent.id as parent_id', 
-                // 'parent.parent_id as parent_parent_id', 
-                // 'parent.type as parent_type', 
-                // 'parent.location_type as parent_location_type' 
+                // 'parent.name_en as parent_name_en',
+                // 'parent.name_bn as parent_name_bn',
+                // 'parent.code as parent_code',
+                // 'parent.type as parent_type',
+                // 'parent.id as parent_id',
+                // 'parent.parent_id as parent_parent_id',
+                // 'parent.type as parent_type',
+                // 'parent.location_type as parent_location_type'
                 // 'district.name_en AS district_name'
             )
 
