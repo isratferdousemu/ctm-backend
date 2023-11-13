@@ -148,5 +148,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Location::class,'assign_location_id','id');
     }
+    
+    public function parent()
+    {
+        return $this->belongsTo(Location::class,'assign_location.parent_id','id');
+    }
+    //  'district'  => DistrictResource::make($this->whenLoaded('parent')),
 
 }
