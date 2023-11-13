@@ -2275,7 +2275,7 @@
                     {
                         "name": "perPage",
                         "in": "query",
-                        "description": "number of city per page",
+                        "description": "number of Districts per page",
                         "schema": {
                             "type": "integer"
                         }
@@ -2286,6 +2286,22 @@
                         "description": "page number",
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "sortBy column name",
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "asc or desc",
+                        "schema": {
+                            "type": "text"
                         }
                     }
                 ],
@@ -2978,7 +2994,7 @@
                     {
                         "name": "perPage",
                         "in": "query",
-                        "description": "number of union per page",
+                        "description": "number of Districts per page",
                         "schema": {
                             "type": "integer"
                         }
@@ -2989,6 +3005,22 @@
                         "description": "page number",
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "sortBy column name",
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "asc or desc",
+                        "schema": {
+                            "type": "text"
                         }
                     }
                 ],
@@ -3349,7 +3381,7 @@
                     {
                         "name": "perPage",
                         "in": "query",
-                        "description": "number of ward per page",
+                        "description": "number of Districts per page",
                         "schema": {
                             "type": "integer"
                         }
@@ -3360,6 +3392,22 @@
                         "description": "page number",
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "sortBy column name",
+                        "schema": {
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "asc or desc",
+                        "schema": {
+                            "type": "text"
                         }
                     }
                 ],

@@ -93,7 +93,7 @@ class AuthController extends Controller
          $this->authService->validatePhone($request);
          //forgot password
          $data = $this->authService->AdminForgotPassword($request);
-        return $this->SMSservice->sendSms($request->phone, $data);
+         $this->SMSservice->sendSms($request->phone, $data);
          activity("Forgot")
          ->log('Forgot Password OTP Send!!');
 

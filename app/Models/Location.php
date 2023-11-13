@@ -79,11 +79,20 @@ class Location extends Model
 
     public function parent()
     {
-        return $this->belongsTo(Location::class, 'parent_id') ->orderBy('name_en', 'asc');
+        return $this->belongsTo(Location::class, 'parent_id');
     }
     public function districtParent()
     {
         return $this->belongsTo(Location::class, 'district_parent_id');
+        // return $this->belongsTo(Location::class, 'parent_id');
+    }
+    // public function districtParent()
+    // {
+    //     return $this->belongsTo(Location::class, 'district_parent_id');
+    // }
+    public function cityParent()
+    {
+        return $this->belongsTo(Location::class, 'parent_id');
     }
     public function locationType()
     {
