@@ -274,16 +274,22 @@ class LocationService
             $location->name_bn                = $request->name_bn;
             $location->code                   = $request->code;
             
+            //Pouro
             if ($request->location_type == 1) {
                 $location->type                   = $this->pouro;
+                $location->location_type                   = 2;
             }
-
+            
+            //City
             if ($request->location_type == 2) {
                 $location->type                   = $this->thana;
+                $location->location_type                   = 3;
             }
-
+            //Thana
+            
             if ($request->location_type == 3) {
                 $location->type                   = $this->union;
+                $location->location_type                   = 2;
             }
 
             $location->created_by             = Auth()->user()->id;
@@ -315,18 +321,24 @@ class LocationService
             $location->code                   = $request->code;
             $location->version                = $location->version+1;
             
+            //Pouro
             if ($request->location_type == 1) {
                 $location->type                   = $this->pouro;
+                $location->location_type                   = 2;
             }
-
+            
+            //Thana
             if ($request->location_type == 2) {
+                // $location->parent_id              = $request->city_id;
                 $location->type                   = $this->thana;
+                $location->location_type                   = 3;
             }
-
+            //Union
+            
             if ($request->location_type == 3) {
                 $location->type                   = $this->union;
+                $location->location_type                   = 2;
             }
-
             $location->save();
             DB::commit();
             return $location;
