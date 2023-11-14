@@ -289,10 +289,10 @@ class UserController extends Controller
 
 
 
-        try {
+        // try {
             $user = $this->UserService->createUser($request,$password);
 
-            $this->dispatch(new UserCreateJob($user->email,$user->full_name,$password));
+            $this->dispatch(new UserCreateJob($user->email,$user->username,$password));
 
             activity("User")
             ->causedBy(auth()->user())
@@ -302,10 +302,10 @@ class UserController extends Controller
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
             ]);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return $this->sendError($th->getMessage(), [], 500);
-        }
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     return $this->sendError($th->getMessage(), [], 500);
+        // }
     }
 
     public function update(UserUpdateRequest $request, $id)
