@@ -673,6 +673,53 @@
                 ]
             }
         },
+        "/admin/application/get/{id}": {
+            "get": {
+                "tags": [
+                    "APPLICATION-SELECTION"
+                ],
+                "summary": " get a single application",
+                "description": "Returns application  by id",
+                "operationId": "getApplicationById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of application to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/committee/get": {
             "get": {
                 "tags": [

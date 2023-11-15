@@ -609,5 +609,61 @@ class ApplicationController extends Controller
 
 
     }
+    /**
+     * @OA\Get(
+     *      path="/admin/application/get/{id}",
+     *      operationId="getApplicationById",
+     *      tags={"APPLICATION-SELECTION"},
+     *      summary=" get a single application",
+     *      description="Returns application  by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of application to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+   public function getApplicationById($id){
+    $application = Application::find($id);
+    
+    $data = json_decode($application);
+    $programId = $data->program_id;
+    $current_location_id=$data->current_location_id;
+    $currentLocation=
+    $program=AllowanceProgram::find($programId);
+        return \response()->json([
+            'application' => $application,
+             'program'=>$program
+            
+        ],Response::HTTP_OK);
+
+    }
+  
 
 }
