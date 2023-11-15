@@ -650,16 +650,11 @@ class ApplicationController extends Controller
      *     )
      */
    public function getApplicationById($id){
-    $application = Application::find($id);
-    
-    $data = json_decode($application);
-    $programId = $data->program_id;
-    $current_location_id=$data->current_location_id;
-    $currentLocation=
-    $program=AllowanceProgram::find($programId);
+  
+    $application = Application::where('id','=',$id)->with('current_location','permanent_location.parent.parent.parent','program','gender','poverty_score')->get();
         return \response()->json([
             'application' => $application,
-             'program'=>$program
+   
             
         ],Response::HTTP_OK);
 

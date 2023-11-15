@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Variable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\Application
@@ -149,6 +150,10 @@ class Application extends Model
     }
     public function gender(){
         return $this->belongsTo(Lookup::class,'gender_id','id');
+    }
+       public function poverty_score()
+    {
+        return $this->belongsToMany(Variable::class, 'application_poverty_values', 'application_id','variable_id');
     }
 
 }
