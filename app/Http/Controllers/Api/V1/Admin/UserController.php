@@ -116,28 +116,29 @@ class UserController extends Controller
     }
 
         // check this user is super-admin or not if not then check this user is office head or not if yes then get users under this office
-            if(auth()->user()->user_type != $this->superAdminId && Auth::user()->hasRole($this->officeHead)){
-                $users = User::query()
-                ->where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
-                    $query->where($filterArrayName)
-                          ->orWhere($filterArrayUserName)
-                          ->orWhere($filterArrayUserId)
-                          ->orWhere($filterArrayEmail)
-                          ->orWhere($filterArrayOfficeId)
-                          ->orWhere($filterArrayPhone);
-                })
-                ->where('office_id',auth()->user()->office_id)
-                ->where('user_type','!=',$this->superAdminId)
-                ->whereHas('office', function ($query) {
-                // assign_location_id is locations id of office get location all users and location
-                $query->where('assign_location_id',auth()->user()->office->assign_location_id);
-                //and assign_location_id location one child down user office head
-                $query->orWhere('assign_location_id',auth()->user()->office?->location?->parent_id);
-                })
-                ->with('office','assign_location.parent.parent.parent','office_type', 'roles')
-                ->latest()
-                ->paginate($perPage, ['*'], 'page');
-            }else{
+            // if(auth()->user()->user_type != $this->superAdminId && Auth::user()->hasRole($this->officeHead))
+            // {
+            //     $users = User::query()
+            //     ->where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
+            //         $query->where($filterArrayName)
+            //               ->orWhere($filterArrayUserName)
+            //               ->orWhere($filterArrayUserId)
+            //               ->orWhere($filterArrayEmail)
+            //               ->orWhere($filterArrayOfficeId)
+            //               ->orWhere($filterArrayPhone);
+            //     })
+            //     ->where('office_id',auth()->user()->office_id)
+            //     ->where('user_type','!=',$this->superAdminId)
+            //     ->whereHas('office', function ($query) {
+            //     // assign_location_id is locations id of office get location all users and location
+            //     $query->where('assign_location_id',auth()->user()->office->assign_location_id);
+            //     //and assign_location_id location one child down user office head
+            //     $query->orWhere('assign_location_id',auth()->user()->office?->location?->parent_id);
+            //     })
+            //     ->with('office','assign_location.parent.parent.parent','office_type', 'roles')
+            //     ->latest()
+            //     ->paginate($perPage, ['*'], 'page');
+            // }else{
     $users = User::query()
     ->where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
         $query->where($filterArrayName)
@@ -150,8 +151,8 @@ class UserController extends Controller
     ->with('office','assign_location.parent.parent.parent','office_type','roles')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
-}
-
+// }
+    // return $users;
     return UserResource::collection($users)->additional([
         'success' => true,
         'message' => $this->fetchSuccessMessage,
