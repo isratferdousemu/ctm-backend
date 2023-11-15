@@ -2091,9 +2091,20 @@ class LocationController extends Controller
                             });
                     });
             })
+
             //Works
-            ->where('locations.type', '=', $this->union)
-            ->whereIn('locations.type', [$this->pouro, $this->union])
+            // ->where('locations.type', '=', $this->union)
+            // ->orwhere('locations.type', '=', $this->thana)
+// thana1E
+            // ->where('locations.location_type', '=', '2')
+            // ->orWhere('locations.type', [$this->thana])
+            // ->whereIn('locations.type', [$this->thana])
+            ->whereIn('locations.type', [$this->pouro, $this->thana, $this->union])
+            // ->whereType($this->union)
+            // ->where('locations.type', [$this->thana])
+            // ->get();
+            // , $this->union, $this->thana
+            // ->latest()
             ->orderBy($sortBy, $orderBy)
             ->with('parent.parent.parent', 'locationType')
             ->paginate($perPage, ['*'], 'page', $page);
@@ -2676,10 +2687,10 @@ class LocationController extends Controller
         /// JOIN and Search in Nested 1 is Nested of 2 which means parent2.parent1
 
         $ward = Location::query()
-            ->join('locations as parent4', 'locations.parent_id', '=', 'parent4.id') // Join with the parent table
-            ->join('locations as parent3', 'parent4.parent_id', '=', 'parent3.id') // Join with the parent table
-            ->join('locations as parent2', 'parent3.parent_id', '=', 'parent2.id') // Join with the parent table
-            ->join('locations as parent1', 'parent2.parent_id', '=', 'parent1.id') // Join with the grandparent table
+            ->leftJoin('locations as parent4', 'locations.parent_id', '=', 'parent4.id') // Join with the parent table
+            ->leftJoin('locations as parent3', 'parent4.parent_id', '=', 'parent3.id') // Join with the parent table
+            ->leftJoin('locations as parent2', 'parent3.parent_id', '=', 'parent2.id') // Join with the parent table
+            ->leftJoin('locations as parent1', 'parent2.parent_id', '=', 'parent1.id') // Join with the grandparent table
             // ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
             // ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
             ->select(
@@ -2696,6 +2707,7 @@ class LocationController extends Controller
             )
 
             //Works
+
             ->where(function ($query) use (
                 $filterArrayNameEn,
                 $filterArrayNameBn,
@@ -2774,6 +2786,7 @@ class LocationController extends Controller
                             });
                     });
             })
+
             //Works
             ->where('locations.type', '=', $this->ward)
             ->orderBy($sortBy, $orderBy)
