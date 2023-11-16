@@ -77,7 +77,9 @@ class OfficeController extends Controller
     $searchText = $request->query('searchText');
     $perPage = $request->query('perPage');
     $page = $request->query('page');
-
+    $sortBy = $request->query('sortBy') ?? 'name_en';
+    $orderBy = $request->query('orderBy') ?? 'asc';
+    
     $filterArrayNameEn=[];
     $filterArrayNameBn=[];
     $filterArrayComment=[];
@@ -88,6 +90,10 @@ class OfficeController extends Controller
         $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
         $filterArrayComment[] = ['comment', 'LIKE', '%' . $searchText . '%'];
         $filterArrayAddress[] = ['office_address', 'LIKE', '%' . $searchText . '%'];
+                    
+        if ($searchText != null) {
+            $page = 1;
+        }
 
     }
     $office = Office::query()
@@ -98,9 +104,12 @@ class OfficeController extends Controller
               ->orWhere($filterArrayAddress);
     })
     ->with('assignLocation.parent.parent.parent','assignLocation.locationType','officeType')
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
+    // ->latest()
+    // ->paginate($perPage, ['*'], 'page');
+    ->orderBy($sortBy, $orderBy)
+    ->paginate($perPage, ['*'], 'page', $page);
 
+    return $office;
     return OfficeResource::collection($office)->additional([
         'success' => true,
         'message' => $this->fetchSuccessMessage,
