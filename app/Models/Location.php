@@ -83,8 +83,7 @@ class Location extends Model
     }
     public function districtParent()
     {
-        return $this->belongsTo(Location::class, 'district_parent_id');
-        // return $this->belongsTo(Location::class, 'parent_id');
+        return $this->belongsTo(Location::class, 'parent_id');
     }
     // public function districtParent()
     // {

@@ -108,12 +108,16 @@ class PMTScoreController extends Controller
         // ->leftJoin('permissions', function ($join) {
         //     $join->on('menus.page_link_id', '=', 'permissions.id');
         // });
-        $office = PMTScore::select(
+        $cutOff = PMTScore::select(
             'poverty_score_cut_offs.*',
             'locations.name_en',
+            'financial_years.financial_year',
         )
             ->leftJoin('locations', function ($join) {
                 $join->on('poverty_score_cut_offs.location_id', '=', 'locations.id');
+            })
+            ->leftJoin('financial_years', function ($join) {
+                $join->on('poverty_score_cut_offs.financial_year_id', '=', 'financial_years.id');
             })
             ->where(function ($query) use ($filterArrayNameEn) {
                 $query->where($filterArrayNameEn)
@@ -123,11 +127,14 @@ class PMTScoreController extends Controller
                 ;
             })
             ->where('default', '0') // Cut Off
-            ->with('assign_location.parent.parent.parent', 'assign_location.locationType')
+            ->where('poverty_score_cut_offs.financial_year_id', '1') // Cut Off
+            ->where('poverty_score_cut_offs.type', '1') // Cut Off
+            // ->with('assign_location.parent.parent.parent.parent', 'assign_location.locationType')
             ->latest()
             ->paginate($perPage, ['*'], 'page');
 
-        return PMTScoreResource::collection($office)->additional([
+        return $cutOff;
+        return PMTScoreResource::collection($cutOff)->additional([
             'success' => true,
             // 'message' => $this->fetchSuccessMessage,
         ]);
@@ -212,10 +219,14 @@ class PMTScoreController extends Controller
         $office = PMTScore::select(
             'poverty_score_cut_offs.*',
             'locations.name_en',
+            'financial_years.financial_year',
         )
             ->leftJoin('locations', function ($join) {
                 $join->on('poverty_score_cut_offs.location_id', '=', 'locations.id');
             })
+            // ->leftJoin('financial_years', function ($join) {
+            //     $join->on('poverty_score_cut_offs.financial_year_id', '=', 'financial_years.id');
+            // })
             ->where(function ($query) use ($filterArrayNameEn) {
                 $query->where($filterArrayNameEn)
                     // ->orWhere($filterArrayNameBn)
@@ -224,7 +235,7 @@ class PMTScoreController extends Controller
                 ;
             })
             ->where('default', '1') // Cut Off
-            ->with('assign_location.parent.parent.parent', 'assign_location.locationType')
+            // ->with('assign_location.parent.parent.parent.parent', 'assign_location.locationType')
             ->latest()
             ->paginate($perPage, ['*'], 'page');
 
@@ -301,6 +312,8 @@ class PMTScoreController extends Controller
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
+        $financial_year_id = null;
+        $type = null;
 
         $financial_year_id = null;
         $type = null;
@@ -317,7 +330,12 @@ class PMTScoreController extends Controller
                 $this->insertPMTScore($financial_year_id, $type);
             }
         }
+        return;
+        // if($type =){
 
+        // }
+        // $this->getAllPMTScorePaginated($request);
+        // return;
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
         $filterArrayComment = [];
@@ -328,32 +346,67 @@ class PMTScoreController extends Controller
             $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
             $filterArrayComment[] = ['comment', 'LIKE', '%' . $searchText . '%'];
         }
-        $office = PMTScore::query()
-            ->where(function ($query) use ($filterArrayNameEn, $financial_year_id, $type) {
+        $office = PMTScore::select(
+            'poverty_score_cut_offs.*',
+            'locations.name_en',
+            'financial_years.financial_year',
+        )
+            ->leftJoin('locations', function ($join) {
+                $join->on('poverty_score_cut_offs.location_id', '=', 'locations.id');
+            })
+            ->leftJoin('financial_years', function ($join) {
+                $join->on('poverty_score_cut_offs.financial_year_id', '=', 'financial_years.id');
+            })
+            ->where(function ($query) use ($filterArrayNameEn) {
                 $query->where($filterArrayNameEn)
-                    ->where('financial_year_id', $financial_year_id)
-                    ->where('type', $type)
                     // ->orWhere($filterArrayNameBn)
                     // ->orWhere($filterArrayComment)
-                    // ->orWhere($filterArrayAddress)
                 ;
             })
-            ->with('assign_location.parent.parent.parent', 'assign_location.locationType')
-            ->latest()
-            ->paginate($perPage, ['*'], 'page');
+            // ->where('default', '0') // Cut Off
+            // ->where('poverty_score_cut_offs.type', $request->type) // Cut Off
+            ->where('poverty_score_cut_offs.financial_year_id', $request->financial_year_id); // Cut Off
+        // ->with('assign_location.parent.parent.parent.parent', 'assign_location.locationType')
+        // ->latest()
+
+        if ($type == 1) {
+            $office->where('default', '0') // Division Cut Off
+                ->where('poverty_score_cut_offs.type', $request->type); // Cut Off
+        }
+
+        if ($type == 2) {
+            $office->where('default', '1'); // District Cut Off
+            // ->whereNull('poverty_score_cut_offs.type');
+        }
+
+        return $office->paginate($perPage, ['*'], 'page');
 
         return PMTScoreResource::collection($office)->additional([
             'success' => true,
+            'financial_year_id' => $financial_year_id,
+            'type' => $type,
             // 'message' => $this->fetchSuccessMessage,
         ]);
     }
 
     private function check_if_exists($financial_year_id, $type)
     {
-        $data = PMTScore::get()
-            ->where('financial_year_id', $financial_year_id)
-            ->where('type', $type);
+        // echo "Type-if-".$type;
 
+        if ($type == 1) {
+            // echo "Type-if-".$type;
+            $data = PMTScore::get()
+                ->where('financial_year_id', $financial_year_id)
+                ->where('default', '0');
+        }
+        if ($type == 2) {
+            // echo "Type-if-".$type;
+            $data = PMTScore::get()
+            ->where('financial_year_id', $financial_year_id)
+            ->where('default', '1')->whereNull('default', '1');
+        }
+
+        // print_r($data);
         if (count($data) > 0) {
             return true;
         } else {
@@ -386,13 +439,22 @@ class PMTScoreController extends Controller
             }
 
             foreach ($locations as $value) {
+                echo "Type".$type;
+                echo "<br>";
 
                 $poverty_score_cut_offs = new PMTScore;
                 $poverty_score_cut_offs->type         = $type;
                 $poverty_score_cut_offs->location_id  = $value['id'];
                 $poverty_score_cut_offs->financial_year_id  = $financial_year_id;
                 $poverty_score_cut_offs->score        = 0;
-                $poverty_score_cut_offs->default      = 0;
+
+                if ($type == 1) {
+                    $poverty_score_cut_offs->default  = 0;
+                }
+                if ($type == 2) {
+                    $poverty_score_cut_offs->default  = 1;
+                }
+
                 $poverty_score_cut_offs->save();
             }
         }
@@ -686,5 +748,4 @@ class PMTScoreController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
-
 }

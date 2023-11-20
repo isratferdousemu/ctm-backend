@@ -68,7 +68,7 @@ class BeneficiaryService
 
             $committee ->save();
 
-            $input = $request->members;
+            $input = $request->members; 
 
             foreach($input as $item) {
 
