@@ -2,9 +2,12 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Admin\PermissionResource;
+use App\Models\Location;
 use App\Http\Traits\UserTrait;
+use App\Http\Resources\Admin\PermissionResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Admin\Geographic\DistrictResource;
+use App\Http\Resources\Admin\Sytemconfig\LocationResource;
 
 class AdminAuthResource extends JsonResource
 {
@@ -46,13 +49,13 @@ class AdminAuthResource extends JsonResource
     {
         return [
             'id'                            => $this->id,
-            'full_name'                    => $this->full_name,
+            'full_name'                     => $this->full_name,
             'email'                         => $this->email,
             'email_verified_at'             => $this->email_verified_at,
             'phone'                         => $this->phone,
-            'profile'                         => $this->profile,
-            'location'                         => $this->assign_location,
-            'office'                         => $this->office,
+            'profile'                       => $this->profile,
+            'location'         => new LocationResource($this->assign_location),
+            'office'                        => $this->office,
             'roles'                         => RoleResource::collection($this->roles),
             'roleNames'                     => $this->getRoleNames(),
             'status'            => $this->status,
@@ -60,6 +63,10 @@ class AdminAuthResource extends JsonResource
             'user_type'            => $this->user_type,
             'created_at'                    => $this->created_at,
         ];
+            
+
+    
+
     }
 
     public function with($request)
