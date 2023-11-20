@@ -651,7 +651,7 @@ class ApplicationController extends Controller
      */
    public function getApplicationById($id){
   
-    $application = Application::where('id','=',$id)->with('current_location','permanent_location.parent.parent.parent','program','gender','poverty_score')->get();
+    $application = Application::where('id','=',$id)->with('current_location','permanent_location.parent.parent.parent','program','gender','poverty_score')->first();
         return \response()->json([
             'application' => $application,
    
