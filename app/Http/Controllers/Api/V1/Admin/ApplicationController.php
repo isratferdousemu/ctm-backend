@@ -651,12 +651,27 @@ class ApplicationController extends Controller
      */
    public function getApplicationById($id){
   
-    $application = Application::where('id','=',$id)->with('current_location','permanent_location.parent.parent.parent','program','gender','poverty_score')->first();
+    $application = Application::where('id','=',$id)
+    ->with('current_location',
+            'permanent_location.parent.parent.parent',
+         
+            // 'povertyValues.variable.subVariables',
+            // 'application',
+            // 'variable',
+           
+            'poverty_score.children',
+            'poverty_score_value'
+            )->first();
+            $image=Application::find($id);
+          
+            $imagePath = storage_path('app/public/uploads/applications/' . $image->image); 
         return \response()->json([
             'application' => $application,
-   
-            
-        ],Response::HTTP_OK);
+            'image'=>$image,
+            'imagePath'=>$imagePath
+
+
+            ],Response::HTTP_OK);
 
     }
   

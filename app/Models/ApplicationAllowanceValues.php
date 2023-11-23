@@ -31,5 +31,18 @@ class ApplicationAllowanceValues extends Model
 {
     use HasFactory;
 
+ public function application()
+    {
+        return $this->belongsTo(Application::class, 'application_id');
+    }
 
+    public function variable()
+    {
+        return $this->belongsTo(Variable::class, 'variable_id');
+    }
+
+    public function subVariable()
+    {
+        return $this->belongsTo(Variable::class, 'sub_variable_id');
+    }
 }

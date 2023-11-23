@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ApplicationPovertyValues;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\Variable
@@ -57,4 +58,14 @@ class Variable extends Model
     {
         return $this->hasMany(Variable::class, 'parent_id');
     }
+     public function subVariables()
+    {
+        return $this->hasMany(Variable::class, 'parent_id');
+    }
+
+    public function povertyValues()
+    {
+        return $this->hasMany(ApplicationPovertyValues::class, 'variable_id');
+    }
+  
 }

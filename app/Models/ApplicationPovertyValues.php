@@ -29,12 +29,16 @@ class ApplicationPovertyValues extends Model
 {
     use HasFactory;
 
-    public function sub_variable()
+    public function sub_variable() 
     {
         return $this->belongsTo(Variable::class, 'sub_variable_id', 'id');
+        // return $this->belongsTo(Variable::class, 'sub_variable_id', 'id');
     }
-    public function variable()
+    public function variable()//chatgpt
     {
         return $this->belongsTo(Variable::class, 'variable_id', 'id');
     }
+  
+    
+
 }

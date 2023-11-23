@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Variable;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ApplicationPovertyValues;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -151,9 +152,33 @@ class Application extends Model
     public function gender(){
         return $this->belongsTo(Lookup::class,'gender_id','id');
     }
-       public function poverty_score()
+
+    public function application()
+    {
+        return $this->belongsTo(ApplicationPovertyValues::class, 
+        'id');
+    }
+    
+    
+    // public function variable()
+    // {
+    //     return $this->belongsToMany(Variable::class, 
+    //     'parent_id');
+    // }
+    
+    public function poverty_score() //emu
     {
         return $this->belongsToMany(Variable::class, 'application_poverty_values', 'application_id','variable_id');
     }
+       public function poverty_score_value() //emu
+    {
+        return $this->belongsToMany(Variable::class, 'application_poverty_values', 'application_id','sub_variable_id');
+    }
+  
+//    public function povertyValues()
+//     {
+//         return $this->hasMany(ApplicationPovertyValues::class, 'application_id');
+//     }
+   
 
 }
