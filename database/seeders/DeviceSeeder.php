@@ -19,7 +19,7 @@ class DeviceSeeder extends Seeder
                 'user_id' => 1000,
                 'name' => 'juned_laptop',
                 'device_name' => 'MSI',
-                'device_id' => '903b624e16a7c55c70d287a7ecc7432b',
+                'device_id' => 'f0c07ad114b7c3bc55ddf6046394ce61',
                 'ip_address' => '127.0.0.1',
                 'createdBy' => 1,
                 'device_type' => 1,
@@ -73,15 +73,15 @@ class DeviceSeeder extends Seeder
 
         foreach ($devices as $value) {
             $device = new Device;
-            $device->id           = $value['id'];
+            $device->id              = $value['id'];
             $device->user_id         = $value['user_id'];
-            $device->name  = $value['name'];
-            $device->device_name  = $value['device_name'];
-            $device->device_id        = $value['device_id'];
-            $device->ip_address        = $value['ip_address'];
-            $device->createdBy        = $value['createdBy'];
-            $device->device_type        = $value['device_type'];
-            $device->status        = $value['status'];
+            $device->name            = $value['name'];
+            $device->device_name     = $value['device_name'];
+            $device->device_id       = $value['device_id'];
+            $device->ip_address      = $value['ip_address'];
+            $device->createdBy       = $value['createdBy'];
+            $device->device_type     = $value['device_type'];
+            $device->status          = $value['status'];
             $device->save();
         }
     }
