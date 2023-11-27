@@ -63,6 +63,7 @@ class PMTScore extends Model
         'score',
     ];
 
+    
     public function assign_location()
     {
         return $this->belongsTo(Location::class, 'id');

@@ -100,7 +100,9 @@ class LocationController extends Controller
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->get('page');
-
+        $sortBy = $request->query('sortBy') ?? 'name_en';
+        $orderBy = $request->query('orderBy') ?? 'asc';
+        
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
         $filterArrayCode = [];
@@ -109,6 +111,11 @@ class LocationController extends Controller
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
             $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+
+            
+            if ($searchText != null) {
+                $page = 1;
+            }
         }
         $division = Location::query()
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
@@ -117,8 +124,10 @@ class LocationController extends Controller
                     ->orWhere($filterArrayCode);
             })
             ->whereParentId(null)
-            ->latest()
-            ->paginate($perPage, ['*'], 'page');
+            // ->latest()
+            ->orderBy($sortBy, $orderBy)
+            ->paginate($perPage, ['*'], 'page', $page);
+
 
         return DivisionResource::collection($division)->additional([
             'success' => true,
@@ -448,7 +457,7 @@ class LocationController extends Controller
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage') ?? 10;
         $page = $request->query('page');
-        $sortBy = $request->query('sortBy') ?? 'district.name_en';
+        $sortBy = $request->query('sortBy') ?? 'name_en';
         $orderBy = $request->query('orderBy') ?? 'asc';
         // if($orderBy){
         //     $orderBy='desc';
@@ -460,42 +469,82 @@ class LocationController extends Controller
         $filterArrayNameBn = [];
         $filterArrayCode = [];
 
+        $parent1filterArrayNameEn = [];
+        $parent1filterArrayNameBn = [];
+        $parent1filterArrayCode = [];
+
         if ($searchText) {
-            $filterArrayNameEn[] = ['district.name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayNameBn[] = ['district.name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayCode[] = ['district.code', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameEn[] = ['locations.name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['locations.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayCode[] = ['locations.code', 'LIKE', '%' . $searchText . '%'];
+
+            $parent1filterArrayNameEn[] = ['parent1.name_en', 'LIKE', '%' . $searchText . '%'];
+            $parent1filterArrayNameBn[] = ['parent1.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $parent1filterArrayCode[] = ['parent1.code', 'LIKE', '%' . $searchText . '%'];
+
             if ($searchText != null) {
                 $page = 1;
             }
         }
 
+        // if ($sortBy == 'parent.name_en') {
+        //     $sortBy = 'parent.name_en';
+        // } else if ($sortBy == 'name_bn') {
+        //     $sortBy = 'parent.name_bn';
+        // } else if ($sortBy == 'parent.code') {
+        //     $sortBy = 'locations.code';
+        // }
+
+        // Level 3
+        if ($sortBy == 'name_en') {
+            $sortBy = 'name_en';
+        }
+        // Level 2
         if ($sortBy == 'parent.name_en') {
-            $sortBy = 'locations.name_en';
-        } else if ($sortBy == 'name_bn') {
-            $sortBy = 'district.name_bn';
-        } else if ($sortBy == 'parent.code') {
-            $sortBy = 'locations.code';
+            $sortBy = 'parent1.name_en';
+        }
+        // Level 3
+        if ($sortBy == 'name_bn') {
+            $sortBy = 'name_bn';
+        }
+        // Level 2
+        if ($sortBy == 'parent.name_bn') {
+            $sortBy = 'parent1.name_bn';
         }
 
         $district = Location::query()
-            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+        ->join('locations as parent1', 'locations.parent_id', '=', 'parent1.id') // Join with the parent table
+            ->select(
+                'locations.*',
+            )
+            ->where(function ($query) use (
+                $parent1filterArrayNameEn,
+                $parent1filterArrayNameBn,
+                $parent1filterArrayCode,
+                $filterArrayNameEn,
+                $filterArrayNameBn,
+                $filterArrayCode
+            ) {
                 $query->where($filterArrayNameEn)
                     ->orWhere($filterArrayNameBn)
-                    ->orWhere($filterArrayCode);
+                    ->orWhere($filterArrayCode)
+
+                    ->orWhereHas('parent', function ($query) use (
+                        $parent1filterArrayNameEn,
+                        $parent1filterArrayNameBn,
+                        $parent1filterArrayCode,
+                    ) {
+                        $query->where($parent1filterArrayNameEn)
+                            ->orWhere($parent1filterArrayNameBn)
+                            ->orWhere($parent1filterArrayCode); // District Search
+                    });
             })
-            ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
-            ->select('locations.*', 'district.name_en as district_name_en', 'district.name_bn as district_name_bn', 'district.code as district_code', 'district.type as district_type', 'district.id as district_id', 'district.parent_id as district_parent_id', 'district.location_type as district_location_type')
-            ->where('district.type', '=', $this->district)
+            ->where('locations.type', '=', $this->district)
             ->orderBy($sortBy, $orderBy)
-            ->with('districtParent')
+            ->with('parent')
             ->paginate($perPage, ['*'], 'page', $page);
-        // return $district;
-        // return DistrictResource::collection($district)->additional([
-        //     'success' => true,
-        //     'message' => $this->fetchSuccessMessage,
-        // ]);
-        // $district = Location::with("parent")->whereType($this->district)->get();
-            // return $district;
+
+        return $district;
         return DistrictResource::collection($district)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
@@ -793,14 +842,22 @@ class LocationController extends Controller
 
         $validator->validated();
 
-        $district = Location::whereId($id)->whereType($this->district)->first();
-        if ($district->children->count() > 0) {
-
+        $district = Location::where('parent_id',$id)->get();
+        // dd($district->name_en);
+        // print_r($district);
+        if ($district->count() > 0) {
+            // echo 'if';
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
+        }else{
+            // echo 'else';
+             Location::where('id',$id)->delete();
         }
-        if ($district) {
-            $district->delete();
-        }
+
+        // echo "<br>";
+        // if ($district) {
+        //     $district->delete();
+        // }
+
         activity("District")
             ->causedBy(auth()->user())
             ->log('District Deleted!!');
@@ -1029,7 +1086,7 @@ class LocationController extends Controller
                     });
             })
             //Works
-            ->where('locations.type', '=', $this->city)
+            // ->where('locations.type', '=', $this->city)
             ->whereIn('locations.type', [$this->city, $this->thana])
             ->orderBy($sortBy, $orderBy)
             ->with('parent.parent', 'locationType')
@@ -2096,7 +2153,7 @@ class LocationController extends Controller
             //Works
             // ->where('locations.type', '=', $this->union)
             // ->orwhere('locations.type', '=', $this->thana)
-// thana1E
+            // thana1E
             // ->where('locations.location_type', '=', '2')
             // ->orWhere('locations.type', [$this->thana])
             // ->whereIn('locations.type', [$this->thana])
