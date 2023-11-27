@@ -945,6 +945,7 @@ class LocationController extends Controller
                 $page = 1;
             }
         }
+       
 
         //
         // this is a 3 Level Search/Sorting

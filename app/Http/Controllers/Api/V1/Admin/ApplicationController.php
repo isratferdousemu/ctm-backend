@@ -662,13 +662,15 @@ class ApplicationController extends Controller
             'poverty_score.children',
             'poverty_score_value'
             )->first();
-            $image=Application::find($id);
+            $image=Application::where('id','=',$id)
+            ->pluck('image');
           
-            $imagePath = storage_path('app/public/uploads/applications/' . $image->image); 
+        
         return \response()->json([
             'application' => $application,
             'image'=>$image,
-            'imagePath'=>$imagePath
+            'id'=>$id
+         
 
 
             ],Response::HTTP_OK);
