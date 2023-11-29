@@ -967,6 +967,7 @@ class LocationController extends Controller
         // ]);
 
         // Retrieve the query parameters
+    
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage') ?? 10;
         $page = $request->query('page');
@@ -984,6 +985,7 @@ class LocationController extends Controller
         $parent1filterArrayNameEn = [];
         $parent1filterArrayNameBn = [];
         $parent1filterArrayCode = [];
+       
 
         if ($searchText) {
             $filterArrayNameEn[] = ['locations.name_en', 'LIKE', '%' . $searchText . '%'];
@@ -1001,8 +1003,9 @@ class LocationController extends Controller
             if ($searchText != null) {
                 $page = 1;
             }
-        }
        
+        }
+  
 
         //
         // this is a 3 Level Search/Sorting
@@ -1059,7 +1062,9 @@ class LocationController extends Controller
                 $parent2filterArrayCode,
                 $parent1filterArrayNameEn,
                 $parent1filterArrayNameBn,
-                $parent1filterArrayCode
+                $parent1filterArrayCode,
+             
+             
             ) {
 
                 $query->where($filterArrayNameEn)
@@ -1072,7 +1077,8 @@ class LocationController extends Controller
                         $parent2filterArrayCode,
                         $parent1filterArrayNameEn,
                         $parent1filterArrayNameBn,
-                        $parent1filterArrayCode
+                        $parent1filterArrayCode,
+                     
                     ) {
                         $query->where($parent2filterArrayNameEn)
                             ->orWhere($parent2filterArrayNameBn)
@@ -1081,7 +1087,9 @@ class LocationController extends Controller
                             ->orWhereHas('parent', function ($query) use ($parent1filterArrayNameEn, $parent1filterArrayNameBn, $parent1filterArrayCode) {
                                 $query->where($parent1filterArrayNameEn)
                                     ->orWhere($parent1filterArrayNameBn)
-                                    ->orWhere($parent1filterArrayCode); // Division Search
+                                    ->orWhere($parent1filterArrayCode);
+                                   
+                                // Division Search
                             });
                     });
             })
