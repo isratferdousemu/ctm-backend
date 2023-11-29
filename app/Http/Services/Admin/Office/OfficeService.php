@@ -60,14 +60,13 @@ class OfficeService
             $data = $request->ward_under_office;
 
             if (is_array($data) && count($data) > 0) {
-            
+
                 foreach ($data as $item) {
                     $ward_under_office = new OfficeHasWard;
                     $ward_under_office->office_id = $office->id;
                     $ward_under_office->ward_id = $item['ward_id'];
                     $ward_under_office->save();
                 }
-            
             }
 
             DB::commit();
@@ -106,6 +105,7 @@ class OfficeService
                     }
                 }
             }
+
             $office->name_en                = $request->name_en;
             $office->name_bn                = $request->name_bn;
             $office->office_address         = $request->office_address;
@@ -114,19 +114,21 @@ class OfficeService
             $office->version                = $office->version + 1;
             $office->save();
 
+            OfficeHasWard::where('office_id', $request->id)->delete();
+
+
             $data = $request->ward_under_office;
 
             if (is_array($data) && count($data) > 0) {
-            
+
                 foreach ($data as $item) {
                     $ward_under_office = new OfficeHasWard;
                     $ward_under_office->office_id = $office->id;
                     $ward_under_office->ward_id = $item['ward_id'];
                     $ward_under_office->save();
                 }
-            
             }
-            
+
 
             DB::commit();
             return $office;
