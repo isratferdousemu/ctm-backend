@@ -21,6 +21,11 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::get('/destroy/{id}', [OfficeController::class, 'destroyOffice'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
         Route::get('/get/{district_id}',[OfficeController::class, 'getAllOfficeByDistrictId'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
 
+        // For multiple ward under office
+        Route::get('/get-ward-under-office',[OfficeController::class, 'getAllWardUnderOffice'])->middleware(['role_or_permission:super-admin|office-list']);
+        Route::post('/destroy/ward-under-office/', [OfficeController::class, 'destroyWardUnderOffice'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        // END For multiple ward under office
+
     });
 
     /* -------------------------------------------------------------------------- */

@@ -25,13 +25,16 @@ class OfficeRequest extends FormRequest
             'division_id'         => 'sometimes|integer|exists:locations,id',
             'district_id'         => 'sometimes|integer|exists:locations,id',
             'thana_id'            => 'sometimes|integer|exists:locations,id',
-            'city_corpo_id'            => 'sometimes|integer|exists:locations,id',
+            'city_corpo_id'       => 'sometimes|integer|exists:locations,id',
             'name_en'             => 'required|string|max:50',
             'name_bn'             => 'required|string|max:50',
             'office_type'         => 'required|integer|exists:lookups,id',
             'office_address'      => 'required|string',
             'comment'             => 'string|max:120,Null',
             'status'              => 'required|boolean',
+
+            'ward_under_office.*.office_id'      =>'sometimes|integer',
+            'ward_under_office.*.ward_id'       =>'sometimes|integer',
         ];
     }
 }
