@@ -61,8 +61,7 @@ class Office extends Model
 
     public function newQuery($excludeDeleted = true)
     {
-        return parent::newQuery($excludeDeleted)
-            ->orderBy('name_en', 'asc');
+        return parent::newQuery($excludeDeleted)->orderBy('name_en', 'asc');
     }
 
     public function officeType(){
@@ -73,6 +72,14 @@ class Office extends Model
     public function assignLocation(){
         return $this->belongsTo(Location::class,'assign_location_id');
 
+    }
+
+    public function wards(){
+        return $this->hasMany(OfficeHasWard::class,'office_id');
+    }
+
+    public function ward_location(){
+        return $this->belongsTo(Location::class,'parent_id');
     }
 
 }
