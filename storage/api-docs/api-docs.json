@@ -2320,6 +2320,30 @@
                         }
                     },
                     {
+                        "name": "division_id",
+                        "in": "query",
+                        "description": "division_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "district_id",
+                        "in": "query",
+                        "description": "district_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "location_type",
+                        "in": "query",
+                        "description": "location_type",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "perPage",
                         "in": "query",
                         "description": "number of Districts per page",
