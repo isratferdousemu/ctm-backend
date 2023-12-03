@@ -3063,6 +3063,46 @@
                         }
                     },
                     {
+                        "name": "division_id",
+                        "in": "query",
+                        "description": "Filter by Division",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "district_id",
+                        "in": "query",
+                        "description": "Filter by District",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "district_pouro_id",
+                        "in": "query",
+                        "description": "Filter by district_pouro_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "Filter by city_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "upazila_id_search",
+                        "in": "query",
+                        "description": "Filter by upazila_id_search",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "perPage",
                         "in": "query",
                         "description": "number of Districts per page",

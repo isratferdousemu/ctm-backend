@@ -102,7 +102,7 @@ class LocationController extends Controller
         $page = $request->get('page');
         $sortBy = $request->query('sortBy') ?? 'name_en';
         $orderBy = $request->query('orderBy') ?? 'asc';
-        
+
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
         $filterArrayCode = [];
@@ -112,7 +112,7 @@ class LocationController extends Controller
             $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
 
-            
+
             if ($searchText != null) {
                 $page = 1;
             }
@@ -513,7 +513,7 @@ class LocationController extends Controller
         }
 
         $district = Location::query()
-        ->join('locations as parent1', 'locations.parent_id', '=', 'parent1.id') // Join with the parent table
+            ->join('locations as parent1', 'locations.parent_id', '=', 'parent1.id') // Join with the parent table
             ->select(
                 'locations.*',
             )
@@ -842,15 +842,15 @@ class LocationController extends Controller
 
         $validator->validated();
 
-        $district = Location::where('parent_id',$id)->get();
+        $district = Location::where('parent_id', $id)->get();
         // dd($district->name_en);
         // print_r($district);
         if ($district->count() > 0) {
             // echo 'if';
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
-        }else{
+        } else {
             // echo 'else';
-             Location::where('id',$id)->delete();
+            Location::where('id', $id)->delete();
         }
 
         // echo "<br>";
@@ -957,13 +957,13 @@ class LocationController extends Controller
     public function getAllCityPaginated(Request $request)
     {
         // Retrieve the query parameters
-        
+
         //Filter
         $division_id = $request->query('division_id');
         $district_id = $request->query('district_id');
         $location_type = $request->query('location_type');
         //Filter
-                
+
 
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage') ?? 10;
@@ -982,7 +982,7 @@ class LocationController extends Controller
         $parent1filterArrayNameEn = [];
         $parent1filterArrayNameBn = [];
         $parent1filterArrayCode = [];
-       
+
 
         if ($searchText) {
             $filterArrayNameEn[] = ['locations.name_en', 'LIKE', '%' . $searchText . '%'];
@@ -1000,9 +1000,8 @@ class LocationController extends Controller
             if ($searchText != null) {
                 $page = 1;
             }
-       
         }
-  
+
 
         //
         // this is a 3 Level Search/Sorting
@@ -1061,7 +1060,7 @@ class LocationController extends Controller
                         $parent1filterArrayNameEn,
                         $parent1filterArrayNameBn,
                         $parent1filterArrayCode,
-                     
+
                     ) {
                         $query->where($parent2filterArrayNameEn)
                             ->orWhere($parent2filterArrayNameBn)
@@ -1075,7 +1074,7 @@ class LocationController extends Controller
                     });
             })
             //End Searching
-            
+
             ->whereIn('locations.type', [$this->city, $this->thana])
 
             // Filtering            
@@ -1089,12 +1088,12 @@ class LocationController extends Controller
                 return $query->where('parent1.id', $division_id);
             })
             // End Filtering
-            
+
             // Ordering
             ->orderBy($sortBy, $orderBy)
             ->with('parent.parent', 'locationType')
             ->paginate($perPage, ['*'], 'page', $page);
-            // Ordering
+        // Ordering
 
         return $city;
         return CityResource::collection($city)->additional([
@@ -1910,13 +1909,44 @@ class LocationController extends Controller
      *      summary="get paginated union",
      *      description="get paginated union",
      *      security={{"bearer_token":{}}},
+     * 
      *     @OA\Parameter(
      *         name="searchText",
      *         in="query",
      *         description="search by name",
      *         @OA\Schema(type="string")
      *     ),
-
+     *     @OA\Parameter(
+     *         name="division_id",
+     *         in="query",
+     *         description="Filter by Division",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="district_id",
+     *         in="query",
+     *         description="Filter by District",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="district_pouro_id",
+     *         in="query",
+     *         description="Filter by district_pouro_id",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="city_id",
+     *         in="query",
+     *         description="Filter by city_id",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="upazila_id_search",
+     *         in="query",
+     *         description="Filter by upazila_id_search",
+     *         @OA\Schema(type="string")
+     *     ),
+     * 
      *     @OA\Parameter(
      *         name="perPage",
      *         in="query",
@@ -1969,35 +1999,16 @@ class LocationController extends Controller
 
     public function getAllUnionPaginated(Request $request)
     {
-        // // Retrieve the query parameters
-        // $searchText = $request->query('searchText');
-        // $perPage = $request->query('perPage');
-        // $page = $request->query('page');
 
-        // $filterArrayNameEn = [];
-        // $filterArrayNameBn = [];
-        // $filterArrayCode = [];
+        //Filter
+        $location_type = $request->query('location_type');
+        $division_id = $request->query('division_id');
+        $district_id = $request->query('district_id');
 
-        // if ($searchText) {
-        //     $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-        //     $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-        //     $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-        // }
-        // $union = Location::query()
-        //     ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
-        //         $query->where($filterArrayNameEn)
-        //             ->orWhere($filterArrayNameBn)
-        //             ->orWhere($filterArrayCode);
-        //     })
-        //     // ->whereType($this->union)
-        //     ->whereIn('type', [$this->pouro, $this->union])
-        //     ->with('parent.parent.parent')
-        //     ->latest()
-        //     ->paginate($perPage, ['*'], 'page');
-        // return UnionResource::collection($union)->additional([
-        //     'success' => true,
-        //     'message' => $this->fetchSuccessMessage,
-        // ]);
+        $city_id = $request->query('city_id');
+        $district_pouro_id = $request->query('district_pouro_id');
+        $upazila_id = $request->query('upazila_id');
+        //Filter
 
         // Retrieve the query parameters
         $searchText = $request->query('searchText');
@@ -2083,19 +2094,8 @@ class LocationController extends Controller
             ->join('locations as parent3', 'locations.parent_id', '=', 'parent3.id') // Join with the parent table
             ->join('locations as parent2', 'parent3.parent_id', '=', 'parent2.id') // Join with the parent table
             ->join('locations as parent1', 'parent2.parent_id', '=', 'parent1.id') // Join with the grandparent table
-            // ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
-            // ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
             ->select(
                 'locations.*',
-                // 'parent.name_en as parent_name_en',
-                // 'parent.name_bn as parent_name_bn',
-                // 'parent.code as parent_code',
-                // 'parent.type as parent_type',
-                // 'parent.id as parent_id',
-                // 'parent.parent_id as parent_parent_id',
-                // 'parent.type as parent_type',
-                // 'parent.location_type as parent_location_type'
-                // 'district.name_en AS district_name'
             )
 
             //searching
@@ -2167,6 +2167,25 @@ class LocationController extends Controller
             // ->get();
             // , $this->union, $this->thana
             // ->latest()
+
+            // Filtering            
+
+            ->when($city_id, function ($query, $city_id) {
+                return $query->where('parent3.id', $city_id);
+            })
+            ->when($upazila_id, function ($query, $upazila_id) {
+                return $query->where('parent3.id', $upazila_id);
+            })
+
+            ->when($district_id, function ($query, $district_id) {
+                return $query->where('parent2.id', $district_id);
+            })
+            ->when($division_id, function ($query, $division_id) {
+                return $query->where('parent1.id', $division_id);
+            })
+
+            // End Filtering
+
             ->orderBy($sortBy, $orderBy)
             ->with('parent.parent.parent', 'locationType')
             ->paginate($perPage, ['*'], 'page', $page);
