@@ -9,6 +9,8 @@ use App\Http\Requests\Admin\Role\RoleUpdateRequest;
 use App\Http\Resources\Admin\Role\RoleResource;
 use App\Http\Services\Admin\Role\RoleService;
 use App\Http\Traits\MessageTrait;
+use App\Http\Traits\OfficeTrait;
+use App\Http\Traits\RoleTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
@@ -18,6 +20,7 @@ use Spatie\Permission\Models\Role;
 class RoleController extends Controller
 {
     use MessageTrait;
+    use RoleTrait;
     private $RoleService;
 
     public function __construct(RoleService $RoleService) {
@@ -158,7 +161,11 @@ class RoleController extends Controller
     public function getUnAssignPermissionRole(){
 
     //$role =Role::whereDoesntHave('permissions')->get();
-    $role =Role::where('name','!=','super-admin')->where('name', '!=', 'office-head')->get();
+    $role =Role::get()
+    ->where('name','!=',$this->superAdmin)
+    ->where('name','!=',$this->officeHead)
+    // ->where('name','!=',$this->applicantAgeLimitMessage)
+    ;
 
 
     return RoleResource::collection($role)->additional([
