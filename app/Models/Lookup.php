@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\Lookup
@@ -39,4 +41,21 @@ class Lookup extends Model
         return parent::newQuery($excludeDeleted)
             ->orderBy('value_en', 'asc');
     }
+
+
+    /*
+     * Permission History
+     * */
+    public function committeePermissions(): HasMany
+    {
+        return $this->hasMany(CommitteePermission::class, 'committee_type_id', 'id')->latest();
+    }
+
+
+    public function committeePermission(): HasOne
+    {
+        return $this->hasOne(CommitteePermission::class, 'committee_type_id', 'id')->latest();
+    }
+
+
 }
