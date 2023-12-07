@@ -177,12 +177,12 @@ class OfficeController extends Controller
      *     )
      * )
      */
-    public function getAllWardUnderOffice()
+    public function getAllWardUnderOffice(Request $request)
     {
         // Retrieve the query parameters
         // echo "jelp";
         // return;
-        // $id = $request->query('id');
+        $id = $request->query('id');
         // $searchText = $request->query('searchText');
         // $perPage = $request->query('perPage');
         // $page = $request->query('page');
@@ -206,6 +206,7 @@ class OfficeController extends Controller
 
 
         $office = Office::query()
+            ->whereId($id)
             ->with('wards.parent.parent.parent.parent.parent')
             ->get();
 
@@ -215,6 +216,10 @@ class OfficeController extends Controller
         // ->paginate($perPage, ['*'], 'page', $page);
 
         return $office;
+        return OfficeResource::collection($office)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
     }
 
     /**
