@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\Api\V1\Admin\CommitteeController;
+use App\Http\Controllers\Api\V1\Admin\CommitteePermissionController;
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -20,6 +21,10 @@ Route::get('/{id}', [CommitteeController::class, 'editCommittee'])->middleware([
 
 
 });
+
+
+    Route::apiResource('admin/committee-permissions', CommitteePermissionController::class)
+        ->only('index', 'store', 'destroy');
 
 
 

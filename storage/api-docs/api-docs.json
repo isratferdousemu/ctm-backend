@@ -1250,6 +1250,50 @@
                 ]
             }
         },
+        "/admin/committee-permissions/{id}": {
+            "delete": {
+                "tags": [
+                    "COMMITTEE-PERMISSION-MANAGEMENT"
+                ],
+                "summary": "delete permissions of committee",
+                "description": "delete permissions of committee",
+                "operationId": "deleteCommitteePermission",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the committee type",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resource deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/device/get": {
             "get": {
                 "tags": [

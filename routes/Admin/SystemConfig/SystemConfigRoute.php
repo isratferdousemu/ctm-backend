@@ -99,17 +99,6 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::delete('/destroy/{id}', [MenuController::class, 'destroyMenu'])->middleware(['role_or_permission:super-admin|menu-destroy']);
     });
 
-
-
-        /* -------------------------------------------------------------------------- */
-        /*                           Menu Management Routes                           */
-        /* -------------------------------------------------------------------------- */
-
-
-        Route::apiResource('admin/committee-permissions', CommitteePermissionController::class)
-            ->only('index', 'store', 'update', 'destroy');
-
-
 });
 
 
