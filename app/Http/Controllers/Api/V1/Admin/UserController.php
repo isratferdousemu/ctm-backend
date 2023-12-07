@@ -66,6 +66,14 @@ class UserController extends Controller
     *         description="page number",
     *         @OA\Schema(type="integer")
     *     ),
+     * 
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="query",
+     *         description="user_id",
+     *         @OA\Schema(type="integer")
+     *     ),
+     * 
     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -152,7 +160,7 @@ class UserController extends Controller
     ->latest()
     ->paginate($perPage, ['*'], 'page');
 // }
-    // return $users;
+    return $users;
     return UserResource::collection($users)->additional([
         'success' => true,
         'message' => $this->fetchSuccessMessage,

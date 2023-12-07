@@ -2615,6 +2615,54 @@ class LocationController extends Controller
      *         description="asc or desc",
      *         @OA\Schema(type="text")
      *     ),
+     * 
+     *      *     @OA\Parameter(
+     *         name="division_id",
+     *         in="query",
+     *         description="Filter by Division",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="district_id",
+     *         in="query",
+     *         description="Filter by District",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="district_pouro_id_search",
+     *         in="query",
+     *         description="Filter by district_pouro_id_search",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="city_id_search",
+     *         in="query",
+     *         description="Filter by city_id",
+     *         @OA\Schema(type="string")
+     *     ),
+     * 
+     *     @OA\Parameter(
+     *         name="city_thana_id_search",
+     *         in="query",
+     *         description="Filter by thana_id",
+     *         @OA\Schema(type="string")
+     *     ),
+     * 
+     *     @OA\Parameter(
+     *         name="upazila_id_search",
+     *         in="query",
+     *         description="Filter by upazila_id_search",
+     *         @OA\Schema(type="string")
+     *     ),
+     * 
+     *     @OA\Parameter(
+     *         name="union_id_search",
+     *         in="query",
+     *         description="Filter by union_id_search",
+     *         @OA\Schema(type="string")
+     *     ),
+     * 
+     * 
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -2679,6 +2727,21 @@ class LocationController extends Controller
         $page = $request->query('page');
         $sortBy = $request->query('sortBy') ?? 'name_en';
         $orderBy = $request->query('orderBy') ?? 'asc';
+
+        //Filtering query parameters
+        $division_id = $request->query('division_id');
+        $district_id = $request->query('district_id');
+
+
+        $district_pouro_id = $request->query('district_pouro_id_search');
+
+        $upazila_id = $request->query('upazila_id_search');
+        $union_id = $request->query('union_id_search');
+
+        $city_id = $request->query('city_id_search');
+        $thana_id = $request->query('city_thana_id_search');
+
+        //Filtering query parameters
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -2868,8 +2931,48 @@ class LocationController extends Controller
                     });
             })
 
-            //searching
+            //End searching
             ->where('locations.type', '=', $this->ward)
+
+            // Filtering            
+            ->when($district_pouro_id, function ($query, $district_pouro_id) {
+                return $query->where('parent4.id', $district_pouro_id);
+            })
+            ->when($city_id, function ($query, $city_id) {
+                return $query->where('parent3.id', $city_id)->where('parent3.type', $this->city);
+            })
+            ->when($upazila_id, function ($query, $upazila_id) {
+                return $query->where('parent3.id', $upazila_id);
+            })
+
+            // ------------------
+            ->when($thana_id, function ($query, $thana_id) {
+                return $query->where('parent4.id', $thana_id);
+            })
+            ->when($union_id, function ($query, $union_id) {
+                return $query->where('parent4.id', $union_id);
+            })
+            // ------------------
+
+            ->when($district_id, function ($query, $district_id) use ($district_pouro_id) {
+                // return $query->where('parent2.id', $district_id);
+                if (!$district_pouro_id) {
+                    $query
+                    ->where('parent3.id', $district_id)
+                    ->orwhere('parent3.parent_id', $district_id)
+                    ;
+                }
+            })
+
+            ->when($division_id, function ($query, $division_id) use ($district_pouro_id) {
+                // return $query->where('parent.id',  $division_id);
+                if (!$district_pouro_id) {
+                    $query->where('parent2.id', $division_id)->orwhere('parent1.id', $division_id);
+                }
+            })
+
+            // End Filtering
+
             ->orderBy($sortBy, $orderBy)
             ->with('parent.parent.parent.parent', 'locationType')
             ->paginate($perPage, ['*'], 'page', $page);

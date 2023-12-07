@@ -80,6 +80,7 @@ class RoleController extends Controller
      *          )
     * )
     */
+    
     public function getAllRolePaginated(Request $request){
         // Retrieve the query parameters
          $role = Role::query();
@@ -163,7 +164,7 @@ class RoleController extends Controller
     //$role =Role::whereDoesntHave('permissions')->get();
     $role =Role::get()
     ->where('name','!=',$this->superAdmin)
-    ->where('name','!=',$this->officeHead)
+    // ->where('name','!=',$this->officeHead)
     // ->where('name','!=',$this->applicantAgeLimitMessage)
     ;
 

@@ -12,12 +12,15 @@ use App\Http\Services\Admin\Office\OfficeService;
 use App\Http\Resources\Admin\Office\OfficeResource;
 use App\Http\Requests\Admin\System\Office\OfficeRequest;
 use App\Http\Requests\Admin\System\Office\OfficeUpdateRequest;
+use App\Http\Traits\PermissionTrait;
 use App\Models\OfficeHasWard;
+use App\Models\User;
 
 class OfficeController extends Controller
 {
-    use MessageTrait;
+    use MessageTrait, PermissionTrait;
     private $OfficeService;
+    private $office_location_id;
 
     public function __construct(OfficeService $OfficeService)
     {
@@ -49,6 +52,14 @@ class OfficeController extends Controller
      *         description="page number",
      *         @OA\Schema(type="integer")
      *     ),
+     * 
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="query",
+     *         description="user_id",
+     *         @OA\Schema(type="integer")
+     *     ),
+     * 
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -106,9 +117,16 @@ class OfficeController extends Controller
                     ->orWhere($filterArrayComment)
                     ->orWhere($filterArrayAddress);
             })
-            ->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
+
             // ->latest()
             // ->paginate($perPage, ['*'], 'page');
+            // ->when($this->office_location_id, function ($query, $office_location_id) {
+            //     return $query->where('assign_location_id', $office_location_id);
+            // })
+
+            ->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
+            
+
             ->orderBy($sortBy, $orderBy)
             ->paginate($perPage, ['*'], 'page', $page);
 

@@ -165,12 +165,12 @@ class AuthService
     }
 
     public function AdminForgotPassword(Request $request){
-        $user = User::whereMobile($request->phone)->first();
+        $user = User::withoutGlobalScope('assign_location_type')->whereMobile($request->phone)->first();
         return $otp = $this->sendLoginOtp($user,5);
 
     }
     public function AdminForgotPasswordSubmit(Request $request){
-        $user = User::whereMobile($request->phone)->first();
+        $user = User::withoutGlobalScope('assign_location_type')->whereMobile($request->phone)->first();
         $code = $request->otp;
         $cachedCode = Cache::get($this->userLoginOtpPrefix . $user->id);
         if (!$cachedCode || $code != $cachedCode) {
@@ -202,7 +202,7 @@ class AuthService
                 'confirm_password.same' => 'Password and Confirm Password does not match!',
             ]
         );
-        $user = User::where("username", $request->username)->first();
+        $user = User::withoutGlobalScope('assign_location_type')->where("username", $request->username)->first();
         if (
             method_exists($this, 'hasTooManyLoginAttempts') &&
             $this->hasTooManyLoginAttempts($request)
@@ -246,11 +246,11 @@ class AuthService
             $this->hasTooManyLoginAttempts($request)
         ) {
             $this->fireLockoutEvent($request);
-            $user = User::where("username", $request->username)->first();
+            $user = User::withoutGlobalScope('assign_location_type')->where("username", $request->username)->first();
             $this->bannedUser($user);
             return $this->sendLockoutResponse($request);
         }
-        $user = User::where("username", $request->username)->first();
+        $user = User::withoutGlobalScope('assign_location_type')->where("username", $request->username)->first();
 
         if ($user == null) {
             $this->incrementLoginAttempts($request);
@@ -340,7 +340,7 @@ class AuthService
 
         DB::beginTransaction();
         try {
-            $user = User::findOrFail(Auth::user()->id);
+            $user = User::withoutGlobalScope('assign_location_type')->findOrFail(Auth::user()->id);
 
             if ($request->filled('device') && !empty($request->device)) {
                 $user->tokens()->where('name', $this->generateTokenKey($request) . $user->id)->delete();
