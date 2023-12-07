@@ -10,9 +10,12 @@ class CommitteePermissionService
     public function getCommitteePermissions()
     {
         return Lookup::whereType(17)
+            ->when(request('searchText'), function ($q, $v) {
+                $q->where('value_en', 'like', "%$v%");
+            })
             ->with('committeePermission')
             ->select('id', 'type', 'value_en', 'value_bn')
-            ->get();
+            ->paginate(request('perPage', 15));
     }
 
 
