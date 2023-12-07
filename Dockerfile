@@ -51,7 +51,7 @@ COPY . .
 COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
 
 #for staging
-ENV PORT=8000
+ENV PORT=80
 
 RUN chmod a+x ./Docker/entrypoint.sh
 
