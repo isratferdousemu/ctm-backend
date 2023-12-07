@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Geographic;
 
+use App\Models\Location;
 use Illuminate\Foundation\Http\FormRequest;
 
 class WardRequest extends FormRequest
@@ -31,6 +32,47 @@ class WardRequest extends FormRequest
             'union_id' => 'sometimes|integer|exists:locations,id,deleted_at,NULL',
             'name_en' => 'required|string|max:50|unique:locations,name_en,NULL,id,deleted_at,NULL',
             'name_bn' => 'required|string|max:50|unique:locations,name_bn,NULL,id,deleted_at,NULL',
+
+            // 'name_en' => [
+            //     'required',
+            //     'string',
+            //     'max:50',
+            //     function ($attribute, $value, $fail) {
+            //         if (
+            //             Location::where('name_en', $value)
+            //             ->where('id', '!=', $this->id)
+            //             ->orWhere('parent_id', $this->city_id)
+            //             ->orWhere('parent_id', $this->city_thana_id)
+            //             ->orWhere('parent_id', $this->district_pouro_id)
+            //             ->orWhere('parent_id', $this->division_id)
+            //             ->orWhere('parent_id', $this->district_id)
+            //             ->orWhere('parent_id', $this->thana_id)
+            //             ->orWhere('parent_id', $this->union_id)
+            //             ->exists()) {
+            //             $fail('The ' . $attribute . ' has already been taken.');
+            //         }
+            //     },
+            // ],
+            // 'name_bn' => [
+            //     'required',
+            //     'string',
+            //     'max:50',
+            //     function ($attribute, $value, $fail) {
+            //         if (
+            //             Location::where('name_bn', $value)
+            //             ->where('id', '!=', $this->id)
+            //             ->orWhere('parent_id', $this->city_id)
+            //             ->orWhere('parent_id', $this->city_thana_id)
+            //             ->orWhere('parent_id', $this->district_pouro_id)
+            //             ->orWhere('parent_id', $this->division_id)
+            //             ->orWhere('parent_id', $this->district_id)
+            //             ->orWhere('parent_id', $this->thana_id)
+            //             ->orWhere('parent_id', $this->union_id)
+            //             ->exists()) {
+            //             $fail('The ' . $attribute . ' has already been taken.');
+            //         }
+            //     },
+            // ],
             'code' => 'required|string|max:6|unique:locations,code,NULL,id,deleted_at,NULL'
         ];
     }
