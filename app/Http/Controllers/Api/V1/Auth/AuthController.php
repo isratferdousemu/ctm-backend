@@ -9,6 +9,7 @@ use App\Http\Services\Auth\AuthService;
 use App\Http\Services\Notification\SMSservice;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\UserTrait;
+use App\Models\Device;
 use App\Models\User;
 use DB;
 use Illuminate\Http\JsonResponse;
@@ -332,15 +333,27 @@ class AuthController extends Controller
      public function LoginOtp(Request $request)
      {
 
-         //validate login
-         $this->authService->validateLogin($request);
-         //login
-         $data = $this->authService->Adminlogin($request,1);
+        // $device = Device::where("device_name", 'test')->first(); // remove during Live - this is only for testing purpose
+        $mode = $request->username;
+        if ($mode != 'ctm-01') { // remove during live - this is only for testing purpose
+
+        //  validate login
+         $this->authService->validateLogin($request); //Keep in Live
+        //  login
+          $data = $this->authService->Adminlogin($request,1); //Keep in Live
+        }else{
+            $data = $this->authService->AdminloginTest($request,1); // remove during 
+        }
 
          activity("Login")
          ->log('Login OTP Send!!');
 
-         return response()->json(['success' => true, 'message' => 'Verification OTP Sent!', 'data' => $data]);
+         return response()->json(
+            ['success' => true, 
+            'message' => 'Verification OTP Sent!', 
+            'data' => $data,
+            'device' => $mode
+        ]);
 
      }
     /**
@@ -413,10 +426,20 @@ class AuthController extends Controller
      public function LoginAdmin(Request $request){
         broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
 
-         //validate login
-         $this->authService->validateLogin($request);
-         //login
-         $authData = $this->authService->Adminlogin($request,2);
+        
+
+        $mode = $request->username;
+
+        if ($mode != 'ctm-01') {// remove during live - this is only for testing purpose
+        // validate login
+        // login
+        $this->authService->validateLogin($request); //Keep in Live
+         $authData = $this->authService->Adminlogin($request,2); //Keep in Live
+        }else{
+
+            $authData = $this->authService->AdminloginTest($request,2); //remove during live - this is only for testing purpose
+        }
+        
          $permissions = $authData['user']->getAllPermissions();
 
          activity("Login OTP")
