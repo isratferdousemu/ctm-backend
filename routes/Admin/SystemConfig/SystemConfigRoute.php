@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\CommitteePermissionController;
 use App\Http\Controllers\Api\V1\Admin\DeviceController;
 use App\Http\Controllers\Api\V1\Admin\OfficeController;
 use App\Http\Controllers\Api\V1\Admin\AdminController;
@@ -98,7 +99,6 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::put('/update/{id}', [MenuController::class, 'updateMenu']);
         Route::delete('/destroy/{id}', [MenuController::class, 'destroyMenu'])->middleware(['role_or_permission:super-admin|menu-destroy']);
     });
-
 
 });
 
