@@ -6444,6 +6444,10 @@
                                         "description": "id of office",
                                         "type": "text"
                                     },
+                                    "committee_id": {
+                                        "description": "id of Committtee",
+                                        "type": "text"
+                                    },
                                     "division_id": {
                                         "description": "id of division",
                                         "type": "text"

@@ -94,6 +94,8 @@ trait PermissionTrait
             }
 
             if ($user->user_type == $this->staffId) {
+
+                // if user Has Office
                 $officeHead = User::withoutGlobalScope('assign_location_type')->where('office_id', $user->office_id)->whereHas('roles', function ($query) {
                     $query->where('name', $this->officeHead);
                 })->first();

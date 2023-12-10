@@ -49,6 +49,7 @@ class UserService
                 }
             }
             $user->office_id = $request->office_id;
+            $user->committee_id = $request->committee_id;
             $user->user_type = $this->staffId;
             $user->salt = Helper::generateSalt();
 
@@ -106,6 +107,7 @@ class UserService
             }
 
             $user->office_id = $request->office_id;
+            $user->committee_id = $request->committee_id;
             $user->save();
             // assign role to the user
             $user->syncRoles([$request->role_id]);
