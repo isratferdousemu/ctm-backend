@@ -227,6 +227,11 @@ class UserController extends Controller
      *                      type="text",
      *                   ),
      *                   @OA\Property(
+     *                      property="committee_id",
+     *                      description="id of Committtee",
+     *                      type="text",
+     *                   ),
+     *                   @OA\Property(
      *                      property="division_id",
      *                      description="id of division",
      *                      type="text",
@@ -281,7 +286,7 @@ class UserController extends Controller
      */
 
 
-    //user psuedocode
+    //user Logics
     // 1. check if user is super admin or not
     // 2. if not super admin then check if user is office head or not
     
