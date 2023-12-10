@@ -3568,6 +3568,14 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "union_id_search",
+                        "in": "query",
+                        "description": "Filter by union_id_search",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
