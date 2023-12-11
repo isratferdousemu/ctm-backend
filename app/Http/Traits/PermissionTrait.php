@@ -46,6 +46,7 @@ trait PermissionTrait
 
     // module 3 sub modules
     private $subCommitteeInformation= "committee-information";
+    private $subCommitteePermissionInformation= "committee-permission-information";
     private $subAllocationInformation = "allocation-information";
     private $subBeneficiaryInformationManagement= "beneficiary-information-management";
     private $subBeneficiaryReplacement= "beneficiary-replacement";

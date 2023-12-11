@@ -91,7 +91,7 @@ class MenuSeeder extends Seeder
     (34, 143, 33, 'General', 'General', 1, NULL, 31, NULL, '2023-10-22 04:09:35', '2023-10-22 04:09:35'),
     (35, 2, 23, 'Application Dashboard', 'Application Dashboard', 1, 'application/dashboard', 24, NULL, '2023-10-30 06:46:42', '2023-10-30 06:58:20'),
     (36, NULL, 23, 'PMT Score', 'PMT Score', 2, NULL, 33, NULL, '2023-10-30 08:09:04', '2023-10-30 08:09:04'),
-    (37, 119, 26, 'Beneficiary Shifting', 'Beneficiary Shifting', 1, NULL, 34, NULL, '2023-10-30 08:10:30', '2023-10-30 08:10:30'),
+    (37, 119, 26, 'Beneficiary Shifting', 'Beneficiary Shifting', 1, NULL, 35, NULL, '2023-10-30 08:10:30', '2023-10-30 08:10:30'),
     (38, NULL, NULL, 'Payroll Management', 'Payroll Management', NULL, NULL, 30, NULL, '2023-10-30 08:12:16', '2023-10-31 05:21:43'),
     (39, NULL, NULL, 'Emergency Payment', 'Emergency Payment', NULL, NULL, 29, NULL, '2023-10-30 08:32:42', '2023-10-30 08:33:09'),
     (40, NULL, NULL, 'Grievance Management', 'Grievance Management', NULL, NULL, 29, NULL, '2023-10-30 08:35:11', '2023-10-30 08:39:57'),
@@ -130,7 +130,13 @@ class MenuSeeder extends Seeder
     (73, 90, 36, 'Variable', 'Variable', 1, NULL, 70, NULL, '2023-10-31 05:25:56', '2023-11-02 12:59:13'),
     (74, 94, 36, 'Sub-Variable', 'Sub-Variable', 1, NULL, 71, NULL, '2023-10-31 05:28:12', '2023-11-02 12:59:29'),
     (75, NULL, NULL, 'Budget & Allotment', 'Budget & Allotment', NULL, NULL, 22, NULL, '2023-11-02 12:53:50', '2023-11-02 12:55:13'),
-    (76, 56, 2, 'IBCS-PRIMAX', 'ড্যাশবোর্ড', 2, 'https://www.ibcs-primax.com/', 7, '2023-11-03 04:56:12', '2023-11-02 14:57:48', '2023-11-03 04:56:12');";
+    (76, 56, 2, 'IBCS-PRIMAX', 'ড্যাশবোর্ড', 2, 'https://www.ibcs-primax.com/', 7, '2023-11-03 04:56:12', '2023-11-02 14:57:48', '2023-11-03 04:56:12'),
+    (77, 179, 26, 'Committee Permission List', 'Committee Permission List', 1, NULL, 34, NULL, '2023-10-07 23:32:00', '2023-10-22 04:10:05')
+
+;"
+
+    ;
+
 
         // forgain key validation off
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
