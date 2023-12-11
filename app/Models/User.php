@@ -3,6 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Http\Traits\PermissionTrait;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -107,7 +111,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable,SoftDeletes,HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, PermissionTrait;
     protected $guard_name = 'sanctum';
     public function newQuery($excludeDeleted = true)
     {
@@ -135,23 +139,101 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // echo 'Constr';
+        // print_r($data);
+
+        // print_r($data);
+        if (auth()->check()) {
+            static::addGlobalScope('assign_location_type', function (EloquentBuilder $builder) {
+                $data = $this->getUserPermissionsForUser();
+                // echo $data['type'];
+                $builder->whereHas('assign_location', function ($query) use ($data) {
+
+                    // $data = 4; // barisal id
+                    // $data = 6; // dhaka id
+                    if ($data != false) {
+                        # code...
+                        if ($data['type'] == 'division') {
+                            $query->where(function ($query) use ($data) {
+                                $query->whereHas('parent', function ($query) use ($data) {
+                                    $query->where('id', $data['location_id'])
+                                        ->orWhereHas('parent', function ($query) use ($data) {
+                                            $query->where('id', $data['location_id'])
+                                                ->orWhereHas('parent', function ($query) use ($data) {
+                                                    $query->where('id', $data['location_id'])
+                                                        ->orWhereHas('parent', function ($query) use ($data) {
+                                                            $query->where('id', $data['location_id'])
+                                                                ->where('type', $data['type']);
+                                                        });
+                                                });
+                                        });
+                                });
+                            })
+                                ->orWhere('type', $data['type']);
+                        }
+                        if ($data['type'] == 'district') {
+                            $query->where(function ($query) use ($data) {
+                                $query->whereHas('parent', function ($query) use ($data) {
+                                    $query->where('id', $data['location_id'])
+                                        ->orWhereHas('parent', function ($query) use ($data) {
+                                            $query->where('id', $data['location_id'])
+                                                ->orWhereHas('parent', function ($query) use ($data) {
+                                                    $query->where('id', $data['location_id'])
+                                                        ->orWhereHas('parent', function ($query) use ($data) {
+                                                            $query->where('id', $data['location_id'])
+                                                                ->where('type', $data['type']);
+                                                        });
+                                                });
+                                        });
+                                });
+                            })
+                                ->orWhere('type', $data['type']);
+                        }
+                        if ($data['type'] == 'thana') {
+                            $query->where(function ($query) use ($data) {
+                                $query->whereHas('parent', function ($query) use ($data) {
+                                    $query->where('id', $data['location_id'])
+                                        ->orWhereHas('parent', function ($query) use ($data) {
+                                            $query->where('id', $data['location_id'])
+                                                ->orWhereHas('parent', function ($query) use ($data) {
+                                                    $query->where('id', $data['location_id'])
+                                                        ->orWhereHas('parent', function ($query) use ($data) {
+                                                            $query->where('id', $data['location_id'])
+                                                                ->where('type', $data['type']);
+                                                        });
+                                                });
+                                        });
+                                });
+                            })
+                                ->orWhere('type', $data['type']);
+                        }
+                    }
+                });
+            });
+        }
+    }
+
     public function office()
     {
-        return $this->belongsTo(Office::class,'office_id','id');
+        return $this->belongsTo(Office::class, 'office_id', 'id');
     }
     public function office_type()
     {
-        return $this->belongsTo(Lookup::class,'office_type','id');
+        return $this->belongsTo(Lookup::class, 'office_type', 'id');
     }
 
     public function assign_location()
     {
-        return $this->belongsTo(Location::class,'assign_location_id','id');
+        return $this->belongsTo(Location::class, 'assign_location_id', 'id');
     }
-    
+
     public function parent()
     {
-        return $this->belongsTo(Location::class,'assign_location.parent_id','id');
+        return $this->belongsTo(Location::class, 'assign_location.parent_id', 'id');
     }
     //  'district'  => DistrictResource::make($this->whenLoaded('parent')),
 

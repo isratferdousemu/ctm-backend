@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\User;
+
 class RolesSeeder extends Seeder
 {
     use RoleTrait;
@@ -21,31 +22,69 @@ class RolesSeeder extends Seeder
      */
     public function run()
     {
-                // Reset cached roles and permissions
-                app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-                $guard = 'sanctum';
+        $guard = 'sanctum';
 
-                $role = Role::create([
-                    'guard_name' => $guard,
-                    'code' => "278932",
-                    'default' => 1,
-                    'status'  =>1,
-                    'name_en' => $this->superAdmin,
-                    'name_bn' => $this->superAdmin,
-                    'name' => $this->superAdmin
-                ]);
-                $role->givePermissionTo(Permission::all());
-                $officeHeadRole = Role::create([
-                    'guard_name' => $guard,
-                    'code' => "10001",
-                    'default' => 1,
-                    'status'  =>1,
-                    'name_en' => $this->officeHead,
-                    'name_bn' => $this->officeHead,
-                    'name' => $this->officeHead
-                ]);
-                $officeHeadRole->givePermissionTo(Permission::all());
+        $role = Role::create([
+            'guard_name' => $guard,
+            'code' => "278932",
+            'default' => 1,
+            'status'  => 1,
+            'name_en' => $this->superAdmin,
+            'name_bn' => $this->superAdmin,
+            'name' => $this->superAdmin
+        ]);
+        $role->givePermissionTo(Permission::all());
+        
+        $officeHeadRole = Role::create([
+            'guard_name' => $guard,
+            'code' => "10001",
+            'default' => 1,
+            'status'  => 1,
+            'name_en' => $this->officeHead,
+            'name_bn' => $this->officeHead,
+            'name' => $this->officeHead
+        ]);
+        $officeHeadRole->givePermissionTo(Permission::all());
+        
+        // $applicationListRole = Role::create([
+        //     'guard_name' => $guard,
+        //     'code' => "20001",
+        //     'default' => 1,
+        //     'status'  => 1,
+        //     'name_en' => $this->applicationListRole,
+        //     'name_bn' => $this->applicationListRole,
+        //     'name' => $this->applicationListRole
+        // ]);
+        // $applicationListRole->givePermissionTo(Permission::all());
+        
+
+        
+        $dataEntryOperatorRole = Role::create([
+            'guard_name' => $guard,
+            'code' => "10002",
+            'default' => 1,
+            'status'  => 1,
+            'name_en' => $this->dataEntryOperator,
+            'name_bn' => $this->dataEntryOperator,
+            'name' => $this->dataEntryOperator
+        ]);
+        $dataEntryOperatorRole->givePermissionTo(Permission::all());
+        
+        
+        $committeeRole = Role::create([
+            'guard_name' => $guard,
+            'code' => "10003",
+            'default' => 1,
+            'status'  => 1,
+            'name_en' => $this->committee,
+            'name_bn' => $this->committee,
+            'name' => $this->committee
+        ]);
+        $committeeRole->givePermissionTo(Permission::all());
+        
         $salt = Helper::generateSalt();
         $admin = User::create(
             [
@@ -53,8 +92,8 @@ class RolesSeeder extends Seeder
                 'username'            => 'ctm-01',
                 'user_id'            => 1000,
                 'email'                 => 'admin@ctm.com',
-                'salt'                  =>$salt,
-                'password'              => bcrypt($salt . '12345678') ,
+                'salt'                  => $salt,
+                'password'              => bcrypt($salt . '12345678'),
                 'user_type'               => $this->superAdminId,
                 'remember_token'        => Str::random(10),
                 'status'            => 1,
@@ -64,6 +103,5 @@ class RolesSeeder extends Seeder
         );
 
         $admin->assignRole([$role->id]);
-
     }
 }

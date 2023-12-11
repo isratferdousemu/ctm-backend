@@ -30,6 +30,9 @@ class DatabaseSeeder extends Seeder
         $this->call(DistrictFixedEffectSeeder::class);
         $this->call(VariableSeeder::class);
         $this->call(AllotmentSetupSeeder::class);
+        
+        $this->call(OfficeSeeder::class);
+        $this->call(UserSeeder::class);
 
 
         // Model::reguard(); // Enable mass assignment

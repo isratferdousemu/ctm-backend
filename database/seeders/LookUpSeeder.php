@@ -22,7 +22,7 @@ class LookUpSeeder extends Seeder
             ['id' => 6, 'type' => 3, 'value_en' => 'Division', 'value_bn' => 'Division','default'=>1],
             ['id' => 7, 'type' => 3, 'value_en' => 'District', 'value_bn' => 'District','default'=>1],
             ['id' => 8, 'type' => 3, 'value_en' => 'Upazila', 'value_bn' => 'Upazila','default'=>1],
-            ['id' => 9, 'type' => 3, 'value_en' => 'UCD (City Corp/ Dist Paurashava)', 'value_bn' => 'UCD (City Corp/ Dist Paurashava)','default'=>1],
+            ['id' => 9, 'type' => 3, 'value_en' => 'UCD (Dist Paurashava)', 'value_bn' => 'UCD ( Dist Paurashava)','default'=>1],
             ['id' => 10, 'type' => 3, 'value_en' => 'UCD (Upazila)', 'value_bn' => 'UCD (Upazila)','default'=>1],
             ['id' => 11, 'type' => 3, 'value_en' => 'Circle Social Service', 'value_bn' => 'Circle Social Service','default'=>1],
             ['id' => 12, 'type' => 17, 'value_en' => 'Union Committee', 'value_bn' => 'Union Committee','default'=>1],
@@ -52,6 +52,8 @@ class LookUpSeeder extends Seeder
             ['id' => 32, 'type' => 20, 'value_en' => '8', 'value_bn' => 'আট','default'=>1],
             ['id' => 33, 'type' => 20, 'value_en' => '9', 'value_bn' => 'নয়','default'=>1],
             ['id' => 34, 'type' => 20, 'value_en' => '10', 'value_bn' => 'দশ','default'=>1],
+            //office Type
+            ['id' => 35, 'type' => 3, 'value_en' => 'UCD (City Corporation)', 'value_bn' => 'UCD (City Corporation)','default'=>1],
 
         ];
         foreach ($lookups as $value) {
