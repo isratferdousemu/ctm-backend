@@ -50,6 +50,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
     Route::prefix('admin/allowance')->group(function () {
 
         Route::post('/insert', [SystemconfigController::class, 'insertallowance'])->middleware(['role_or_permission:super-admin|demo-graphic-create|allowance-creat']);
+        Route::post('/allowance-additional-field/insert', [SystemconfigController::class, 'insertAllowanceAdditionalField'])->middleware(['role_or_permission:super-admin|demo-graphic-create|allowance-creat']);
         Route::get('/get',[SystemconfigController::class, 'getAllallowancePaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view|allowance-view']);
         Route::get('/get_additional_field',[SystemconfigController::class, 'getAdditionalField'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::get('/edit/{id}',[SystemconfigController::class, 'edit'])->middleware(['role_or_permission:super-admin|demo-graphic-view|allowance-edit']);

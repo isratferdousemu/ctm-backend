@@ -5952,6 +5952,81 @@
                 ]
             }
         },
+        "/admin/allowance/allowance-additional-field/insert": {
+            "post": {
+                "tags": [
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
+                ],
+                "summary": "insert a AllowanceAdditionalField",
+                "description": "insert a AllowanceAdditionalField",
+                "operationId": "insertAllowanceAdditionalField",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name_en": {
+                                        "description": "insert name of AllowanceAdditionalField English ",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "insert bangla  of AllowanceAdditionalField Bangla",
+                                        "type": "text"
+                                    },
+                                    "type": {
+                                        "description": "insert Name  of AllowanceAdditionalField",
+                                        "type": "text"
+                                    },
+                                    "field_value[0]['name_en]": {
+                                        "description": "insert member name ",
+                                        "type": "text"
+                                    },
+                                    "field_value[0]['value]": {
+                                        "description": "insert designation",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/allowance/get": {
             "get": {
                 "tags": [
