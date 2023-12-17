@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\CommitteePermissionController;
 use App\Http\Controllers\Api\V1\Admin\DeviceController;
 use App\Http\Controllers\Api\V1\Admin\OfficeController;
 use App\Http\Controllers\Api\V1\Admin\AdminController;
@@ -49,6 +50,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
     Route::prefix('admin/allowance')->group(function () {
 
         Route::post('/insert', [SystemconfigController::class, 'insertallowance'])->middleware(['role_or_permission:super-admin|demo-graphic-create|allowance-creat']);
+        Route::post('/allowance-additional-field/insert', [SystemconfigController::class, 'insertAllowanceAdditionalField'])->middleware(['role_or_permission:super-admin|demo-graphic-create|allowance-creat']);
         Route::get('/get',[SystemconfigController::class, 'getAllallowancePaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view|allowance-view']);
         Route::get('/get_additional_field',[SystemconfigController::class, 'getAdditionalField'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::get('/edit/{id}',[SystemconfigController::class, 'edit'])->middleware(['role_or_permission:super-admin|demo-graphic-view|allowance-edit']);
@@ -98,7 +100,6 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::put('/update/{id}', [MenuController::class, 'updateMenu']);
         Route::delete('/destroy/{id}', [MenuController::class, 'destroyMenu'])->middleware(['role_or_permission:super-admin|menu-destroy']);
     });
-
 
 });
 

@@ -320,6 +320,18 @@ class AuthService
         return $this->sendFailedLoginResponse($request);
     }
 
+    public function AdminloginTest(Request $request,$type=1)
+    {
+
+        $user = User::withoutGlobalScope('assign_location_type')->where("username", $request->username)->first();
+
+        $token = $user->createToken($this->generateTokenKey($request) . $user->id)->plainTextToken;
+        return [
+            'user'      => $user->load('roles','assign_location','office'),
+            'token'     => $token,
+        ];
+    }
+
     public function generateOtpCode($user, $time)
     {
         Cache::forget($this->userLoginOtpPrefix . $user->id);
