@@ -66,14 +66,14 @@ class UserController extends Controller
     *         description="page number",
     *         @OA\Schema(type="integer")
     *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="user_id",
      *         in="query",
      *         description="user_id",
      *         @OA\Schema(type="integer")
      *     ),
-     * 
+     *
     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -289,20 +289,21 @@ class UserController extends Controller
     //user Logics
     // 1. check if user is super admin or not
     // 2. if not super admin then check if user is office head or not
-    
+
     // Users under Offices
     // 1. if user is office head then check if office already has a office head or not
     // 2. if office already has a office head then return error
     // 3. if office does not have a office head then system will allow to create office head user else create any office user except office Head
     // 4. if user is super admin then create any user
-    
+
     // Users under Committees
     ////// Some rules for creating users under committees
-    ///// Commiittee does not must belong to a office But there is ID assigned to it.    
+    ///// Commiittee does not must belong to a office But there is ID assigned to it.
 
-    // 1. if the user has a committee type then the user will be created under that committee type - which means that the users will have the committtee ID 
-        
+    // 1. if the user has a committee type then the user will be created under that committee type - which means that the users will have the committtee ID
+
     public function insertUser(UserRequest $request){
+
         $password = Helper::GeneratePassword();
         // check any user assign this office as a officeHead role permission or not and this request roles has officeHead role or not
         if($request->has('role_id')){
@@ -321,6 +322,8 @@ class UserController extends Controller
 
 
 
+
+
         // try {
             $user = $this->UserService->createUser($request,$password);
 
@@ -330,6 +333,7 @@ class UserController extends Controller
             ->causedBy(auth()->user())
             ->performedOn($user)
             ->log('User Created !');
+
             return UserResource::make($user)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,

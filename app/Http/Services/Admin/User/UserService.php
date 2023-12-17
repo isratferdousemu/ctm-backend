@@ -16,7 +16,7 @@ class UserService
     public function createUser(Request $request, $password)
     {
         DB::beginTransaction();
-        // try {
+         try {
 
             $user                       = new User();
             $user->full_name = $request->full_name;
@@ -47,9 +47,26 @@ class UserService
                         }
                     }
                 }
+
+                $user->office_id = $request->office_id;
+
+            } elseif ($committeeType = $request->committee_type) {
+                $user->assign_location_id = match ((int)$committeeType) {
+                    12 => $request->ward_id,
+                    13 => $request->union_id,
+                    14 => $request->upazila_id,
+                    15 => $request->city_corpo_id,
+                    16 => $request->paurashava_id,
+                    17 => $request->district_id,
+                    default => null
+                };
+
+                $user->committee_id = $request->committee_id;
+            } else {
+                abort(500, 'Internal server error');
             }
-            $user->office_id = $request->office_id;
-            $user->committee_id = $request->committee_id;
+
+
             $user->user_type = $this->staffId;
             $user->salt = Helper::generateSalt();
 
@@ -64,10 +81,10 @@ class UserService
 
             DB::commit();
             return $user;
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        //     throw $th;
-        // }
+         } catch (\Throwable $th) {
+             DB::rollBack();
+             throw $th;
+         }
     }
 
     public function upddateUser(Request $request, $id)
