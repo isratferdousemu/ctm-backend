@@ -64,12 +64,6 @@ class SystemconfigController extends Controller
      *                      type="text",
 
      *                   ),
-     *                 
-     *                  @OA\Property(
-     *                      property="field_value[0]['name_en]",
-     *                      description="insert member name ",
-     *                      type="text",
-     *                   ),
      *                 @OA\Property(
      *                      property="field_value[0]['value]",
      *                      description="insert designation",
@@ -161,14 +155,14 @@ class SystemconfigController extends Controller
      *                      type="text",
 
      *                   ),
-     *                 
-     *                  @OA\Property(
-     *                      property="field_value[0]['name_en]",
-     *                      description="update member name ",
+     *                    @OA\Property(
+     *                      property="additional_field_id",
+     *                      description="update Name  of ID",
      *                      type="text",
+
      *                   ),
      *                 @OA\Property(
-     *                      property="field_value[0]['value]",
+     *                      property="field_value[0]['value']",
      *                      description="update designation",
      *                      type="text",
      *
@@ -208,13 +202,17 @@ class SystemconfigController extends Controller
      */
 
      public function updateAllowanceAdditionalField(AllowanceAdditionalFieldUpdateRequest $request){
+        // print_r($request->all());
         try {
-            $committee = $this->systemconfigService->createAllowanceAdditionalField($request);
+            $data = $this->systemconfigService->updateAllowanceAdditionalField($request);
             activity("AllowanceAdditionalField")
             ->causedBy(auth()->user())
-            ->performedOn($committee)
+            ->performedOn($data)
             ->log('AllowanceAdditionalField Created !');
-            return AdditionalFieldsResource::make($committee)->additional([
+
+            // return $data;
+             
+            return AdditionalFieldsResource::make($data)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
             ]);
@@ -357,7 +355,7 @@ class SystemconfigController extends Controller
      */
     public function getAdditionalField()
     {
-        $additional_fields = AdditionalFields::latest()->get();
+        $additional_fields = AdditionalFields::latest()->with('additional_field_value')->get();
 
         return \response()->json([
             'data' => $additional_fields

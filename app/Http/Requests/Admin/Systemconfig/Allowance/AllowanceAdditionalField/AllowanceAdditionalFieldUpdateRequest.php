@@ -22,10 +22,15 @@ class AllowanceAdditionalFieldUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // ----- Field Value
+            'name_en'          => 'required|string|max:50,deleted_at,NULL',
+            'name_bn'          => 'required|string|max:50,deleted_at,NULL',
+            'type'      => 'required|integer|exists:lookups,id',
+            // ----- End Field Value
             
             // ----- Field Value Validation
-            'field_value.*.additional_field_id'      =>'sometimes|string|max:50',
-            'field_value.*.value'       =>'sometimes|integer|exists:lookups,id',
+            'field_value.*.additional_field_id'      => 'sometimes|string|max:50',
+            'field_value.*.value'       => 'sometimes|string|max:50',
             // ----- EndField Value Validation
         ];
     }
