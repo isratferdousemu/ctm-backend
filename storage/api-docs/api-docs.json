@@ -3828,12 +3828,59 @@
                 ],
                 "summary": " get ward by thana id",
                 "description": "get ward by thana id",
-                "operationId": "getAllWardByThanaId",
+                "operationId": "Route::get('/ward/get/thana/{thana_id}',[LocationController::class, 'getAllWardByThanaId']);",
                 "parameters": [
                     {
                         "name": "thana_id",
                         "in": "path",
                         "description": "id of thana to return",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/ward/get/district_pouro/{district_pouro_id}": {
+            "get": {
+                "tags": [
+                    "GEOGRAPHIC-WARD"
+                ],
+                "summary": " get ward by district_pouro id",
+                "description": "get ward by district_pouro id",
+                "operationId": "Route::get('/ward/get/district_pouro/{district_pouro_id}',[LocationController::class, 'getAllWardByDistPouroId']);",
+                "parameters": [
+                    {
+                        "name": "district_pouro_id",
+                        "in": "path",
+                        "description": "id of district_pouro to return",
                         "schema": {
                             "type": "integer"
                         }
@@ -8022,6 +8069,43 @@
                 "summary": "get all program",
                 "description": "get all program",
                 "operationId": "getAllProgram",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
+        "/global/mobile-operator": {
+            "get": {
+                "tags": [
+                    "GLOBAL"
+                ],
+                "summary": "get all mobile operator",
+                "description": "get all mobile operator",
+                "operationId": "getAllMobileOperator",
                 "responses": {
                     "200": {
                         "description": "Successful operation",

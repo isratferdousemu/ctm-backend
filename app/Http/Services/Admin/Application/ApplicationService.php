@@ -99,26 +99,41 @@ class ApplicationService
             $application->education_status = $request->education_status;
             $application->profession = $request->profession;
             $application->religion = $request->religion;
-            if($request->has('city_thana_id') && $request->city_thana_id!=null){
-                $application->current_location_id              = $request->city_thana_id;
+            // if($request->has('city_thana_id') && $request->city_thana_id!=null){
+            //     $application->current_location_id              = $request->city_thana_id;
+            // }
+            // if($request->has('district_pouro_id') && $request->district_pouro_id!=null){
+            //     $application->current_location_id              = $request->district_pouro_id;
+            // }
+            // if($request->has('union_id') && $request->union_id!=null){
+            //     $application->current_location_id              = $request->union_id;
+            // }
+              if($request->has('ward_id_city') && $request->ward_id_city!=null){
+                $application->current_location_id              = $request->ward_id_city;
             }
-            if($request->has('district_pouro_id') && $request->district_pouro_id!=null){
-                $application->current_location_id              = $request->district_pouro_id;
+            if($request->has('ward_id_dist') && $request->ward_id_dist!=null){
+                $application->current_location_id              = $request->ward_id_dist;
             }
-            if($request->has('union_id') && $request->union_id!=null){
-                $application->current_location_id              = $request->union_id;
+            if($request->has('ward_id_union') && $request->ward_id_upazila!=null){
+                $application->current_location_id              = $request->ward_id_upazila;
+            }
+             if($request->has('ward_id_pouro') && $request->ward_id_upazila!=null){
+                $application->current_location_id              = $request->ward_id_upazila;
             }
             $application->current_post_code = $request->post_code;
             $application->current_address = $request->address;
             $application->mobile = $request->mobile;
-            if($request->has('permanent_city_thana_id') && $request->permanent_city_thana_id!=null){
-                $application->permanent_location_id              = $request->permanent_city_thana_id;
+            if($request->has('permanent_ward_id_city') && $request->permanent_ward_id_city!=null){
+                $application->permanent_location_id              = $request->permanent_ward_id_city;
             }
-            if($request->has('permanent_district_pouro_id') && $request->permanent_district_pouro_id!=null){
-                $application->permanent_location_id              = $request->permanent_district_pouro_id;
+            if($request->has('permanent_ward_id_dist') && $request->permanent_ward_id_dist!=null){
+                $application->permanent_location_id              = $request->permanent_ward_id_dist;
             }
-            if($request->has('permanent_union_id') && $request->permanent_union_id!=null){
-                $application->permanent_location_id              = $request->permanent_union_id;
+            if($request->has('permanent_ward_id_union') && $request->permanent_ward_id_upazila!=null){
+                $application->permanent_location_id              = $request->permanent_ward_id_upazila;
+            }
+              if($request->has('permanent_ward_id_pouro') && $request->permanent_ward_id_upazila!=null){
+                $application->permanent_location_id              = $request->permanent_ward_id_upazila;
             }
             $application->permanent_post_code = $request->permanent_post_code;
             $application->permanent_address = $request->permanent_address;

@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\PMTScore\VariableResource;
-use App\Http\Resources\Admin\Systemconfig\Allowance\AllowanceResource;
-use App\Http\Services\Global\GlobalService;
-use App\Http\Traits\MessageTrait;
-use App\Models\AllowanceProgram;
 use App\Models\Bank;
 use App\Models\Location;
 use App\Models\Variable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Models\MobileOperator;
+use App\Models\AllowanceProgram;
+use App\Http\Traits\MessageTrait;
+use App\Http\Controllers\Controller;
+use App\Http\Services\Global\GlobalService;
+use App\Http\Resources\Admin\PMTScore\VariableResource;
+use App\Http\Resources\Admin\Systemconfig\Allowance\AllowanceResource;
 
 class GlobalController extends Controller
 {
@@ -62,6 +63,43 @@ class GlobalController extends Controller
             'message' => $this->fetchSuccessMessage,
         ]);
     }
+     /**
+    * @OA\Get(
+    *     path="/global/mobile-operator",
+    *      operationId="getAllMobileOperator",
+    *     tags={"GLOBAL"},
+    *      summary="get all mobile operator",
+    *      description="get all mobile operator",
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+    public function getAllMobileOperator(){
+        $data = MobileOperator::get();
+        return $data;
+       
+    }
     /**
     * @OA\Get(
     *     path="/global/pmt",
@@ -101,4 +139,5 @@ class GlobalController extends Controller
             'message' => $this->fetchSuccessMessage,
         ]);
     }
+    
 }
