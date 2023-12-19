@@ -50,10 +50,10 @@ class UserService
 
                 $user->office_id = $request->office_id;
 
-            } elseif ($committeeType = $request->committee_type) {
+            } elseif ((int)$committeeType = $request->committee_type) {
                 $user->assign_location_id = match ((int)$committeeType) {
-                    12 => $request->ward_id,
-                    13 => $request->union_id,
+                    12 => $request->union_id,
+                    13 => $request->ward_id,
                     14 => $request->upazila_id,
                     15 => $request->city_corpo_id,
                     16 => $request->paurashava_id,

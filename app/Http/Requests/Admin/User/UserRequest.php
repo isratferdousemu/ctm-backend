@@ -37,8 +37,8 @@ class UserRequest extends FormRequest
 
 
 
+            'union_id'             => [Rule::requiredIf($this->committee_type == 12)],
             'ward_id'             => [Rule::requiredIf($this->committee_type == 13)],
-            'union_id'             => [Rule::requiredIf($this->committee_type == 13)],
             'upazila_id'             => [Rule::requiredIf($this->committee_type == 14)],
             'city_corpo_id'             => [Rule::requiredIf($this->committee_type == 15)],
             'paurashava_id'             => [Rule::requiredIf($this->committee_type == 16)],

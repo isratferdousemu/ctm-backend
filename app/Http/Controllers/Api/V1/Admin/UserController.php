@@ -156,7 +156,7 @@ class UserController extends Controller
               ->orWhere($filterArrayOfficeId)
               ->orWhere($filterArrayPhone);
     })
-    ->with('office','assign_location.parent.parent.parent','office_type','roles')
+    ->with('office','assign_location.parent.parent.parent.parent','office_type','roles', 'committee')
     ->latest()
     ->paginate($perPage, ['*'], 'page');
 // }
@@ -319,6 +319,7 @@ class UserController extends Controller
                 }
             }
         }
+
 
 
 
