@@ -147,8 +147,7 @@ class UserController extends Controller
             //     ->latest()
             //     ->paginate($perPage, ['*'], 'page');
             // }else{
-    $users = User::query()
-    ->where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
+    $users = User::where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
         $query->where($filterArrayName)
               ->orWhere($filterArrayUserName)
               ->orWhere($filterArrayUserId)
@@ -157,7 +156,7 @@ class UserController extends Controller
               ->orWhere($filterArrayPhone);
     })
     ->with('office','assign_location.parent.parent.parent.parent','office_type','roles', 'committee')
-    ->latest()
+    ->orderByDesc('id')
     ->paginate($perPage, ['*'], 'page');
 // }
     return $users;
@@ -347,55 +346,37 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request, $id)
     {
-
-        // $arrayName = array(
-        //     'data' => $request->method(),
-        //     // 'data1' => $request->all()
-        // );
-
-        // return $arrayName;
-        if ($request->method() == 'PUT')
-        {
-
-            // $arrayName = array(
-            //     'data' => $request->all(),
-            //     // 'data1' => $request->all()
-            // );
-
-            // return $arrayName;
-            try {
-
-                if($request->has('role_id')){
-                    $role = Role::whereName($this->officeHead)->first();
-                    if(in_array($role->id,$request->role_id)){
-                        $officeHead = User::where('office_id',$request->office_id)->whereHas('roles', function ($query) {
-                            $query->where('name', $this->officeHead);
-                        })->first();
-                        if($officeHead && $officeHead->id != $id){
-                            return $this->sendError('This office already has a office head', [], 500);
-                        }
+        try {
+            if($request->has('role_id')){
+                $role = Role::whereName($this->officeHead)->first();
+                if(in_array($role->id,$request->role_id)){
+                    $officeHead = User::where('office_id',$request->office_id)->whereHas('roles', function ($query) {
+                        $query->where('name', $this->officeHead);
+                    })->first();
+                    if($officeHead && $officeHead->id != $id){
+                        return $this->sendError('This office already has a office head', [], 500);
                     }
                 }
-
-                $user = $this->UserService->upddateUser($request, $id);
-
-
-                activity("User")
-                    ->causedBy(auth()->user())
-                    ->performedOn($user)
-                    ->log('User Created !');
-                return UserResource::make($user)->additional([
-                    'success' => true,
-                    'message' => $this->updateSuccessMessage,
-                ]);
-
-            }catch (\Exception $e){
-                \DB::rollBack();
-
-                $error = $e->getMessage();
-
-                return $this->sendError($error, [], 500);
             }
+
+            $user = $this->UserService->upddateUser($request, $id);
+
+
+            activity("User")
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log('User updated !');
+            return UserResource::make($user)->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ]);
+
+        }catch (\Exception $e){
+            \DB::rollBack();
+
+            $error = $e->getMessage();
+
+            return $this->sendError($error, [], 500);
         }
     }
 

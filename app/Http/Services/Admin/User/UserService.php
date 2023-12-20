@@ -76,8 +76,11 @@ class UserService
             $user->user_id = $this->generateUserId();
             $user->email_verified_at = now();
             $user->save();
-            // assign role to the user
-            $user->assignRole([$request->role_id]);
+
+
+            if ($user->user_type == 1) {
+                $user->assignRole([$request->role_id]);
+            }
 
             DB::commit();
             return $user;
@@ -121,10 +124,25 @@ class UserService
                         }
                     }
                 }
+
+                $user->office_id = $request->office_id;
+
+            } elseif ((int)$committeeType = $request->committee_type) {
+                $user->assign_location_id = match ((int)$committeeType) {
+                    12 => $request->union_id,
+                    13 => $request->ward_id,
+                    14 => $request->upazila_id,
+                    15 => $request->city_corpo_id,
+                    16 => $request->paurashava_id,
+                    17 => $request->district_id,
+                    default => null
+                };
+
+                $user->committee_id = $request->committee_id;
+            } else {
+                abort(500, 'Internal server error');
             }
 
-            $user->office_id = $request->office_id;
-            $user->committee_id = $request->committee_id;
             $user->save();
             // assign role to the user
             $user->syncRoles([$request->role_id]);
