@@ -6073,10 +6073,6 @@
                                         "description": "insert Name  of AllowanceAdditionalField",
                                         "type": "text"
                                     },
-                                    "field_value[0]['name_en]": {
-                                        "description": "insert member name ",
-                                        "type": "text"
-                                    },
                                     "field_value[0]['value]": {
                                         "description": "insert designation",
                                         "type": "text"
@@ -6148,11 +6144,11 @@
                                         "description": "update Name  of AllowanceAdditionalField",
                                         "type": "text"
                                     },
-                                    "field_value[0]['name_en]": {
-                                        "description": "update member name ",
+                                    "additional_field_id": {
+                                        "description": "update Name  of ID",
                                         "type": "text"
                                     },
-                                    "field_value[0]['value]": {
+                                    "field_value[0]['value']": {
                                         "description": "update designation",
                                         "type": "text"
                                     }
@@ -6389,6 +6385,16 @@
                 "summary": "get edit Allowances",
                 "description": "get edit Allowances",
                 "operationId": "edit",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of allowance to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",

@@ -9,10 +9,13 @@ use Illuminate\Http\Request;
 use App\Models\FinancialYear;
 use App\Http\Traits\OfficeTrait;
 use App\Models\AllowanceAdditionalField;
+use App\Models\AllowanceAdditionalFieldValue;
+use App\Models\AllowanceProgramAdditionalField;
 use App\Models\AllowanceProgram;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Schema;
 
 class SystemconfigService
 {
@@ -44,21 +47,20 @@ class SystemconfigService
     {
         DB::beginTransaction();
         try {
-            $allowanceAdditionalField                         = AllowanceAdditionalField::find($request->id);
+            $allowanceAdditionalField                         = AllowanceAdditionalField::find($request->additional_field_id);
             $allowanceAdditionalField->name_en                = $request->name_en;
             $allowanceAdditionalField->name_bn                = $request->name_bn;
             $allowanceAdditionalField->type                   = $request->type;
             $allowanceAdditionalField->save();
-
-            $input = $request->field_values;
-
-            foreach ($input as $item) {
-
-                $field_value                         = new AllowanceAdditionalField;
-                $field_value->additional_field_id    = $item['id'];
-                $field_value->value                  = $item['value'];
+            
+            $input = $request->field_value;
+            for ($i = 0; $i < count($input); $i++) {
+                $field_value = new AllowanceAdditionalFieldValue;
+                $field_value->additional_field_id = $allowanceAdditionalField->id;
+                $field_value->value = $input[0]["'value'"];
                 $field_value->save();
             }
+
             DB::commit();
             return $allowanceAdditionalField;
         } catch (\Throwable $th) {
