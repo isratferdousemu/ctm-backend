@@ -229,6 +229,7 @@ class ApplicationController extends Controller
         return response()->json([
             'status' => true,
             'data' => $data,
+             'id' => $data->id,
             'message' => $this->insertSuccessMessage,
         ], 200);
 
@@ -676,6 +677,71 @@ class ApplicationController extends Controller
             ],Response::HTTP_OK);
 
     }
+    /**
+     * @OA\Get(
+     *      path="/global/applicants copy/{id}",
+     *      operationId="getApplicationCopyById",
+     *      tags={"GLOBal"},
+     *      summary=" get a applicant's copy",
+     *      description="Returns application  by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of application to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+   public function getApplicationCopyById($id){
+  
+    $application = Application::where('id','=',$id)
+    ->with('current_location.parent.parent.parent',
+            'permanent_location.parent.parent.parent'
+         
+            // 'povertyValues.variable.subVariables',
+            // 'application',
+            // 'variable',
+           
+           
+            )->first();
+            $image=Application::where('id','=',$id)
+            ->pluck('image');
+          
+        
+        return \response()->json([
+            'application' => $application,
+           
+
+
+            ],Response::HTTP_OK);
+
+    }
+ 
  
 
 }

@@ -720,6 +720,53 @@
                 ]
             }
         },
+        "/global/applicants copy/{id}": {
+            "get": {
+                "tags": [
+                    "GLOBal"
+                ],
+                "summary": " get a applicant's copy",
+                "description": "Returns application  by id",
+                "operationId": "getApplicationCopyById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of application to return",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found!"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/admin/committee/get": {
             "get": {
                 "tags": [
@@ -6051,6 +6098,81 @@
                     },
                     "201": {
                         "description": "Successful Insert operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/admin/allowance/allowance-additional-field/update": {
+            "post": {
+                "tags": [
+                    "ALLOWANCE-PROGRAM-MANAGEMENT"
+                ],
+                "summary": "update a AllowanceAdditionalField",
+                "description": "update a AllowanceAdditionalField",
+                "operationId": "updateAllowanceAdditionalField",
+                "requestBody": {
+                    "description": "enter inputs",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name_en": {
+                                        "description": "update name of AllowanceAdditionalField English ",
+                                        "type": "text"
+                                    },
+                                    "name_bn": {
+                                        "description": "update bangla  of AllowanceAdditionalField Bangla",
+                                        "type": "text"
+                                    },
+                                    "type": {
+                                        "description": "update Name  of AllowanceAdditionalField",
+                                        "type": "text"
+                                    },
+                                    "field_value[0]['name_en]": {
+                                        "description": "update member name ",
+                                        "type": "text"
+                                    },
+                                    "field_value[0]['value]": {
+                                        "description": "update designation",
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Successful update operation",
                         "content": {
                             "application/json": {
                                 "schema": {}
