@@ -57,6 +57,10 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::delete('/destroy/{id}', [SystemconfigController::class, 'destroyAllowance'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy|allowance-delete']);
         Route::post('/gender_delete', [SystemconfigController::class, 'destroyGender'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
         Route::post('/disable_delete/{id}', [SystemconfigController::class, 'destroyDisable'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        
+        // Route::get('/allowance-additional-field/get', [SystemconfigController::class, 'getAllowanceAdditionalFieldPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-create|allowance-creat']);
+        Route::post('/allowance-additional-field/insert', [SystemconfigController::class, 'insertAllowanceAdditionalField'])->middleware(['role_or_permission:super-admin|demo-graphic-create|allowance-creat']);
+        Route::post('/allowance-additional-field/update', [SystemconfigController::class, 'updateAllowanceAdditionalField'])->middleware(['role_or_permission:super-admin|demo-graphic-create|allowance-creat']);
     });
 
     /* -------------------------------------------------------------------------- */

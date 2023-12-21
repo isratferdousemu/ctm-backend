@@ -13,10 +13,13 @@ use Illuminate\Http\Response;
 use App\Models\AllowanceProgram;
 use App\Http\Traits\MessageTrait;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Systemconfig\Allowance\AllowanceAdditionalField\AllowanceAdditionalFieldRequest;
+use App\Http\Requests\Admin\Systemconfig\Allowance\AllowanceAdditionalField\AllowanceAdditionalFieldUpdateRequest;
 use App\Http\Services\Admin\Systemconfig\SystemconfigService;
 use App\Http\Requests\Admin\Systemconfig\Allowance\AllowanceRequest;
 use App\Http\Resources\Admin\Systemconfig\Allowance\AllowanceResource;
 use App\Http\Requests\Admin\Systemconfig\Allowance\AllowanceUpdateRequest;
+use App\Http\Resources\Admin\Systemconfig\Allowance\AdditionalFieldsResource;
 
 class SystemconfigController extends Controller
 {
@@ -26,6 +29,208 @@ class SystemconfigController extends Controller
     public function __construct(SystemconfigService $systemconfigService) {
         $this->systemconfigService= $systemconfigService;
     }
+
+ /**
+     *
+     * @OA\Post(
+     *      path="/admin/allowance/allowance-additional-field/insert",
+     *      operationId="insertAllowanceAdditionalField",
+     *     tags={"ALLOWANCE-PROGRAM-MANAGEMENT"},
+     *      summary="insert a AllowanceAdditionalField",
+     *      description="insert a AllowanceAdditionalField",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="insert name of AllowanceAdditionalField English ",
+     *                      type="text",
+     *                   ),
+     *                      @OA\Property(
+     *                      property="name_bn",
+     *                      description="insert bangla  of AllowanceAdditionalField Bangla",
+     *                      type="text",
+     *                   ),
+     *                    @OA\Property(
+     *                      property="type",
+     *                      description="insert Name  of AllowanceAdditionalField",
+     *                      type="text",
+
+     *                   ),
+     *                 @OA\Property(
+     *                      property="field_value[0]['value]",
+     *                      description="insert designation",
+     *                      type="text",
+     *
+     *                   ),
+     * 
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+     public function insertAllowanceAdditionalField(AllowanceAdditionalFieldRequest $request){
+        try {
+            $committee = $this->systemconfigService->createAllowanceAdditionalField($request);
+            activity("AllowanceAdditionalField")
+            ->causedBy(auth()->user())
+            ->performedOn($committee)
+            ->log('AllowanceAdditionalField Created !');
+            return AdditionalFieldsResource::make($committee)->additional([
+                'success' => true,
+                'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/allowance/allowance-additional-field/update",
+     *      operationId="updateAllowanceAdditionalField",
+     *     tags={"ALLOWANCE-PROGRAM-MANAGEMENT"},
+     *      summary="update a AllowanceAdditionalField",
+     *      description="update a AllowanceAdditionalField",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+
+     *                   @OA\Property(
+     *                      property="name_en",
+     *                      description="update name of AllowanceAdditionalField English ",
+     *                      type="text",
+     *                   ),
+     *                      @OA\Property(
+     *                      property="name_bn",
+     *                      description="update bangla  of AllowanceAdditionalField Bangla",
+     *                      type="text",
+     *                   ),
+     *                    @OA\Property(
+     *                      property="type",
+     *                      description="update Name  of AllowanceAdditionalField",
+     *                      type="text",
+
+     *                   ),
+     *                    @OA\Property(
+     *                      property="additional_field_id",
+     *                      description="update Name  of ID",
+     *                      type="text",
+
+     *                   ),
+     *                 @OA\Property(
+     *                      property="field_value[0]['value']",
+     *                      description="update designation",
+     *                      type="text",
+     *
+     *                   ),
+     * 
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful update operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+     public function updateAllowanceAdditionalField(AllowanceAdditionalFieldUpdateRequest $request){
+        // print_r($request->all());
+        
+        
+        
+
+        // return $this->sendError('err', $request->field_value);
+
+
+              
+        
+        try {
+            $data = $this->systemconfigService->updateAllowanceAdditionalField($request);
+            activity("AllowanceAdditionalField")
+            ->causedBy(auth()->user())
+            ->performedOn($data)
+            ->log('AllowanceAdditionalField Created !');
+
+            // return $data;
+             
+            return AdditionalFieldsResource::make($data)->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
 
   /**
     * @OA\Get(
@@ -159,7 +364,7 @@ class SystemconfigController extends Controller
      */
     public function getAdditionalField()
     {
-        $additional_fields = AdditionalFields::latest()->get();
+        $additional_fields = AdditionalFields::latest()->with('additional_field_value')->get();
 
         return \response()->json([
             'data' => $additional_fields
@@ -358,6 +563,14 @@ class SystemconfigController extends Controller
      *      summary="get edit Allowances",
      *      description="get edit Allowances",
      *      security={{"bearer_token":{}}},
+     *      @OA\Parameter(
+     *         description="id of division to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
