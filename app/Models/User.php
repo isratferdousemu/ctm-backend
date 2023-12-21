@@ -237,4 +237,10 @@ class User extends Authenticatable
     }
     //  'district'  => DistrictResource::make($this->whenLoaded('parent')),
 
+
+    public function committee()
+    {
+        return $this->belongsTo(Committee::class, 'committee_id', 'id');
+    }
+
 }

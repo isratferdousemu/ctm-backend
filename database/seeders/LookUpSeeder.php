@@ -29,7 +29,7 @@ class LookUpSeeder extends Seeder
             ['id' => 13, 'type' => 17, 'value_en' => 'Ward Committee', 'value_bn' => 'Ward Committee','default'=>1],
             ['id' => 14, 'type' => 17, 'value_en' => 'Upazila Committee', 'value_bn' => 'Upazila Committee','default'=>1],
             ['id' => 15, 'type' => 17, 'value_en' => 'City Corporation Committee', 'value_bn' => 'City Corporation Committee','default'=>1],
-            ['id' => 16, 'type' => 17, 'value_en' => 'Paurashava Committee', 'value_bn' => 'Paurashava Committee','default'=>1],
+            ['id' => 16, 'type' => 17, 'value_en' => 'District Paurashava Committee', 'value_bn' => 'District Paurashava Committee','default'=>1],
             ['id' => 17, 'type' => 17, 'value_en' => 'District Committee', 'value_bn' => 'District Committee','default'=>1],
             ['id' => 18, 'type' => 17, 'value_en' => 'Coordination and Monitoring Committee', 'value_bn' => 'Coordination and Monitoring Committee','default'=>1],
             ['id' => 19, 'type' => 17, 'value_en' => 'National Steering Committee', 'value_bn' => 'National Steering Committee','default'=>1],

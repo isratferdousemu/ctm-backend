@@ -191,6 +191,6 @@ class CommitteePermissionController extends Controller
             return $this->sendResponse([], $this->deleteSuccessMessage);
         }
 
-        return $this->sendError([], 'No data found', 404);
+        return $this->sendError([], 'No permissions found', 404);
     }
 }
