@@ -41,6 +41,8 @@ class ApplicationRequest extends FormRequest
             'nationality'                   =>'required',
             'gender_id'                     =>'required|exists:lookups,id',
             'education_status'              =>'required',
+
+            
             'profession'              =>'required',
             'religion'              =>'required',
             'division_id'              =>'required|exists:locations,id',

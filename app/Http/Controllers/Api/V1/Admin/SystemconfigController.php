@@ -203,6 +203,15 @@ class SystemconfigController extends Controller
 
      public function updateAllowanceAdditionalField(AllowanceAdditionalFieldUpdateRequest $request){
         // print_r($request->all());
+        
+        
+        
+
+        // return $this->sendError('err', $request->field_value);
+
+
+              
+        
         try {
             $data = $this->systemconfigService->updateAllowanceAdditionalField($request);
             activity("AllowanceAdditionalField")

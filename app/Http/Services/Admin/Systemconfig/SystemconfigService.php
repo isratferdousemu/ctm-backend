@@ -43,23 +43,61 @@ class SystemconfigService
         }
     }
 
-    public function updateAllowanceAdditionalField(Request $request)
+    public function updateAllowanceAdditionalField($request)
     {
         DB::beginTransaction();
+    
+
+      
         try {
-            $allowanceAdditionalField                         = AllowanceAdditionalField::find($request->additional_field_id);
+            $allowanceAdditionalField                         = AllowanceAdditionalField::find($request->id);
             $allowanceAdditionalField->name_en                = $request->name_en;
             $allowanceAdditionalField->name_bn                = $request->name_bn;
             $allowanceAdditionalField->type                   = $request->type;
             $allowanceAdditionalField->save();
+        if ($request->field_value) {
+                       
+                   
             
             $input = $request->field_value;
+           
+            AllowanceAdditionalFieldValue::where('additional_field_id', $request->id)->delete();
+            
+       
             for ($i = 0; $i < count($input); $i++) {
-                $field_value = new AllowanceAdditionalFieldValue;
-                $field_value->additional_field_id = $allowanceAdditionalField->id;
-                $field_value->value = $input[0]["'value'"];
-                $field_value->save();
-            }
+            $field_value = new AllowanceAdditionalFieldValue;
+            $field_value->additional_field_id = $request->id;
+            $field_value->value = $input[$i];
+            $field_value->save();
+            
+       } 
+
+
+}
+ else if ($request->date) {
+    AllowanceAdditionalFieldValue::where('additional_field_id', $request->id)->delete();
+    $field_value = new AllowanceAdditionalFieldValue;
+    $field_value->additional_field_id = $request->id;
+    $field_value->value = $request->data;
+     $field_value->save();
+
+ }
+  else if ($request->text) {
+    AllowanceAdditionalFieldValue::where('additional_field_id', $request->id)->delete();
+    $field_value = new AllowanceAdditionalFieldValue;
+    $field_value->additional_field_id = $request->id;
+    $field_value->value = $request->text;
+     $field_value->save();
+
+ }
+  else if ($request->number) {
+    AllowanceAdditionalFieldValue::where('additional_field_id', $request->id)->delete();
+    $field_value = new AllowanceAdditionalFieldValue;
+    $field_value->additional_field_id = $request->id;
+    $field_value->value = $request->number;
+     $field_value->save();
+
+ }
 
             DB::commit();
             return $allowanceAdditionalField;
