@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -22,18 +23,27 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'full_name'                     => 'required|string|max:50',
-            // 'username'                     => 'required|string|unique:users,username,'.$this->id.',id,deleted_at,NULL',
-            // 'mobile'                     => 'required|numeric|unique:users,mobile,'.$this->id.',id,deleted_at,NULL|regex:/^8801[3-9]\d{8}$/',
-            // // 'email'                     => 'required|email|unique:users,email,'.$this->id.',id,deleted_at,NULL,deleted_at',
-            // 'status' => 'sometimes|integer|in:0,1',
-            // 'role_id' => 'required|array|exists:roles,id',
-            // 'office_type'                     => 'required|integer|exists:lookups,id',
-            // 'office_id'                     => 'required|integer|exists:offices,id',
-            // 'division_id' => 'sometimes|required_unless:division_id,null,id,deleted_at,NULL',
-            // 'district_id' => 'sometimes|required_unless:district_id,exists:locations,id,deleted_at,NULL',
-            // 'thana_id' => 'sometimes|required_unless:thana_id,exists:locations,id,deleted_at,NULL',
-            // 'city_corpo_id' => 'sometimes|required_unless:city_corpo_id,exists:locations,id,deleted_at,NULL',
+            'full_name'                 => 'required|string|max:50',
+            'username'                  => 'required|string|unique:users,username,'. $this->id,
+            'mobile'                    => 'required|numeric|unique:users,mobile,'. $this->id.'|regex:/^01[3-9]\d{8}$/',
+            'email'                     => 'required|email|unique:users,email,'. $this->id,
+            'status'                    => 'sometimes|integer|in:0,1',
+            'role_id'                   => 'sometimes|required|array|exists:roles,id',
+            'committee_type'            => 'sometimes|required|integer|exists:lookups,id',
+            'office_type'                 => ['sometimes', Rule::requiredIf($this->user_type == 1), 'exists:lookups,id'],
+            'office_id'                 => ['sometimes', Rule::requiredIf(!!$this->office_type), 'exists:offices,id'],
+            'division_id'               => 'sometimes|required_unless:division_id,null,id,deleted_at,NULL',
+            'thana_id'                  => 'sometimes|required_unless:thana_id,exists:locations,id,deleted_at,NULL',
+
+
+
+            'union_id'                  => [Rule::requiredIf($this->committee_type == 12)],
+            'ward_id'                   => [Rule::requiredIf($this->committee_type == 13)],
+            'upazila_id'                => [Rule::requiredIf($this->committee_type == 14)],
+            'city_corpo_id'             => [Rule::requiredIf($this->committee_type == 15)],
+            'paurashava_id'             => [Rule::requiredIf($this->committee_type == 16)],
+            'district_id'               => [Rule::requiredIf($this->committee_type == 17)],
+            'committee_id'              => [Rule::requiredIf((bool)$this->committee_type)],
         ];
     }
 }

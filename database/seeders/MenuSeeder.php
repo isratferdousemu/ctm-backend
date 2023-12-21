@@ -132,7 +132,13 @@ class MenuSeeder extends Seeder
      (73, 90, 36, 'Variable', 'Variable', 1, NULL, 70, NULL, '2023-10-31 05:25:56', '2023-11-02 12:59:13'),
      (74, 94, 36, 'Sub-Variable', 'Sub-Variable', 1, NULL, 71, NULL, '2023-10-31 05:28:12', '2023-11-02 12:59:29'),
     (75, NULL, NULL, 'Budget & Allotment', 'Budget & Allotment', NULL, NULL, 22, NULL, '2023-11-02 12:53:50', '2023-11-02 12:55:13'),
-     (76, 56, 2, 'IBCS-PRIMAX', 'ড্যাশবোর্ড', 2, 'https://www.ibcs-primax.com/', 7, '2023-11-03 04:56:12', '2023-11-02 14:57:48', '2023-11-03 04:56:12');";
+    (76, 56, 2, 'IBCS-PRIMAX', 'ড্যাশবোর্ড', 2, 'https://www.ibcs-primax.com/', 7, '2023-11-03 04:56:12', '2023-11-02 14:57:48', '2023-11-03 04:56:12'),
+    (77, 179, 26, 'Committee Permission List', 'Committee Permission List', 1, NULL, 34, NULL, '2023-10-07 23:32:00', '2023-10-22 04:10:05')
+
+;"
+
+    ;
+
 
         // forgain key validation off
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

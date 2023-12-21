@@ -52,7 +52,8 @@ trait PermissionTrait
 
 
     // module 3 sub modules
-    private $subCommitteeInformation = "committee-information";
+    private $subCommitteeInformation= "committee-information";
+    private $subCommitteePermissionInformation= "committee-permission-information";
     private $subAllocationInformation = "allocation-information";
     private $subBeneficiaryInformationManagement = "beneficiary-information-management";
     private $subBeneficiaryReplacement = "beneficiary-replacement";
@@ -145,7 +146,7 @@ trait PermissionTrait
                 return false;
             }
 
-            
+
             if ($user->user_type == $this->staffId) {
                 $officeHead = User::withoutGlobalScope('assign_location_type')->where('office_id', $user->office_id)->whereHas('roles', function ($query) {
                     $query->where('name', $this->officeHead);
@@ -171,10 +172,10 @@ trait PermissionTrait
                 }
 
                 // $officeHead = DB::table('model_has_roles')
-                // ->leftJoin('users', 'model_has_roles.model_id', '=', 'users.id')            
-                // ->leftJoin('offices', 'users.office_id', '=', 'offices.id')            
-                // ->leftJoin('locations', 'offices.assign_location_id', '=', 'locations.id')            
-                // ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')            
+                // ->leftJoin('users', 'model_has_roles.model_id', '=', 'users.id')
+                // ->leftJoin('offices', 'users.office_id', '=', 'offices.id')
+                // ->leftJoin('locations', 'offices.assign_location_id', '=', 'locations.id')
+                // ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
                 // ->select(
                 //     'locations.type as type',
                 //     'locations.id as location_id',
@@ -182,7 +183,7 @@ trait PermissionTrait
                 // ->where('users.id', $this->user_id)
                 // ->where('roles.name', $this->officeHead)
                 // ->first();
-                
+
                 // // print_r($officeHead);
                 // if ($officeHead) {
                 //     // IS OFFICE HEAD
@@ -194,9 +195,9 @@ trait PermissionTrait
                 // } else {
                 //     // NOT OFFICE HEAD
                 //     $officeHead = DB::table('model_has_roles')
-                //     ->leftJoin('users', 'model_has_roles.model_id', '=', 'users.id')            
-                //     ->leftJoin('offices', 'users.office_id', '=', 'offices.id')            
-                //     ->leftJoin('locations', 'offices.assign_location_id', '=', 'locations.id')            
+                //     ->leftJoin('users', 'model_has_roles.model_id', '=', 'users.id')
+                //     ->leftJoin('offices', 'users.office_id', '=', 'offices.id')
+                //     ->leftJoin('locations', 'offices.assign_location_id', '=', 'locations.id')
                 //     ->select(
                 //         'locations.type as type',
                 //         'locations.id as location_id',
