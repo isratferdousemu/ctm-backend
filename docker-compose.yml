@@ -12,7 +12,9 @@ services:
   # ctm-app service
   backend-app:
     #image: devibcs/ctm-apps:backend-service-1.0
-    image: backend-service:1.0
+    container_name: ctm-backend
+    image: 'ctm-app-backend'
+
     build:
       context: .
       args:
@@ -25,7 +27,7 @@ services:
       DB_USERNAME: root
       DB_PASSWORD: root
     ports:
-       - "8000:80"
+       - "8000:8080"
     networks:
        - web-ctm-app-net
 
