@@ -1339,6 +1339,7 @@ class SystemconfigController extends Controller
         if($device->system_status == 0)
         {
             AllowanceProgram::where('id', $id)->update(['system_status'=> 1]);
+            AllowanceProgram::where('id', $id)->update(['is_active'=> 1]);
             activity('Allowance')
             ->causedBy(auth()->user())
             ->performedOn($device)
@@ -1349,6 +1350,7 @@ class SystemconfigController extends Controller
             ],Response::HTTP_OK);
         }else{
             AllowanceProgram::where('id', $id)->update(['system_status'=> 0]);
+               AllowanceProgram::where('id', $id)->update(['is_active'=> 0]);
             activity('Allowance')
             ->causedBy(auth()->user())
             ->performedOn($device)
