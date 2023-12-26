@@ -21,9 +21,14 @@ services:
         - APP_ENV=${APP_ENV}
     restart: unless-stopped
     environment:
-      - TZ=Asia/Dhaka
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_DATABASE: ctm
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
     ports:
-       - "80:80"
+       - "8000:80"
     networks:
        - web-ctm-app-net
 
