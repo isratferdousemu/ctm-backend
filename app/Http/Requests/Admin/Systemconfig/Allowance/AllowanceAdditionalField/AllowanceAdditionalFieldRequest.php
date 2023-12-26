@@ -26,7 +26,7 @@ class AllowanceAdditionalFieldRequest extends FormRequest
             // ----- Field Value
             'name_en'          =>'required|string|max:50,deleted_at,NULL',
             'name_bn'          =>'required|string|max:50,deleted_at,NULL',
-            'type'      =>'required|integer|exists:lookups,id',
+            'type'      =>'required',
             // ----- End Field Value
           
         ];
