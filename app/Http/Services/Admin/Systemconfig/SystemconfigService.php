@@ -55,7 +55,7 @@ class SystemconfigService
             $allowanceAdditionalField->name_bn                = $request->name_bn;
             $allowanceAdditionalField->type                   = $request->type;
             $allowanceAdditionalField->save();
-        if ($request->field_value) {
+        if ($request->has('field_value') && is_array($request->field_value) && count($request->field_value) > 0) {
                        
                    
             
@@ -74,15 +74,15 @@ class SystemconfigService
 
 
 }
- else if ($request->date) {
+         else if ($request->date) {
     AllowanceAdditionalFieldValue::where('additional_field_id', $request->id)->delete();
     $field_value = new AllowanceAdditionalFieldValue;
     $field_value->additional_field_id = $request->id;
-    $field_value->value = $request->data;
+    $field_value->value = $request->date;
      $field_value->save();
 
  }
-  else if ($request->text) {
+        else if ($request->text) {
     AllowanceAdditionalFieldValue::where('additional_field_id', $request->id)->delete();
     $field_value = new AllowanceAdditionalFieldValue;
     $field_value->additional_field_id = $request->id;
@@ -90,7 +90,7 @@ class SystemconfigService
      $field_value->save();
 
  }
-  else if ($request->number) {
+         else if ($request->number) {
     AllowanceAdditionalFieldValue::where('additional_field_id', $request->id)->delete();
     $field_value = new AllowanceAdditionalFieldValue;
     $field_value->additional_field_id = $request->id;
