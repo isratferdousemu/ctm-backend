@@ -107,6 +107,65 @@ class CommitteeController extends Controller
         ]);
     }
 
+
+    /**
+     * @OA\Get(
+     *      path="/admin/committee/{typeId}/{locationId}",
+     *      operationId="getCommitteesByLocation",
+     *     tags={"BENEFICIARY-COMMITTEE-MANAGEMENT"},
+     *      summary=" get committee by type and location id",
+     *      description="get committee by type and location id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="type id of committee to return",
+     *         in="path",
+     *         name="typeId",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="location id of committee to return",
+     *         in="path",
+     *         name="locationId",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+    public function getCommitteesByLocation($typeId, $locationId)
+    {
+        return $this->sendResponse(Committee::whereCommitteeType($typeId)
+                ->whereLocationId($locationId)
+                ->get()
+        );
+
+    }
+
  /**
      *
      * @OA\Post(

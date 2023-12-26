@@ -2988,7 +2988,7 @@ class LocationController extends Controller
     /**
      * @OA\Get(
      *      path="/admin/ward/get/thana/{thana_id}",
-     *      operationId="getAllWardByThanaId",
+     *      operationId="Route::get('/ward/get/thana/{thana_id}',[LocationController::class, 'getAllWardByThanaId']);",
      *      tags={"GEOGRAPHIC-WARD"},
      *      summary=" get ward by thana id",
      *      description="get ward by thana id",
@@ -3037,7 +3037,58 @@ class LocationController extends Controller
             'message' => $this->fetchSuccessMessage,
         ]);
     }
+   /**
+     * @OA\Get(
+     *      path="/admin/ward/get/district_pouro/{district_pouro_id}",
+     *      operationId="Route::get('/ward/get/district_pouro/{district_pouro_id}',[LocationController::class, 'getAllWardByDistPouroId']);",
+     *      tags={"GEOGRAPHIC-WARD"},
+     *      summary=" get ward by district_pouro id",
+     *      description="get ward by district_pouro id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of district_pouro to return",
+     *         in="path",
+     *         name="district_pouro_id",
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
 
+    public function getAllWardByDistPouroId($district_pouro_id)
+    {
+
+
+        $wards = Location::whereParentId($district_pouro_id)->whereType($this->ward)->get();
+
+        return DistrictResource::collection($wards)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
     /**
      * @OA\Get(
      *      path="/admin/ward/get/pouro/{pouro_id}",
