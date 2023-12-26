@@ -16,7 +16,9 @@ services:
     image: 'ctm-app-backend'
 
     build:
-      context: .
+      context: "./"
+      dockerfile: "Dockerfile"
+    restart: always    
       args:
         - APP_ENV=${APP_ENV}
     restart: unless-stopped
