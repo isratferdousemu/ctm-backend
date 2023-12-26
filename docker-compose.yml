@@ -28,7 +28,7 @@ services:
       DB_PASSWORD: root
 
     ports:
-       - "8000:80"
+       - "80:80"
     networks:
        - web-ctm-app-net
 
