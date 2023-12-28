@@ -66,6 +66,7 @@ class AditionalFieldSeeder extends Seeder
             ['additional_field_id' => 7, 'value' => 'Insane'],
             ['additional_field_id' => 7, 'value' => 'Disabled'],
             ['additional_field_id' => 7, 'value' => 'Partially Powerless'],
+             ['additional_field_id' =>6, 'value' => '2'],
             ['additional_field_id' => 8, 'value' => 'Poor'],
             ['additional_field_id' => 8, 'value' => 'Refugee'],
             ['additional_field_id' => 8, 'value' => 'Landless'],
@@ -91,6 +92,8 @@ class AditionalFieldSeeder extends Seeder
             ['additional_field_id' =>14, 'value' => 'Mid'],
             ['additional_field_id' =>14, 'value' => 'Moderate'],
             ['additional_field_id' =>14, 'value' => 'Severe'],
+            ['additional_field_id' =>18, 'value' => '2023-06-08'],
+            ['additional_field_id' =>20, 'value' => 'RUET'],
         ];
 
         foreach ($addition_value as $value) {
