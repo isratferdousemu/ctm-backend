@@ -8,7 +8,7 @@
 
         <li>Your login credentials are:</li>
             <ul>
-                <li>Username: {{ $email }}</li>
+                <li>Username: {{ $name }}</li>
                 <li>Password: {{$password}}</li>
             </ul>
     </ul>

@@ -6,6 +6,7 @@ use App\Helpers\Helper;
 use App\Http\Traits\RoleTrait;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -27,7 +28,6 @@ class UserService
             // check request has division_id, district_id, thana_id, city_corpo_id
 
             if ($request->has('office_type')) {
-                $user->office_type = $request->office_type;
                 if ($request->office_type != 4 || $request->office_type != 5) {
                     if ($request->office_type == 6) {
                         if ($request->has('division_id')) {
@@ -46,8 +46,11 @@ class UserService
                             $user->assign_location_id = $request->city_corpo_id;
                         }
                     }
+                } else {
+                    $user->assign_location_id = null;
                 }
 
+                $user->office_type = $request->office_type;
                 $user->office_id = $request->office_id;
 
             } elseif ((int)$committeeType = $request->committee_type) {
@@ -79,8 +82,8 @@ class UserService
             $user->save();
 
 
-            if ($user->user_type == 1) {
-                $user->assignRole([$request->role_id]);
+            if ($request->user_type == 1) {
+                $user->assignRole(Arr::wrap($request->role_id));
             } else {
                 $user->assignRole('committee');
             }
@@ -92,6 +95,18 @@ class UserService
              throw $th;
          }
     }
+
+
+
+    public function approveUser($id) {
+        $user = User::findOrFail($id);
+        $user->status = !$user->status;
+        $user->save();
+
+        return $user;
+    }
+
+
 
     public function upddateUser(Request $request, $id)
     {
@@ -126,9 +141,15 @@ class UserService
                             $user->assign_location_id = $request->city_corpo_id;
                         }
                     }
+                } else {
+                    $user->assign_location_id = null;
                 }
 
+                $user->office_type = $request->office_type;
                 $user->office_id = $request->office_id;
+
+                $user->committee_id = null;
+                $user->committee_type_id = null;
 
             } elseif ((int)$committeeType = $request->committee_type) {
                 $user->assign_location_id = match ((int)$committeeType) {
@@ -141,14 +162,23 @@ class UserService
                     default => null
                 };
 
+                $user->office_type = null;
+                $user->office_id = null;
+
                 $user->committee_id = $request->committee_id;
+                $user->committee_type_id = $request->committee_type;
             } else {
                 abort(500, 'Internal server error');
             }
 
             $user->save();
             // assign role to the user
-            $user->syncRoles([$request->role_id]);
+
+            if ($request->user_type == 1) {
+                $user->assignRole(Arr::wrap($request->role_id));
+            } else {
+                $user->assignRole('committee');
+            }
 
             DB::commit();
             return $user;
