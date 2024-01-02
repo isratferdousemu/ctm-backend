@@ -10,7 +10,7 @@ role=${CONTAINER_ROLE:-app}
 
 if [ "$role" = "app" ]; then
     #php artisan migrate:fresh --seed
-    # php artisan migrate
+     php artisan migrate
     php artisan key:generate
     php artisan route:clear
     php artisan config:clear
