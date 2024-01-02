@@ -116,7 +116,8 @@ class User extends Authenticatable
     public function newQuery($excludeDeleted = true)
     {
         return parent::newQuery($excludeDeleted)
-            ->orderBy('full_name', 'asc');
+//            ->orderBy('full_name', 'asc')
+            ;
     }
 
     /**
@@ -143,76 +144,9 @@ class User extends Authenticatable
     {
         parent::__construct($attributes);
 
-        // echo 'Constr';
-        // print_r($data);
-
-        // print_r($data);
-        if (auth()->check()) {
+        if (auth()->check() && auth()->user()->assign_location_id) {
             static::addGlobalScope('assign_location_type', function (EloquentBuilder $builder) {
                 $data = $this->getUserPermissionsForUser();
-                // echo $data['type'];
-                $builder->whereHas('assign_location', function ($query) use ($data) {
-
-                    // $data = 4; // barisal id
-                    // $data = 6; // dhaka id
-                    if ($data != false) {
-                        # code...
-                        if ($data['type'] == 'division') {
-                            $query->where(function ($query) use ($data) {
-                                $query->whereHas('parent', function ($query) use ($data) {
-                                    $query->where('id', $data['location_id'])
-                                        ->orWhereHas('parent', function ($query) use ($data) {
-                                            $query->where('id', $data['location_id'])
-                                                ->orWhereHas('parent', function ($query) use ($data) {
-                                                    $query->where('id', $data['location_id'])
-                                                        ->orWhereHas('parent', function ($query) use ($data) {
-                                                            $query->where('id', $data['location_id'])
-                                                                ->where('type', $data['type']);
-                                                        });
-                                                });
-                                        });
-                                });
-                            })
-                                ->orWhere('type', $data['type']);
-                        }
-                        if ($data['type'] == 'district') {
-                            $query->where(function ($query) use ($data) {
-                                $query->whereHas('parent', function ($query) use ($data) {
-                                    $query->where('id', $data['location_id'])
-                                        ->orWhereHas('parent', function ($query) use ($data) {
-                                            $query->where('id', $data['location_id'])
-                                                ->orWhereHas('parent', function ($query) use ($data) {
-                                                    $query->where('id', $data['location_id'])
-                                                        ->orWhereHas('parent', function ($query) use ($data) {
-                                                            $query->where('id', $data['location_id'])
-                                                                ->where('type', $data['type']);
-                                                        });
-                                                });
-                                        });
-                                });
-                            })
-                                ->orWhere('type', $data['type']);
-                        }
-                        if ($data['type'] == 'thana') {
-                            $query->where(function ($query) use ($data) {
-                                $query->whereHas('parent', function ($query) use ($data) {
-                                    $query->where('id', $data['location_id'])
-                                        ->orWhereHas('parent', function ($query) use ($data) {
-                                            $query->where('id', $data['location_id'])
-                                                ->orWhereHas('parent', function ($query) use ($data) {
-                                                    $query->where('id', $data['location_id'])
-                                                        ->orWhereHas('parent', function ($query) use ($data) {
-                                                            $query->where('id', $data['location_id'])
-                                                                ->where('type', $data['type']);
-                                                        });
-                                                });
-                                        });
-                                });
-                            })
-                                ->orWhere('type', $data['type']);
-                        }
-                    }
-                });
             });
         }
     }

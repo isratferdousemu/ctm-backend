@@ -59,4 +59,11 @@ class Device extends Model
 //        return parent::newQuery($excludeDeleted)
 //            ->orderBy('name', 'asc');
 //    }
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
 }

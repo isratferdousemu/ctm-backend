@@ -8,23 +8,30 @@ use App\Http\Requests\Admin\User\UserRequest;
 use App\Http\Requests\Admin\User\UserUpdateRequest;
 use App\Http\Resources\Admin\Office\OfficeResource;
 use App\Http\Resources\Admin\User\UserResource;
+use App\Http\Services\Admin\User\OfficeHeadService;
 use App\Http\Services\Admin\User\UserService;
+use App\Http\Services\Notification\SMSservice;
+use App\Http\Traits\LocationTrait;
 use App\Http\Traits\MessageTrait;
+use App\Http\Traits\PermissionTrait;
 use App\Http\Traits\RoleTrait;
 use App\Http\Traits\UserTrait;
 use App\Jobs\UserCreateJob;
+use App\Models\Location;
 use App\Models\Office;
 use App\Models\User;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    use MessageTrait,UserTrait,RoleTrait;
+    use MessageTrait,UserTrait,RoleTrait, PermissionTrait, LocationTrait;
     private $UserService;
 
-    public function __construct(UserService $UserService) {
+    public function __construct(UserService $UserService, public OfficeHeadService $officeHeadService, public SMSservice $SMSservice) {
         $this->UserService = $UserService;
     }
 
@@ -123,30 +130,8 @@ class UserController extends Controller
         $filterArrayOfficeId[] = ['office_id', 'LIKE', '%' . $officeId . '%'];
     }
 
+
         // check this user is super-admin or not if not then check this user is office head or not if yes then get users under this office
-            // if(auth()->user()->user_type != $this->superAdminId && Auth::user()->hasRole($this->officeHead))
-            // {
-            //     $users = User::query()
-            //     ->where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
-            //         $query->where($filterArrayName)
-            //               ->orWhere($filterArrayUserName)
-            //               ->orWhere($filterArrayUserId)
-            //               ->orWhere($filterArrayEmail)
-            //               ->orWhere($filterArrayOfficeId)
-            //               ->orWhere($filterArrayPhone);
-            //     })
-            //     ->where('office_id',auth()->user()->office_id)
-            //     ->where('user_type','!=',$this->superAdminId)
-            //     ->whereHas('office', function ($query) {
-            //     // assign_location_id is locations id of office get location all users and location
-            //     $query->where('assign_location_id',auth()->user()->office->assign_location_id);
-            //     //and assign_location_id location one child down user office head
-            //     $query->orWhere('assign_location_id',auth()->user()->office?->location?->parent_id);
-            //     })
-            //     ->with('office','assign_location.parent.parent.parent','office_type', 'roles')
-            //     ->latest()
-            //     ->paginate($perPage, ['*'], 'page');
-            // }else{
     $users = User::where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
         $query->where($filterArrayName)
               ->orWhere($filterArrayUserName)
@@ -155,6 +140,7 @@ class UserController extends Controller
               ->orWhere($filterArrayOfficeId)
               ->orWhere($filterArrayPhone);
     })
+        ->whereIn('id', $this->officeHeadService->getUsersUnderOffice())
     ->with('office','assign_location.parent.parent.parent.parent','office_type','roles', 'committee')
     ->orderByDesc('id')
     ->paginate($perPage, ['*'], 'page');
@@ -165,6 +151,16 @@ class UserController extends Controller
         'message' => $this->fetchSuccessMessage,
     ]);
 }
+
+
+    public function getUsersId()
+    {
+        return $this->officeHeadService->getUsersUnderOffice();
+    }
+
+
+
+
 
     /**
      *
@@ -305,7 +301,7 @@ class UserController extends Controller
 
         $password = Helper::GeneratePassword();
         // check any user assign this office as a officeHead role permission or not and this request roles has officeHead role or not
-        if($request->has('role_id')){
+        if($request->role_id && $request->user_type == 1){
             $role = Role::whereName($this->officeHead)->first();
             if(in_array($role->id,$request->role_id)){
                 $officeHead = User::where('office_id',$request->office_id)->whereHas('roles', function ($query) {
@@ -320,14 +316,8 @@ class UserController extends Controller
         }
 
 
-
-
-
-
-        // try {
             $user = $this->UserService->createUser($request,$password);
 
-            $this->dispatch(new UserCreateJob($user->email,$user->username,$password));
 
             activity("User")
             ->causedBy(auth()->user())
@@ -338,16 +328,12 @@ class UserController extends Controller
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
             ]);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     return $this->sendError($th->getMessage(), [], 500);
-        // }
     }
 
     public function update(UserUpdateRequest $request, $id)
     {
         try {
-            if($request->has('role_id')){
+            if($request->role_id && $request->user_type == 1){
                 $role = Role::whereName($this->officeHead)->first();
                 if(in_array($role->id,$request->role_id)){
                     $officeHead = User::where('office_id',$request->office_id)->whereHas('roles', function ($query) {
@@ -379,6 +365,37 @@ class UserController extends Controller
             return $this->sendError($error, [], 500);
         }
     }
+
+
+
+    public function approve($id)
+    {
+        $password = Helper::GeneratePassword();
+
+        $user = User::findOrFail($id);
+        $user->status = !$user->status;
+        $user->password = bcrypt($user->salt . $password);
+        $user->save();
+
+
+        $message = "Congratulations! Your account has been approved.\nUsername: ". $user->username
+            ."\nPassword: ". $password;
+
+        $this->SMSservice->sendSms($user->mobile, $message);
+
+//        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
+
+
+        activity("User")
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->log('User approval ');
+
+        $status = $user->status ? 'approved' : 'deactivated';
+
+        return $this->sendResponse($user, "User has been $status");
+    }
+
 
     /**
      *
@@ -533,4 +550,22 @@ class UserController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+
+    public function getRoles()
+    {
+        $isAdmin = auth()->user()->hasRole($this->superAdmin);
+
+        $roles[] = $this->committee;
+
+        if (!$isAdmin) {
+            $roles[] = $this->superAdmin;
+        }
+
+
+        return Role::whereNotIn('name', $roles)->get();
+    }
+
+
+
 }
