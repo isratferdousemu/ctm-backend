@@ -135,10 +135,11 @@ class UserController extends Controller
     $users = User::where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
         $query->where($filterArrayName)
               ->orWhere($filterArrayUserName)
-              ->orWhere($filterArrayUserId)
+//              ->orWhere($filterArrayUserId)
               ->orWhere($filterArrayEmail)
-              ->orWhere($filterArrayOfficeId)
-              ->orWhere($filterArrayPhone);
+//              ->orWhere($filterArrayOfficeId)
+              ->orWhere($filterArrayPhone)
+        ;
     })
         ->whereIn('id', $this->officeHeadService->getUsersUnderOffice())
     ->with('office','assign_location.parent.parent.parent.parent','office_type','roles', 'committee')
@@ -316,6 +317,7 @@ class UserController extends Controller
         }
 
 
+
             $user = $this->UserService->createUser($request,$password);
 
 
@@ -371,6 +373,7 @@ class UserController extends Controller
     public function approve($id)
     {
         $password = Helper::GeneratePassword();
+        $password = '12341234';
 
         $user = User::findOrFail($id);
         $user->status = !$user->status;
@@ -381,7 +384,7 @@ class UserController extends Controller
         $message = "Congratulations! Your account has been approved.\nUsername: ". $user->username
             ."\nPassword: ". $password;
 
-        $this->SMSservice->sendSms($user->mobile, $message);
+//        $this->SMSservice->sendSms($user->mobile, $message);
 
 //        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
 
