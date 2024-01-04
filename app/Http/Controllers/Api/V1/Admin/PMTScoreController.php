@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Http\Resources\Admin\PMTScore\PMTScoreResource;
-use App\Http\Services\Admin\PMTScore\PMTScoreService;
-use App\Models\PMTScore;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\PMTScore\PMTScoreRequest;
-
 use Validator;
 use App\Models\Lookup;
+use App\Models\Location;
+use App\Models\PMTScore;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+
 use App\Http\Traits\UserTrait;
 use App\Http\Traits\LookupTrait;
 use App\Http\Traits\MessageTrait;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Lookup\LookupRequest;
 use App\Http\Services\Admin\Lookup\LookupService;
 use App\Http\Resources\Admin\Lookup\LookupResource;
+use App\Http\Requests\Admin\PMTScore\PMTScoreRequest;
+use App\Http\Services\Admin\PMTScore\PMTScoreService;
 use App\Http\Requests\Admin\Lookup\LookupUpdateRequest;
+use App\Http\Resources\Admin\PMTScore\PMTScoreResource;
 use App\Http\Requests\Admin\PMTScore\DistrictFixedEffectRequest;
-use App\Models\Location;
 
 class PMTScoreController extends Controller
 {
@@ -85,29 +86,30 @@ class PMTScoreController extends Controller
      */
 
     public function getAllPMTScorePaginated(Request $request)
+
     {
-        // Retrieve the query parameters
+         //   emu's code
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
+        $finanlcial = $request->query('financial');
+        $location = $request->query('location');
+        
+        $type = $request->query('type');
+        
+  
 
         $filterArrayNameEn = [];
-        // $filterArrayNameBn = [];
-        // $filterArrayComment = [];
-        // $filterArrayAddress = [];
+        $filterArrayFinancial = [];
+        $filterArrayType = [];
+        $filterArrayLocation = [];
 
         if ($searchText) {
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-            // $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-            // $filterArrayComment[] = ['comment', 'LIKE', '%' . $searchText . '%'];
+         
+            
         }
-        // $menu = Menu::select(
-        //     'menus.*',
-        //     'permissions.page_url as link'
-        // )
-        // ->leftJoin('permissions', function ($join) {
-        //     $join->on('menus.page_link_id', '=', 'permissions.id');
-        // });
+     
         $cutOff = PMTScore::select(
             'poverty_score_cut_offs.*',
             'locations.name_en',
@@ -120,17 +122,159 @@ class PMTScoreController extends Controller
                 $join->on('poverty_score_cut_offs.financial_year_id', '=', 'financial_years.id');
             })
             ->where(function ($query) use ($filterArrayNameEn) {
-                $query->where($filterArrayNameEn)
-                    // ->orWhere($filterArrayNameBn)
-                    // ->orWhere($filterArrayComment)
-                    // ->orWhere($filterArrayAddress)
-                ;
+                $query->where($filterArrayNameEn);   
+                
             })
-            ->where('default', '0') // Cut Off
-            ->where('poverty_score_cut_offs.financial_year_id', '1') // Cut Off
-            ->where('poverty_score_cut_offs.type', '1') // Cut Off
-            // ->with('assign_location.parent.parent.parent.parent', 'assign_location.locationType')
+            ->groupBy('financial_years.financial_year', 'poverty_score_cut_offs.type')
+            ->latest('financial_years.financial_year')
+            ->paginate($perPage, ['*'], 'page');
+
+      
+        return PMTScoreResource::collection($cutOff)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+        // Retrieve the query parameters
+        // $searchText = $request->query('searchText');
+        // $perPage = $request->query('perPage');
+        // $page = $request->query('page');
+        // $finanlcial = $request->query('financial');
+        // $location = $request->query('location');
+        
+        // $type = $request->query('type');
+        
+  
+
+        // $filterArrayNameEn = [];
+        // $filterArrayFinancial = [];
+        // $filterArrayType = [];
+        // $filterArrayLocation = [];
+
+        // if ($searchText) {
+        //     $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+         
+            
+        // }
+     
+        // $cutOff = PMTScore::select(
+        //     'poverty_score_cut_offs.*',
+        //     'locations.name_en',
+        //     'financial_years.financial_year',
+        // )
+        //     ->leftJoin('locations', function ($join) {
+        //         $join->on('poverty_score_cut_offs.location_id', '=', 'locations.id');
+        //     })
+        //     ->leftJoin('financial_years', function ($join) {
+        //         $join->on('poverty_score_cut_offs.financial_year_id', '=', 'financial_years.id');
+        //     })
+        //     ->where(function ($query) use ($filterArrayNameEn) {
+        //         $query->where($filterArrayNameEn);
+                
+                
+        //     })
+        //      ->when($finanlcial, function ($query, $finanlcial) {
+        //         return $query->where('poverty_score_cut_offs.financial_year_id', '=', $finanlcial);
+        //     })
+        //     ->when($type, function ($query, $type) {
+        //          if ($type != 0) {
+        //        return $query->where('poverty_score_cut_offs.type', '=', $type);
+        //       } 
+            
+        //     })
+         
+        //     ->latest()
+        //     ->paginate($perPage, ['*'], 'page');
+
+        // return $cutOff;
+        // return PMTScoreResource::collection($cutOff)->additional([
+        //     'success' => true,
+        //     'message' => $this->fetchSuccessMessage,
+        // ]);
+       
+     
+     
+    }
+     /**
+     * @OA\Get(
+     *     path="/admin/poverty/filter/get",
+     *      operationId="getAllFilterCutoffPaginated",
+     *      tags={"PMT-Score"},
+     *      summary="get paginated PMTScores",
+     *      description="get paginated PMTScores",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search by name",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of division per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     * )
+     */
+    public function getAllFilterCutoffPaginated(Request $request){
+         // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
+        $type = $request->query('type');
+        $filterArrayNameEn = [];
+        if( $type){
+            if ($searchText) {
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+         
+            
+        }
+   
+        $cutOff = Location::where(function ($query) use ($filterArrayNameEn) {
+                $query->where($filterArrayNameEn);
+                 })
+        ->when($type, function ($query, $type) {
+ 
+           if ($type == 1) {
+               return $query->where('locations.type', '=', 'division');
+            } 
+            elseif ($type == 2) {
+               return $query->where('locations.type', '=', 'district');
+              } 
+              
+            })
+      
             ->latest()
+            ->whereIn('locations.type', ['division', 'district'])
             ->paginate($perPage, ['*'], 'page');
 
         return $cutOff;
@@ -138,6 +282,387 @@ class PMTScoreController extends Controller
             'success' => true,
             // 'message' => $this->fetchSuccessMessage,
         ]);
+     
+
+        }
+        else{
+           return $type; 
+        }
+        
+
+    }
+     /**
+     * @OA\Get(
+     *     path="/admin/poverty/filter/edit",
+     *      operationId="getEditFiterCutoffPaginated",
+     *      tags={"PMT-Score"},
+     *      summary="get paginated PMTScores",
+     *      description="get paginated PMTScores",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search by name",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of division per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     * )
+     */
+    public function getEditFiterCutoffPaginated(Request $request){
+         // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
+        $type = $request->query('type');
+      
+        $financial = $request->query('financial_year_id');
+        $filterArrayNameEn = [];
+        
+        
+            if ($searchText) {
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+         
+            
+        }
+   
+       $cutOff = PMTScore::select(
+            'poverty_score_cut_offs.*',
+            'locations.name_en',
+            'financial_years.financial_year',
+        )
+            ->leftJoin('locations', function ($join) {
+                $join->on('poverty_score_cut_offs.location_id', '=', 'locations.id');
+            })
+            ->leftJoin('financial_years', function ($join) {
+                $join->on('poverty_score_cut_offs.financial_year_id', '=', 'financial_years.id');
+            })
+            ->where(function ($query) use ($filterArrayNameEn) {
+                $query->where($filterArrayNameEn);
+                
+                
+            })
+             ->when($financial, function ($query, $financial) {
+                return $query->where('poverty_score_cut_offs.financial_year_id', '=', $financial);
+            })
+            ->when($type, function ($query, $type) {
+          
+               return $query->where('poverty_score_cut_offs.type', '=', $type);
+            
+            
+            })
+         
+            ->latest()
+            ->paginate($perPage, ['*'], 'page');
+
+        return $cutOff;
+        return PMTScoreResource::collection($cutOff)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+     
+
+       
+        
+
+    }
+      /**
+     *
+     * @OA\Post(
+     *      path="/admin/poverty/poverty-cut-off/insert",
+     *      operationId="insertCutOff",
+     *      tags={"PMT-Score"},
+     *      summary="insert a povertyPMTScore",
+     *      description="insert a povertyPMTScore",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+
+     *                    @OA\Property(
+     *                      property="type",
+     *                      description="insert type",
+     *                      type="integer",
+     *                   ),
+     *                    @OA\Property(
+     *                      property="division_id",
+     *                      description="insert division_id",
+     *                      type="integer",
+     *                   ),
+     *                    @OA\Property(
+     *                      property="location_id",
+     *                      description="insert location_id",
+     *                      type="integer",
+     *                   ),
+     *                    @OA\Property(
+     *                      property="score",
+     *                      description="score",
+     *                      type="float",
+     *
+     *                   ),
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+ 
+    public function insertCutOff(Request $request){
+         DB::beginTransaction();
+    
+
+      
+        try {
+            $input = $request->all();
+           
+            if($input = $request->type === "0"){
+          
+                   
+                        
+                    
+                    $existingRecord = PMTScore::where('financial_year_id',$request->financial_year_id)
+                    ->where('type',1)
+                    ->first();
+                    
+
+                if ($existingRecord) {
+                    // Duplicate entry found, handle accordingly (e.g., return an error response)
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'This year all disvision has already reached the cutoff score.',
+                    ]);
+                }
+                $existingRecord2 = PMTScore::where('financial_year_id',$request->financial_year_id)
+                    ->where('type',2)
+                    ->first();
+                    if ($existingRecord2) {
+                    // Duplicate entry found, handle accordingly (e.g., return an error response)
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'This year all districts has already reached the cutoff score.',
+                    ]);
+                }
+                 
+                $all = Location::where('type', 'division')->get();
+                    foreach($all as $item) {
+                        $pmt                      = new PMTScore;
+              
+                        $pmt->score    	          = $request->score;
+                        $pmt->location_id    	   = $item['id'];
+                        $pmt->financial_year_id   = $request->financial_year_id;
+                        $pmt->type    	           = 1;
+                        
+                        $pmt->save();
+
+                    }
+                   $all2 = Location::where('type', 'district')->get();
+                    foreach($all2 as $item) {
+                        $pmt                      = new PMTScore;
+                
+                        $pmt->score    	          = $request->score;
+                        $pmt->location_id    	   = $item['id'];
+                        $pmt->financial_year_id   = $request->financial_year_id;
+                        $pmt->type    	           = 2;
+                        
+                        $pmt->save();
+
+                            }
+
+
+            }
+            else{
+               
+              $input = $request->all();
+                 foreach($input as $item) {
+                    // Check if a record with the same values already exists
+            $existingRecord1 = PMTScore::where('financial_year_id', $item['financialYearId'])
+                ->where('type', $item['type'])
+                ->where('location_id', $item['id'])
+                ->first();
+
+            if ($existingRecord1) {
+                // Duplicate entry found, handle accordingly (e.g., return an error response)
+                return response()->json([
+                    'success' => false,
+                    'error' => 'This years location has already reached the cutoff score.',
+                ]);
+            }
+
+                 $pmt                      = new PMTScore;
+              
+                 $pmt->score    	       = $item['inputScore'];
+                 $pmt->location_id    	   = $item['id'];
+                 $pmt->financial_year_id   = $item['financialYearId'];
+                 $pmt->type    	           = $item['type'];
+                
+                 $pmt->save();
+               
+
+             }
+                
+            }
+            
+        
+         
+            
+           DB::commit();
+             return response()->json([
+        'success' => true,
+        'message' => 'Data inserted successfully.',
+    ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+
+
+    }
+      /**
+     *
+     * @OA\Post(
+     *      path="/admin/poverty/poverty-cut-off/destroy",
+     *      operationId="destroyCutoff",
+     *      tags={"PMT-Score"},
+     *      summary="delete Variable",
+     *      description="delete Variable",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                    @OA\Property(
+     *                      property="id",
+     *                      description="id",
+     *                      type="integer",
+     *                   ),
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+
+    public function destroyCutoff( Request $request)
+
+    {
+        $input=$request->all();
+       
+
+     
+    $validator = Validator::make($input, [
+        'financial_year_id' => 'required|exists:poverty_score_cut_offs,financial_year_id',
+        'type' => 'required|exists:poverty_score_cut_offs,type',
+    ]);
+        $validator->validated();
+
+
+        $cutoff = PMTScore::where("financial_year_id",'=',request()->financial_year_id)
+        ->where("type",'=',request()->type)
+        ->delete();
+       
+
+        // check if variable has any child if yes then return exception else delete
+      
+
+      
+        activity("Cutoff")
+            ->causedBy(auth()->user())
+            ->log('Cutoff Deleted!!');
+        return $this->sendResponse($cutoff, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
     /**
@@ -536,6 +1061,62 @@ class PMTScoreController extends Controller
      *     )
      *
      */
+    
+    public function updateCutOff(Request $request){
+         DB::beginTransaction();
+    
+
+      
+        try {
+            $input = $request->all();
+            
+          
+        $validator = Validator::make($input, [
+        'financial_year_id' => 'required|exists:poverty_score_cut_offs,financial_year_id',
+        'type' => 'required|exists:poverty_score_cut_offs,type',
+    ]);
+        $validator->validated();
+        if($input){
+            
+       $cutoff = PMTScore::where("financial_year_id",'=',$input[0]['financialYearId'])
+     
+        ->where("type",'=',$input[0]['type'])
+        ->delete();
+       
+            
+        
+          foreach($input as $item) {
+                 
+         
+
+        
+                  
+                 $pmt = new PMTScore();
+                 $pmt->score    	       = $item['inputScore'];
+                 $pmt->location_id    	   = $item['id'];
+                 $pmt->financial_year_id   = $item['financialYearId'];
+                 $pmt->type    	           = $item['type'];
+                
+                 $pmt->save();
+               
+
+             }
+
+        }
+
+            
+           DB::commit();
+             return response()->json([
+        'success' => true,
+        'message' => 'Data updated successfully.',
+    ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+
+
+    }
 
     public function updatePMTScore(PMTScoreRequest $request)
     {
@@ -658,77 +1239,7 @@ class PMTScoreController extends Controller
     //         return $this->sendError($th->getMessage(), [], 500);
     //     }
     // }
-    /**
-     *
-     * @OA\Post(
-     *      path="/admin/poverty/poverty-cut-off/insert",
-     *      operationId="insertDivisionCutOff",
-     *      tags={"PMT-Score"},
-     *      summary="insert a povertyPMTScore",
-     *      description="insert a povertyPMTScore",
-     *      security={{"bearer_token":{}}},
-     *
-     *
-     *       @OA\RequestBody(
-     *          required=true,
-     *          description="enter inputs",
-     *            @OA\MediaType(
-     *              mediaType="multipart/form-data",
-     *           @OA\Schema(
-
-     *                    @OA\Property(
-     *                      property="type",
-     *                      description="insert type",
-     *                      type="integer",
-     *                   ),
-     *                    @OA\Property(
-     *                      property="division_id",
-     *                      description="insert division_id",
-     *                      type="integer",
-     *                   ),
-     *                    @OA\Property(
-     *                      property="location_id",
-     *                      description="insert location_id",
-     *                      type="integer",
-     *                   ),
-     *                    @OA\Property(
-     *                      property="score",
-     *                      description="score",
-     *                      type="float",
-     *
-     *                   ),
-     *                 ),
-     *             ),
-     *
-     *         ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful Insert operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *
-     *          )
-     *        )
-     *     )
-     *
-     */
+    
 
     public function insertDivisionCutOff(PMTScoreRequest $request)
     {

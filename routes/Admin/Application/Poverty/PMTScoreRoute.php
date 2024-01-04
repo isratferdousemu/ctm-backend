@@ -14,9 +14,12 @@ Route::middleware('auth:sanctum')->group(function () {
         ///         CUTT OFF
         //////////////////////////
         Route::get('/get', [PMTScoreController::class, 'getAllPMTScorePaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
-        Route::post('/poverty-cut-off/insert', [PMTScoreController::class, 'insertDivisionCutOff'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
-        Route::post('/poverty-cut-off/update', [PMTScoreController::class, 'updatePMTScore'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
+        Route::post('/poverty-cut-off/insert', [PMTScoreController::class, 'insertCutOff'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
+        Route::post('/poverty-cut-off/update', [PMTScoreController::class, 'updateCutOff'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::post('/poverty-cut-off/filter', [PMTScoreController::class, 'getFiltered'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
+        Route::get('filter/get', [PMTScoreController::class, 'getAllFilterCutoffPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+         Route::get('filter/edit', [PMTScoreController::class, 'getEditFiterCutoffPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::post('/poverty-cut-off/destroy', [PMTScoreController::class, 'destroyCutoff'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
 
         //////////////////////////
         ///    DISTRICT FIXED EFFECT

@@ -23,11 +23,22 @@ class VariableService
         try {
 
             $Variable                         = new Variable();
-            $Variable->name_en                   = $request->name_en;
-            $Variable->score              = $request->score;
-            $Variable->field_type              = $request->field_type;
+            $Variable->name_en                = $request->name_en;
+            $Variable->score                  = $request->score;
+            $Variable->field_type             = $request->field_type;
 
             $Variable->save();
+            $sub_variable=$request->field_value;
+            if($sub_variable){
+                foreach($sub_variable as $item){
+                $sub = new Variable();
+                $sub->parent_id= $Variable->id;
+                $sub->name_en= $item['value'];
+                $sub->score= $item['score'];
+                $sub->save();
+            }
+            }
+            
 
             DB::commit();
             return $Variable;
