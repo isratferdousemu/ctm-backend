@@ -88,25 +88,16 @@ class VariableController extends Controller
 
         if ($searchText) {
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-            // $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-            // $filterArrayComment[] = ['comment', 'LIKE', '%' . $searchText . '%'];
+          
         }
-        // $menu = Menu::select(
-        //     'menus.*',
-        //     'permissions.page_url as link'
-        // )
-        // ->leftJoin('permissions', function ($join) {
-        //     $join->on('menus.page_link_id', '=', 'permissions.id');
-        // });
+
         $office = Variable::query()
             ->where(function ($query) use ($filterArrayNameEn) {
-                $query->where($filterArrayNameEn)
-                    // ->orWhere($filterArrayNameBn)
-                    // ->orWhere($filterArrayComment)
-                    // ->orWhere($filterArrayAddress)
-                ;
+                $query->where($filterArrayNameEn) ;
+             
+               
             })
-            // ->with('assign_location.parent.parent.parent', 'assign_location.locationType')
+         
             ->latest()
             ->where('parent_id', null) // Variable
             ->paginate($perPage, ['*'], 'page');
@@ -195,16 +186,14 @@ class VariableController extends Controller
         // });
         $office = Variable::query()
             ->where(function ($query) use ($filterArrayNameEn) {
-                $query->where($filterArrayNameEn)
-                    // ->orWhere($filterArrayNameBn)
-                    // ->orWhere($filterArrayComment)
-                    // ->orWhere($filterArrayAddress)
-                ;
+                $query->where($filterArrayNameEn);
+         
+                
             })
-            // ->with('assign_location.parent.parent.parent', 'assign_location.locationType')
+            ->with('children')
             ->latest()
-            ->where('parent_id', null) // Variable
-            ->where('score', null) // Variable
+            ->where('parent_id', null) 
+           
             ->paginate($perPage, ['*'], 'page');
 
         return VariableResource::collection($office)->additional([
@@ -888,19 +877,16 @@ class VariableController extends Controller
     public function destroyVariable()
     {
 
-        $validator = Validator::make(['id' => request()->id], [
+        $validator = Validator::make(['id' => request()->delete_id], [
             'id' => 'required|exists:variables,id,deleted_at,NULL',
         ]);
 
         $validator->validated();
 
-        $variable = Variable::whereId(request()->id)->first();
+        $variable = Variable::whereId(request()->delete_id)->first();
 
         // check if variable has any child if yes then return exception else delete
-        if ($variable->children->count() > 0) {
-
-            return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
-        }
+       
 
 
         if ($variable) {

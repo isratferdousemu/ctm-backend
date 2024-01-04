@@ -474,7 +474,7 @@ class PermissionSeeder extends Seeder
                 'permissions' => [
                     ["id" => 178, "name" => "committee-permission-create", "page_url" => "/beneficiary-management/committee-permission/create", "parent_page" => 1],
                     ["id" => 179, "name" => "committee-permission-view", "page_url" => "/beneficiary-management/committee-permission", "parent_page" => 1],
-                    ["id" => 180, "name" => "committee-permission-edit", "page_url" => "/beneficiary-management/committee-permission/edit/:id", "parent_page" => 1],
+                    ["id" => 180, "name" => "allowance-Field-view", "page_url" => "/system-configuration/allowance-program-additional-field", "parent_page" => 1],
                     ["id" => 181, "name" => "committee-permission-delete", "page_url" => "/beneficiary-management/committee-permission", "parent_page" => 1]
                 ]
             ],

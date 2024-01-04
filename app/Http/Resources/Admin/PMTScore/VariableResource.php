@@ -18,7 +18,7 @@ class VariableResource extends JsonResource
 
         return [
             'id'               =>      $this->id,
-            'name_en'             =>      $this->name_en,
+            'name_en'           =>      $this->name_en,
             'field_type'        =>      $this->field_type,
             'parent_id'         =>      $this->parent_id,
             'children'          =>  VariableResource::collection($this->whenLoaded('children'))
