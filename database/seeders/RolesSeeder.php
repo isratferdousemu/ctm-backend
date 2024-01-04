@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Helpers\Helper;
+use App\Http\Traits\PermissionTrait;
 use App\Http\Traits\RoleTrait;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,7 +14,7 @@ use App\Models\User;
 
 class RolesSeeder extends Seeder
 {
-    use RoleTrait;
+    use RoleTrait, PermissionTrait;
 
     /**
      * Run the database seeds.
@@ -37,7 +38,7 @@ class RolesSeeder extends Seeder
             'name' => $this->superAdmin
         ]);
         $role->givePermissionTo(Permission::all());
-        
+
         $officeHeadRole = Role::create([
             'guard_name' => $guard,
             'code' => "10001",
@@ -48,7 +49,7 @@ class RolesSeeder extends Seeder
             'name' => $this->officeHead
         ]);
         $officeHeadRole->givePermissionTo(Permission::all());
-        
+
         // $applicationListRole = Role::create([
         //     'guard_name' => $guard,
         //     'code' => "20001",
@@ -59,9 +60,9 @@ class RolesSeeder extends Seeder
         //     'name' => $this->applicationListRole
         // ]);
         // $applicationListRole->givePermissionTo(Permission::all());
-        
 
-        
+
+
         $dataEntryOperatorRole = Role::create([
             'guard_name' => $guard,
             'code' => "10002",
@@ -72,8 +73,8 @@ class RolesSeeder extends Seeder
             'name' => $this->dataEntryOperator
         ]);
         $dataEntryOperatorRole->givePermissionTo(Permission::all());
-        
-        
+
+
         $committeeRole = Role::create([
             'guard_name' => $guard,
             'code' => "10003",
@@ -83,8 +84,11 @@ class RolesSeeder extends Seeder
             'name_bn' => $this->committee,
             'name' => $this->committee
         ]);
-        $committeeRole->givePermissionTo(Permission::all());
-        
+        $committeeRole->givePermissionTo(
+            Permission::where('module_name', $this->modulePermissionApplicationSelection)
+                ->get()
+        );
+
         $salt = Helper::generateSalt();
         $admin = User::create(
             [

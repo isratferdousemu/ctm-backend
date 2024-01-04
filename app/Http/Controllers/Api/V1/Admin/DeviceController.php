@@ -89,6 +89,9 @@ class DeviceController extends Controller
          $device = $device->orderBy('name', 'asc');
      }
 
+
+     $device->with('user');
+
      $searchValue = $request->input('search');
 
      if($searchValue)
