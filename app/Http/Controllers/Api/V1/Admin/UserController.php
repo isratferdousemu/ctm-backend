@@ -9,19 +9,24 @@ use App\Http\Requests\Admin\User\UserUpdateRequest;
 use App\Http\Resources\Admin\Office\OfficeResource;
 use App\Http\Resources\Admin\User\UserResource;
 use App\Http\Services\Admin\User\UserService;
+use App\Http\Traits\LocationTrait;
 use App\Http\Traits\MessageTrait;
+use App\Http\Traits\PermissionTrait;
 use App\Http\Traits\RoleTrait;
 use App\Http\Traits\UserTrait;
 use App\Jobs\UserCreateJob;
+use App\Models\Location;
 use App\Models\Office;
 use App\Models\User;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    use MessageTrait,UserTrait,RoleTrait;
+    use MessageTrait,UserTrait,RoleTrait, PermissionTrait, LocationTrait;
     private $UserService;
 
     public function __construct(UserService $UserService) {
@@ -123,30 +128,8 @@ class UserController extends Controller
         $filterArrayOfficeId[] = ['office_id', 'LIKE', '%' . $officeId . '%'];
     }
 
+
         // check this user is super-admin or not if not then check this user is office head or not if yes then get users under this office
-            // if(auth()->user()->user_type != $this->superAdminId && Auth::user()->hasRole($this->officeHead))
-            // {
-            //     $users = User::query()
-            //     ->where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
-            //         $query->where($filterArrayName)
-            //               ->orWhere($filterArrayUserName)
-            //               ->orWhere($filterArrayUserId)
-            //               ->orWhere($filterArrayEmail)
-            //               ->orWhere($filterArrayOfficeId)
-            //               ->orWhere($filterArrayPhone);
-            //     })
-            //     ->where('office_id',auth()->user()->office_id)
-            //     ->where('user_type','!=',$this->superAdminId)
-            //     ->whereHas('office', function ($query) {
-            //     // assign_location_id is locations id of office get location all users and location
-            //     $query->where('assign_location_id',auth()->user()->office->assign_location_id);
-            //     //and assign_location_id location one child down user office head
-            //     $query->orWhere('assign_location_id',auth()->user()->office?->location?->parent_id);
-            //     })
-            //     ->with('office','assign_location.parent.parent.parent','office_type', 'roles')
-            //     ->latest()
-            //     ->paginate($perPage, ['*'], 'page');
-            // }else{
     $users = User::where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
         $query->where($filterArrayName)
               ->orWhere($filterArrayUserName)
@@ -155,6 +138,7 @@ class UserController extends Controller
               ->orWhere($filterArrayOfficeId)
               ->orWhere($filterArrayPhone);
     })
+        ->whereIn('id', $this->getUsersId())
     ->with('office','assign_location.parent.parent.parent.parent','office_type','roles', 'committee')
     ->orderByDesc('id')
     ->paginate($perPage, ['*'], 'page');
@@ -165,6 +149,133 @@ class UserController extends Controller
         'message' => $this->fetchSuccessMessage,
     ]);
 }
+
+
+    /*
+     * District office type = 7
+     * District committee type = 17
+     * */
+    public function getDivisionUsers($user)
+    {
+        $officeTypes = [7];
+        $committeeTypes = [17];
+        $assignedIds = [$user->assign_location_id];
+
+        return $this->getLocationWiseUsers($officeTypes, $committeeTypes, $assignedIds);
+    }
+
+
+
+    /*
+    * Committee types
+    * City corp = 15
+    * Pauroshava = 16
+    * Upazila = 14
+    * officeType
+    * Circle social service = 11
+    * UCD = 9
+    * UCD Upazila = 10
+    * Upazila = 8
+    * */
+    public function getDistrictUsers($user)
+    {
+        $officeTypes = [8, 9, 10, 11];
+        $committeeTypes = [14, 15, 16];
+        $assignedIds = [$user->assign_location_id];
+
+
+        return $this->getLocationWiseUsers($officeTypes, $committeeTypes, $assignedIds);
+    }
+
+
+
+    public function getUpazilaUsers($user)
+    {
+        $officeTypes = [];
+        $committeeTypes = [12];
+        $assignedIds = [$user->assign_location_id];
+
+        return $this->getLocationWiseUsers($officeTypes, $committeeTypes, $assignedIds);
+    }
+
+
+    /*
+     * City -> Thana -> Ward
+     * */
+    public function getWardUsers($user)
+    {
+        $officeTypes = [];
+        $committeeTypes = [13];
+
+        $thanas = Location::where('parent_id', $user->assign_location_id)
+            ->whereType($this->thana)
+            ->whereLocationType(3)
+            ->get();
+
+        return $this->getLocationWiseUsers($officeTypes, $committeeTypes, $thanas->pluck('id'));
+
+        return $wards;
+
+    }
+
+
+
+
+
+    public function getLocationWiseUsers($officeTypes = [], $committeeTypes = [], $assignedIds = [])
+    {
+        return User::leftJoin('locations', 'users.assign_location_id', '=', 'locations.id')
+            ->where(function (Builder $query) use ($officeTypes, $committeeTypes){
+                $query->whereIn('office_type', $officeTypes)
+                    ->orWhereIn('committee_type_id', $committeeTypes);
+            })
+            ->whereIn('parent_id', $assignedIds)
+            ->select('users.id', 'username', 'full_name', 'office_type', 'committee_type_id',
+                'assign_location_id', 'name_en', 'locations.id as id2', 'type'
+            )
+            ->get();
+    }
+
+
+
+
+
+
+    /*
+     * If office head/ super admin get users list
+     * */
+    public function getUsersId()
+    {
+        $user = Auth::user();
+
+        if ($user->assign_location_id) {
+            $type = $user->assign_location?->type;
+
+            $users = match ($type) {
+                'division' => $this->getDivisionUsers($user),
+                'district' => $this->getDistrictUsers($user),
+                'thana' => $this->getUpazilaUsers($user),
+                'city' => $this->getWardUsers($user),
+                default => []
+            };
+        } else {
+            $users = User::leftJoin('locations', 'users.assign_location_id', '=', 'locations.id')
+                ->select('users.id', 'username', 'full_name', 'office_type', 'committee_type_id',
+                    'assign_location_id', 'name_en', 'locations.id as id2', 'type'
+                )
+                ->when( in_array($user->office_type, [5, 4]), function (Builder $query) {
+                    $query->whereNotIn('office_type', [5, 4]);
+                })
+                ->whereNot('user_type', 1)
+                ->get();
+        }
+
+
+        return $users ? $users->pluck('id') : [];
+
+    }
+
+
 
     /**
      *
@@ -533,4 +644,14 @@ class UserController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+
+    public function getRoles()
+    {
+        return Role::whereNot('name', 'like', "%committee%")
+            ->get();
+    }
+
+
+
 }

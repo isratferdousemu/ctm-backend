@@ -61,6 +61,7 @@ class UserService
                     default => null
                 };
 
+                $user->committee_type_id = $request->committee_type;
                 $user->committee_id = $request->committee_id;
             } else {
                 abort(500, 'Internal server error');
@@ -80,6 +81,8 @@ class UserService
 
             if ($user->user_type == 1) {
                 $user->assignRole([$request->role_id]);
+            } else {
+                $user->assignRole('committee');
             }
 
             DB::commit();
@@ -206,7 +209,9 @@ class UserService
 
     public function generateUserId()
     {
-        $user_id = User::count() + 1;
+        return DB::table('users')->latest('id')->value('id') + 1;
+
+        return User::orderByDesc('id')->value('id') + 1;
         $user = User::where('user_id', $user_id)->first();
         if ($user) {
             $this->generateUserId();
