@@ -2,26 +2,33 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Exceptions\AuthBasicErrorException;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Application\ApplicationRequest;
-use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
-use App\Http\Services\Admin\Application\ApplicationService;
-use App\Http\Traits\BeneficiaryTrait;
-use App\Http\Traits\LocationTrait;
-use App\Http\Traits\MessageTrait;
-use App\Models\AllowanceProgram;
 use App\Models\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Models\MobileOperator;
+use App\Models\AllowanceProgram;
+use App\Http\Traits\MessageTrait;
+use App\Http\Traits\LocationTrait;
+use App\Http\Controllers\Controller;
+use App\Http\Traits\BeneficiaryTrait;
+use Illuminate\Support\Facades\Validator;
+use App\Exceptions\AuthBasicErrorException;
+use App\Http\Requests\Admin\Application\ApplicationRequest;
+use App\Http\Services\Admin\Application\ApplicationService;
+use App\Http\Requests\Admin\Application\MobileOperatorRequest;
+use App\Http\Services\Admin\Application\MobileOperatorService;
+use App\Http\Resources\Admin\Application\MobileOperatorResource;
+use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
+use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
 
 class ApplicationController extends Controller
 {
     use MessageTrait, BeneficiaryTrait,LocationTrait;
     private $applicationService;
 
-    public function __construct(ApplicationService $applicationService) {
+    public function __construct(ApplicationService $applicationService , MobileOperatorService $mobileoperatorService) {
         $this->applicationService= $applicationService;
+        $this->mobileoperatorService= $mobileoperatorService;
     }
 
     public function getBeneficiaryByLocation(){
@@ -742,6 +749,294 @@ class ApplicationController extends Controller
 
     }
  
- 
+  /**
+    * @OA\Get(
+    *     path="/admin/mobile-operator/get",
+    *      operationId="getAllMobileOperatorPaginated",
+    *      tags={"APPLICATION-SELECTION"},
+    *      summary="get paginated mobileoperator",
+    *      description="get paginated mobileoperator",
+    *      security={{"bearer_token":{}}},
+    *     @OA\Parameter(
+    *         name="searchText",
+    *         in="query",
+    *         description="search by mobileoperator",
+    *         @OA\Schema(type="string")
+    *     ),
+    *     @OA\Parameter(
+    *         name="perPage",
+    *         in="query",
+    *         description="number of mobileoperator per page",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         description="page number",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+    * )
+    */
+
+ public function getAllMobileOperatorPaginated(Request $request){
+        // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
+
+        $filterArrayValue=[];
+       
+
+        if ($searchText) {
+            $filterArrayValue[] = ['operator', 'LIKE', '%' . $searchText . '%'];
+          
+        }
+        $globalsetting = MobileOperator::query()
+        ->where(function ($query) use ($filterArrayValue) {
+            $query->where($filterArrayValue);
+                  
+        })
+       
+        ->latest()
+        ->paginate($perPage, ['*'], 'page');
+
+        return MobileOperatorResource::collection($globalsetting)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+ }
+ /**
+     *
+     * @OA\Post(
+     *      path="/admin/mobile-operator/insert",
+     *      operationId="insertMobileOperator",
+     *      tags={"APPLICATION-SELECTION"},
+     *      summary="insert a mobile-operator",
+     *      description="insert a mobile-operator",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                  
+     *                   @OA\Property(
+     *                      property="operator",
+     *                      description="Value of operator",
+     *                      type="text",
+     *                   ),
+     *                 
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+  
+        public function insertMobileOperator(MobileOperatorRequest $request){
+
+        try {
+            $mobile = $this->mobileoperatorService->createMobileOperator($request);
+        
+            return MobileOperatorResource::make($mobile)->additional([
+                'success' => true,
+                'message' => $this->insertSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+         /**
+     * @OA\Get(
+     *      path="/admin/mobile-operator/destroy/{id}",
+     *      operationId="destroyMobileOperator",
+     *      tags={"APPLICATION-SELECTION"},
+     *      summary=" destroy global setting",
+     *      description="Returns mobile-operator destroy by id",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\Parameter(
+     *         description="id of mobile-operator to return",
+     *         in="path",
+     *         name="id",
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+
+        public function destroyMobileOperator($id)
+    {
+
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:mobile_operators,id',
+        ]);
+
+        $validator->validated();
+
+        $mobile = MobileOperator::whereId($id)->first();
+
+    
+        if($mobile){
+            $mobile->delete();
+        }
+     
+         return $this->sendResponse($mobile, $this->deleteSuccessMessage, Response::HTTP_OK);
+
+    }
+     /**
+     *
+     * @OA\Post(
+     *      path="/admin/mobile-operator/update",
+     *      operationId="updateMobileOperator",
+     *      tags={"APPLICATION-SELECTION"},
+     *      summary="update a Mobile Operator",
+     *      description="update a Mobile Operator",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="id",
+     *                      description="id of the Global Setting",
+     *                      type="integer",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="operator",
+     *                      description="operator",
+     *                      type="text",
+     *                   ),
+     *                   
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function updateMobileOperator(MobileOperatorUpdateRequest $request){
+
+        try {
+            $mobile = $this->mobileoperatorService->updateMobileOperator($request);
+          
+            return MobileOperatorResource::make($mobile)->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
 
 }
