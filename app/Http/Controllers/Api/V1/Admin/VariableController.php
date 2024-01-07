@@ -76,36 +76,77 @@ class VariableController extends Controller
 
     public function getAllVariablePaginated(Request $request)
     {
-        // Retrieve the query parameters
-        $searchText = $request->query('searchText');
-        $perPage = $request->query('perPage');
-        $page = $request->query('page');
-
-        $filterArrayNameEn = [];
-        // $filterArrayNameBn = [];
-        // $filterArrayComment = [];
-        // $filterArrayAddress = [];
-
-        if ($searchText) {
-            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+       
+        // $searchText = $request->query('searchText');
+        // $perPage = $request->query('perPage');
+        // $page = $request->query('page');
+        // $filterArrayNameEn = [];
+        // if ($searchText) {
+        //     $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
           
-        }
+        // }
 
-        $office = Variable::query()
-            ->where(function ($query) use ($filterArrayNameEn) {
-                $query->where($filterArrayNameEn) ;
+        // $office = Variable::query()
+        //     ->where(function ($query) use ($filterArrayNameEn) {
+        //         $query->where($filterArrayNameEn) ;
              
                
-            })
+        //     })
          
-            ->latest()
-            ->where('parent_id', null) // Variable
-            ->paginate($perPage, ['*'], 'page');
+        //     ->latest()
+        //     ->with('children')
+        //     ->where('parent_id', null) // Variable
+        //     ->paginate($perPage, ['*'], 'page');
 
-        return VariableResource::collection($office)->additional([
+        // return VariableResource::collection($office)->additional([
+        //     'success' => true,
+        //     'message' => $this->fetchSuccessMessage,
+        // ]);
+         $emu = new Variable;
+         $variable=$emu->where('parent_id', null)->with('children');
+      
+
+        if ($request->has('sortBy') && $request->has('sortDesc')) {
+            $sortBy = $request->query('sortBy');
+
+            $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+
+            $variable = $variable->orderBy($sortBy, $sortDesc);
+        } else {
+            $variable = $variable->orderBy('name_en', 'asc');
+        }
+
+        $searchValue = $request->input('search');
+
+        if($searchValue)
+        {
+            $variable->where(function($query) use ($searchValue) {
+                $query->where('name_en', 'like', '%' . $searchValue . '%');
+              
+            });
+
+            $itemsPerPage = 5;
+
+            if($request->has('itemsPerPage')) {
+                $itemsPerPage = $request->get('itemsPerPage');
+
+                return $variable->paginate($itemsPerPage, ['*'], $request->get('page'));
+            }
+        }else{
+            $itemsPerPage = 5;
+
+            if($request->has('itemsPerPage'))
+            {
+                $itemsPerPage = $request->get('itemsPerPage');
+
+            }
+            
+        $variable_final=$variable->paginate($itemsPerPage);
+           return VariableResource::collection($variable_final)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
         ]);
+        }
     }
 
     /**
@@ -874,24 +915,25 @@ class VariableController extends Controller
      *
      */
 
-    public function destroyVariable()
+    public function destroyVariable(Request $request)
     {
+       
 
-        $validator = Validator::make(['id' => request()->delete_id], [
+        $validator = Validator::make(['id' => $request->delete_id], [
             'id' => 'required|exists:variables,id,deleted_at,NULL',
         ]);
 
         $validator->validated();
+        // Delete sub-variables directly from the query builder
+    $emu=Variable::whereParentId($request->delete_id)->delete();
+   
 
-        $variable = Variable::whereId(request()->delete_id)->first();
+    // Delete the main variable
+    $variable = Variable::find($request->delete_id);
 
-        // check if variable has any child if yes then return exception else delete
-       
-
-
-        if ($variable) {
-            $variable->delete();
-        }
+    if ($variable) {
+        $variable->delete();
+    }
 
         activity("Variable")
             ->causedBy(auth()->user())

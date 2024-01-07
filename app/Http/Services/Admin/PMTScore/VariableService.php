@@ -30,6 +30,7 @@ class VariableService
             $Variable->save();
             $sub_variable=$request->field_value;
             if($sub_variable){
+                
                 foreach($sub_variable as $item){
                 $sub = new Variable();
                 $sub->parent_id= $Variable->id;
@@ -55,12 +56,24 @@ class VariableService
         try {
 
             $Variable                         = Variable::find($request->id);;
-            $Variable->name_en                   = $request->name_en;
-            $Variable->score              = $request->score;
-            $Variable->field_type              = $request->field_type;
+            $Variable->name_en                = $request->name_en;
+            $Variable->score                  = $request->score;
+            $Variable->field_type             = $request->field_type;
 
 
             $Variable->save();
+            $sub_variable=$request->field_value;
+              $israt=Variable::where('parent_id',"=",$Variable->id)->forceDelete();
+            if($sub_variable){
+              
+                foreach($sub_variable as $item){
+                $sub = new Variable();
+                $sub->parent_id= $Variable->id;
+                $sub->name_en= $item['value'];
+                $sub->score= $item['score'];
+                $sub->save();
+            }
+            }
 
             DB::commit();
             return $Variable;

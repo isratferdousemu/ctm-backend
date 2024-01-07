@@ -129,7 +129,7 @@ class PMTScoreController extends Controller
             ->latest('financial_years.financial_year')
             ->paginate($perPage, ['*'], 'page');
 
-      
+      return $cutOff;
         return PMTScoreResource::collection($cutOff)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
@@ -248,8 +248,7 @@ class PMTScoreController extends Controller
     public function getAllFilterCutoffPaginated(Request $request){
          // Retrieve the query parameters
         $searchText = $request->query('searchText');
-        $perPage = $request->query('perPage');
-        $page = $request->query('page');
+  
         $type = $request->query('type');
         $filterArrayNameEn = [];
         if( $type){
@@ -273,14 +272,16 @@ class PMTScoreController extends Controller
               
             })
       
-            ->latest()
+            ->orderBy('locations.name_en',"asc")
             ->whereIn('locations.type', ['division', 'district'])
-            ->paginate($perPage, ['*'], 'page');
+            ->get();
 
-        return $cutOff;
-        return PMTScoreResource::collection($cutOff)->additional([
+        // return $cutOff;
+        return ([
             'success' => true,
-            // 'message' => $this->fetchSuccessMessage,
+           'data'=>$cutOff,
+           'total' => $cutOff->count(),
+
         ]);
      
 
@@ -384,11 +385,16 @@ class PMTScoreController extends Controller
             
             
             })
-         
-            ->latest()
-            ->paginate($perPage, ['*'], 'page');
+             ->orderByRaw("CASE WHEN locations.name_en = 'poverty cutoff' THEN 0 ELSE 1 END, locations.name_en ASC")
+            ->get();
 
-        return $cutOff;
+        // return $cutOff;
+            return ([
+            'success' => true,
+           'data'=>$cutOff,
+           'total' => $cutOff->count(),
+
+        ]);
         return PMTScoreResource::collection($cutOff)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
@@ -652,7 +658,8 @@ class PMTScoreController extends Controller
 
         $cutoff = PMTScore::where("financial_year_id",'=',request()->financial_year_id)
         ->where("type",'=',request()->type)
-        ->delete();
+        ->get();
+        return $cutoff;
        
 
         // check if variable has any child if yes then return exception else delete
