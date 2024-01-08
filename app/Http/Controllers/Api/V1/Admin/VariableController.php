@@ -915,31 +915,74 @@ class VariableController extends Controller
      *
      */
 
-    public function destroyVariable(Request $request)
-    {
+    // public function destroyVariable(Request $request)
+    // {
        
 
+    //     $validator = Validator::make(['id' => $request->delete_id], [
+    //         'id' => 'required|exists:variables,id,deleted_at,NULL',
+    //     ]);
+
+    //     $validator->validated();
+    //     // Delete sub-variables directly from the query builder
+    // $emu=Variable::whereParentId($request->delete_id)->delete();
+   
+
+    // // Delete the main variable
+    // $variable = Variable::find($request->delete_id);
+
+    // if ($variable) {
+    //     $variable->delete();
+    // }
+
+    //     activity("Variable")
+    //         ->causedBy(auth()->user())
+    //         ->log('Variable Deleted!!');
+    //     return $this->sendResponse($variable, $this->deleteSuccessMessage, Response::HTTP_OK);
+    // }
+    
+
+
+
+public function destroyVariable(Request $request)
+{
+    try {
+        // Validate the request
         $validator = Validator::make(['id' => $request->delete_id], [
             'id' => 'required|exists:variables,id,deleted_at,NULL',
         ]);
-
+        
         $validator->validated();
+
+        // Check if the variable has associated poverty values
+        $variable = Variable::with('povertyValues')->find($request->delete_id);
+
+        if ($variable && $variable->povertyValues->isNotEmpty()) {
+            // If it has associated poverty values, prevent deletion
+            return $this->sendError('Variable has associated poverty values and cannot be deleted.', [], Response::HTTP_BAD_REQUEST);
+        }
+
         // Delete sub-variables directly from the query builder
-    $emu=Variable::whereParentId($request->delete_id)->delete();
-   
+        $emu = Variable::whereParentId($request->delete_id)->delete();
 
-    // Delete the main variable
-    $variable = Variable::find($request->delete_id);
-
-    if ($variable) {
-        $variable->delete();
-    }
+        // Delete the main variable
+        if ($variable) {
+            $variable->delete();
+        }
 
         activity("Variable")
             ->causedBy(auth()->user())
             ->log('Variable Deleted!!');
+
         return $this->sendResponse($variable, $this->deleteSuccessMessage, Response::HTTP_OK);
+    } catch (ModelNotFoundException $e) {
+        // Handle the case where the variable is not found
+        return $this->sendError('Variable not found.', [], Response::HTTP_NOT_FOUND);
+    } catch (\Exception $e) {
+        // Handle other exceptions
+        return $this->sendError('Failed to delete variable.', [], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
+}
 
     /**
      *

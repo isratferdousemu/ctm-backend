@@ -92,18 +92,14 @@ class PMTScoreController extends Controller
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
-        $finanlcial = $request->query('financial');
-        $location = $request->query('location');
-        
+        $financial_year_id = $request->query('financial_year_id'); 
+      
         $type = $request->query('type');
         
   
 
         $filterArrayNameEn = [];
-        $filterArrayFinancial = [];
-        $filterArrayType = [];
-        $filterArrayLocation = [];
-
+       
         if ($searchText) {
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
          
@@ -125,6 +121,13 @@ class PMTScoreController extends Controller
                 $query->where($filterArrayNameEn);   
                 
             })
+            ->when($financial_year_id, function ($query, $financial_year_id) {
+                return $query->where('financial_years.id', $financial_year_id);
+            })
+            ->when($type, function ($query, $type) {
+                return $query->where('poverty_score_cut_offs.type', $type);
+            })
+            // 
             ->groupBy('financial_years.financial_year', 'poverty_score_cut_offs.type')
             ->latest('financial_years.financial_year')
             ->paginate($perPage, ['*'], 'page');
@@ -521,6 +524,7 @@ class PMTScoreController extends Controller
                         $pmt->location_id    	   = $item['id'];
                         $pmt->financial_year_id   = $request->financial_year_id;
                         $pmt->type    	           = 1;
+                        $pmt->default    	       = 1;
                         
                         $pmt->save();
 
@@ -533,6 +537,7 @@ class PMTScoreController extends Controller
                         $pmt->location_id    	   = $item['id'];
                         $pmt->financial_year_id   = $request->financial_year_id;
                         $pmt->type    	           = 2;
+                        $pmt->default    	       = 1;
                         
                         $pmt->save();
 
@@ -642,10 +647,11 @@ class PMTScoreController extends Controller
      *
      */
 
-    public function destroyCutoff( Request $request)
+    public function destroyCutoff(Request $request)
 
     {
         $input=$request->all();
+       
        
 
      
@@ -656,10 +662,10 @@ class PMTScoreController extends Controller
         $validator->validated();
 
 
-        $cutoff = PMTScore::where("financial_year_id",'=',request()->financial_year_id)
-        ->where("type",'=',request()->type)
-        ->get();
-        return $cutoff;
+        $cutoff = PMTScore::where("financial_year_id",'=',$request->financial_year_id)
+        ->where("type",'=',$request->type)
+        ->delete();
+        // return $cutoff;
        
 
         // check if variable has any child if yes then return exception else delete
