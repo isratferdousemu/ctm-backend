@@ -115,10 +115,10 @@ class ApplicationService
                 $application->current_location_id              = $request->ward_id_dist;
             }
             if($request->has('ward_id_union') && $request->ward_id_upazila!=null){
-                $application->current_location_id              = $request->ward_id_upazila;
+                $application->current_location_id              = $request->ward_id_union;
             }
              if($request->has('ward_id_pouro') && $request->ward_id_upazila!=null){
-                $application->current_location_id              = $request->ward_id_upazila;
+                $application->current_location_id              = $request->ward_id_pouro;
             }
             $application->current_post_code = $request->post_code;
             $application->current_address = $request->address;
@@ -130,10 +130,10 @@ class ApplicationService
                 $application->permanent_location_id              = $request->permanent_ward_id_dist;
             }
             if($request->has('permanent_ward_id_union') && $request->permanent_ward_id_upazila!=null){
-                $application->permanent_location_id              = $request->permanent_ward_id_upazila;
+                $application->permanent_location_id              = $request->permanent_ward_id_union;
             }
               if($request->has('permanent_ward_id_pouro') && $request->permanent_ward_id_upazila!=null){
-                $application->permanent_location_id              = $request->permanent_ward_id_upazila;
+                $application->permanent_location_id              = $request->permanent_ward_id_pouro;
             }
             $application->permanent_post_code = $request->permanent_post_code;
             $application->permanent_address = $request->permanent_address;

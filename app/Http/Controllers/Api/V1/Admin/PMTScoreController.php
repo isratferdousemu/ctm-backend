@@ -524,7 +524,7 @@ class PMTScoreController extends Controller
                         $pmt->location_id    	   = $item['id'];
                         $pmt->financial_year_id   = $request->financial_year_id;
                         $pmt->type    	           = 1;
-                        $pmt->default    	       = 1;
+                        $pmt->default    	       = 0;
                         
                         $pmt->save();
 
