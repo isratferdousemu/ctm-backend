@@ -9,8 +9,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin/application')->group(function () {
 
     Route::get('/get', [ApplicationController::class, 'getAllApplicationPaginated'])->middleware(['role_or_permission:super-admin|application-entry-view']);
-    
+
     Route::get('get/{id}', [ApplicationController::class, 'getApplicationById'])->middleware(['role_or_permission:super-admin|application-entry-view']);
+
+    Route::get('/permissions', [ApplicationController::class, 'getApplicationPermission']);
+
 
 
     });
@@ -25,8 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
      Route::post('/update', [ApplicationController::class, 'updateMobileOperator'])->middleware(['role_or_permission:super-admin|application-entry-view']);
     // Route::get('/{id}', [ApplicationController::class, 'editMobileOperato'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
 
-   
+
 
 
     });
+
+
 });
