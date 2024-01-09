@@ -43,12 +43,12 @@ class OfficeService
                         if ($request->has('upazila_id')) {
                             $office->assign_location_id = $request->upazila_id;
                         }
-                    } elseif ( $request->office_type == 35) {
+                    } elseif ( $request->office_type == 9) {
                         if ($request->has('city_id')) {
                             $office->assign_location_id = $request->city_id;
                         }
                     }
-                    elseif ($request->office_type == 9 ) {
+                    elseif ($request->office_type == 35 ) {
                         if ($request->has('dist_pouro_id')) {
                             $office->assign_location_id = $request->dist_pouro_id;
                         }
