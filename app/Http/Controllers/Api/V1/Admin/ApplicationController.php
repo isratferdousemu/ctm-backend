@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Models\Application;
+use App\Models\CommitteePermission;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\MobileOperator;
@@ -658,27 +659,27 @@ class ApplicationController extends Controller
      *     )
      */
    public function getApplicationById($id){
-  
+
     $application = Application::where('id','=',$id)
     ->with('current_location',
             'permanent_location.parent.parent.parent',
-         
+
             // 'povertyValues.variable.subVariables',
             // 'application',
             // 'variable',
-           
+
             'poverty_score.children',
             'poverty_score_value'
             )->first();
             $image=Application::where('id','=',$id)
             ->pluck('image');
-          
-        
+
+
         return \response()->json([
             'application' => $application,
             'image'=>$image,
             'id'=>$id
-         
+
 
 
             ],Response::HTTP_OK);
@@ -725,30 +726,30 @@ class ApplicationController extends Controller
      *     )
      */
    public function getApplicationCopyById($id){
-  
+
     $application = Application::where('id','=',$id)
     ->with('current_location.parent.parent.parent',
             'permanent_location.parent.parent.parent'
-         
+
             // 'povertyValues.variable.subVariables',
             // 'application',
             // 'variable',
-           
-           
+
+
             )->first();
             $image=Application::where('id','=',$id)
             ->pluck('image');
-          
-        
+
+
         return \response()->json([
             'application' => $application,
-           
+
 
 
             ],Response::HTTP_OK);
 
     }
- 
+
   /**
     * @OA\Get(
     *     path="/admin/mobile-operator/get",
@@ -808,18 +809,18 @@ class ApplicationController extends Controller
         $page = $request->query('page');
 
         $filterArrayValue=[];
-       
+
 
         if ($searchText) {
             $filterArrayValue[] = ['operator', 'LIKE', '%' . $searchText . '%'];
-          
+
         }
         $globalsetting = MobileOperator::query()
         ->where(function ($query) use ($filterArrayValue) {
             $query->where($filterArrayValue);
-                  
+
         })
-       
+
         ->latest()
         ->paginate($perPage, ['*'], 'page');
 
@@ -847,13 +848,13 @@ class ApplicationController extends Controller
      *            @OA\MediaType(
      *              mediaType="multipart/form-data",
      *           @OA\Schema(
-     *                  
+     *
      *                   @OA\Property(
      *                      property="operator",
      *                      description="Value of operator",
      *                      type="text",
      *                   ),
-     *                 
+     *
      *
      *                 ),
      *             ),
@@ -887,12 +888,12 @@ class ApplicationController extends Controller
      *     )
      *
      */
-  
+
         public function insertMobileOperator(MobileOperatorRequest $request){
 
         try {
             $mobile = $this->mobileoperatorService->createMobileOperator($request);
-        
+
             return MobileOperatorResource::make($mobile)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -955,11 +956,11 @@ class ApplicationController extends Controller
 
         $mobile = MobileOperator::whereId($id)->first();
 
-    
+
         if($mobile){
             $mobile->delete();
         }
-     
+
          return $this->sendResponse($mobile, $this->deleteSuccessMessage, Response::HTTP_OK);
 
     }
@@ -991,7 +992,7 @@ class ApplicationController extends Controller
      *                      description="operator",
      *                      type="text",
      *                   ),
-     *                   
+     *
      *                 ),
      *             ),
      *
@@ -1028,7 +1029,7 @@ class ApplicationController extends Controller
 
         try {
             $mobile = $this->mobileoperatorService->updateMobileOperator($request);
-          
+
             return MobileOperatorResource::make($mobile)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -1037,6 +1038,66 @@ class ApplicationController extends Controller
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+
+
+    /**
+     * @OA\Get(
+     *      path="/admin/application/permissions",
+     *      operationId="getApplicationPermissions",
+     *      tags={"APPLICATION-SELECTION"},
+     *      summary=" get permission of user",
+     *      description="Returns application  permission",
+     *      security={{"bearer_token":{}}},
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Not Found!"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity"
+     *      ),
+     *     )
+     */
+    public function getApplicationPermission()
+    {
+        $user = auth()->user();
+
+        $user->load('assign_location.parent.parent.parent.parent', 'committeePermission');
+
+        return $this->sendResponse(
+            [
+                'assign_location' => $user->assign_location,
+                'permission' => $this->getPermission($user)
+            ]
+        );
+
+    }
+
+
+    public function getPermission($user)
+    {
+        return [
+            'approve' => (bool) $user->committeePermission?->approve,
+            'forward' => (bool) $user->committeePermission?->forward,
+            'reject' => (bool) $user->committeePermission?->reject,
+            'waiting' => (bool) $user->committeePermission?->waiting,
+        ];
     }
 
 }
