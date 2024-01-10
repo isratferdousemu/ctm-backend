@@ -136,6 +136,15 @@ class Application extends Model
         }
         return $permanentLocation;
     }
+      public static function permanentDivision($location_id){
+        // permanent_location_id get this parent_id parent_id rations location id by maintaining chain
+        $permanentLocation_Division = Location::find($location_id);
+        // check location type and then again and again check parent id and type while not get type = district
+        while($permanentLocation_Division->type != 'division'){
+            $permanentLocation_Division = Location::find($permanentLocation_Division->parent_id);
+        }
+        return $permanentLocation_Division;
+    }
 
     public function current_location()
     {

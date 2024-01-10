@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Models\PMTScore;
 use App\Models\Application;
-use App\Models\CommitteePermission;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\MobileOperator;
 use App\Models\AllowanceProgram;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\LocationTrait;
+use Illuminate\Support\Facades\DB;
+use App\Models\CommitteePermission;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\BeneficiaryTrait;
 use Illuminate\Support\Facades\Validator;
@@ -1098,6 +1100,18 @@ class ApplicationController extends Controller
             'reject' => (bool) $user->committeePermission?->reject,
             'waiting' => (bool) $user->committeePermission?->waiting,
         ];
+    }
+    public function onlineApplicationCheck(){
+        $division=55;
+        $division_cut_off = DB::select("
+        SELECT poverty_score_cut_offs.*, financial_years.financial_year AS financial_year, financial_years.end_date
+        FROM poverty_score_cut_offs
+        JOIN financial_years ON financial_years.id = poverty_score_cut_offs.financial_year_id
+        WHERE poverty_score_cut_offs.location_id = ? AND poverty_score_cut_offs.default = 1
+        ORDER BY financial_years.end_date DESC LIMIT 1", [$division]);
+        $division_cut_off=$division_cut_off[0]->id;
+        return $division_cut_off;
+
     }
 
 }

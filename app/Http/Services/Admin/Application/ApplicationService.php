@@ -2,20 +2,21 @@
 
 namespace App\Http\Services\Admin\Application;
 
-use App\Exceptions\AuthBasicErrorException;
-use App\Http\Traits\ApplicationTrait;
-use App\Models\Application;
-use App\Models\ApplicationAllowanceValues;
-use App\Models\ApplicationPovertyValues;
-use App\Models\PMTScore;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response as HttpResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Log;
 use Response;
+use App\Models\Location;
+use App\Models\PMTScore;
+use App\Models\Application;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use App\Http\Traits\ApplicationTrait;
+use App\Models\ApplicationPovertyValues;
+use App\Models\ApplicationAllowanceValues;
+use App\Exceptions\AuthBasicErrorException;
+use Illuminate\Http\Response as HttpResponse;
 
 class ApplicationService
 {
@@ -155,8 +156,21 @@ class ApplicationService
             $application->account_owner = $request->account_owner;
             $application->marital_status = $request->marital_status;
             $application->email = $request->email;
+            $district1 = Application::permanentDistrict($application->permanent_location_id);
+          
+            $division=Application::permanentDivision($application->permanent_location_id)  ;
+            // $division=$division->id  ;
+            $division_cut_off = DB::select("
+            SELECT poverty_score_cut_offs.*, financial_years.financial_year AS financial_year, financial_years.end_date
+            FROM poverty_score_cut_offs
+            JOIN financial_years ON financial_years.id = poverty_score_cut_offs.financial_year_id
+            WHERE poverty_score_cut_offs.location_id = ? AND poverty_score_cut_offs.default = 0
+            ORDER BY financial_years.end_date DESC LIMIT 1", [$division->id]);
+            $division_cut_off =$division_cut_off[0]->id;
+            $application->cut_off_id= $division_cut_off;
 
             $application->save();
+            
 
             if($application){
                 // insert PMT score values
@@ -287,6 +301,7 @@ class ApplicationService
         $povertyScore = ($constant + $total + $districtFE)*100;
         $application = Application::find($application_id);
         $application->score = $povertyScore;
+       
         $application->save();
     }
 
@@ -294,8 +309,25 @@ class ApplicationService
         $application = Application::find($application_id);
         $districtFE = 0;
         $district = Application::permanentDistrict($application->permanent_location_id);
-        $districtFE = PMTScore::where('location_id', $district->id)->where('default',1)->first();
-        Log::info('districtFE'.$districtFE);
+      
+        // $districtFE =PMTScore::join('financial_years', 'financial_years.id', '=', 'poverty_score_cut_offs.financial_year_id')
+        //     ->where('poverty_score_cut_offs.location_id', '=', $district->id)
+        //     ->where('poverty_score_cut_offs.default', '=', 1)
+        //     ->orderBy('financial_years.end_date', 'desc')
+        //     ->select('poverty_score_cut_offs.*')
+        //     ->first();
+
+        // $districtFE = PMTScore::where('location_id', $district->id)->where('default',1)->first();
+        $districtFE = DB::select("
+        SELECT poverty_score_cut_offs.*, financial_years.financial_year AS financial_year, financial_years.end_date
+        FROM poverty_score_cut_offs
+        JOIN financial_years ON financial_years.id = poverty_score_cut_offs.financial_year_id
+        WHERE poverty_score_cut_offs.location_id = ? AND poverty_score_cut_offs.default = 1
+        ORDER BY financial_years.end_date DESC LIMIT 1", [$district->id]);
+        // $division_cut_off=$division_cut_off[0]->id;
+        $districtFE=$districtFE[0];
+        // Log::info('districtFE'.$districtFE);
+           Log::info('districtFE ' . json_encode($districtFE));
         $districtFE = $districtFE->score;
         return $districtFE;
     }
