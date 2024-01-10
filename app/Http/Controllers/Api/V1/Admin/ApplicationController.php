@@ -1163,6 +1163,32 @@ class ApplicationController extends Controller
 
     public function getPermission($user)
     {
+        //superadmin
+        if ($user->user_type == 1) {
+            return [
+                'approve' => false,
+                'forward' => false,
+                'reject' => false,
+                'waiting' => false,
+            ];
+        }
+
+
+
+        //if office user
+        if ($user->office_type) {
+            $canForward = in_array($user->office_type, [8, 9, 10, 11, 35]);
+
+            return [
+                'approve' => false,
+                'forward' => $canForward,
+                'reject' => false,
+                'waiting' => false,
+            ];
+        }
+
+        //committee user
+
         return [
             'approve' => (bool) $user->committeePermission?->approve,
             'forward' => (bool) $user->committeePermission?->forward,
