@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Models\PMTScore;
 use App\Models\Application;
+use App\Models\CommitteePermission;
+use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\MobileOperator;
@@ -11,7 +13,7 @@ use App\Models\AllowanceProgram;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\LocationTrait;
 use Illuminate\Support\Facades\DB;
-use App\Models\CommitteePermission;
+
 use App\Http\Controllers\Controller;
 use App\Http\Traits\BeneficiaryTrait;
 use Illuminate\Support\Facades\Validator;
@@ -26,7 +28,7 @@ use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
 
 class ApplicationController extends Controller
 {
-    use MessageTrait, BeneficiaryTrait,LocationTrait;
+    use MessageTrait, BeneficiaryTrait,LocationTrait, LocationTrait;
     private $applicationService;
 
     public function __construct(ApplicationService $applicationService , MobileOperatorService $mobileoperatorService) {
@@ -246,6 +248,69 @@ class ApplicationController extends Controller
     }
 
 
+    public function getWardId()
+    {
+        $parentWardsId = [];
+
+        $user = auth()->user();
+        $user->load('assign_location.parent.parent.parent.parent');
+
+
+        $query = Location::query();
+
+        if ($user->office_type) {
+            $query->where('parent_id', $user->assign_location_id);
+
+            //Upazila type
+            if (in_array($user->office_type, [8, 10, 11])) {
+                $query->when(request('sub_location_type'), function ($q, $v) {
+                    $q->where('type', $v == 1 ? $this->pouro : $this->union);
+                });
+
+                $query->when(request('pouro_id'), function ($q, $v) {
+                    $q->where('parent_id', $v);
+                });
+
+                $query->when(request('union_id'), function ($q, $v) {
+                    $q->where('parent_id', $v);
+                });
+
+                $parentWardsId = $query->pluck('id');
+            }
+
+            //city corporation
+            if ($user->office_type == 9) {
+                $query->when(request('city_thana_id'), function ($q, $v) {
+                    $q->where('parent_id', $v);
+                });
+
+            }
+
+
+        }
+
+
+        return Location::whereType($this->ward)
+            ->when(request('ward_id'), function ($q, $v) {
+                $q->whereId($v);
+            }, function ($q) use ($parentWardsId) {
+                $q->whereIn('parent_id', $parentWardsId);
+            })
+            ->pluck('id');
+
+
+        return $query->get()->groupBy('type');
+
+
+//        return Location::where('parent_id', $user->assign_location_id)->pluck('id');
+
+
+        return $user;
+//        if ()
+
+    }
+
+
     /* -------------------------------------------------------------------------- */
     /*                        Application Selection Methods                       */
     /* -------------------------------------------------------------------------- */
@@ -386,6 +451,9 @@ class ApplicationController extends Controller
     * )
     */
     public function getAllApplicationPaginated(Request $request){
+
+//        return $this->getWardId();
+
 
         $searchText = $request->query('searchText');
         $application_id = $request->query('application_id');
@@ -1078,13 +1146,14 @@ class ApplicationController extends Controller
      */
     public function getApplicationPermission()
     {
+
         $user = auth()->user();
 
         $user->load('assign_location.parent.parent.parent.parent', 'committeePermission');
 
         return $this->sendResponse(
             [
-                'assign_location' => $user->assign_location,
+                'user' => $user,
                 'permission' => $this->getPermission($user)
             ]
         );

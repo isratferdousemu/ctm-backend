@@ -373,7 +373,7 @@ class UserController extends Controller
     public function approve($id)
     {
         $password = Helper::GeneratePassword();
-//        $password = '12341234';
+        $password = '12341234';
 
         $user = User::findOrFail($id);
         $user->status = !$user->status;
@@ -384,7 +384,7 @@ class UserController extends Controller
         $message = "Congratulations! Your account has been approved.\nUsername: ". $user->username
             ."\nPassword: ". $password;
 
-        $this->SMSservice->sendSms($user->mobile, $message);
+//        $this->SMSservice->sendSms($user->mobile, $message);
 
 //        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
 
