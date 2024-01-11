@@ -24,6 +24,7 @@ use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -373,7 +374,7 @@ class UserController extends Controller
     public function approve($id)
     {
         $password = Helper::GeneratePassword();
-        $password = '12341234';
+//        $password = '12341234';
 
         $user = User::findOrFail($id);
         $user->status = !$user->status;
@@ -384,7 +385,9 @@ class UserController extends Controller
         $message = "Congratulations! Your account has been approved.\nUsername: ". $user->username
             ."\nPassword: ". $password;
 
-//        $this->SMSservice->sendSms($user->mobile, $message);
+        Log::info('password-'. $user->id, [$message]);
+
+        $this->SMSservice->sendSms($user->mobile, $message);
 
 //        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
 
