@@ -10,7 +10,7 @@ class Helper{
 
     public static function GeneratePassword()
     {
-        $password = Str::random(10); // Generate a random 10-character password
+        return $password = Str::random(4); // Generate a random 10-character password
 
         // Add special characters to the password
         $specialCharacters = '!@#$%^&*()';
