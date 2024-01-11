@@ -177,4 +177,14 @@ class User extends Authenticatable
         return $this->belongsTo(Committee::class, 'committee_id', 'id');
     }
 
+
+    public function committeePermission()
+    {
+        return $this->hasOne(CommitteePermission::class, 'committee_type_id', 'committee_type_id')
+            ->orderByDesc('id');
+    }
+
+
+
+
 }

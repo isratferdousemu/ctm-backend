@@ -68,7 +68,7 @@ class BeneficiaryService
 
             $committee ->save();
 
-            $input = $request->members; 
+            $input = $request->members;
 
             foreach($input as $item) {
 
@@ -98,10 +98,10 @@ class BeneficiaryService
         $committee_type = Lookup::find($committee_type);
         if ($location_id == '-1') {
             $location = 'Bangladesh';
-            $name = Str::slug($committee_type->value_en,'_')  . '_' . Str::slug($location,'_') . '_' . Str::slug($program->name_en,'_');
+            $name = $committee_type->value_en  . ' - ' . $location . ' - ' . $program->name_en;
         } else {
             $location = Location::find($location_id);
-            $name = Str::slug($committee_type->value_en,'_') . '_' . Str::slug($location->name_en,'_') . '_' . Str::slug($program->name_en,'_');
+            $name = $committee_type->value_en . ' - ' . $location->name_en . ' - ' . $program->name_en;
         }
         return $name;
 
