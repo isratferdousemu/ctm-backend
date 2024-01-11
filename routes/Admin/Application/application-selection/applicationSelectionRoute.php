@@ -14,8 +14,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/permissions', [ApplicationController::class, 'getApplicationPermission']);
 
+    Route::get('/committee-list', [ApplicationController::class, 'getCommitteeList']);
 
-
+    Route::post('update-status', [ApplicationController::class, 'updateApplications']);
     });
         /* -------------------------------------------------------------------------- */
     /*                      Mobile Operator Route                         */
