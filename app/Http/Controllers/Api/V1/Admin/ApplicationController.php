@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Requests\Admin\Application\UpdateStatusRequest;
 use App\Models\Application;
 use App\Models\Committee;
 use App\Models\CommitteePermission;
@@ -1122,9 +1123,9 @@ class ApplicationController extends Controller
     }
 
 
-    public function updateApplications(Request $request)
+    public function updateApplications(UpdateStatusRequest $request)
     {
-
+        return $request;
     }
 
 

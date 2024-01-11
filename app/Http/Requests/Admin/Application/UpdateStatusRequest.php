@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin\Application;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +11,7 @@ class UpdateStatusRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class UpdateStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'application_id' => 'required|array|exists:applications,id',
+            'committee_id' => 'sometimes|required|exists:committees,id',
+            'status' => 'required|in:1,2,3,4',
         ];
     }
 }
