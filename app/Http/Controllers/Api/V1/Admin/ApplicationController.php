@@ -648,7 +648,7 @@ class ApplicationController extends Controller
                     ->orWhere($filterArrayProgramId)
                 ;
             })
-        ->with('current_location','permanent_location.parent.parent.parent','program','gender')
+        ->with('current_location','permanent_location.parent.parent.parent.parent','program','gender')
         ->latest()
         // ->orderBy('score', 'asc')
         ;
