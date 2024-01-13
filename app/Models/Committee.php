@@ -4,73 +4,59 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Committee
  *
- * @property int $id
- * @property string $code
- * @property string $name
- * @property string $details
- * @property int $programId
- * @property int $divisionId
- * @property int $districtId
- * @property int $officeId
- * @property int|null $locationId
- * @property int $version
- * @property string|null $deletedAt
- * @property \Illuminate\Support\Carbon|null $createdAt
- * @property \Illuminate\Support\Carbon|null $updatedAt
- * @property-read \App\Models\Location|null $district
- * @property-read \App\Models\Location|null $division
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CommitteeMember> $members
- * @property-read int|null $membersCount
- * @property-read \App\Models\Office|null $office
- * @property-read \App\Models\AllowanceProgram|null $program
- * @method static \Illuminate\Database\Eloquent\Builder|Committee newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Committee newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Committee query()
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereDetails($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereDistrictId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereDivisionId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereLocationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereOfficeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereProgramId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereVersion($value)
- * @property int|null $committeeType
- * @method static \Illuminate\Database\Eloquent\Builder|Committee whereCommitteeType($value)
- * @property-read \App\Models\Location|null $location
- * @mixin \Eloquent
  */
 class Committee extends Model
 {
-    public function newQuery($excludeDeleted = true)
+    use HasFactory, SoftDeletes;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [];
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function program()
     {
-        return parent::newQuery($excludeDeleted)
-            ->orderBy('name', 'asc');
+        return $this->belongsTo(AllowanceProgram::class, 'program_id');
     }
 
-    public function program(){
-
-        return $this->belongsTo(AllowanceProgram::class,'program_id');
-
-    }
-    public function members(){
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function members()
+    {
         return $this->hasMany(CommitteeMember::class);
     }
 
-    public function location(){
-        return $this->belongsTo(Location::class,'location_id');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'location_id');
     }
 
-    public function committeeType(){
-        return $this->belongsTo(Lookup::class,'committee_type');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function committeeType()
+    {
+        return $this->belongsTo(Lookup::class, 'committee_type_id');
     }
 
 }

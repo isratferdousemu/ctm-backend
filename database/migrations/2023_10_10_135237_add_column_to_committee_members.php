@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('committee_members', function (Blueprint $table) {
-            $table->dropColumn('designation');
-            $table->unsignedBigInteger('designation_id')->index()->nullable();
-            $table->foreign('designation_id')->references('id')->on('lookups')->onDelete('cascade');
+//            $table->dropColumn('designation');
+//            $table->unsignedBigInteger('designation_id')->index()->nullable();
+//            $table->foreign('designation_id')->references('id')->on('lookups')->onDelete('cascade');
 
         });
     }

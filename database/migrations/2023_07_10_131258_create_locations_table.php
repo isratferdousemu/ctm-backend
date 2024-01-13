@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('type',20);
             $table->integer("version")->default(1);
             $table->bigInteger('created_by')->unsigned()->index()->nullable();
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+//            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
