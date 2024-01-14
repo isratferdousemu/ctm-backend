@@ -143,7 +143,7 @@ class UserController extends Controller
         ;
     })
         ->whereIn('id', $this->officeHeadService->getUsersUnderOffice())
-    ->with('office','assign_location.parent.parent.parent.parent','office_type','roles', 'committee')
+    ->with('office','assign_location.parent.parent.parent.parent','officeTypeInfo','roles', 'committee')
     ->orderByDesc('id')
     ->paginate($perPage, ['*'], 'page');
 // }
