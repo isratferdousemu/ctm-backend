@@ -81,7 +81,7 @@ class ApplicationRequest extends FormRequest
             'account_owner'              =>'required',
             'account_number'              =>'required',
             'marital_status'              =>'required',
-            'email'                  =>'unique:applications,email',
+            'email'                  =>'email',
             // 'application_allowance_values' => 'required|array',
             // 'application_allowance_values.*.allowance_program_additional_fields_id' => 'required|exists:additional_fields,id',
             // 'application_pmt'             => 'required|array',
