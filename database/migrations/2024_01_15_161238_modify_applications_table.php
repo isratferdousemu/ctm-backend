@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('applications', function (Blueprint $table) {
-            $table->bigInteger('cut_off_id')->unsigned()->index()->nullable();
-            $table->foreign('cut_off_id')->references('id')->on('poverty_score_cut_offs')->onDelete('set null');
+             Schema::table('applications', function (Blueprint $table) {
+            // Make spouse_name_en nullable
+            $table->string('spouse_name_en')->nullable()->change();
+
+            // Make spouse_name_bn nullable
+            $table->string('spouse_name_bn')->nullable()->change();
         });
-       
     }
 
     /**
@@ -23,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-         $table->dropForeign(['cut_off_id']);
-
-            $table->dropColumn('cut_off_id');
+        
     }
 };

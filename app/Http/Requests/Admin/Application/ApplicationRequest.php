@@ -39,8 +39,8 @@ class ApplicationRequest extends FormRequest
             'father_name_bn'               =>'required',
             'mother_name_en'               =>'required',
             'mother_name_bn'               =>'required',
-            'spouse_name_en'               =>'required',
-            'spouse_name_bn'               =>'required',
+            // 'spouse_name_en'               =>'required',
+            // 'spouse_name_bn'               =>'required',
             'identification_mark'               =>'sometimes',
             // 'image'                        =>'sometimes|mimes:jpeg,jpg,png|max:2048',
             // 'signature'                        =>'sometimes|mimes:jpeg,jpg,png|max:2048',
@@ -63,7 +63,7 @@ class ApplicationRequest extends FormRequest
             'city_thana_id'              =>'sometimes|exists:locations,id',
             'district_pouro_id'              =>'sometimes|exists:locations,id',
             // 'mobile'                =>'required|unique:applications,mobile',
-                   'mobile' => [
+            'mobile' => [
             'required',
             new UniqueMobileNumber(),
         ],
