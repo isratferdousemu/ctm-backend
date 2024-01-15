@@ -1,9 +1,16 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\BeneficiaryController;
 use App\Http\Controllers\Api\V1\Admin\CommitteeController;
 use App\Http\Controllers\Api\V1\Admin\CommitteePermissionController;
 
+
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::prefix('admin/beneficiary')->group(function () {
+        Route::get('/list', [BeneficiaryController::class, 'list'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+    });
+
     Route::prefix('admin/committee')->group(function () {
         Route::post('/add', [CommitteeController::class, 'add'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
         Route::get('/list', [CommitteeController::class, 'list'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);

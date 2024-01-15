@@ -22,14 +22,14 @@ class CommitteeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'               =>$this->id,
-            'code'             =>$this->code,
-            'name'             =>$this->name,
-            'details'          =>$this->details,
-            'program'          =>AllowanceResource::make($this->whenLoaded('program')),
-            'committeeType'    =>LookupResource::make($this->whenLoaded('committeeType')),
-            'location'         =>$this->location,
-            'members'          =>MemberResource::collection($this->whenLoaded('members'))
+            'id' => $this->id,
+            'code' => $this->code,
+            'name' => $this->name,
+            'details' => $this->details,
+            'program' => AllowanceResource::make($this->whenLoaded('program')),
+            'committeeType' => LookupResource::make($this->whenLoaded('committeeType')),
+            'location' => $this->location,
+            'members' => MemberResource::collection($this->whenLoaded('members'))
         ];
     }
 }

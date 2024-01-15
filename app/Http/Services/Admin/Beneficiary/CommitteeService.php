@@ -54,13 +54,15 @@ class CommitteeService
      */
     public function list(Request $request): LengthAwarePaginator
     {
-        $locationId = $request->query('locationId');
+        $location_id = $request->query('location_id');
         $searchText = $request->query('searchText');
-        $perPage = $request->query('perPage') ?? 10;
+        $perPage = $request->query('perPage', 10);
+        $sortByColumn = $request->query('sortBy', 'created_at');
+        $orderByDirection = $request->query('orderBy', 'desc');
 
         $query = Committee::query();
-        if ($locationId)
-            $query = $query->where('location_id', $locationId);
+        if ($location_id)
+            $query = $query->where('location_id', $location_id);
         if ($searchText) {
             $query = $query->where(function ($q) use ($searchText) {
                 $q->whereRaw('LOWER(code) LIKE "%' . strtolower($searchText) . '%"')
@@ -69,7 +71,7 @@ class CommitteeService
             });
         }
         return $query->with('program', 'members', 'committeeType', 'location.parent.parent.parent')
-            ->latest()
+            ->orderBy("$sortByColumn", "$orderByDirection")
             ->paginate($perPage);
     }
 
