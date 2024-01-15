@@ -9,6 +9,7 @@ use App\Models\PMTScore;
 use App\Models\Application;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\FinancialYear;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -168,7 +169,14 @@ class ApplicationService
             ORDER BY financial_years.end_date DESC LIMIT 1", [$division->id]);
             $division_cut_off =$division_cut_off[0]->id;
             $application->cut_off_id= $division_cut_off;
-
+            $financial_year_id=FinancialYear::Where('status',1)->first();
+            
+           
+             if( $financial_year_id){
+            $financial_year_id=$financial_year_id->id;
+            $application->financial_year_id= $financial_year_id;
+             }
+            
             $application->save();
             
 

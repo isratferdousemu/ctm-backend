@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Admin\Application;
 
+use App\Rules\UniqueMobileNumber;
+use App\Rules\UniqueVerificationNumber;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ApplicationRequest extends FormRequest
@@ -24,7 +26,11 @@ class ApplicationRequest extends FormRequest
         return [
             'program_id' => 'required|exists:allowance_programs,id',
             'verification_type' => 'required|in:1,2',
-            'verification_number' => 'required|unique:applications,verification_number',
+            // 'verification_number' => 'required|unique:applications,verification_number',
+                'verification_number' => [
+            'required',
+            new UniqueVerificationNumber(),
+        ],
             'age'                  =>'required',
             'date_of_birth'         =>'required|date',
             'name_en'               =>'required',
@@ -56,7 +62,11 @@ class ApplicationRequest extends FormRequest
             'city_id'              =>'sometimes|exists:locations,id',
             'city_thana_id'              =>'sometimes|exists:locations,id',
             'district_pouro_id'              =>'sometimes|exists:locations,id',
-            'mobile'                =>'required|unique:applications,mobile',
+            // 'mobile'                =>'required|unique:applications,mobile',
+                   'mobile' => [
+            'required',
+            new UniqueMobileNumber(),
+        ],
             'permanent_division_id'              =>'required|exists:locations,id',
             'permanent_district_id'              =>'required|exists:locations,id',
             'permanent_upazila'              =>'sometimes|exists:locations,id',
