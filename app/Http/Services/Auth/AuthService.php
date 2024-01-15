@@ -4,6 +4,7 @@ namespace App\Http\Services\Auth;
 
 use App\Exceptions\AuthBasicErrorException;
 use App\Helpers\Helper;
+use App\Http\Services\Notification\SMSservice;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\RoleTrait;
 use App\Http\Traits\UserTrait;
@@ -344,7 +345,13 @@ class AuthService
     }
     protected function sendLoginOtp($user,$time){
 
-        return $code = $this->generateOtpCode($user, $time);
+        $code = $this->generateOtpCode($user, $time);
+
+        $message = "Your OTP is ". $code;
+
+        (new SMSservice())->sendSms($user->mobile, $message);
+
+        return $code;
     }
 
     public function logout(Request $request)

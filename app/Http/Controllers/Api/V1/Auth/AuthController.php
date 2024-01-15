@@ -330,32 +330,52 @@ class AuthController extends Controller
      *
      */
 
-     public function LoginOtp(Request $request)
+
+    //Test
+     public function LoginOtpTest(Request $request)
      {
 
         // $device = Device::where("device_name", 'test')->first(); // remove during Live - this is only for testing purpose
         $mode = $request->username;
-        if ($mode != 'ctm-01') { // remove during live - this is only for testing purpose
 
-        //  validate login
-         $this->authService->validateLogin($request); //Keep in Live
-        //  login
-          $data = $this->authService->Adminlogin($request,1); //Keep in Live
-        }else{
-            $data = $this->authService->AdminloginTest($request,1); // remove during 
-        }
+         $data = $this->authService->AdminloginTest($request,1); // remove during
 
          activity("Login")
          ->log('Login OTP Send!!');
 
          return response()->json(
-            ['success' => true, 
-            'message' => 'Verification OTP Sent!', 
+            ['success' => true,
+            'message' => 'Verification OTP Sent!',
             'data' => $data,
             'device' => $mode
         ]);
 
      }
+
+
+
+     //Live
+    public function LoginOtp(Request $request)
+    {
+        // $device = Device::where("device_name", 'test')->first(); // remove during Live - this is only for testing purpose
+        $mode = $request->username;
+
+        //  validate login
+        $this->authService->validateLogin($request); //Keep in Live
+        //  login
+        $data = $this->authService->Adminlogin($request,1); //Keep in Live
+
+        activity("Login")
+            ->log('Login OTP Send!!');
+
+        return response()->json(
+            ['success' => true,
+                'message' => 'Verification OTP Sent!',
+                'data' => $data,
+                'device' => $mode
+            ]);
+
+    }
     /**
      *
      * @OA\Post(
@@ -423,23 +443,17 @@ class AuthController extends Controller
      *     )
      *
      */
-     public function LoginAdmin(Request $request){
+
+    //test
+     public function LoginAdminTest(Request $request){
         broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
 
-        
+
 
         $mode = $request->username;
 
-        if ($mode != 'ctm-01') {// remove during live - this is only for testing purpose
-        // validate login
-        // login
-        $this->authService->validateLogin($request); //Keep in Live
-         $authData = $this->authService->Adminlogin($request,2); //Keep in Live
-        }else{
+        $authData = $this->authService->AdminloginTest($request,2); //remove during live - this is only for testing purpose
 
-            $authData = $this->authService->AdminloginTest($request,2); //remove during live - this is only for testing purpose
-        }
-        
          $permissions = $authData['user']->getAllPermissions();
 
          activity("Login OTP")
@@ -453,6 +467,32 @@ class AuthController extends Controller
              ->success(true)
              ->message("Login Success");
      }
+
+
+
+
+     //Live
+    public function LoginAdmin(Request $request){
+        broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
+
+        // validate login
+        // login
+        $this->authService->validateLogin($request); //Keep in Live
+        $authData = $this->authService->Adminlogin($request,2); //Keep in Live
+
+        $permissions = $authData['user']->getAllPermissions();
+
+        activity("Login OTP")
+            ->causedBy(auth()->user())
+            ->performedOn($authData['user'])
+            ->log('Logged In!!');
+
+        return AdminAuthResource::make($authData['user'])
+            ->token($authData['token'])
+            ->permissions($permissions)
+            ->success(true)
+            ->message("Login Success");
+    }
 
       /**
      * /**

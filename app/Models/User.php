@@ -155,7 +155,7 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Office::class, 'office_id', 'id');
     }
-    public function office_type()
+    public function officeTypeInfo()
     {
         return $this->belongsTo(Lookup::class, 'office_type', 'id');
     }
