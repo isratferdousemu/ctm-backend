@@ -330,20 +330,15 @@ class AuthController extends Controller
      *
      */
 
+
+    //Test
      public function LoginOtpTest(Request $request)
      {
 
         // $device = Device::where("device_name", 'test')->first(); // remove during Live - this is only for testing purpose
         $mode = $request->username;
-        if ($mode != 'ctm-01') { // remove during live - this is only for testing purpose
 
-        //  validate login
-         $this->authService->validateLogin($request); //Keep in Live
-        //  login
-          $data = $this->authService->Adminlogin($request,1); //Keep in Live
-        }else{
-            $data = $this->authService->AdminloginTest($request,1); // remove during
-        }
+         $data = $this->authService->AdminloginTest($request,1); // remove during
 
          activity("Login")
          ->log('Login OTP Send!!');
@@ -359,6 +354,7 @@ class AuthController extends Controller
 
 
 
+     //Live
     public function LoginOtp(Request $request)
     {
         // $device = Device::where("device_name", 'test')->first(); // remove during Live - this is only for testing purpose
@@ -447,6 +443,8 @@ class AuthController extends Controller
      *     )
      *
      */
+
+    //test
      public function LoginAdminTest(Request $request){
         broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
 
@@ -454,15 +452,7 @@ class AuthController extends Controller
 
         $mode = $request->username;
 
-        if ($mode == 'ctm-011') {// remove during live - this is only for testing purpose
-        // validate login
-        // login
-        $this->authService->validateLogin($request); //Keep in Live
-         $authData = $this->authService->Adminlogin($request,2); //Keep in Live
-        }else{
-
-            $authData = $this->authService->AdminloginTest($request,2); //remove during live - this is only for testing purpose
-        }
+        $authData = $this->authService->AdminloginTest($request,2); //remove during live - this is only for testing purpose
 
          $permissions = $authData['user']->getAllPermissions();
 
@@ -481,6 +471,7 @@ class AuthController extends Controller
 
 
 
+     //Live
     public function LoginAdmin(Request $request){
         broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
 
