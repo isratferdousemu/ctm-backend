@@ -79,8 +79,10 @@ class UserService
             // password encryption with salt
             $user->password = bcrypt($user->salt . $password);
 
-            $user->user_id = $this->generateUserId();
             $user->email_verified_at = now();
+            $user->save();
+
+            $user->user_id = $user->id;
             $user->save();
 
 
