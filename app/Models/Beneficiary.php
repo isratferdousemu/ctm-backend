@@ -44,8 +44,16 @@ class Beneficiary extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function status()
+    public function currentLocation()
     {
-        return $this->belongsTo(Lookup::class, 'status', 'id');
+        return $this->belongsTo(Location::class, 'current_location_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function permanentLocation()
+    {
+        return $this->belongsTo(Location::class, 'permanent_location_id', 'id');
     }
 }

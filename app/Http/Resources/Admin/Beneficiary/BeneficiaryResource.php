@@ -4,6 +4,7 @@ namespace App\Http\Resources\Admin\Beneficiary;
 
 use App\Http\Resources\Admin\Lookup\LookupResource;
 use App\Http\Resources\Admin\Systemconfig\Allowance\AllowanceResource;
+use App\Http\Resources\Admin\Sytemconfig\LocationResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -41,10 +42,12 @@ class BeneficiaryResource extends JsonResource
             "image" => $this->image,
             "signature" => $this->signature,
             "current_location_id" => $this->current_location_id,
+            "current_location" => LocationResource::make($this->whenLoaded('currentLocation')),
             "current_post_code" => $this->current_post_code,
             "current_address" => $this->current_address,
             "mobile" => $this->mobile,
             "permanent_location_id" => $this->permanent_location_id,
+            "permanent_location" => LocationResource::make($this->whenLoaded('permanentLocation')),
             "permanent_post_code" => $this->permanent_post_code,
             "permanent_address" => $this->permanent_address,
             "permanent_mobile" => $this->permanent_mobile,

@@ -36,6 +36,6 @@ class BeneficiaryService
             $query = $query->where('status', $status);
 
 
-        return $query->with('program')->orderBy("$sortByColumn", "$orderByDirection")->paginate($perPage);
+        return $query->with('program','permanentLocation.parent.parent.parent')->orderBy("$sortByColumn", "$orderByDirection")->paginate($perPage);
     }
 }

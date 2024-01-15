@@ -27,6 +27,7 @@ class BeneficiaryController extends Controller
     {
         try {
             $beneficiaryList = $this->beneficiaryService->list($request);
+//            return response()->json($beneficiaryList);
             return BeneficiaryResource::collection($beneficiaryList)->additional([
                 'success' => true,
                 'message' => $this->fetchSuccessMessage,
