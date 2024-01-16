@@ -332,7 +332,7 @@ class AuthController extends Controller
 
 
     //Test
-     public function LoginOtpTest(Request $request)
+     public function LoginOtp(Request $request)
      {
 
         // $device = Device::where("device_name", 'test')->first(); // remove during Live - this is only for testing purpose
@@ -355,7 +355,7 @@ class AuthController extends Controller
 
 
      //Live
-    public function LoginOtp(Request $request)
+    public function LoginOtpLive(Request $request)
     {
         // $device = Device::where("device_name", 'test')->first(); // remove during Live - this is only for testing purpose
         $mode = $request->username;
@@ -445,7 +445,7 @@ class AuthController extends Controller
      */
 
     //test
-     public function LoginAdminTest(Request $request){
+     public function LoginAdmin(Request $request){
         broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
 
 
@@ -472,7 +472,7 @@ class AuthController extends Controller
 
 
      //Live
-    public function LoginAdmin(Request $request){
+    public function LoginAdminLive(Request $request){
         broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
 
         // validate login
