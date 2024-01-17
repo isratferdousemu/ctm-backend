@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('application_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('committee_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->unsignedTinyInteger('status')->comment("1=forward;2=approved;3=rejected;4=waiting");
+            $table->unsignedTinyInteger('status')->comment("1=forward;2=approve;3=waiting;4=reject");
             $table->timestamps();
         });
     }
