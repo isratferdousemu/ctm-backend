@@ -138,39 +138,72 @@ class ApplicationService
                 $application->permanent_location_id              = $request->permanent_ward_id_pouro;
             }
 
+            $application->current_location_type_id = $request->location_type;
+            $application->current_division_id = $request->division_id;
+            $application->current_district_id = $request->district_id;
 
-              $application->location_type_id = $request->permanent_location_type;
-              $application->division_id = $request->permanent_division_id;
-              $application->district_id = $request->permanent_district_id;
+            //Dist pouro
+            if ($request->location_type == 1) {
+                $application->current_district_pourashava_id = $request->district_pouro_id;
+                $application->current_ward_id = $request->ward_id_dist;
+            }
+
+            //City corporation
+            if ($request->location_type == 3) {
+                $application->current_city_corp_id = $request->city_id;
+                $application->current_thana_id = $request->city_thana_id;
+                $application->current_ward_id = $request->ward_id_city;
+            }
+
+            //Upazila
+            if ($request->location_type == 2) {
+                $application->current_upazila_id = $request->thana_id;
+                //union
+                if ($request->sub_location_type == 2) {
+                    $application->current_union_id = $request->union_id;
+                    $application->current_ward_id = $request->ward_id_union;
+                } else {
+                    //pouro
+                    $application->current_pourashava_id = $request->pouro_id;
+                    $application->current_ward_id = $request->ward_id_pouro;
+                }
 
 
+            }
+
+
+
+
+              $application->permanent_location_type_id = $request->permanent_location_type;
+              $application->permanent_division_id = $request->permanent_division_id;
+              $application->permanent_district_id = $request->permanent_district_id;
 
             //Dist pouro
             if ($request->permanent_location_type == 1) {
-                $application->district_pouroshova_id = $request->permanent_district_pouro_id;
-                $application->ward_id = $request->permanent_ward_id_dist;
+                $application->permanent_district_pourashava_id = $request->permanent_district_pouro_id;
+                $application->permanent_ward_id = $request->permanent_ward_id_dist;
             }
 
 
 
             //City corporation
             if ($request->permanent_location_type == 3) {
-                $application->city_id = $request->permanent_city_id;
-                $application->thana_id = $request->permanent_city_thana_id;
-                $application->ward_id = $request->permanent_ward_id_city;
+                $application->permanent_city_corp_id = $request->permanent_city_id;
+                $application->permanent_thana_id = $request->permanent_city_thana_id;
+                $application->permanent_ward_id = $request->permanent_ward_id_city;
             }
 
               //Upazila
               if ($request->permanent_location_type == 2) {
-                  $application->thana_id = $request->permanent_thana_id;
+                  $application->permanent_upazila_id = $request->permanent_thana_id;
                   //union
                   if ($request->permanent_sub_location_type == 2) {
-                      $application->union_id = $request->permanent_union_id;
-                      $application->ward_id = $request->permanent_ward_id_union;
+                      $application->permanent_union_id = $request->permanent_union_id;
+                      $application->permanent_ward_id = $request->permanent_ward_id_union;
                   } else {
                       //pouro
-                      $application->pouroshova_id = $request->permanent_pouro_id;
-                      $application->ward_id = $request->permanent_ward_id_pouro;
+                      $application->permanent_pourashava_id = $request->permanent_pouro_id;
+                      $application->permanent_ward_id = $request->permanent_ward_id_pouro;
                   }
 
 
