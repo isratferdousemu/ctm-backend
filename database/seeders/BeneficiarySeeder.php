@@ -12,6 +12,6 @@ class BeneficiarySeeder extends Seeder
      */
     public function run(): void
     {
-        Beneficiary::factory(10)->create();
+        Beneficiary::factory(50)->create();
     }
 }

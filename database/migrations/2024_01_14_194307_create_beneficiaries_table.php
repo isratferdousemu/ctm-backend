@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('program_id');
             $table->foreign('program_id')->references('id')->on('allowance_programs')->onDelete('cascade');
             $table->unsignedBigInteger('application_table_id')->nullable();
-            $table->foreign('application_table_id','beneficiaries_app_id_foreign')->references('id')->on('applications')->onDelete('cascade');
+            $table->foreign('application_table_id', 'beneficiaries_app_id_foreign')->references('id')->on('applications')->onDelete('cascade');
             $table->string('application_id');
             $table->string('name_en');
             $table->string('name_bn');
@@ -36,7 +36,8 @@ return new class extends Migration {
             $table->string('religion');
             $table->string('marital_status');
             $table->string('email')->nullable();
-            $table->string('nid');
+            $table->enum('verification_typ', [1, 2]); //1 = nid 2= birth registration no
+            $table->string('verification_number');
             $table->string('image');
             $table->string('signature');
 
@@ -46,10 +47,14 @@ return new class extends Migration {
             $table->foreign('current_district_id')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedBigInteger('current_city_corp_id')->nullable();
             $table->foreign('current_city_corp_id')->references('id')->on('locations')->onDelete('cascade');
+            $table->unsignedBigInteger('current_district_pourashava_id')->nullable();
+            $table->foreign('current_district_pourashava_id', 'beneficiary_cur_dist_poura_id_fk')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedBigInteger('current_upazila_id')->nullable();
             $table->foreign('current_upazila_id')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedBigInteger('current_pourashava_id')->nullable();
             $table->foreign('current_pourashava_id')->references('id')->on('locations')->onDelete('cascade');
+            $table->unsignedBigInteger('current_thana_id')->nullable();
+            $table->foreign('current_thana_id')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedBigInteger('current_union_id')->nullable();
             $table->foreign('current_union_id')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedBigInteger('current_ward_id')->nullable();
@@ -64,10 +69,14 @@ return new class extends Migration {
             $table->foreign('permanent_district_id')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedBigInteger('permanent_city_corp_id')->nullable();
             $table->foreign('permanent_city_corp_id')->references('id')->on('locations')->onDelete('cascade');
+            $table->unsignedBigInteger('permanent_district_pourashava_id')->nullable();
+            $table->foreign('permanent_district_pourashava_id', 'beneficiary_per_dist_poura_id_fk')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedBigInteger('permanent_upazila_id')->nullable();
             $table->foreign('permanent_upazila_id')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedBigInteger('permanent_pourashava_id')->nullable();
             $table->foreign('permanent_pourashava_id')->references('id')->on('locations')->onDelete('cascade');
+            $table->unsignedBigInteger('permanent_thana_id')->nullable();
+            $table->foreign('permanent_thana_id')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedBigInteger('permanent_union_id')->nullable();
             $table->foreign('permanent_union_id')->references('id')->on('locations')->onDelete('cascade');
             $table->unsignedBigInteger('permanent_ward_id')->nullable();
