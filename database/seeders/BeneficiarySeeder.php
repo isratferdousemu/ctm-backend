@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Beneficiary;
 use Illuminate\Database\Seeder;
 
 class BeneficiarySeeder extends Seeder
@@ -12,6 +12,6 @@ class BeneficiarySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Beneficiary::factory(10)->create();
     }
 }

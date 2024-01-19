@@ -4,6 +4,7 @@ namespace App\Http\Services\Admin\Beneficiary;
 
 
 use App\Models\Beneficiary;
+use App\Models\Committee;
 use Illuminate\Http\Request;
 
 class BeneficiaryService
@@ -36,6 +37,11 @@ class BeneficiaryService
             $query = $query->where('status', $status);
 
 
-        return $query->with('program','permanentLocation.parent.parent.parent')->orderBy("$sortByColumn", "$orderByDirection")->paginate($perPage);
+        return $query->with('program', 'permanentLocation.parent.parent.parent')->orderBy("$sortByColumn", "$orderByDirection")->paginate($perPage);
+    }
+
+    public function detail($id)
+    {
+        return Beneficiary::with('program', 'location.parent.parent.parent')->findOrFail($id);
     }
 }
