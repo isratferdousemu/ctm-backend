@@ -9,6 +9,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin/beneficiary')->group(function () {
         Route::get('/list', [BeneficiaryController::class, 'list'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/show/{id}', [BeneficiaryController::class, 'show'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
     });
 
     Route::prefix('admin/committee')->group(function () {

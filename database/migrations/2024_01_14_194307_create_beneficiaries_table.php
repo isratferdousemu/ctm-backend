@@ -36,7 +36,7 @@ return new class extends Migration {
             $table->string('religion');
             $table->string('marital_status');
             $table->string('email')->nullable();
-            $table->enum('verification_typ', [1, 2]); //1 = nid 2= birth registration no
+            $table->enum('verification_type', [1, 2]); //1 = nid 2= birth registration no
             $table->string('verification_number');
             $table->string('image');
             $table->string('signature');
@@ -97,7 +97,7 @@ return new class extends Migration {
             $table->string('account_name');
             $table->string('account_number');
             $table->string('account_owner');
-            $table->tinyInteger('status');
+            $table->enum('status', [1, 2, 3])->default(1); // 1=Active, 2=Inactive, 3=Waiting
             $table->integer('score');
             $table->unsignedBigInteger('forward_committee_id')->nullable();
             $table->string('remark')->nullable();
