@@ -59,7 +59,7 @@ class BeneficiaryFactory extends Factory
             'marital_status' => 'Married',
             'email' => fake()->safeEmail(),
             'mobile' => $mobile,
-            'verification_typ' => rand(1,2),
+            'verification_type' => rand(1,2),
             'verification_number' => fake()->isbn10(),
             'image' => fake()->imageUrl(300,300),
             'signature' => fake()->imageUrl(300,100),
@@ -100,7 +100,7 @@ class BeneficiaryFactory extends Factory
             'account_name' => $name,
             'account_number' => fake()->isbn13(),
             'account_owner' => $name,
-            'status' => 2,
+            'status' => 1,
             'score' => fake()->numberBetween(50, 100),
         ];
     }
