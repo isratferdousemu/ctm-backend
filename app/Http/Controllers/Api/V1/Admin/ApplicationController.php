@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Constants\ApplicationStatus;
+use App\Http\Services\Admin\Application\OfficeApplicationService;
+use App\Http\Traits\RoleTrait;
 use App\Models\PMTScore;
 use App\Http\Requests\Admin\Application\UpdateStatusRequest;
 use App\Models\Application;
@@ -30,7 +33,7 @@ use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
 
 class ApplicationController extends Controller
 {
-    use MessageTrait, BeneficiaryTrait,LocationTrait, LocationTrait;
+    use MessageTrait, BeneficiaryTrait,LocationTrait, LocationTrait, RoleTrait;
     private $applicationService;
 
     public function __construct(ApplicationService $applicationService , MobileOperatorService $mobileoperatorService) {
@@ -619,11 +622,9 @@ class ApplicationController extends Controller
 
         }
 
-        if($location_type_id){
-            $filterArrayLocationTypeId[] = ['location_type_id', '=', $location_type_id];
-        }
 
 
+//        return (new ApplicationListService)->getApplications($request);
        $user = auth()->user();
 
         $query = Application::query();
@@ -635,6 +636,11 @@ class ApplicationController extends Controller
 //        $query->when($user->committee_id, function ($q, $v) {
 //            $q->where('forward_committee_id', $v);
 //        });
+
+
+        $this->applyApplicationListFilter($query);
+
+
 
             $query->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayApplicationId, $filterArrayNomineeNameEn, $filterArrayNomineeNameBn, $filterArrayAccountNo, $filterArrayNidNo, $filterArrayListTypeId, $filterArrayProgramId) {
                 $query->where($filterArrayNameEn)
@@ -664,6 +670,29 @@ class ApplicationController extends Controller
 
 
     }
+
+
+    public function applyApplicationListFilter($query)
+    {
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+
+        if ($user->hasRole($this->officeHead) && $user->office_type) {
+            return (new OfficeApplicationService())->getApplications($query, $user);
+        }
+
+        if ($user->hasRole($this->superAdmin)) {
+            return (new OfficeApplicationService())->applyLocationTypeFilter(
+                query: $query,
+                divisionId: request('division_id'),
+                districtId: request('district_id')
+            );
+        }
+
+
+
+
+    }
+
     /**
      * @OA\Get(
      *      path="/admin/application/get/{id}",
@@ -878,7 +907,7 @@ class ApplicationController extends Controller
  /**
      *
      * @OA\Post(
-     *      path="/admin/mobile-operator/insert",
+     *      path="/admin/",
      *      operationId="insertMobileOperator",
      *      tags={"APPLICATION-SELECTION"},
      *      summary="insert a mobile-operator",
@@ -1126,10 +1155,174 @@ class ApplicationController extends Controller
     }
 
 
+
+
+
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/application/update-status",
+     *      operationId="updateApplicationStatus",
+     *      tags={"APPLICATION-SELECTION"},
+     *      summary="update application status",
+     *      description="update status",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="application_id",
+     *                      description="id of applications",
+     *                      type="array",
+     *                      @OA\Items(type="string")
+     *                   ),
+     *                   @OA\Property(
+     *                      property="committee_id",
+     *                      description="id of committee",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="status",
+     *                      description="application status",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="remark",
+     *                      description="remark",
+     *                      type="string",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
     public function updateApplications(UpdateStatusRequest $request)
     {
-        return $request;
+        $user = auth()->user();
+
+        $query = Application::query();
+
+//        $this->applyApplicationListFilter($query);
+        $query->with(['committeeApplication']);
+        $query->whereIn('id', $request->application_id);
+
+        $applications = $query->get(['id', 'status', 'forward_committee_id', 'remark']);
+
+        $data['status'] = $request->status;
+        $data['remark'] = $request->remark;
+
+        if ($request->status == ApplicationStatus::FORWARD) {
+            $data['forward_committee_id'] = $request->committee_id;
+            $this->forwardApplication($request, $applications);
+
+        } else {
+            if ($user->committee_id) {
+                $this->changeCommitteeApplicationsStatus($request, $applications, $user->committee_id);
+            }
+        }
+
+        $total = Application::whereIn('id', $applications->pluck('id'))->update($data);
+
+        return $this->sendResponse($applications, 'Total updated ' . $total);
     }
+
+
+    public function changeCommitteeApplicationsStatus($request, $applications, $committeeId)
+    {
+        foreach ($applications as $application) {
+            $committeeApplication = $application->committeeApplication()->firstOrNew([
+                    'committee_id' => $committeeId
+                ]
+            );
+
+            $committeeApplication->status = $request->status;
+            $committeeApplication->remark = $request->remark;
+            $committeeApplication->save();
+        }
+    }
+
+
+
+    public function forwardApplication($request, $applications)
+    {
+        foreach ($applications as $application) {
+            $committeeApplication = $application->committeeApplication()->firstOrNew([
+                    'committee_id' => $request->committee_id
+                ]
+            );
+
+            $committeeApplication->status = $request->status;
+            $committeeApplication->remark = $request->remark;
+            $committeeApplication->save();
+        }
+    }
+
+
+    /**
+     * @param $request
+     * @param Application[] $applications
+     * @return mixed
+     */
+    public function insertCommitteeApplications($request, $applications, $committeeId)
+    {
+        foreach ($applications as $application) {
+            $committeeApplication = $application->committeeApplication()->firstOrNew([
+                'committee_id' => $committeeId
+                ]
+            );
+
+            $committeeApplication->status = $request->status;
+            $committeeApplication->remark = $request->remark;
+            $committeeApplication->save();
+
+            $application->forward_committee_id = $committeeId;
+            $application->status = $request->status;
+            $application->remark = $request->remark;
+            $application->save();
+
+
+            return $committeeApplication;
+
+            $committeeApplication->save();
+        }
+    }
+
+
 
 
 

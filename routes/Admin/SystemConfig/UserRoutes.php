@@ -18,11 +18,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('get-roles', [UserController::class, 'getRoles']);
         Route::get('get-users', [UserController::class, 'getUsersId']);
 
-
-
-
-
-
     });
 
 
