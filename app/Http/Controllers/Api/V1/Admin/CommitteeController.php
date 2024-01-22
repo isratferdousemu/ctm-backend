@@ -97,7 +97,7 @@ class CommitteeController extends Controller
                   ->orWhere($filterArrayName)
                   ->orWhere($filterArrayDetails);
         })
-        ->with('program','members','committeeType','location.parent.parent.parent')
+        ->with('program','members','committeeType','location.parent.parent.parent.parent')
         ->latest()
         ->paginate($perPage, ['*'], 'page');
 
