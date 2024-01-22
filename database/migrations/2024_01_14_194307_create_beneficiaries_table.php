@@ -100,7 +100,7 @@ return new class extends Migration {
             $table->enum('status', [1, 2, 3])->default(1); // 1=Active, 2=Inactive, 3=Waiting
             $table->integer('score');
             $table->unsignedBigInteger('forward_committee_id')->nullable();
-            $table->string('remark')->nullable();
+            $table->string('remarks')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -10,6 +10,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin/beneficiary')->group(function () {
         Route::get('/list', [BeneficiaryController::class, 'list'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::get('/show/{id}', [BeneficiaryController::class, 'show'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/get/{id}', [BeneficiaryController::class, 'get'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/edit/{id}', [BeneficiaryController::class, 'edit'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::put('/update/{id}', [BeneficiaryController::class, 'update'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/replaceList', [BeneficiaryController::class, 'getListForReplace'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::put('/replace/{id}', [BeneficiaryController::class, 'replaceSave'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::put('/exit/{id}', [BeneficiaryController::class, 'exitSave'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::put('/shift', [BeneficiaryController::class, 'shiftingSave'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
     });
 
     Route::prefix('admin/committee')->group(function () {
