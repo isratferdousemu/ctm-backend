@@ -137,6 +137,45 @@ class ApplicationService
               if($request->has('permanent_ward_id_pouro') && $request->permanent_ward_id_pouro!=null){
                 $application->permanent_location_id              = $request->permanent_ward_id_pouro;
             }
+
+
+              $application->location_type_id = $request->permanent_location_type;
+              $application->division_id = $request->permanent_division_id;
+              $application->district_id = $request->permanent_district_id;
+
+
+
+            //Dist pouro
+            if ($request->permanent_location_type == 1) {
+                $application->district_pouroshova_id = $request->permanent_district_pouro_id;
+                $application->ward_id = $request->permanent_ward_id_dist;
+            }
+
+
+
+            //City corporation
+            if ($request->permanent_location_type == 3) {
+                $application->city_id = $request->permanent_city_id;
+                $application->thana_id = $request->permanent_city_thana_id;
+                $application->ward_id = $request->permanent_ward_id_city;
+            }
+
+              //Upazila
+              if ($request->permanent_location_type == 2) {
+                  $application->thana_id = $request->permanent_thana_id;
+                  //union
+                  if ($request->permanent_sub_location_type == 2) {
+                      $application->union_id = $request->permanent_union_id;
+                      $application->ward_id = $request->permanent_ward_id_union;
+                  } else {
+                      //pouro
+                      $application->pouroshova_id = $request->permanent_pouro_id;
+                      $application->ward_id = $request->permanent_ward_id_pouro;
+                  }
+
+
+              }
+
             $application->permanent_post_code = $request->permanent_post_code;
             $application->permanent_address = $request->permanent_address;
             $application->permanent_mobile = $request->permanent_mobile;
@@ -158,7 +197,7 @@ class ApplicationService
             $application->marital_status = $request->marital_status;
             $application->email = $request->email;
             $district1 = Application::permanentDistrict($application->permanent_location_id);
-          
+
             $division=Application::permanentDivision($application->permanent_location_id)  ;
             // $division=$division->id  ;
             $division_cut_off = DB::select("
@@ -170,15 +209,15 @@ class ApplicationService
             $division_cut_off =$division_cut_off[0]->id;
             $application->cut_off_id= $division_cut_off;
             $financial_year_id=FinancialYear::Where('status',1)->first();
-            
-           
+
+
              if( $financial_year_id){
             $financial_year_id=$financial_year_id->id;
             $application->financial_year_id= $financial_year_id;
              }
-            
+
             $application->save();
-            
+
 
             if($application){
                 // insert PMT score values
@@ -309,7 +348,7 @@ class ApplicationService
         $povertyScore = ($constant + $total + $districtFE)*100;
         $application = Application::find($application_id);
         $application->score = $povertyScore;
-       
+
         $application->save();
     }
 
@@ -317,7 +356,7 @@ class ApplicationService
         $application = Application::find($application_id);
         $districtFE = 0;
         $district = Application::permanentDistrict($application->permanent_location_id);
-      
+
         // $districtFE =PMTScore::join('financial_years', 'financial_years.id', '=', 'poverty_score_cut_offs.financial_year_id')
         //     ->where('poverty_score_cut_offs.location_id', '=', $district->id)
         //     ->where('poverty_score_cut_offs.default', '=', 1)
