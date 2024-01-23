@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Constants\ApplicationStatus;
+use App\Http\Services\Admin\Application\CommitteeApplicationService;
 use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Traits\RoleTrait;
 use App\Models\PMTScore;
@@ -30,6 +31,7 @@ use App\Http\Services\Admin\Application\MobileOperatorService;
 use App\Http\Resources\Admin\Application\MobileOperatorResource;
 use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
 use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
+use Illuminate\Validation\ValidationException;
 
 class ApplicationController extends Controller
 {
@@ -672,12 +674,20 @@ class ApplicationController extends Controller
     }
 
 
+
+
+
     public function applyApplicationListFilter($query)
     {
         $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
 
         if ($user->hasRole($this->officeHead) && $user->office_type) {
             return (new OfficeApplicationService())->getApplications($query, $user);
+        }
+
+
+        if ($user->hasRole($this->committee) && $user->committee_type_id) {
+            return (new CommitteeApplicationService())->getApplications($query, $user);
         }
 
         if ($user->hasRole($this->superAdmin)) {
@@ -1162,6 +1172,36 @@ class ApplicationController extends Controller
 
 
 
+    public function checkPermission($request, $user)
+    {
+        $permission = $user->committeePermission;
+
+        if ($request->status == ApplicationStatus::APPROVE) {
+            if (!$permission?->approve) {
+                throw ValidationException::withMessages(['Unauthorized action']);
+            }
+        }
+
+        if ($request->status == ApplicationStatus::FORWARD) {
+            if (!$permission?->forward) {
+                throw ValidationException::withMessages(['Unauthorized action']);
+            }
+        }
+
+        if ($request->status == ApplicationStatus::REJECTED) {
+            if (!$permission?->reject) {
+                throw ValidationException::withMessages(['Unauthorized action']);
+            }
+        }
+
+        if ($request->status == ApplicationStatus::WAITING) {
+            if (!$permission?->waiting) {
+                throw ValidationException::withMessages(['Unauthorized action']);
+            }
+        }
+
+    }
+
 
 
 
@@ -1184,7 +1224,7 @@ class ApplicationController extends Controller
      *              mediaType="multipart/form-data",
      *           @OA\Schema(
      *                   @OA\Property(
-     *                      property="application_id",
+     *                      property="applications_id",
      *                      description="id of applications",
      *                      type="array",
      *                      @OA\Items(type="string")
@@ -1241,11 +1281,15 @@ class ApplicationController extends Controller
     {
         $user = auth()->user();
 
+        if ($user->committee_type_id) {
+            $this->checkPermission($request, $user);
+        }
+
         $query = Application::query();
 
 //        $this->applyApplicationListFilter($query);
         $query->with(['committeeApplication']);
-        $query->whereIn('id', $request->application_id);
+        $query->whereIn('id', $request->applications_id);
 
         $applications = $query->get(['id', 'status', 'forward_committee_id', 'remark']);
 

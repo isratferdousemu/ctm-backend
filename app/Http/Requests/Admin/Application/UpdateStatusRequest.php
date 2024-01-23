@@ -24,7 +24,7 @@ class UpdateStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'application_id' => 'required|array|exists:applications,id',
+            'applications_id' => 'required|array|exists:applications,id',
             'committee_id' => [Rule::requiredIf($this->status == ApplicationStatus::FORWARD),
                 'integer',
                 'exists:committees,id',

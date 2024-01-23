@@ -5,11 +5,12 @@ namespace App\Http\Services\Admin\Application;
 
 
 
+use App\Models\CommitteeApplication;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
-class OfficeApplicationService
+class CommitteeApplicationService
 {
 
     /**
@@ -19,14 +20,17 @@ class OfficeApplicationService
      */
     public function getApplications($query, $user)
     {
-        if ($user->office_type) {
-            return match ($user->office_type) {
-                4, 5 => $this->applyLocationTypeFilter($query, request('division_id'), request('district_id')),
-                6 => $this->getDivision($user, $query),
-                7 => $this->getDistrict($user, $query),
+        if ($user->committee_type_id) {
 
-                8, 10, 11 => $this->getUpazilaApplications($user, $query),
-                9 => $this->getCityCorporation($user, $query),
+            $assignedApplicationsId = CommitteeApplication::whereCommitteeId($user->committee_id)->pluck('application_id');
+
+            return match ($user->committee_type_id) {
+                12 => $this->getUnionApplications($user, $query, $assignedApplicationsId),
+                13 => $this->getWardApplications($user, $query, $assignedApplicationsId),
+                14 => $this->getUpazilaApplications($user, $query, $assignedApplicationsId),
+                15 => $this->getCityCorporationApplications($user, $query, $assignedApplicationsId),
+                16 => $this->getDistrictPouroshava($user, $query, $assignedApplicationsId),
+
                 35 => $this->getDistrictPouroshava($user, $query),
 
                 //Exclude all applications
@@ -118,7 +122,7 @@ class OfficeApplicationService
     }
 
 
-    public function getDistrictPouroshava($user, $query)
+    public function getDistrictPouroshava($user, $query, $assignedApplicationsId)
     {
         $distPouroId = $user->assign_location_id;
         $districtId = $user->assign_location?->parent?->id;
@@ -172,16 +176,13 @@ class OfficeApplicationService
     }
 
 
-    public function getCityCorporation($user, $query)
+    public function getCityCorporationApplications($user, $query, $assignedApplicationsId)
     {
         $cityCorpId = $user->assign_location_id;
-        $districtId = $user->assign_location?->parent?->id;
-        $divisionId = $user->assign_location?->parent?->parent_id;
 
-        $query->where('permanent_division_id', $divisionId)
-            ->where('permanent_district_id', $districtId)
-            ->where('permanent_city_corp_id', $cityCorpId)
-        ;
+        $query->whereIn('id', $assignedApplicationsId);
+
+        $query->where('permanent_city_corp_id', $cityCorpId);
 
         $query->when(request('city_thana_id'), function ($q, $v) {
             $q->where('thana_id', $v);
@@ -196,13 +197,13 @@ class OfficeApplicationService
      * @param Builder $query
      * @return void
      */
-    public function getUpazilaApplications($user, $query)
+    public function getUpazilaApplications($user, $query, $assignedApplicationsId)
     {
-        $user->load( 'assign_location.parent.parent.parent.parent');
-
         $upazilaId = $user->assign_location_id;
         $districtId = $user->assign_location?->parent?->id;
         $divisionId = $user->assign_location?->parent?->parent_id;
+
+        $query->whereIn('id', $assignedApplicationsId);
 
         $query->where('permanent_division_id', $divisionId)
             ->where('permanent_district_id', $districtId)
@@ -210,7 +211,27 @@ class OfficeApplicationService
             ;
 
         return $this->applySubLocationFilter($query);
+    }
 
+
+    public function getUnionApplications($user, $query, $assignedApplicationsId)
+    {
+        $unionId = $user->assign_location_id;
+
+        $query->whereIn('id', $assignedApplicationsId);
+
+        $query->where('permanent_union_id', $unionId);
+
+        return $this->applyWardIdFilter($query);
+    }
+
+    public function getWardApplications($user, $query, $assignedApplicationsId)
+    {
+        $wardId = $user->assign_location_id;
+
+        $query->whereIn('id', $assignedApplicationsId);
+
+        return $query->where('permanent_ward_id', $wardId);
     }
 
 }
