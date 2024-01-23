@@ -11,6 +11,7 @@ use App\Http\Requests\Admin\Beneficiary\UpdateBeneficiaryRequest;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
 use App\Http\Services\Admin\Beneficiary\BeneficiaryService;
 use App\Http\Traits\MessageTrait;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
  *
@@ -179,12 +180,11 @@ class BeneficiaryController extends Controller
     public function exitSave(BeneficiaryExitRequest $request)
     {
         try {
-            $beneficiaryList = $this->beneficiaryService->exitSave($request);
-//            return response()->json($beneficiaryList);
-            return BeneficiaryResource::collection($beneficiaryList)->additional([
+            $this->beneficiaryService->exitSave($request);
+            return response()->json([
                 'success' => true,
-                'message' => $this->fetchSuccessMessage,
-            ]);
+                'message' => $this->deleteSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);

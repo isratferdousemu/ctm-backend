@@ -4,8 +4,10 @@ namespace App\Http\Services\Admin\Beneficiary;
 
 
 use App\Models\Beneficiary;
+use App\Models\BeneficiaryExit;
 use App\Models\BeneficiaryReplace;
-use App\Models\Committee;
+use Arr;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -244,6 +246,7 @@ class BeneficiaryService
      * @param Request $request
      * @param $id
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
+     * @throws \Throwable
      */
     public function replaceSave(Request $request, $id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
     {
@@ -265,7 +268,7 @@ class BeneficiaryService
             $beneficiaryReplace->replace_with_ben_id = $replaceWithBeneficiaryId;
             $beneficiaryReplace->cause_id = $request->input('cause_id');
             $beneficiaryReplace->cause_detail = $request->input('cause_detail');
-            $beneficiaryReplace->cause_date = now();//$request->input('cause_date');
+            $beneficiaryReplace->cause_date = $request->input('cause_date') ? Carbon::parse($request->input('cause_date')) : null;
             $beneficiaryReplace->cause_proof_doc = $request->input('causecause_proof_doc_date');
             $beneficiaryReplace->created_at = now();
             $beneficiaryReplace->save();
@@ -282,34 +285,33 @@ class BeneficiaryService
      * @param Request $request
      * @param $id
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @throws \Throwable
      */
-    public function exitSave(Request $request, $id)
+    public function exitSave(Request $request): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|bool|\Illuminate\Database\Eloquent\Builder|array|null
     {
         DB::beginTransaction();
         try {
 
-            if (!$request->has('beneficiaries')){
+            if (!$request->has('beneficiaries')) {
                 DB::rollBack();
                 throw new \Exception('No beneficiaries was selected for replace!');
             }
             $exitDataList = [];
-            foreach ($request->input('beneficiaries') as $beneficiary){
+            foreach ($request->input('beneficiaries') as $beneficiary) {
                 $exitDataList[] = [
-                    'beneficiary_id'=> $beneficiary->beneficiary_id,
-                    'exit_reason_id'=> $beneficiary->exit_reason_id,
-                    'exit_reason_detail'=> $beneficiary->exit_reason_detail,
-                    'exit_date'=> $beneficiary->exit_date,
+                    'beneficiary_id' => $beneficiary['beneficiary_id'],
+                    'exit_reason_id' => $request->input('exit_reason_id'),
+                    'exit_reason_detail' => $request->input('exit_reason_detail'),
+                    'exit_date' => Carbon::parse($request->input('exit_date')),
                 ];
             }
+            BeneficiaryExit::insert($exitDataList);
+            $beneficiary_ids = Arr::pluck($exitDataList, 'beneficiary_id');
 
-            BeneficiaryReplace::create($exitDataList);
+            Beneficiary::whereIn('id', $beneficiary_ids)->update(['status' => 2]);
 
-            $beneficiary = Beneficiary::findOrFail($id);
-            $validatedData = $request->safe()->all();
-            $beneficiary->fill($validatedData);
-            $beneficiary->save();
             DB::commit();
-            return $beneficiary;
+            return true;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -320,6 +322,7 @@ class BeneficiaryService
      * @param Request $request
      * @param $id
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
+     * @throws \Throwable
      */
     public function shiftingSave(Request $request, $id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
     {

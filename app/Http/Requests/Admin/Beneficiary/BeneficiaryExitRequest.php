@@ -26,11 +26,11 @@ class BeneficiaryExitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'details' => 'required|string|max:120,deleted_at,NULL',
-            'program_id' => 'required|integer|exists:allowance_programs,id',
-            'committee_type_id' => 'required|integer|exists:lookups,id',
-            'division_id' => 'sometimes|integer|exists:locations,id',
-            'district_id' => 'sometimes|integer|exists:locations,id',
+//            'details' => 'required|string|max:120,deleted_at,NULL',
+//            'program_id' => 'required|integer|exists:allowance_programs,id',
+//            'committee_type_id' => 'required|integer|exists:lookups,id',
+//            'division_id' => 'sometimes|integer|exists:locations,id',
+//            'district_id' => 'sometimes|integer|exists:locations,id',
 
         ];
     }
