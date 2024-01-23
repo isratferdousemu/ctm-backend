@@ -101,6 +101,9 @@ class ApplicationService
             $application->education_status = $request->education_status;
             $application->profession = $request->profession;
             $application->religion = $request->religion;
+            $application->account_type = $request->account_type;
+            $application->bank_name = $request->bank_name;
+            $application->branch_name = $request->branch_name;
             // if($request->has('city_thana_id') && $request->city_thana_id!=null){
             //     $application->current_location_id              = $request->city_thana_id;
             // }

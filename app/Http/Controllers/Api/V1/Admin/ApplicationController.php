@@ -713,7 +713,8 @@ class ApplicationController extends Controller
             'allowAddiFields.allowAddiFieldValues', // Assuming you have defined these relationships in your models
                 )->first();
                 $image=Application::where('id','=',$id)
-                ->pluck('image');
+                ->value('image');
+                
                 // Grouping additional fields by ID
         $groupedAdditionalFields = $application->allowAddiFields->groupBy('id');
 
@@ -727,7 +728,7 @@ class ApplicationController extends Controller
 
         return \response()->json([
             'application' => $application,
-            // 'image'=>$image,
+            'image'=>$image,
             // 'id'=>$id
 
             'unique_additional_fields' => $uniqueAdditionalFields->values(), // Convert to values to remove keys
