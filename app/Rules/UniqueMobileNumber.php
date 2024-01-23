@@ -46,6 +46,6 @@ class UniqueMobileNumber implements Rule
      */
     public function message()
     {
-        return 'The :attribute must be unique for the active financial year.';
+        return 'The :attribute has been used.';
     }
 }

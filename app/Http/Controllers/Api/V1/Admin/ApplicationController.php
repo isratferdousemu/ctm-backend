@@ -745,27 +745,32 @@ class ApplicationController extends Controller
      */
    public function getApplicationById($id){
 
-    $application = Application::where('id','=',$id)
-    ->with('current_location',
-            'permanent_location.parent.parent.parent',
+        $application = Application::where('id','=',$id)
+        ->with('current_location.parent.parent.parent.parent',
+                'permanent_location.parent.parent.parent.parent',
+                'program',  // Assuming you have defined this relationship in your Application model
+            'allowAddiFields.allowAddiFieldValues', // Assuming you have defined these relationships in your models
+                )->first();
+                $image=Application::where('id','=',$id)
+                ->value('image');
+                
+                // Grouping additional fields by ID
+        $groupedAdditionalFields = $application->allowAddiFields->groupBy('id');
 
-            // 'povertyValues.variable.subVariables',
-            // 'application',
-            // 'variable',
+        // Mapping to get only one instance of each additional field with its values
+        $uniqueAdditionalFields = $groupedAdditionalFields->map(function ($fields) {
+        $additionalField = $fields->first();
+        $additionalField->allowAddiFieldValues = $fields->first()->allowAddiFieldValues;
+        return $additionalField;
 
-            'poverty_score.children',
-            'poverty_score_value'
-            )->first();
-            $image=Application::where('id','=',$id)
-            ->pluck('image');
-
+    });
 
         return \response()->json([
             'application' => $application,
             'image'=>$image,
-            'id'=>$id
+            // 'id'=>$id
 
-
+            'unique_additional_fields' => $uniqueAdditionalFields->values(), // Convert to values to remove keys
 
             ],Response::HTTP_OK);
 
@@ -814,7 +819,8 @@ class ApplicationController extends Controller
 
     $application = Application::where('id','=',$id)
     ->with('current_location.parent.parent.parent',
-            'permanent_location.parent.parent.parent'
+            'permanent_location.parent.parent.parent',
+           
 
             // 'povertyValues.variable.subVariables',
             // 'application',

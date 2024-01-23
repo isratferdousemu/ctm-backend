@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Models\Variable;
+use App\Models\AdditionalFields;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ApplicationPovertyValues;
+use App\Models\ApplicationAllowanceValues;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -162,13 +164,29 @@ class Application extends Model
         return $this->belongsTo(Lookup::class,'gender_id','id');
     }
 
-    public function application()
-    {
-        return $this->belongsTo(ApplicationPovertyValues::class,
-        'id');
+     public function allowance(){
+        return $this->belongsTo(Lookup::class,'gender_id','id');
     }
 
+    // public function additionalFields()
+    // {
+    //     return $this->hasMany(ApplicationAllowanceValues::class, 'application_id', 'id')
+    //                 ->join('additional_fields', 'application_allowance_values.allow_addi_fields_id', '=', 'additional_fields.id');
+    // }
 
+    // public function additionalFieldValues()
+    // {
+    //     return $this->hasMany(ApplicationAllowanceValues::class, 'application_id', 'id')
+    //                 ->join('additional_field_values', 'application_allowance_values.allow_addi_field_values_id', '=', 'additional_field_values.id');
+    // }
+        public function allowAddiFields()
+    {
+        return $this->belongsToMany(AdditionalFields::class, 'application_allowance_values', 'application_id', 'allow_addi_fields_id')
+            ->withPivot('value')
+            ->with('allowAddiFieldValues');
+    }
+  
+        
     // public function variable()
     // {
     //     return $this->belongsToMany(Variable::class,
@@ -194,6 +212,7 @@ class Application extends Model
     {
         return $this->hasOne(CommitteeApplication::class, 'application_id', 'id');
     }
+ 
 
 
 }
