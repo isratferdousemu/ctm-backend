@@ -4,15 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * App\Models\Committee
- *
- */
-class Committee extends Model
+class BeneficiaryShifting extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    //    protected $table = 'beneficiaries';
 
     /**
      * The attributes that are mass assignable.
@@ -30,33 +26,23 @@ class Committee extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function program()
+    public function beneficiary()
     {
-        return $this->belongsTo(AllowanceProgram::class, 'program_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function members()
-    {
-        return $this->hasMany(CommitteeMember::class);
+        return $this->belongsTo(Beneficiary::class, 'beneficiary_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function location()
+    public function fromProgram()
     {
-        return $this->belongsTo(Location::class, 'location_id');
+        return $this->belongsTo(AllowanceProgram::class, 'from_program_id');
     }
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function committeeType()
+    public function toProgram()
     {
-        return $this->belongsTo(Lookup::class, 'committee_type_id');
+        return $this->belongsTo(AllowanceProgram::class, 'to_program_id');
     }
-
 }
