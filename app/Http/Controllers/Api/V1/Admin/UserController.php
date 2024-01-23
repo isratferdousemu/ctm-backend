@@ -560,13 +560,14 @@ class UserController extends Controller
 
     public function getRoles()
     {
-        $isAdmin = auth()->user()->hasRole($this->superAdmin);
+//        $isAdmin = auth()->user()->hasRole($this->superAdmin);
 
         $roles[] = $this->committee;
+        $roles[] = $this->superAdmin;
 
-        if (!$isAdmin) {
-            $roles[] = $this->superAdmin;
-        }
+//        if (!$isAdmin) {
+//            $roles[] = $this->superAdmin;
+//        }
 
 
         return Role::whereNotIn('name', $roles)->get();
