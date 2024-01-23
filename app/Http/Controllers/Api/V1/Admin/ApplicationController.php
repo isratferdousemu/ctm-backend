@@ -626,19 +626,8 @@ class ApplicationController extends Controller
 
 
 
-//        return (new ApplicationListService)->getApplications($request);
-       $user = auth()->user();
 
         $query = Application::query();
-
-//        if ($user->user_type == 1 || $user->office_type) {
-//            $query->whereIn('permanent_location_id', $this->getWardId());
-//        }
-//
-//        $query->when($user->committee_id, function ($q, $v) {
-//            $q->where('forward_committee_id', $v);
-//        });
-
 
         $this->applyApplicationListFilter($query);
 
@@ -660,9 +649,10 @@ class ApplicationController extends Controller
                     ->orWhere($filterArrayProgramId)
                 ;
             })
-        ->with('current_location','permanent_location.parent.parent.parent.parent','program','gender')
-        ->latest()
-        // ->orderBy('score', 'asc')
+        ->with('current_location', 'permanent_location.parent.parent.parent.parent', 'program',
+            'gender',
+        )
+         ->orderBy('score')
         ;
 
 
@@ -753,7 +743,7 @@ class ApplicationController extends Controller
                 )->first();
                 $image=Application::where('id','=',$id)
                 ->value('image');
-                
+
                 // Grouping additional fields by ID
         $groupedAdditionalFields = $application->allowAddiFields->groupBy('id');
 
@@ -820,7 +810,7 @@ class ApplicationController extends Controller
     $application = Application::where('id','=',$id)
     ->with('current_location.parent.parent.parent',
             'permanent_location.parent.parent.parent',
-           
+
 
             // 'povertyValues.variable.subVariables',
             // 'application',
@@ -1287,20 +1277,25 @@ class ApplicationController extends Controller
 
         $query = Application::query();
 
-//        $this->applyApplicationListFilter($query);
+        $this->applyApplicationListFilter($query);
         $query->with(['committeeApplication']);
         $query->whereIn('id', $request->applications_id);
+
+        $query->whereNot('status', ApplicationStatus::REJECTED)
+            ->whereNot('status', ApplicationStatus::APPROVE);
 
         $applications = $query->get(['id', 'status', 'forward_committee_id', 'remark']);
 
         $data['status'] = $request->status;
         $data['remark'] = $request->remark;
 
+        //Upazila committee & office user
         if ($request->status == ApplicationStatus::FORWARD) {
             $data['forward_committee_id'] = $request->committee_id;
             $this->forwardApplication($request, $applications);
 
         } else {
+            //committee user only
             if ($user->committee_id) {
                 $this->changeCommitteeApplicationsStatus($request, $applications, $user->committee_id);
             }
