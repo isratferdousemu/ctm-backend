@@ -31,7 +31,9 @@ class CommitteeApplicationService
                 15 => $this->getCityCorporationApplications($user, $query, $assignedApplicationsId),
                 16 => $this->getDistrictPouroshava($user, $query, $assignedApplicationsId),
 
-                35 => $this->getDistrictPouroshava($user, $query),
+                17 => $this->getDistrictApplications($user, $query),
+
+                18, 19 => $this->applyLocationTypeFilter($query, request('division_id'), request('district_id')),
 
                 //Exclude all applications
                 default => $query->whereId(null)
@@ -42,21 +44,10 @@ class CommitteeApplicationService
     }
 
 
-    /**
-     * @param $user
-     * @param $query
-     * @return void
-     */
-    public function getDivision($user, $query)
-    {
-        $divisionId = $user->assign_location_id;
-
-        return $this->applyLocationTypeFilter($query, $divisionId, request('district_id'));
-    }
 
 
 
-    public function getDistrict($user, $query)
+    public function getDistrictApplications($user, $query)
     {
         $divisionId = $user->assign_location_id;
         $districtId = $user->assign_location?->parent?->id;
@@ -66,7 +57,6 @@ class CommitteeApplicationService
 
     public function applyLocationTypeFilter($query, $divisionId, $districtId)
     {
-
         if ($divisionId) {
             $query->where('permanent_division_id', $divisionId);
 
@@ -125,12 +115,8 @@ class CommitteeApplicationService
     public function getDistrictPouroshava($user, $query, $assignedApplicationsId)
     {
         $distPouroId = $user->assign_location_id;
-        $districtId = $user->assign_location?->parent?->id;
-        $divisionId = $user->assign_location?->parent?->parent_id;
 
-        $query->where('permanent_division_id', $divisionId)
-            ->where('permanent_district_id', $districtId)
-            ->where('permanent_district_pourashava_id', $distPouroId)
+        $query->where('permanent_district_pourashava_id', $distPouroId)
         ;
 
         return $this->applyWardIdFilter($query);

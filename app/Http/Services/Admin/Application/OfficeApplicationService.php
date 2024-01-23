@@ -54,8 +54,8 @@ class OfficeApplicationService
 
     public function getDistrict($user, $query)
     {
-        $divisionId = $user->assign_location_id;
-        $districtId = $user->assign_location?->parent?->id;
+        $districtId = $user->assign_location_id;
+        $divisionId = $user->assign_location?->parent?->id;
 
         return $this->applyLocationTypeFilter($query, $divisionId, $districtId);
     }
