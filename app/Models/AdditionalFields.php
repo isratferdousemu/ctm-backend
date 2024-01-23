@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\AdditionalFieldValues;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\AdditionalFields
@@ -47,5 +48,10 @@ class AdditionalFields extends Model
     public function additional_field_value()
     {
         return $this->hasMany(AdditionalFieldValues::class,'additional_field_id');
+    }
+      public function allowAddiFieldValues()
+    {
+        return $this->belongsToMany(AdditionalFieldValues::class, 'application_allowance_values', 'allow_addi_fields_id', 'allow_addi_field_values_id')
+            ->withPivot('value');
     }
 }
