@@ -650,8 +650,11 @@ class ApplicationController extends Controller
                     ->orWhere($filterArrayProgramId)
                 ;
             })
+            ->when($request->status, function ($q, $v) {
+                $q->where('status', $v);
+            })
         ->with('current_location', 'permanent_location.parent.parent.parent.parent', 'program',
-            'gender',
+            'gender', 'pmtScore'
         )
          ->orderBy('score')
         ;
