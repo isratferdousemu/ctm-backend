@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('committees', function (Blueprint $table) {
-//            $table->dropColumn('division_id');
-//            $table->dropColumn('district_id');
-//            $table->string('details',120)->nullable()->change();
-//            $table->unsignedBigInteger('committee_type')->index()->nullable();
-//            $table->foreign('committee_type')->references('id')->on('lookups')->onDelete('cascade');
+            $table->dropColumn('division_id');
+            $table->dropColumn('district_id');
+            $table->string('details',120)->nullable()->change();
+            $table->unsignedBigInteger('committee_type')->index()->nullable();
+            $table->foreign('committee_type')->references('id')->on('lookups')->onDelete('cascade');
 
         });
     }

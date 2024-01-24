@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -12,15 +13,15 @@ return new class extends Migration {
     {
         Schema::create('committees', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 6);
-            $table->string('name', 100);
-            $table->string('details', 255);
-            $table->unsignedBigInteger('program_id');
-            $table->foreign('program_id')->references('id')->on('allowance_programs')->onDelete('cascade');
-            $table->unsignedBigInteger('location_id')->nullable();
-            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
-            $table->unsignedBigInteger('committee_type_id');
-            $table->foreign('committee_type_id')->references('id')->on('lookups')->onDelete('cascade');
+            $table->string('code',6);
+            $table->string('name',50);
+            $table->string('details',120);
+            $table->bigInteger('program_id');
+            $table->bigInteger('division_id');
+            $table->bigInteger('district_id');
+            // $table->bigInteger('office_id');
+            $table->bigInteger('location_id')->nullable();
+            $table->integer("version")->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

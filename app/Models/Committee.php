@@ -56,7 +56,7 @@ class Committee extends Model
      */
     public function committeeType()
     {
-        return $this->belongsTo(Lookup::class, 'committee_type_id');
+        return $this->belongsTo(Lookup::class, 'committee_type');
     }
 
 }

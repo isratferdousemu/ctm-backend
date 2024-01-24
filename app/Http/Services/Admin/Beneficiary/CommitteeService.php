@@ -31,9 +31,9 @@ class CommitteeService
         DB::beginTransaction();
         try {
             $code = mt_rand(100000, 999999);
-            $name = $this->committeeName($request->committee_type_id, $request->program_id, $request->location_id);
+            $name = $this->committeeName($request->committee_type, $request->program_id, $request->location_id);
             $location_id = $this->getLocation($request);
-            $validatedCommitteeData = $request->safe()->merge(['code' => $code, 'name' => $name, 'location_id' => $location_id])->only(['code', 'name', 'details', 'program_id', 'committee_type_id', 'location_id']);
+            $validatedCommitteeData = $request->safe()->merge(['code' => $code, 'name' => $name, 'location_id' => $location_id])->only(['code', 'name', 'details', 'program_id', 'committee_type', 'location_id']);
             $committee = Committee::create($validatedCommitteeData);
 
             $validatedMemberData = $request->validated('members');
@@ -94,14 +94,14 @@ class CommitteeService
         DB::beginTransaction();
         try {
             $committee = Committee::findOrFail($id);
-            $name = $this->committeeName($request->committee_type_id, $request->program_id, $request->location_id);
+            $name = $this->committeeName($request->committee_type, $request->program_id, $request->location_id);
             $location_id = $this->getLocation($request);
-            $validatedCommitteeData = $request->safe()->merge(['name' => $name, 'location_id' => $location_id])->only(['name', 'details', 'program_id', 'committee_type_id', 'location_id']);
+            $validatedCommitteeData = $request->safe()->merge(['name' => $name, 'location_id' => $location_id])->only(['name', 'details', 'program_id', 'committee_type', 'location_id']);
 
             $committee->name = $validatedCommitteeData['name'];
             $committee->details = $validatedCommitteeData['details'];
             $committee->program_id = $validatedCommitteeData['program_id'];
-            $committee->committee_type_id = $validatedCommitteeData['committee_type_id'];
+            $committee->committee_type = $validatedCommitteeData['committee_type'];
             $committee->location_id = $validatedCommitteeData['location_id'];
 
             $committee->save();
@@ -147,10 +147,10 @@ class CommitteeService
      * @param $location_id
      * @return string
      */
-    private function committeeName($committee_type_id, $program_id, $location_id): string
+    private function committeeName($committee_type, $program_id, $location_id): string
     {
         $program = AllowanceProgram::find($program_id);
-        $committee_type = Lookup::find($committee_type_id);
+        $committee_type = Lookup::find($committee_type);
         if ($location_id) {
             $location = Location::find($location_id);
             $name = Str::slug($committee_type->value_en, '_') . '_' . Str::slug($location->name_en, '_') . '_' . Str::slug($program->name_en, '_');
@@ -169,18 +169,18 @@ class CommitteeService
     private function getLocation(Request $request): mixed
     {
         $location_id = null;
-        if ($request->has('committee_type_id')) {
-            if ($request->committee_type_id == 12 && $request->has('union_id')) {
+        if ($request->has('committee_type')) {
+            if ($request->committee_type == 12 && $request->has('union_id')) {
                 $location_id = $request->union_id;
-            } else if ($request->committee_type_id == 13 && $request->has('ward_id')) {
+            } else if ($request->committee_type == 13 && $request->has('ward_id')) {
                 $location_id = $request->ward_id;
-            } else if ($request->committee_type_id == 14 && $request->has('upazila_id')) {
+            } else if ($request->committee_type == 14 && $request->has('upazila_id')) {
                 $location_id = $request->upazila_id;
-            } else if ($request->committee_type_id == 15 && $request->has('city_corpo_id')) {
+            } else if ($request->committee_type == 15 && $request->has('city_corpo_id')) {
                 $location_id = $request->city_corpo_id;
-            } else if ($request->committee_type_id == 16 && $request->has('paurashava_id')) {
+            } else if ($request->committee_type == 16 && $request->has('paurashava_id')) {
                 $location_id = $request->paurashava_id;
-            } else if ($request->committee_type_id == 17 && $request->has('district_id')) {
+            } else if ($request->committee_type == 17 && $request->has('district_id')) {
                 $location_id = $request->district_id;
             }
         }

@@ -24,7 +24,7 @@ class UpdateCommitteeRequest extends FormRequest
         return [
             'details' => 'required|string|max:120,deleted_at,NULL',
             'program_id' => 'required|integer|exists:allowance_programs,id',
-            'committee_type_id' => 'required|integer|exists:lookups,id',
+            'committee_type' => 'required|integer|exists:lookups,id',
             'division_id' => 'sometimes|integer|exists:locations,id',
             'district_id' => 'sometimes|integer|exists:locations,id',
             'upazila_id' => 'sometimes|integer|exists:locations,id',
