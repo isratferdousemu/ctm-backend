@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Constants\ApplicationStatus;
 use App\Http\Services\Admin\Application\CommitteeApplicationService;
+use App\Http\Services\Admin\Application\CommitteeListService;
 use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Traits\RoleTrait;
 use App\Models\PMTScore;
@@ -649,8 +650,11 @@ class ApplicationController extends Controller
                     ->orWhere($filterArrayProgramId)
                 ;
             })
+            ->when($request->status, function ($q, $v) {
+                $q->where('status', $v);
+            })
         ->with('current_location', 'permanent_location.parent.parent.parent.parent', 'program',
-            'gender',
+            'gender', 'pmtScore'
         )
          ->orderBy('score')
         ;
@@ -687,8 +691,6 @@ class ApplicationController extends Controller
                 districtId: request('district_id')
             );
         }
-
-
 
 
     }
@@ -1157,7 +1159,15 @@ class ApplicationController extends Controller
      */
     public function getCommitteeList()
     {
-        return Committee::get();
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+
+        $query = Committee::query();
+        $query->select('committees.*');
+        $query->leftJoin('locations', 'committees.location_id', '=', 'locations.id');
+
+        (new CommitteeListService())->applyCommitteeListFilter($query, $user);
+
+        return $query->get();
     }
 
 

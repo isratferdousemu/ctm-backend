@@ -185,8 +185,8 @@ class Application extends Model
             ->withPivot('value')
             ->with('allowAddiFieldValues');
     }
-  
-        
+
+
     // public function variable()
     // {
     //     return $this->belongsToMany(Variable::class,
@@ -212,7 +212,13 @@ class Application extends Model
     {
         return $this->hasOne(CommitteeApplication::class, 'application_id', 'id');
     }
- 
+
+
+    public function pmtScore()
+    {
+        return $this->belongsTo(PMTScore::class, 'cut_off_id', 'id');
+    }
+
 
 
 }

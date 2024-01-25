@@ -14,7 +14,7 @@ class CommitteeApplicationService
 {
 
     /**
-     * @param $query
+     * @param Builder $query
      * @param User $user
      * @return mixed
      */
@@ -36,7 +36,7 @@ class CommitteeApplicationService
                 18, 19 => $this->applyLocationTypeFilter($query, request('division_id'), request('district_id')),
 
                 //Exclude all applications
-                default => $query->whereId(null)
+                default => $query->whereNull('id')
 
             };
         }
@@ -162,11 +162,12 @@ class CommitteeApplicationService
     }
 
 
+    //see not selected too
     public function getCityCorporationApplications($user, $query, $assignedApplicationsId)
     {
         $cityCorpId = $user->assign_location_id;
 
-        $query->whereIn('id', $assignedApplicationsId);
+//        $query->whereIn('id', $assignedApplicationsId);
 
         $query->where('permanent_city_corp_id', $cityCorpId);
 
@@ -189,7 +190,7 @@ class CommitteeApplicationService
         $districtId = $user->assign_location?->parent?->id;
         $divisionId = $user->assign_location?->parent?->parent_id;
 
-        $query->whereIn('id', $assignedApplicationsId);
+//        $query->whereIn('id', $assignedApplicationsId);
 
         $query->where('permanent_division_id', $divisionId)
             ->where('permanent_district_id', $districtId)
