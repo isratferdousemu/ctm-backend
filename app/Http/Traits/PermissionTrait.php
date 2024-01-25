@@ -9,7 +9,7 @@ trait PermissionTrait
 {
     use RoleTrait;
     //User ID
-    private $user_id;
+    protected $user_id;
 
     //permission groups
     private $permissionGroupAdminDashboard = 'AdminDashboard';
