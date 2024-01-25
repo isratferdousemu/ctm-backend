@@ -7,6 +7,7 @@ use App\Http\Services\Admin\Application\CommitteeApplicationService;
 use App\Http\Services\Admin\Application\CommitteeListService;
 use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Traits\RoleTrait;
+use App\Models\Beneficiary;
 use App\Models\PMTScore;
 use App\Http\Requests\Admin\Application\UpdateStatusRequest;
 use App\Models\Application;
@@ -1294,7 +1295,7 @@ class ApplicationController extends Controller
         $query->whereNot('status', ApplicationStatus::REJECTED)
             ->whereNot('status', ApplicationStatus::APPROVE);
 
-        $applications = $query->get(['id', 'status', 'forward_committee_id', 'remark']);
+        $applications = $query->get();
 
         $data['status'] = $request->status;
         $data['remark'] = $request->remark;
@@ -1328,7 +1329,93 @@ class ApplicationController extends Controller
             $committeeApplication->status = $request->status;
             $committeeApplication->remark = $request->remark;
             $committeeApplication->save();
+
+            if ($request->status == ApplicationStatus::APPROVE) {
+                $this->createBeneficiary($application);
+            }
         }
+    }
+
+
+    /**
+     * @param Application $application
+     * @return mixed
+     */
+    public function createBeneficiary($application)
+    {
+        if ($application->beneficiary()->doesntExist()) {
+            $beneficiary = new Beneficiary(
+                [
+                    "application_table_id" => $application->id,
+                    "program_id" => $application->program_id,
+                    "application_id" => $application->application_id,
+                    "name_en" => $application->name_en,
+                    "name_bn" => $application->name_bn,
+                    "mother_name_en" => $application->mother_name_en,
+                    "mother_name_bn" => $application->mother_name_bn,
+                    "father_name_en" => $application->father_name_en,
+                    "father_name_bn" => $application->father_name_bn,
+                    "spouse_name_en" => $application->spouse_name_en,
+                    "spouse_name_bn" => $application->spouse_name_bn,
+                    "identification_mark" => $application->identification_mark,
+                    "age" => $application->age,
+                    "date_of_birth" => $application->date_of_birth,
+//                "nationality" => $application->nationality,
+                    "gender_id" => $application->gender_id,
+                    "education_status" => $application->education_status,
+                    "profession" => $application->profession,
+                    "religion" => $application->religion,
+                    "marital_status" => $application->marital_status,
+                    "email" => $application->email,
+                    "verification_type" => $application->verification_type,
+                    "verification_number" => $application->verification_number,
+                    "image" => $application->image,
+                    "signature" => $application->signature,
+                    "current_division_id" => $application->current_division_id,
+                    "current_district_id" => $application->current_district_id,
+                    "current_city_corp_id" => $application->current_city_corp_id,
+                    "current_district_pourashava_id" => $application->current_district_pourashava_id,
+                    "current_upazila_id" => $application->current_upazila_id,
+                    "current_pourashava_id" => $application->current_pourashava_id,
+                    "current_thana_id" => $application->current_thana_id,
+                    "current_union_id" => $application->current_union_id,
+                    "current_ward_id" => $application->current_ward_id,
+                    "current_post_code" => $application->current_post_code,
+                    "current_address" => $application->current_address,
+                    "mobile" => $application->mobile,
+                    "permanent_division_id" => $application->permanent_division_id,
+                    "permanent_district_id" => $application->permanent_district_id,
+                    "permanent_city_corp_id" => $application->permanent_city_corp_id,
+                    "permanent_district_pourashava_id" => $application->permanent_district_pourashava_id,
+                    "permanent_upazila_id" => $application->permanent_upazila_id,
+                    "permanent_pourashava_id" => $application->permanent_pourashava_id,
+                    "permanent_thana_id" => $application->permanent_thana_id,
+                    "permanent_union_id" => $application->permanent_union_id,
+                    "permanent_ward_id" => $application->permanent_ward_id,
+                    "permanent_post_code" => $application->permanent_post_code,
+                    "permanent_address" => $application->permanent_address,
+                    "permanent_mobile" => $application->permanent_mobile,
+                    "nominee_en" => $application->nominee_en,
+                    "nominee_bn" => $application->nominee_bn,
+                    "nominee_verification_number" => $application->nominee_verification_number,
+                    "nominee_address" => $application->nominee_address,
+                    "nominee_image" => $application->nominee_image,
+                    "nominee_signature" => $application->nominee_signature,
+                    "nominee_relation_with_beneficiary" => $application->nominee_relation_with_beneficiary,
+                    "nominee_nationality" => $application->nominee_nationality,
+                    "account_name" => $application->account_name,
+                    "account_number" => $application->account_number,
+                    "account_owner" => $application->account_owner,
+                    "status" => $application->status,
+                    "score" => $application->score,
+                    "forward_committee_id" => $application->forward_committee_id,
+                    "remarks" => $application->remark,
+                ]
+            );
+
+            return $beneficiary->save();
+        }
+
     }
 
 

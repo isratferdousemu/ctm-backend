@@ -220,5 +220,13 @@ class Application extends Model
     }
 
 
+    public function beneficiary()
+    {
+        return $this->hasOne(Beneficiary::class, 'application_table_id', 'id');
+    }
+
+
+
+
 
 }
