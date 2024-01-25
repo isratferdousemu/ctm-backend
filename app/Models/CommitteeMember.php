@@ -4,49 +4,47 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\CommitteeMember
  *
- * @property int $id
- * @property int $committeeId
- * @property string $memberName
- * @property string $designation
- * @property string|null $email
- * @property string|null $address
- * @property int $phone
- * @property \Illuminate\Support\Carbon|null $createdAt
- * @property \Illuminate\Support\Carbon|null $updatedAt
- * @property-read \App\Models\Committee $committee
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember query()
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereCommitteeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereDesignation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereMemberName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember wherePhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereUpdatedAt($value)
- * @property int|null $designationId
- * @method static \Illuminate\Database\Eloquent\Builder|CommitteeMember whereDesignationId($value)
- * @mixin \Eloquent
  */
 class CommitteeMember extends Model
 {
-    public function newQuery($excludeDeleted = true)
+    use HasFactory, SoftDeletes;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'member_name',
+        'designation_id',
+        'email',
+        'address',
+        'phone',
+    ];
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function committee()
     {
-        return parent::newQuery($excludeDeleted)
-            ->orderBy('member_name', 'asc');
+        return $this->belongsTo(Committee::class, 'committee_id');
     }
 
-    public function committee(){
-        return $this->belongsTo(Committee::class,'committee_id');
-    }
-
-    public function designation(){
-        return $this->belongsTo(Lookup::class,'designation_id');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function designation()
+    {
+        return $this->belongsTo(Lookup::class, 'designation_id');
     }
 }

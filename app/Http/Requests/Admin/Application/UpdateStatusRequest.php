@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin\Application;
 
+use App\Constants\ApplicationStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateStatusRequest extends FormRequest
 {
@@ -22,9 +24,13 @@ class UpdateStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'application_id' => 'required|array|exists:applications,id',
-            'committee_id' => 'sometimes|required|exists:committees,id',
-            'status' => 'required|in:1,2,3,4',
+            'applications_id' => 'required|array|exists:applications,id',
+            'committee_id' => [Rule::requiredIf($this->status == ApplicationStatus::FORWARD),
+                'integer',
+                'exists:committees,id',
+            ],
+            'remark' => 'nullable|string|max:1024',
+            'status' => 'required|'. Rule::in(array_keys(ApplicationStatus::ALL)),
         ];
     }
 }

@@ -178,8 +178,9 @@ class UserService
             // assign role to the user
 
             if ($request->user_type == 1) {
-                $user->assignRole(Arr::wrap($request->role_id));
+                $user->syncRoles(Arr::wrap($request->role_id));
             } else {
+                $user->syncRoles([]);
                 $user->assignRole('committee');
             }
 
