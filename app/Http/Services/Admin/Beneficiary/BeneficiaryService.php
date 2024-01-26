@@ -126,6 +126,15 @@ class BeneficiaryService
     }
 
     /**
+     * @param $beneficiary_id
+     * @return mixed
+     */
+    public function getByBeneficiaryId($beneficiary_id): mixed
+    {
+        return Beneficiary::with('program')->where('application_id', $beneficiary_id)->firstOrFail();
+    }
+
+    /**
      * @param $id
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
      */

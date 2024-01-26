@@ -89,6 +89,21 @@ class BeneficiaryController extends Controller
         }
     }
 
+    public function getByBeneficiaryId($beneficiary_id): \Illuminate\Http\JsonResponse|BeneficiaryResource
+    {
+        try {
+            $beneficiary = $this->beneficiaryService->getByBeneficiaryId($beneficiary_id);
+            return BeneficiaryResource::make($beneficiary)->additional([
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ]);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
     /**
      * @param $id
      * @return \Illuminate\Http\JsonResponse|BeneficiaryResource
