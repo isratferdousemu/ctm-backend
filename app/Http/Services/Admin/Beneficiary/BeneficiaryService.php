@@ -6,6 +6,7 @@ namespace App\Http\Services\Admin\Beneficiary;
 use App\Models\Beneficiary;
 use App\Models\BeneficiaryExit;
 use App\Models\BeneficiaryReplace;
+use App\Models\BeneficiaryShifting;
 use Arr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -302,13 +303,13 @@ class BeneficiaryService
                     'beneficiary_id' => $beneficiary['beneficiary_id'],
                     'exit_reason_id' => $request->input('exit_reason_id'),
                     'exit_reason_detail' => $request->input('exit_reason_detail'),
-                    'exit_date' => Carbon::parse($request->input('exit_date')),
+                    'exit_date' => $request->input('exit_date') ? Carbon::parse($request->input('exit_date')) : now(),
                 ];
             }
             BeneficiaryExit::insert($exitDataList);
             $beneficiary_ids = Arr::pluck($exitDataList, 'beneficiary_id');
 
-            Beneficiary::whereIn('id', $beneficiary_ids)->update(['status' => 2]);
+            Beneficiary::whereIn('id', $beneficiary_ids)->update(['status' => 2]); // Inactive
 
             DB::commit();
             return true;
@@ -324,16 +325,31 @@ class BeneficiaryService
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
      * @throws \Throwable
      */
-    public function shiftingSave(Request $request, $id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
+    public function shiftingSave(Request $request): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
     {
         DB::beginTransaction();
         try {
-            $beneficiary = Beneficiary::findOrFail($id);
-            $validatedData = $request->safe()->all();
-            $beneficiary->fill($validatedData);
-            $beneficiary->save();
+            if (!$request->has('beneficiaries')) {
+                DB::rollBack();
+                throw new \Exception('No beneficiaries was selected for shifting!');
+            }
+            $shiftingDataList = [];
+            foreach ($request->input('beneficiaries') as $beneficiary) {
+                $shiftingDataList[] = [
+                    'beneficiary_id' => $beneficiary['beneficiary_id'],
+                    'from_program_id' => $beneficiary['from_program_id'],
+                    'to_program_id' => $request->input('to_program_id'),
+//                    'shifting_cause_id' => $request->input('shifting_cause_id'),
+                    'shifting_cause' => $request->input('shifting_cause'),
+                    'activation_date' => $request->input('activation_date') ? Carbon::parse($request->input('activation_date')) : now(),
+                ];
+            }
+            BeneficiaryShifting::insert($shiftingDataList);
+            foreach ($shiftingDataList as $shiftingData) {
+                Beneficiary::where('id', $shiftingData['beneficiary_id'])->update(['program_id' => $shiftingData['to_program_id']]);
+            }
             DB::commit();
-            return $beneficiary;
+            return $shiftingDataList;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
