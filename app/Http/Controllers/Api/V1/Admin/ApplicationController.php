@@ -668,6 +668,32 @@ class ApplicationController extends Controller
     }
 
 
+    public function getPdf(Request $request)
+    {
+        $query = Application::query();
+
+        $this->applyApplicationListFilter($query);
+
+        $query->where(function ($query) {
+        })
+            ->when($request->status, function ($q, $v) {
+                $q->where('status', $v);
+            })
+            ->with('current_location', 'permanent_location.parent.parent.parent.parent', 'program',
+                'gender', 'pmtScore'
+            )
+            ->orderBy('score')
+        ;
+
+
+
+
+        return $query->paginate(10, ['*'], 'page', 1);
+
+
+    }
+
+
 
 
 

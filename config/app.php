@@ -189,6 +189,9 @@ return [
         L5Swagger\L5SwaggerServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Mccarlosen\LaravelMpdf\LaravelMpdfServiceProvider::class,
+
+
         /*
          * Application Service Providers...
          */
@@ -214,6 +217,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'PDF' => Mccarlosen\LaravelMpdf\Facades\LaravelMpdf::class,
     ])->toArray(),
 
 ];
