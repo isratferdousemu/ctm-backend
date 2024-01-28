@@ -113,6 +113,7 @@ trait MessageTrait
 
     private $emailVerifySuccessMessage = 'Email verification Completed!';
     private $phoneVerifySuccessMessage = 'Phone verification Completed!';
+    private $notFoundMessage = 'Not found!';
 
 
     /**

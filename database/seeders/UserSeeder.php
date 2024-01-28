@@ -15,19 +15,19 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $users = [
-            // [
-            //     'full_name'            => 'CTM',
-            //     'username'            => 'ctm-01',
-            //     'user_id'            => 1000,
-            //     'email'                 => 'admin@ctm.com',
-            //     // 'salt'                  => $salt,
-            //     // 'password'              => bcrypt($salt . '12345678'),
-            //     // 'user_type'               => $this->superAdminId,
-            //     // 'remember_token'        => Str::random(10),
-            //     'status'            => 1,
-            //     'is_default_password'            => 0,
-            //     'email_verified_at'     => now(),
-            // ],
+             [
+                 'full_name'            => 'CTM',
+                 'username'            => 'ctm-01',
+                 'user_id'            => 1000,
+                 'email'                 => 'admin@ctm.com',
+                  'salt'                  => $salt,
+                  'password'              => bcrypt($salt . '12345678'),
+                  'user_type'               => $this->superAdminId,
+                 // 'remember_token'        => Str::random(10),
+                 'status'            => 1,
+                 'is_default_password'            => 0,
+                 'email_verified_at'     => now(),
+             ],
             [
                 'full_name' => 'Juned Ahmed Chowdhury',
                 'username' => 'JDUU',

@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Constants\ApplicationStatus;
+use App\Http\Services\Admin\Application\CommitteeApplicationService;
+use App\Http\Services\Admin\Application\CommitteeListService;
+use App\Http\Services\Admin\Application\OfficeApplicationService;
+use App\Http\Traits\RoleTrait;
+use App\Models\Beneficiary;
 use App\Models\PMTScore;
 use App\Http\Requests\Admin\Application\UpdateStatusRequest;
 use App\Models\Application;
@@ -27,10 +33,11 @@ use App\Http\Services\Admin\Application\MobileOperatorService;
 use App\Http\Resources\Admin\Application\MobileOperatorResource;
 use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
 use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
+use Illuminate\Validation\ValidationException;
 
 class ApplicationController extends Controller
 {
-    use MessageTrait, BeneficiaryTrait,LocationTrait, LocationTrait;
+    use MessageTrait, BeneficiaryTrait,LocationTrait, LocationTrait, RoleTrait;
     private $applicationService;
 
     public function __construct(ApplicationService $applicationService , MobileOperatorService $mobileoperatorService) {
@@ -619,22 +626,14 @@ class ApplicationController extends Controller
 
         }
 
-        if($location_type_id){
-            $filterArrayLocationTypeId[] = ['location_type_id', '=', $location_type_id];
-        }
 
 
-       $user = auth()->user();
 
         $query = Application::query();
 
-//        if ($user->user_type == 1 || $user->office_type) {
-//            $query->whereIn('permanent_location_id', $this->getWardId());
-//        }
-//
-//        $query->when($user->committee_id, function ($q, $v) {
-//            $q->where('forward_committee_id', $v);
-//        });
+        $this->applyApplicationListFilter($query);
+
+
 
             $query->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayApplicationId, $filterArrayNomineeNameEn, $filterArrayNomineeNameBn, $filterArrayAccountNo, $filterArrayNidNo, $filterArrayListTypeId, $filterArrayProgramId) {
                 $query->where($filterArrayNameEn)
@@ -652,9 +651,13 @@ class ApplicationController extends Controller
                     ->orWhere($filterArrayProgramId)
                 ;
             })
-        ->with('current_location','permanent_location.parent.parent.parent.parent','program','gender')
-        ->latest()
-        // ->orderBy('score', 'asc')
+            ->when($request->status, function ($q, $v) {
+                $q->where('status', $v);
+            })
+        ->with('current_location', 'permanent_location.parent.parent.parent.parent', 'program',
+            'gender', 'pmtScore'
+        )
+         ->orderBy('score')
         ;
 
 
@@ -664,6 +667,35 @@ class ApplicationController extends Controller
 
 
     }
+
+
+
+
+
+    public function applyApplicationListFilter($query)
+    {
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+
+        if ($user->hasRole($this->officeHead) && $user->office_type) {
+            return (new OfficeApplicationService())->getApplications($query, $user);
+        }
+
+
+        if ($user->hasRole($this->committee) && $user->committee_type_id) {
+            return (new CommitteeApplicationService())->getApplications($query, $user);
+        }
+
+        if ($user->hasRole($this->superAdmin)) {
+            return (new OfficeApplicationService())->applyLocationTypeFilter(
+                query: $query,
+                divisionId: request('division_id'),
+                districtId: request('district_id')
+            );
+        }
+
+
+    }
+
     /**
      * @OA\Get(
      *      path="/admin/application/get/{id}",
@@ -706,27 +738,32 @@ class ApplicationController extends Controller
      */
    public function getApplicationById($id){
 
-    $application = Application::where('id','=',$id)
-    ->with('current_location',
-            'permanent_location.parent.parent.parent',
+        $application = Application::where('id','=',$id)
+        ->with('current_location.parent.parent.parent.parent',
+                'permanent_location.parent.parent.parent.parent',
+                'program',  // Assuming you have defined this relationship in your Application model
+            'allowAddiFields.allowAddiFieldValues', // Assuming you have defined these relationships in your models
+                )->first();
+                $image=Application::where('id','=',$id)
+                ->value('image');
 
-            // 'povertyValues.variable.subVariables',
-            // 'application',
-            // 'variable',
+                // Grouping additional fields by ID
+        $groupedAdditionalFields = $application->allowAddiFields->groupBy('id');
 
-            'poverty_score.children',
-            'poverty_score_value'
-            )->first();
-            $image=Application::where('id','=',$id)
-            ->pluck('image');
+        // Mapping to get only one instance of each additional field with its values
+        $uniqueAdditionalFields = $groupedAdditionalFields->map(function ($fields) {
+        $additionalField = $fields->first();
+        $additionalField->allowAddiFieldValues = $fields->first()->allowAddiFieldValues;
+        return $additionalField;
 
+    });
 
         return \response()->json([
             'application' => $application,
             'image'=>$image,
-            'id'=>$id
+            // 'id'=>$id
 
-
+            'unique_additional_fields' => $uniqueAdditionalFields->values(), // Convert to values to remove keys
 
             ],Response::HTTP_OK);
 
@@ -775,7 +812,8 @@ class ApplicationController extends Controller
 
     $application = Application::where('id','=',$id)
     ->with('current_location.parent.parent.parent',
-            'permanent_location.parent.parent.parent'
+            'permanent_location.parent.parent.parent',
+
 
             // 'povertyValues.variable.subVariables',
             // 'application',
@@ -878,7 +916,7 @@ class ApplicationController extends Controller
  /**
      *
      * @OA\Post(
-     *      path="/admin/mobile-operator/insert",
+     *      path="/admin/",
      *      operationId="insertMobileOperator",
      *      tags={"APPLICATION-SELECTION"},
      *      summary="insert a mobile-operator",
@@ -1122,14 +1160,311 @@ class ApplicationController extends Controller
      */
     public function getCommitteeList()
     {
-        return Committee::get();
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+
+        $query = Committee::query();
+        $query->select('committees.*');
+        $query->leftJoin('locations', 'committees.location_id', '=', 'locations.id');
+
+        (new CommitteeListService())->applyCommitteeListFilter($query, $user);
+
+        return $query->get();
     }
 
 
+
+    public function checkPermission($request, $user)
+    {
+        $permission = $user->committeePermission;
+
+        if ($request->status == ApplicationStatus::APPROVE) {
+            if (!$permission?->approve) {
+                throw ValidationException::withMessages(['Unauthorized action']);
+            }
+        }
+
+        if ($request->status == ApplicationStatus::FORWARD) {
+            if (!$permission?->forward) {
+                throw ValidationException::withMessages(['Unauthorized action']);
+            }
+        }
+
+        if ($request->status == ApplicationStatus::REJECTED) {
+            if (!$permission?->reject) {
+                throw ValidationException::withMessages(['Unauthorized action']);
+            }
+        }
+
+        if ($request->status == ApplicationStatus::WAITING) {
+            if (!$permission?->waiting) {
+                throw ValidationException::withMessages(['Unauthorized action']);
+            }
+        }
+
+    }
+
+
+
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/admin/application/update-status",
+     *      operationId="updateApplicationStatus",
+     *      tags={"APPLICATION-SELECTION"},
+     *      summary="update application status",
+     *      description="update status",
+     *      security={{"bearer_token":{}}},
+     *
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="applications_id",
+     *                      description="id of applications",
+     *                      type="array",
+     *                      @OA\Items(type="string")
+     *                   ),
+     *                   @OA\Property(
+     *                      property="committee_id",
+     *                      description="id of committee",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="status",
+     *                      description="application status",
+     *                      type="integer",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="remark",
+     *                      description="remark",
+     *                      type="string",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
     public function updateApplications(UpdateStatusRequest $request)
     {
-        return $request;
+        $user = auth()->user();
+
+        if ($user->committee_type_id) {
+            $this->checkPermission($request, $user);
+        }
+
+        $query = Application::query();
+
+        $this->applyApplicationListFilter($query);
+        $query->with(['committeeApplication']);
+        $query->whereIn('id', $request->applications_id);
+
+        $query->whereNot('status', ApplicationStatus::REJECTED)
+            ->whereNot('status', ApplicationStatus::APPROVE);
+
+        $applications = $query->get();
+
+        $data['status'] = $request->status;
+        $data['remark'] = $request->remark;
+
+        //Upazila committee & office user
+        if ($request->status == ApplicationStatus::FORWARD) {
+            $data['forward_committee_id'] = $request->committee_id;
+            $this->forwardApplication($request, $applications);
+
+        } else {
+            //committee user only
+            if ($user->committee_id) {
+                $this->changeCommitteeApplicationsStatus($request, $applications, $user->committee_id);
+            }
+        }
+
+        $total = Application::whereIn('id', $applications->pluck('id'))->update($data);
+
+        return $this->sendResponse($applications, 'Total updated ' . $total);
     }
+
+
+    public function changeCommitteeApplicationsStatus($request, $applications, $committeeId)
+    {
+        foreach ($applications as $application) {
+            $committeeApplication = $application->committeeApplication()->firstOrNew([
+                    'committee_id' => $committeeId
+                ]
+            );
+
+            $committeeApplication->status = $request->status;
+            $committeeApplication->remark = $request->remark;
+            $committeeApplication->save();
+
+            if ($request->status == ApplicationStatus::APPROVE) {
+                $this->createBeneficiary($application);
+            }
+        }
+    }
+
+
+    /**
+     * @param Application $application
+     * @return mixed
+     */
+    public function createBeneficiary($application)
+    {
+        if ($application->beneficiary()->doesntExist()) {
+            $beneficiary = new Beneficiary(
+                [
+                    "application_table_id" => $application->id,
+                    "program_id" => $application->program_id,
+                    "application_id" => $application->application_id,
+                    "name_en" => $application->name_en,
+                    "name_bn" => $application->name_bn,
+                    "mother_name_en" => $application->mother_name_en,
+                    "mother_name_bn" => $application->mother_name_bn,
+                    "father_name_en" => $application->father_name_en,
+                    "father_name_bn" => $application->father_name_bn,
+                    "spouse_name_en" => $application->spouse_name_en,
+                    "spouse_name_bn" => $application->spouse_name_bn,
+                    "identification_mark" => $application->identification_mark,
+                    "age" => $application->age,
+                    "date_of_birth" => $application->date_of_birth,
+//                "nationality" => $application->nationality,
+                    "gender_id" => $application->gender_id,
+                    "education_status" => $application->education_status,
+                    "profession" => $application->profession,
+                    "religion" => $application->religion,
+                    "marital_status" => $application->marital_status,
+                    "email" => $application->email,
+                    "verification_type" => $application->verification_type,
+                    "verification_number" => $application->verification_number,
+                    "image" => $application->image,
+                    "signature" => $application->signature,
+                    "current_division_id" => $application->current_division_id,
+                    "current_district_id" => $application->current_district_id,
+                    "current_city_corp_id" => $application->current_city_corp_id,
+                    "current_district_pourashava_id" => $application->current_district_pourashava_id,
+                    "current_upazila_id" => $application->current_upazila_id,
+                    "current_pourashava_id" => $application->current_pourashava_id,
+                    "current_thana_id" => $application->current_thana_id,
+                    "current_union_id" => $application->current_union_id,
+                    "current_ward_id" => $application->current_ward_id,
+                    "current_post_code" => $application->current_post_code,
+                    "current_address" => $application->current_address,
+                    "mobile" => $application->mobile,
+                    "permanent_division_id" => $application->permanent_division_id,
+                    "permanent_district_id" => $application->permanent_district_id,
+                    "permanent_city_corp_id" => $application->permanent_city_corp_id,
+                    "permanent_district_pourashava_id" => $application->permanent_district_pourashava_id,
+                    "permanent_upazila_id" => $application->permanent_upazila_id,
+                    "permanent_pourashava_id" => $application->permanent_pourashava_id,
+                    "permanent_thana_id" => $application->permanent_thana_id,
+                    "permanent_union_id" => $application->permanent_union_id,
+                    "permanent_ward_id" => $application->permanent_ward_id,
+                    "permanent_post_code" => $application->permanent_post_code,
+                    "permanent_address" => $application->permanent_address,
+                    "permanent_mobile" => $application->permanent_mobile,
+                    "nominee_en" => $application->nominee_en,
+                    "nominee_bn" => $application->nominee_bn,
+                    "nominee_verification_number" => $application->nominee_verification_number,
+                    "nominee_address" => $application->nominee_address,
+                    "nominee_image" => $application->nominee_image,
+                    "nominee_signature" => $application->nominee_signature,
+                    "nominee_relation_with_beneficiary" => $application->nominee_relation_with_beneficiary,
+                    "nominee_nationality" => $application->nominee_nationality,
+                    "account_name" => $application->account_name,
+                    "account_number" => $application->account_number,
+                    "account_owner" => $application->account_owner,
+                    "status" => $application->status,
+                    "score" => $application->score,
+                    "forward_committee_id" => $application->forward_committee_id,
+                    "remarks" => $application->remark,
+                ]
+            );
+
+            return $beneficiary->save();
+        }
+
+    }
+
+
+
+    public function forwardApplication($request, $applications)
+    {
+        foreach ($applications as $application) {
+            $committeeApplication = $application->committeeApplication()->firstOrNew([
+                    'committee_id' => $request->committee_id
+                ]
+            );
+
+            $committeeApplication->status = $request->status;
+            $committeeApplication->remark = $request->remark;
+            $committeeApplication->save();
+        }
+    }
+
+
+    /**
+     * @param $request
+     * @param Application[] $applications
+     * @return mixed
+     */
+    public function insertCommitteeApplications($request, $applications, $committeeId)
+    {
+        foreach ($applications as $application) {
+            $committeeApplication = $application->committeeApplication()->firstOrNew([
+                'committee_id' => $committeeId
+                ]
+            );
+
+            $committeeApplication->status = $request->status;
+            $committeeApplication->remark = $request->remark;
+            $committeeApplication->save();
+
+            $application->forward_committee_id = $committeeId;
+            $application->status = $request->status;
+            $application->remark = $request->remark;
+            $application->save();
+
+
+            return $committeeApplication;
+
+            $committeeApplication->save();
+        }
+    }
+
+
 
 
 

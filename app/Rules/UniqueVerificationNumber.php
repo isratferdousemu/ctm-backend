@@ -52,6 +52,6 @@ class UniqueVerificationNumber implements Rule
      */
     public function message()
     {
-        return 'The :attribute must be unique for the active financial year.';
+        return 'The NID/Birth Registration Number has been used.';
     }
 }
