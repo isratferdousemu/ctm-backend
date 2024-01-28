@@ -745,6 +745,7 @@ class ApplicationController extends Controller
                 )->first();
                 $image=Application::where('id','=',$id)
                 ->value('image');
+                $image= asset('uploads/application/' . $application->nominee_image);
 
                 // Grouping additional fields by ID
         $groupedAdditionalFields = $application->allowAddiFields->groupBy('id');
