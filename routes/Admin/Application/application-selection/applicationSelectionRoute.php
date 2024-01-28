@@ -17,6 +17,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/committee-list', [ApplicationController::class, 'getCommitteeList']);
 
     Route::post('/update-status', [ApplicationController::class, 'updateApplications'])->middleware(['role_or_permission:super-admin|application-entry-edit']);
+
+//    Route::get('/get/pdf', [ApplicationController::class, 'getPdf']);
+    Route::get('/generate-pdf', [\App\Http\Controllers\PDFController::class, 'index']);
+
     });
         /* -------------------------------------------------------------------------- */
     /*                      Mobile Operator Route                         */
