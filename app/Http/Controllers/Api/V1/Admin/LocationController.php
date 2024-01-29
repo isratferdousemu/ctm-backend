@@ -3494,64 +3494,6 @@ class LocationController extends Controller
     }
 
 
-    public function getDivisions($request)
-    {
-
-        $searchText = $request->query('searchText');
-        $perPage = $request->query('perPage');
-        $page = $request->get('page');
-        $sortBy = $request->query('sortBy') ?? 'name_en';
-        $orderBy = $request->query('orderBy') ?? 'asc';
-
-        $filterArrayNameEn = [];
-        $filterArrayNameBn = [];
-        $filterArrayCode = [];
-
-        return Location::query()
-            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
-                $query->where($filterArrayNameEn)
-                    ->orWhere($filterArrayNameBn)
-                    ->orWhere($filterArrayCode);
-            })
-            ->whereParentId(null)
-            // ->latest()
-            ->orderBy($sortBy, $orderBy)
-            ->get();
-    }
-
-
-    public function divisionReport(Request $request)
-    {
-        $applications = $this->getDivisions($request);
-
-        $data = ['applications' => $applications, 'headers' => $headers, 'columns' => $request->selectedColumns];
-
-        $pdf = LaravelMpdf::loadView('reports.application', $data, [],
-            [
-                'mode' => 'utf-8',
-                'format' => 'A4-P',
-                'title' => 'আবেদনের তালিকা',
-                'orientation' => 'L',
-                'default_font_size' => 10,
-                'margin_left' => 10,
-                'margin_right' => 10,
-                'margin_top' => 10,
-                'margin_bottom' => 10,
-                'margin_header' => 10,
-                'margin_footer' => 10,
-            ]);
-
-
-        $fileName = 'আবেদনের_তালিকা_' . now()->timestamp . '_'. auth()->id() . '.pdf';
-
-        $pdfPath = public_path("/pdf/$fileName");
-
-        $pdf->save($pdfPath);
-
-        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
-
-
-    }
 
 
 

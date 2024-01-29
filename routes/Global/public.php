@@ -30,6 +30,6 @@ Route::prefix('global')->group(function () {
      Route::get('/applicants copy/{id}',[ApplicationController::class, 'getApplicationCopyById']);
     Route::get('/online-application/check',[ApplicationController::class, 'onlineApplicationCheck']);
 
-    Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);
-    Route::get('/pdf', [ApplicationController::class, 'getPdf']);
+//    Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);
+    Route::get('/pdf', [\App\Http\Controllers\Api\V1\Admin\ReportController::class, 'divisionReport']);
 });

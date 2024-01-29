@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>বিভাগের তালিকা </title>
 
     <style>
         body {
@@ -94,17 +94,21 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>Division</td>
-        </tr>
-        <tr>
-            <td colspan="6" style="width: 100%; text-align: center">
-                <p>
-                    কোন তথ্য পাওয়া যায়নি
-                </p>
-            </td>
-        </tr>
+        @foreach($divisions as $item)
+            <tr>
+                <td>{{$item->iteration}}</td>
+                <td>{{$item->name_bn}}</td>
+            </tr>
+        @endforeach
+
+
+        @foreach($districts as $item)
+            <tr>
+                <td>{{$item->iteration}}</td>
+                <td>{{$item->parent->name_bn}}</td>
+                <td>{{$item->name_bn}}</td>
+            </tr>
+        @endforeach
     </tbody>
 </table>
 
