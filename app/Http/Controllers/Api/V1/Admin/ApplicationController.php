@@ -779,9 +779,6 @@ class ApplicationController extends Controller
         $nid_no = $request->query('nid_no');
         $list_type_id = $request->query('list_type_id');
         $program_id = $request->query('program_id');
-        $location_type_id = $request->query('location_type_id');
-        $perPage = $request->query('perPage');
-        $page = $request->query('page');
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -834,7 +831,7 @@ class ApplicationController extends Controller
 
         $query = Application::query();
 
-//        $this->applyUserWiseFiltering($query);
+        $this->applyUserWiseFiltering($query);
 
         $query->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayApplicationId, $filterArrayNomineeNameEn, $filterArrayNomineeNameBn, $filterArrayAccountNo, $filterArrayNidNo, $filterArrayListTypeId, $filterArrayProgramId) {
             $query->where($filterArrayNameEn)
