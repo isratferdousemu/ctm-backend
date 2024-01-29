@@ -37,7 +37,9 @@ class BeneficiaryService
         $beneficiary_id = $request->query('beneficiary_id');
         $nominee_name = $request->query('nominee_name');
         $account_number = $request->query('account_number');
+        $verification_number = $request->query('nid');
         $status = $request->query('status');
+
         $perPage = $request->query('perPage', 10);
         $sortByColumn = $request->query('sortBy', 'created_at');
         $orderByDirection = $request->query('orderBy', 'asc');
@@ -53,14 +55,22 @@ class BeneficiaryService
             $query = $query->where('permanent_city_corp_id', $city_corp_id);
         if ($district_pourashava_id)
             $query = $query->where('permanent_district_pourashava_id', $district_pourashava_id);
-        if ($upazila_id)
-            $query = $query->where('permanent_upazila_id', $upazila_id);
-        if ($pourashava_id)
-            $query = $query->where('permanent_pourashava_id', $pourashava_id);
+//        if ($upazila_id)
+//            $query = $query->where('permanent_upazila_id', $upazila_id);
+//        if ($pourashava_id)
+//            $query = $query->where('permanent_pourashava_id', $pourashava_id);
         if ($thana_id)
-            $query = $query->where('permanent_thana_id', $thana_id);
+            $query = $query->where(function ($q) use ($thana_id) {
+                $q->where('permanent_thana_id', $thana_id)
+                    ->orWhere('permanent_upazila_id', $thana_id);
+            });
+//        $query = $query->where('permanent_thana_id', $thana_id);
         if ($union_id)
-            $query = $query->where('permanent_union_id', $union_id);
+            $query = $query->where(function ($q) use ($union_id) {
+                $q->where('permanent_union_id', $union_id)
+                    ->orWhere('permanent_pourashava_id', $union_id);
+            });
+//            $query = $query->where('permanent_union_id', $union_id);
         if ($ward_id)
             $query = $query->where('permanent_ward_id', $ward_id);
 
@@ -71,8 +81,11 @@ class BeneficiaryService
             $query = $query->whereRaw('UPPER(nominee_en) LIKE "%' . strtoupper($nominee_name) . '%"');
         if ($account_number)
             $query = $query->where('account_number', $account_number);
+        if ($verification_number)
+            $query = $query->where('verification_number', $verification_number);
         if ($status)
             $query = $query->where('status', $status);
+
 
 
         return $query->with('program',
@@ -113,7 +126,7 @@ class BeneficiaryService
             'permanentThana',
             'permanentUnion',
             'permanentWard')
-            ->findOrFail($id);
+            ->find($id);
     }
 
     /**
@@ -122,7 +135,7 @@ class BeneficiaryService
      */
     public function get($id): mixed
     {
-        return Beneficiary::findOrFail($id);
+        return Beneficiary::find($id);
     }
 
     /**
@@ -131,7 +144,7 @@ class BeneficiaryService
      */
     public function getByBeneficiaryId($beneficiary_id): mixed
     {
-        return Beneficiary::with('program')->where('application_id', $beneficiary_id)->firstOrFail();
+        return Beneficiary::with('program')->where('application_id', $beneficiary_id)->first();
     }
 
     /**
@@ -195,8 +208,8 @@ class BeneficiaryService
         $district_id = $request->query('district_id');
         $city_corp_id = $request->query('city_corp_id');
         $district_pourashava_id = $request->query('district_pourashava_id');
-        $upazila_id = $request->query('upazila_id');
-        $pourashava_id = $request->query('pourashava_id');
+//        $upazila_id = $request->query('upazila_id');
+//        $pourashava_id = $request->query('pourashava_id');
         $thana_id = $request->query('thana_id');
         $union_id = $request->query('union_id');
         $ward_id = $request->query('ward_id');
@@ -204,6 +217,9 @@ class BeneficiaryService
         $beneficiary_id = $request->query('beneficiary_id');
         $nominee_name = $request->query('nominee_name');
         $account_number = $request->query('account_number');
+        $verification_number = $request->query('nid');
+        $status = $request->query('status');
+
         $perPage = $request->query('perPage', 10);
         $sortByColumn = $request->query('sortBy', 'created_at');
         $orderByDirection = $request->query('orderBy', 'asc');
@@ -219,14 +235,25 @@ class BeneficiaryService
             $query = $query->where('permanent_city_corp_id', $city_corp_id);
         if ($district_pourashava_id)
             $query = $query->where('permanent_district_pourashava_id', $district_pourashava_id);
-        if ($upazila_id)
-            $query = $query->where('permanent_upazila_id', $upazila_id);
-        if ($pourashava_id)
-            $query = $query->where('permanent_pourashava_id', $pourashava_id);
+//        if ($upazila_id)
+//            $query = $query->where('permanent_upazila_id', $upazila_id);
+//        if ($pourashava_id)
+//            $query = $query->where('permanent_pourashava_id', $pourashava_id);
+//        if ($thana_id)
+//            $query = $query->where('permanent_thana_id', $thana_id);
         if ($thana_id)
-            $query = $query->where('permanent_thana_id', $thana_id);
+            $query = $query->where(function ($q) use ($thana_id) {
+                $q->where('permanent_thana_id', $thana_id)
+                    ->orWhere('permanent_upazila_id', $thana_id);
+            });
         if ($union_id)
-            $query = $query->where('permanent_union_id', $union_id);
+            $query = $query->where(function ($q) use ($union_id) {
+                $q->where('permanent_union_id', $union_id)
+                    ->orWhere('permanent_pourashava_id', $union_id);
+            });
+
+//        if ($union_id)
+//            $query = $query->where('permanent_union_id', $union_id);
         if ($ward_id)
             $query = $query->where('permanent_ward_id', $ward_id);
 
@@ -237,7 +264,10 @@ class BeneficiaryService
             $query = $query->whereRaw('UPPER(nominee_en) LIKE "%' . strtoupper($nominee_name) . '%"');
         if ($account_number)
             $query = $query->where('account_number', $account_number);
-        $query = $query->where('status', 3); // waiting
+        if ($verification_number)
+            $query = $query->where('verification_number', $verification_number);
+        if ($status)
+            $query = $query->where('status', $status);
 
 
         return $query->with('program',

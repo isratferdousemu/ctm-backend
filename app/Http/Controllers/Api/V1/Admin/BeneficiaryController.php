@@ -59,10 +59,17 @@ class BeneficiaryController extends Controller
     {
         try {
             $beneficiary = $this->beneficiaryService->detail($id);
-            return BeneficiaryResource::make($beneficiary)->additional([
-                'success' => true,
-                'message' => $this->fetchSuccessMessage,
-            ]);
+            if ($beneficiary) {
+                return BeneficiaryResource::make($beneficiary)->additional([
+                    'success' => true,
+                    'message' => $this->fetchSuccessMessage,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $this->notFoundMessage,
+                ], ResponseAlias::HTTP_OK);
+            }
 
         } catch (\Throwable $th) {
             //throw $th;
@@ -78,10 +85,17 @@ class BeneficiaryController extends Controller
     {
         try {
             $beneficiary = $this->beneficiaryService->get($id);
-            return BeneficiaryResource::make($beneficiary)->additional([
-                'success' => true,
-                'message' => $this->fetchSuccessMessage,
-            ]);
+            if ($beneficiary) {
+                return BeneficiaryResource::make($beneficiary)->additional([
+                    'success' => true,
+                    'message' => $this->fetchSuccessMessage,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $this->notFoundMessage,
+                ], ResponseAlias::HTTP_OK);
+            }
 
         } catch (\Throwable $th) {
             //throw $th;
@@ -93,10 +107,17 @@ class BeneficiaryController extends Controller
     {
         try {
             $beneficiary = $this->beneficiaryService->getByBeneficiaryId($beneficiary_id);
-            return BeneficiaryResource::make($beneficiary)->additional([
-                'success' => true,
-                'message' => $this->fetchSuccessMessage,
-            ]);
+            if ($beneficiary) {
+                return BeneficiaryResource::make($beneficiary)->additional([
+                    'success' => true,
+                    'message' => $this->fetchSuccessMessage,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $this->notFoundMessage,
+                ], ResponseAlias::HTTP_OK);
+            }
 
         } catch (\Throwable $th) {
             //throw $th;
