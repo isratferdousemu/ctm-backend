@@ -100,7 +100,7 @@
     @php($count = 0);
     @foreach($applications as $item)
         <tr>
-            <td>{{$count++}}</td>
+            <td>{{++$count}}</td>
 
             @foreach($columns as $col)
                 <td>{{$item[$col]}}</td>
