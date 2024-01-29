@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Http\Resources\Admin\Geographic\DistrictResource;
+use App\Http\Controllers\Controller;
 use App\Http\Traits\LocationTrait;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\UserTrait;
@@ -10,7 +10,7 @@ use App\Models\Location;
 use Illuminate\Http\Request;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 
-class ReportController
+class ReportController extends Controller
 {
     use MessageTrait, UserTrait, LocationTrait;
     public function getDivisions($request)
@@ -47,9 +47,7 @@ class ReportController
 
         $data = ['divisions' => $divisions];
 
-        return view('reports.division_report', $data);
-
-        $pdf = LaravelMpdf::loadView('reports.division_report', $data, [],
+        $pdf = LaravelMpdf::loadView('reports.division', $data, [],
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-P',

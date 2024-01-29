@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>আবেদনের তালিকা</title>
+    <title>Document</title>
 
     <style>
         body {
@@ -100,9 +100,12 @@
     <thead>
     <tr>
         <th style="width: 10%;">ক্রমিক নং </th>
-        @foreach($columns as $column)
-            <th>{{$headers[$column]}}</th>
-        @endforeach
+     
+            <th>বিভাগ</th>
+            <th>জেলা</th>
+            <th>উপজেলা/সিটি কর্পোরেশন/জেলা পৌরসভা</th>
+            <th>থানা/ইউনিয়ন/পৌরসভা</th>
+   
     </tr>
     </thead>
     <tbody>
