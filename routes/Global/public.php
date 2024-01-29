@@ -31,4 +31,5 @@ Route::prefix('global')->group(function () {
     Route::get('/online-application/check',[ApplicationController::class, 'onlineApplicationCheck']);
 
     Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);
+    Route::get('/pdf', [ApplicationController::class, 'getPdf']);
 });

@@ -670,50 +670,76 @@ class ApplicationController extends Controller
     public function getColumnValue($column, $application)
     {
         return match ($column) {
-            'name_en' =>  $application->name_bn,
-            'program.name_en' => $application->program?->name_bn,
+            'name_en' =>  $application->name_en,
+            'program.name_en' => $application->program?->name_en,
             'application_id' => $application->application_id,
             'status' => $application->getStatus(),
             'score' => $application->score,
             'account_number' => $application->account_number,
             'verification_number' => $application->verification_number,
-
-
-
+            'location' => $application->cityCorporation?->name_en ?: ($application->districtPouroshova?->name_en ?: $application->upazila?->name_en),
+            'union_pouro_city' => $application->thana?->name_en ?: ($application->union?->name_en ?: $application->pourashava?->name_en),
+            'ward' => $application->ward?->name_en,
+            'father_name_en' => $application->father_name_en,
+            'mother_name_en' => $application->mother_name_en,
+            'marital_status' => $application->marital_status,
+            'spouse_name_en' => $application->spouse_name_en,
+            'nominee_en' => $application->nominee_en,
+            'nominee_relation_with_beneficiary' => $application->nominee_relation_with_beneficiary,
+            'mobile' => $application->mobile,
         };
     }
 
 
-    public function getTableValues($applications, $columns)
+    public function getTableHeaders()
+    {
+        return [
+            'name_en' =>  'নাম',
+            'program.name_en' => 'প্রোগ্রাম নাম',
+            'application_id' => 'আইডি',
+            'status' => 'স্ট্যাটাস',
+            'score' => 'প্রোভার্টি স্কোর',
+            'account_number' => 'একাউন্ট নং',
+            'verification_number' => 'ভেরিফিকেশন নম্বর',
+            'location' => 'সিটি / জেলা পৌর / উপজেলা',
+            'union_pouro_city' => 'থানা /ইউনিয়ন /পৌর',
+            'ward' => 'ওয়ার্ড',
+            'father_name_en' => 'পিতার নাম',
+            'mother_name_en' => 'মাতার নাম',
+            'marital_status' => 'বৈবাহিক অবস্থা',
+            'spouse_name_en' => 'স্বামী বা স্ত্রী নাম',
+            'nominee_en' => 'নমিনি',
+            'nominee_relation_with_beneficiary' => 'নমিনির সাথে সম্পর্ক',
+            'mobile' => 'মোবাইল',
+        ];
+    }
+
+
+    public function formatApplicationData($applications, $columns)
     {
         $data = [];
 
-
         foreach ($applications as $key => $application) {
             foreach ($columns as $column) {
-//                $data[$key][$column] =
+                $data[$key][$column] = $this->getColumnValue($column, $application);
             }
         }
 
+        return $data;
     }
 
 
     public function getPdf(Request $request)
     {
-
-        Log::info('list', $request->all());
-
         $applications = $this->getApplicationsForPdf($request);
+//        $applications = $this->formatApplicationData($applications, $request->selectedColumns);
+        $headers = $this->getTableHeaders();
 
+        $data = ['applications' => $applications, 'headers' => $headers, 'columns' => $request->selectedColumns];
 
-        return $this->getTableValues($applications, $request->selectedColumns);
+//        return view('reports.application');
 
-
-        $fileName = 'আবেদনের_তালিকা_' . now()->timestamp . '_'. auth()->id();
-
-        $data = ['applications' => $applications];
-
-        $pdf = LaravelMpdf::loadView('pdf.applications', $data, [],
+        $pdf = LaravelMpdf::loadView('reports.application', $data, [],
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-P',
@@ -727,6 +753,9 @@ class ApplicationController extends Controller
                 'margin_header' => 10,
                 'margin_footer' => 10,
             ]);
+
+
+        $fileName = 'আবেদনের_তালিকা_' . now()->timestamp . '_'. auth()->id() . '.pdf';
 
         $pdfPath = public_path("/pdf/$fileName");
 
@@ -802,7 +831,7 @@ class ApplicationController extends Controller
 
         $query = Application::query();
 
-        $this->applyUserWiseFiltering($query);
+//        $this->applyUserWiseFiltering($query);
 
         $query->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayApplicationId, $filterArrayNomineeNameEn, $filterArrayNomineeNameBn, $filterArrayAccountNo, $filterArrayNidNo, $filterArrayListTypeId, $filterArrayProgramId) {
             $query->where($filterArrayNameEn)
