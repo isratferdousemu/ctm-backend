@@ -20,33 +20,47 @@
         }
 
         .title-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .left,
-        .right {
-            width: 50px; /* Adjust the width of your images */
-            height: auto;
-            margin: 0 10px;
-        }
-
-        .title {
-            font-size: 20px;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         table {
-            font-family: 'kalpurush' !important;
-            border-collapse: collapse;
             width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px; /* Add margin to separate tables */
         }
 
-        td, th {
+        table.img-table img {
+            width: 30px; /* Adjust the width of your images */
+            height: auto;
+        }
+
+        td {
+            border: none;
+        }
+
+        .border-table td {
             border: 1px solid #dddddd;
             text-align: left;
             padding: 8px;
             font-size: 14px;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .title {
+            font-size: 20px;
+            margin: 0; /* Remove default margin */
         }
 
         .footer {
@@ -55,38 +69,34 @@
             width: 100%;
             text-align: center;
         }
-        .left {
-            width: 50px; /* Adjust the width of your images */
-            height: auto;
-            margin-right: auto;
-            margin-left: 0;
-        }
-
-        .right {
-            width: 50px; /* Adjust the width of your images */
-            height: auto;
-            margin-left: auto;
-            margin-right: 0;
-        }
     </style>
 </head>
 <body>
 
-
 <p>তালিকাভুক্ত  রিপোর্ট | সমাজসেবা অধিদফতর </p>
 
-
 <div class="title-container">
-    <img src="{{ public_path('image/bangladesh-govt-logo.png') }}" alt="Left Image" class="left"style="width: 100px; height: 100px;">
-    <h2 class="title">
-        সমাজসেবা অধিদফতর <br>
-        সামাজিক নিরাপত্তা কর্মসূচি
-    </h2>
-    <img src="{{ public_path('image/logo.png') }}" alt="Right Image" class="right" style="width: 100px; height: 100px;">
+    <!-- Empty div for the first table -->
 </div>
-<br>
 
-<table>
+<table style="border: none;">
+    <tbody>
+        <tr>
+           <td class="left">
+    <img src="{{ public_path('image/bangladesh-govt-logo.png') }}" alt="Left Image" style="width: 100px; height: auto;">
+</td>
+            <td class="center">
+                <h2 class="title">
+                    সমাজসেবা অধিদফতর <br>
+                    সামাজিক নিরাপত্তা কর্মসূচি
+                </h2>
+            </td>
+            <td class="right">  <img src="{{ public_path('image/logo.png') }}" alt="Right Image" style="width: 80px; height: 80px;"></td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="border-table">
     <thead>
     <tr>
         <th style="width: 10%;">ক্রমিক নং </th>
@@ -96,25 +106,20 @@
     </tr>
     </thead>
     <tbody>
-
     @php($count = 0);
     @foreach($applications as $item)
         <tr>
             <td>{{++$count}}</td>
-
             @foreach($columns as $col)
                 <td>{{$item[$col]}}</td>
             @endforeach
         </tr>
-
     @endforeach
-
-
     </tbody>
 </table>
 
 <div class="footer">
-    Copyright © 2024, DSS
+    Copyright &copy; 2024, DSS
 </div>
 
 </body>
