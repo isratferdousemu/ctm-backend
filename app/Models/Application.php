@@ -270,6 +270,15 @@ class Application extends Model
 
     public function getStatus()
     {
+
+        return match ($this->status) {
+            0 => 'Not Selected',
+            1 => 'Forward',
+            2 => 'Approved',
+            3 => 'Rejected',
+            4 => 'Waiting'
+        };
+
         return match ($this->status) {
             0 => 'অনির্বাচিত',
             1 => 'ফরওয়ার্ড',

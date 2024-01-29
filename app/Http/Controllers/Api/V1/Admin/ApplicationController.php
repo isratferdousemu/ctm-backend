@@ -732,12 +732,11 @@ class ApplicationController extends Controller
     public function getPdf(Request $request)
     {
         $applications = $this->getApplicationsForPdf($request);
-//        $applications = $this->formatApplicationData($applications, $request->selectedColumns);
+        $applications = $this->formatApplicationData($applications, $request->selectedColumns);
         $headers = $this->getTableHeaders();
 
         $data = ['applications' => $applications, 'headers' => $headers, 'columns' => $request->selectedColumns];
 
-//        return view('reports.application');
 
         $pdf = LaravelMpdf::loadView('reports.application', $data, [],
             [

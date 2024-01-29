@@ -90,21 +90,29 @@
     <thead>
     <tr>
         <th style="width: 10%;">ক্রমিক নং </th>
-        <th>বিভাগ</th>
+        @foreach($columns as $column)
+            <th>{{$headers[$column]}}</th>
+        @endforeach
     </tr>
     </thead>
     <tbody>
+
+    @php($count = 0);
+    @foreach($applications as $item)
+        <tr>
+            <td>{{$count++}}</td>
+
+            @foreach($columns as $col)
+                <td>{{$item[$col]}}</td>
+            @endforeach
+        </tr>
+
+    @endforeach
     <tr>
         <td>1</td>
         <td>Division</td>
     </tr>
-    <tr>
-        <td colspan="6" style="width: 100%; text-align: center">
-            <p>
-                কোন তথ্য পাওয়া যায়নি
-            </p>
-        </td>
-    </tr>
+
     </tbody>
 </table>
 
