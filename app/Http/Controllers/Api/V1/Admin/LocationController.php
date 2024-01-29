@@ -30,6 +30,7 @@ use App\Http\Traits\UserTrait;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Validator;
 
 class LocationController extends Controller
@@ -884,7 +885,7 @@ class LocationController extends Controller
      *         description="search by name",
      *         @OA\Schema(type="string")
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="division_id",
      *         in="query",
@@ -903,7 +904,7 @@ class LocationController extends Controller
      *         description="location_type",
      *         @OA\Schema(type="string")
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="perPage",
      *         in="query",
@@ -1077,7 +1078,7 @@ class LocationController extends Controller
 
             ->whereIn('locations.type', [$this->city, $this->thana])
 
-            // Filtering            
+            // Filtering
             ->when($location_type, function ($query, $location_type) {
                 return $query->where('locations.location_type', $location_type);
             })
@@ -1909,7 +1910,7 @@ class LocationController extends Controller
      *      summary="get paginated union",
      *      description="get paginated union",
      *      security={{"bearer_token":{}}},
-     * 
+     *
      *     @OA\Parameter(
      *         name="searchText",
      *         in="query",
@@ -1946,7 +1947,7 @@ class LocationController extends Controller
      *         description="Filter by upazila_id_search",
      *         @OA\Schema(type="string")
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="perPage",
      *         in="query",
@@ -2168,7 +2169,7 @@ class LocationController extends Controller
             // , $this->union, $this->thana
             // ->latest()
 
-            // Filtering            
+            // Filtering
 
             ->when($city_id, function ($query, $city_id) {
                 return $query->where('parent3.id', $city_id);
@@ -2615,7 +2616,7 @@ class LocationController extends Controller
      *         description="asc or desc",
      *         @OA\Schema(type="text")
      *     ),
-     * 
+     *
      *      *     @OA\Parameter(
      *         name="division_id",
      *         in="query",
@@ -2640,29 +2641,29 @@ class LocationController extends Controller
      *         description="Filter by city_id",
      *         @OA\Schema(type="string")
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="city_thana_id_search",
      *         in="query",
      *         description="Filter by thana_id",
      *         @OA\Schema(type="string")
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="upazila_id_search",
      *         in="query",
      *         description="Filter by upazila_id_search",
      *         @OA\Schema(type="string")
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="union_id_search",
      *         in="query",
      *         description="Filter by union_id_search",
      *         @OA\Schema(type="string")
      *     ),
-     * 
-     * 
+     *
+     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -2934,7 +2935,7 @@ class LocationController extends Controller
             //End searching
             ->where('locations.type', '=', $this->ward)
 
-            // Filtering            
+            // Filtering
             ->when($district_pouro_id, function ($query, $district_pouro_id) {
                 return $query->where('parent4.id', $district_pouro_id);
             })
@@ -3491,4 +3492,69 @@ class LocationController extends Controller
             ->log('Ward Deleted!!');
         return $this->sendResponse($ward, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
+
+
+    public function getDivisions($request)
+    {
+
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->get('page');
+        $sortBy = $request->query('sortBy') ?? 'name_en';
+        $orderBy = $request->query('orderBy') ?? 'asc';
+
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayCode = [];
+
+        return Location::query()
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode);
+            })
+            ->whereParentId(null)
+            // ->latest()
+            ->orderBy($sortBy, $orderBy)
+            ->get();
+    }
+
+
+    public function divisionReport(Request $request)
+    {
+        $applications = $this->getDivisions($request);
+
+        $data = ['applications' => $applications, 'headers' => $headers, 'columns' => $request->selectedColumns];
+
+        $pdf = LaravelMpdf::loadView('reports.application', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-P',
+                'title' => 'আবেদনের তালিকা',
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+
+        $fileName = 'আবেদনের_তালিকা_' . now()->timestamp . '_'. auth()->id() . '.pdf';
+
+        $pdfPath = public_path("/pdf/$fileName");
+
+        $pdf->save($pdfPath);
+
+        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+
+
+    }
+
+
+
+
+
 }
