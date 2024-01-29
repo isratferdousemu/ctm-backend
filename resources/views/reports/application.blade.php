@@ -108,10 +108,7 @@
         </tr>
 
     @endforeach
-    <tr>
-        <td>1</td>
-        <td>Division</td>
-    </tr>
+
 
     </tbody>
 </table>
