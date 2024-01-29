@@ -27,6 +27,7 @@ use App\Http\Services\Admin\Location\LocationService;
 use App\Http\Traits\LocationTrait;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\UserTrait;
+use App\Models\Committee;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -3495,8 +3496,12 @@ class LocationController extends Controller
 
 
 
+    public function getCommitteesByLocation($typeId, $locationId)
+    {
+        return $this->sendResponse(Committee::whereCommitteeType($typeId)
+            ->whereLocationId($locationId)
+            ->get()
+        );
 
-
-
-
+    }
 }
