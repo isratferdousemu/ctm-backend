@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>জেলার তালিকা</title>
 
     <style>
         body {
@@ -69,6 +69,11 @@
             width: 100%;
             text-align: center;
         }
+
+        /*@page {*/
+        /*    header: page-header;*/
+        /*    footer: page-footer;*/
+        /*}*/
     </style>
 </head>
 <body>
@@ -100,20 +105,19 @@
     <thead>
     <tr>
         <th style="width: 10%;">ক্রমিক নং </th>
-     
+
             <th>বিভাগ</th>
             <th>জেলা</th>
-   
+
     </tr>
     </thead>
     <tbody>
     @php($count = 0);
-    @foreach($applications as $item)
+    @foreach($districts as $row)
         <tr>
             <td>{{++$count}}</td>
-            @foreach($columns as $col)
-                <td>{{$item[$col]}}</td>
-            @endforeach
+            <td>{{$row->parent?->name_bn}}</td>
+            <td>{{$row->name_bn}}</td>
         </tr>
     @endforeach
     </tbody>

@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/update', [LocationController::class, 'districtUpdate'])->middleware(['role_or_permission:super-admin|district-update']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyDistrict'])->middleware(['role_or_permission:super-admin|district-delete']);
         Route::get('/generate-pdf', [\App\Http\Controllers\PDFController::class, 'index']);
+        Route::get('/generate-pdf', [ReportController::class, 'districtReport']);
     });
 
     /* -------------------------------------------------------------------------- */
@@ -42,9 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/update', [LocationController::class, 'cityUpdate'])->middleware(['role_or_permission:super-admin|city-update']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyCity'])->middleware(['role_or_permission:super-admin|city-delete']);
         Route::get('/get/{district_id}/{location_type}',[LocationController::class, 'getAllCityByDistrictId']);
-        Route::get('/generate-pdf', [\App\Http\Controllers\PDFController::class, 'index']);
-
-
+        Route::get('/generate-pdf', [ReportController::class, 'cityReport']);
     });
 
     /* -------------------------------------------------------------------------- */
@@ -74,8 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/pouro/get/{thana_id}',[LocationController::class, 'getAllPouroByThanaId']);
         Route::post('/update', [LocationController::class, 'unionUpdate'])->middleware(['role_or_permission:super-admin|union-update']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyUnion'])->middleware(['role_or_permission:super-admin|union-delete']);
-        Route::get('/generate-pdf', [\App\Http\Controllers\PDFController::class, 'index']);
-
+        Route::get('/generate-pdf', [ReportController::class, 'unionReport']);
     });
 
 
@@ -92,7 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get/{union_id}',[LocationController::class, 'getAllWardByUnionId']);
         Route::post('/update', [LocationController::class, 'wardUpdate'])->middleware(['role_or_permission:super-admin|ward-update']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyWard'])->middleware(['role_or_permission:super-admin|ward-delete']);
-        Route::get('/generate-pdf', [\App\Http\Controllers\PDFController::class, 'index']);
+        Route::get('/generate-pdf', [ReportController::class, 'wardReport']);
 
     });
 

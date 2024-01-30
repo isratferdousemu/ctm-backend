@@ -69,6 +69,11 @@
             width: 100%;
             text-align: center;
         }
+
+        @page {
+            header: page-header;
+            footer: page-footer;
+        }
     </style>
 </head>
 <body>
@@ -99,9 +104,9 @@
 <table class="border-table">
     <thead>
     <tr>
-        <th style="width: 10%;">ক্রমিক নং </th>
+        <th style="text-align: center;">ক্রমিক নং </th>
 
-            <th>বিভাগ</th>
+        <th>বিভাগ</th>
 
     </tr>
     </thead>
@@ -109,16 +114,23 @@
     @php($count = 0);
     @foreach($divisions as $item)
         <tr>
-            <td>{{++$count}}</td>
-            <td>{{$item->name_bn}}</td>
+            <td style="text-align: center">{{++$count}}</td>
+            <td style="text-align: center">{{$item->name_bn}}</td>
         </tr>
     @endforeach
     </tbody>
 </table>
 
-<div class="footer">
-    Copyright &copy; 2024, DSS
-</div>
+
+
+<htmlpageheader name="page-header">
+</htmlpageheader>
+
+<htmlpagefooter name="page-footer">
+    <div class="footer">
+        Copyright &copy; 2024, DSS
+    </div>
+</htmlpagefooter>
 
 </body>
 </html>
