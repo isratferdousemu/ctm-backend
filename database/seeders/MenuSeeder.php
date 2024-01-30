@@ -53,8 +53,7 @@ class MenuSeeder extends Seeder
         // (34, 143, 33, 'General', 'General', 1, NULL, 31, NULL, '2023-10-22 10:09:35', '2023-10-22 10:09:35');";
 
 
-
-    $menus = "INSERT INTO `menus` (`id`, `page_link_id`, `parent_id`, `label_name_en`, `label_name_bn`, `link_type`, `link`, `order`, `deleted_at`, `created_at`, `updated_at`) VALUES
+        $menus = "INSERT INTO `menus` (`id`, `page_link_id`, `parent_id`, `label_name_en`, `label_name_bn`, `link_type`, `link`, `order`, `deleted_at`, `created_at`, `updated_at`) VALUES
     (1, NULL, NULL, 'Dashboard', 'Dashboard', 2, '/dashboard', 1, NULL, '2023-10-07 02:41:56', '2023-10-08 05:39:49'),
     (2, NULL, NULL, 'System Configuration', 'System Configuration', 1, NULL, 2, NULL, '2023-10-07 02:43:05', '2023-10-07 02:43:05'),
     (3, NULL, 2, 'Demographic Information', 'Demographic Information', NULL, NULL, 3, NULL, '2023-10-07 02:44:11', '2023-10-07 02:44:11'),
@@ -85,17 +84,17 @@ class MenuSeeder extends Seeder
      (28, 73, 26, 'Application List', 'Application List', 1, NULL, 28, NULL, '2023-10-07 23:15:06', '2023-10-07 23:15:06'),
      (29, NULL, NULL, 'Beneficiary Management', 'Beneficiary Management', NULL, NULL, 29, NULL, '2023-10-07 23:15:31', '2023-10-07 23:15:31'),
      (30, 98, 29, 'Beneficiary List', 'Beneficiary List', 1, NULL, 30, NULL, '2023-10-07 23:29:59', '2023-10-07 23:29:59'),
-    (31, 118, 29, 'Digital ID Card', 'Digital ID Card', 1, NULL, 31, NULL, '2023-10-07 23:31:01', '2023-10-07 23:31:01'),
-     (32, 113, 29, 'Beneficiary Exit', 'Beneficiary Exit', 1, NULL, 32, NULL, '2023-10-07 23:31:32', '2023-10-07 23:31:32'),
-     (33, 95, 29, 'Committee List', 'Committee List', 1, NULL, 33, NULL, '2023-10-07 23:32:00', '2023-10-22 04:10:05'),
+     (31, 114, 29, 'Digital ID Card', 'Digital ID Card', 1, NULL, 31, NULL, '2023-10-07 23:31:01', '2023-10-07 23:31:01'),
+     (32, 183, 29, 'Beneficiary Exit', 'Beneficiary Exit', 1, NULL, 32, NULL, '2023-10-07 23:31:32', '2023-10-07 23:31:32'),
+     (33, 102, 29, 'Committee List', 'Committee List', 1, NULL, 34, NULL, '2023-10-07 23:32:00', '2023-10-22 04:10:05'),
     --  (34, NULL, NULL, 'Payroll Management', 'Payroll Management', NULL, NULL, 34, '2023-10-07 23:50:52', '2023-10-07 23:32:29', '2023-10-07 23:50:52'),
     --  (35, NULL, NULL, 'check', 'check', NULL, NULL, 35, '2023-10-08 18:35:32', '2023-10-08 18:35:21', '2023-10-08 18:35:32'),
     --  (33, NULL, NULL, 'Settings', 'Settings', NULL, NULL, 30, NULL, '2023-10-22 04:09:14', '2023-10-22 04:09:14'),
     --  (34, 143, 33, 'General', 'General', 1, NULL, 31, NULL, '2023-10-22 04:09:35', '2023-10-22 04:09:35'),
     --  (36, 2, 29, 'Application Dashboard', 'Application Dashboard', 1, 'application/dashboard', 36, NULL, '2023-10-30 06:46:42', '2023-10-30 06:58:20'),
      (36, NULL, 26, 'PMT Score', 'PMT Score', 1, NULL, 36, NULL, '2023-10-30 08:09:04', '2023-10-30 08:09:04'),
- 
-     (37, 119, 26, 'Beneficiary Shifting', 'Beneficiary Shifting', 1, NULL, 34, NULL, '2023-10-30 08:10:30', '2023-10-30 08:10:30'),
+
+     (37, 118, 29, 'Beneficiary Shifting', 'Beneficiary Shifting', 1, NULL, 33, NULL, '2023-10-30 08:10:30', '2023-10-30 08:10:30'),
      (38, NULL, NULL, 'Payroll Management', 'Payroll Management', NULL, NULL, 30, NULL, '2023-10-30 08:12:16', '2023-10-31 05:21:43'),
      (39, NULL, NULL, 'Emergency Payment', 'Emergency Payment', NULL, NULL, 29, NULL, '2023-10-30 08:32:42', '2023-10-30 08:33:09'),
     (40, NULL, NULL, 'Grievance Management', 'Grievance Management', NULL, NULL, 29, NULL, '2023-10-30 08:35:11', '2023-10-30 08:39:57'),
@@ -138,9 +137,7 @@ class MenuSeeder extends Seeder
     (76, 56, 2, 'IBCS-PRIMAX', 'ড্যাশবোর্ড', 2, 'https://www.ibcs-primax.com/', 7, '2023-11-03 04:56:12', '2023-11-02 14:57:48', '2023-11-03 04:56:12'),
     (77, 179, 26, 'Committee Permission List', 'Committee Permission List', 1, NULL, 34, NULL, '2023-10-07 23:32:00', '2023-10-22 04:10:05')
 
-;"
-
-    ;
+;";
 
 
         // forgain key validation off
@@ -471,48 +468,48 @@ class MenuSeeder extends Seeder
         //         'created_at' => '2023-10-07 23:13:43',
         //         'updated_at' => '2023-10-22 04:07:43',
         //     ],
-            // ********************************
-            // Manage Allotment
-            // ********************************
-            // [
-            //     'id' => 20,
-            //     'page_link_id' => null,
-            //     'parent_id' => null,
-            //     'label_name_en' => 'Manage Allotment',
-            //     'label_name_bn' => 'Manage Allotment',
-            //     'link_type' => null,
-            //     'link' => null,
-            //     'order' => 20,
-            //     'deleted_at' => null,
-            //     'created_at' => '2023-10-07 16:37:40',
-            //     'updated_at' => '2023-10-07 16:37:40',
-            // ],
-            // [
-            //     'id' => 21,
-            //     'page_link_id' => 50,
-            //     'parent_id' => 20,
-            //     'label_name_en' => 'Allotment Entry',
-            //     'label_name_bn' => 'Allotment Entry',
-            //     'link_type' => 1,
-            //     'link' => null,
-            //     'order' => 21,
-            //     'deleted_at' => '2023-10-22 04:08:09',
-            //     'created_at' => '2023-10-07 23:13:19',
-            //     'updated_at' => '2023-10-22 04:07:31',
-            // ],
-            // [
-            //     'id' => 22,
-            //     'page_link_id' => 51,
-            //     'parent_id' => 20,
-            //     'label_name_en' => 'Allotment List',
-            //     'label_name_bn' => 'Allotment List',
-            //     'link_type' => 1,
-            //     'link' => null,
-            //     'order' => 22,
-            //     'deleted_at' => null,
-            //     'created_at' => '2023-10-07 23:13:43',
-            //     'updated_at' => '2023-10-22 04:07:43',
-            // ],
+        // ********************************
+        // Manage Allotment
+        // ********************************
+        // [
+        //     'id' => 20,
+        //     'page_link_id' => null,
+        //     'parent_id' => null,
+        //     'label_name_en' => 'Manage Allotment',
+        //     'label_name_bn' => 'Manage Allotment',
+        //     'link_type' => null,
+        //     'link' => null,
+        //     'order' => 20,
+        //     'deleted_at' => null,
+        //     'created_at' => '2023-10-07 16:37:40',
+        //     'updated_at' => '2023-10-07 16:37:40',
+        // ],
+        // [
+        //     'id' => 21,
+        //     'page_link_id' => 50,
+        //     'parent_id' => 20,
+        //     'label_name_en' => 'Allotment Entry',
+        //     'label_name_bn' => 'Allotment Entry',
+        //     'link_type' => 1,
+        //     'link' => null,
+        //     'order' => 21,
+        //     'deleted_at' => '2023-10-22 04:08:09',
+        //     'created_at' => '2023-10-07 23:13:19',
+        //     'updated_at' => '2023-10-22 04:07:31',
+        // ],
+        // [
+        //     'id' => 22,
+        //     'page_link_id' => 51,
+        //     'parent_id' => 20,
+        //     'label_name_en' => 'Allotment List',
+        //     'label_name_bn' => 'Allotment List',
+        //     'link_type' => 1,
+        //     'link' => null,
+        //     'order' => 22,
+        //     'deleted_at' => null,
+        //     'created_at' => '2023-10-07 23:13:43',
+        //     'updated_at' => '2023-10-22 04:07:43',
+        // ],
         // ];
 
         // DB::table('menus')->insert($menus);
