@@ -519,8 +519,11 @@ class PMTScoreController extends Controller
                 $all = Location::where('type', 'division')->get();
                     foreach($all as $item) {
                         $pmt                      = new PMTScore;
-              
-                        $pmt->score    	          = $request->score;
+                        $inputScore = $request->score;
+                        $formattedScore = sprintf("%.3f", $inputScore);
+                        // return    $formattedScore;
+                        $pmt->score    	          = $formattedScore;
+                     
                         $pmt->location_id    	   = $item['id'];
                         $pmt->financial_year_id   = $request->financial_year_id;
                         $pmt->type    	           = 1;
@@ -533,7 +536,11 @@ class PMTScoreController extends Controller
                     foreach($all2 as $item) {
                         $pmt                      = new PMTScore;
                 
-                        $pmt->score    	          = $request->score;
+                        $inputScore = $request->score;
+                        $formattedScore = sprintf("%.3f", $inputScore);
+                        $pmt->score    	          = $formattedScore;
+                        // return    $formattedScore;
+                      
                         $pmt->location_id    	   = $item['id'];
                         $pmt->financial_year_id   = $request->financial_year_id;
                         $pmt->type    	           = 2;
@@ -564,6 +571,11 @@ class PMTScoreController extends Controller
             }
 
                  $pmt                      = new PMTScore;
+                 $formattedScore = sprintf("%.3f", $item['inputScore']);
+                //  return    $formattedScore;
+              
+                  $pmt->score            = $formattedScore; 
+
               
                  $pmt->score    	       = $item['inputScore'];
                  $pmt->location_id    	   = $item['id'];
