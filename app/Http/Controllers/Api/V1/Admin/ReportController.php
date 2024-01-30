@@ -335,7 +335,7 @@ class ReportController extends Controller
 
         $data = ['items' => $items];
 
-        $pdf = LaravelMpdf::loadView('reports.city', $data, [],
+        $pdf = LaravelMpdf::chunkLoadView('<html-separator/>','reports.city', $data, [],
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-P',
@@ -532,7 +532,9 @@ class ReportController extends Controller
 
             ->orderBy($sortBy, $orderBy)
             ->with('parent.parent.parent', 'locationType')
-            ->get();
+            ->get()
+
+        ;
 
         return $union;
     }
@@ -545,7 +547,7 @@ class ReportController extends Controller
 
         $data = ['items' => $items];
 
-        $pdf = LaravelMpdf::loadView('reports.union', $data, [],
+        $pdf = LaravelMpdf::chunkLoadView('<html-separator/>','reports.union', $data, [],
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-P',
@@ -562,6 +564,323 @@ class ReportController extends Controller
 
 
         $fileName = 'থানা_ইউনিয়ন_পৌরসভা_তালিকা_' . now()->timestamp . '_'. auth()->id() . '.pdf';
+
+        $pdfPath = public_path("/pdf/$fileName");
+
+        $pdf->save($pdfPath);
+
+        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+    }
+
+
+    public function getWards($request)
+    {
+        // // Retrieve the query parameters
+        // $searchText = $request->query('searchText');
+        // $perPage = $request->query('perPage');
+        // $page = $request->query('page');
+
+        // $filterArrayNameEn = [];
+        // $filterArrayNameBn = [];
+        // $filterArrayCode = [];
+
+        // if ($searchText) {
+        //     $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+        //     $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+        //     $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
+        // }
+        // $ward = Location::query()
+        //     ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+        //         $query->where($filterArrayNameEn)
+        //             ->orWhere($filterArrayNameBn)
+        //             ->orWhere($filterArrayCode);
+        //     })
+        //     ->whereType($this->ward)
+        //     ->with('parent.parent.parent.parent', 'locationType')
+        //     ->latest()
+        //     ->paginate($perPage, ['*'], 'page');
+        // return WardResource::collection($ward)->additional([
+        //     'success' => true,
+        //     'message' => $this->fetchSuccessMessage,
+        // ]);
+
+
+        // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage') ?? 10;
+        $page = $request->query('page');
+        $sortBy = $request->query('sortBy') ?? 'name_en';
+        $orderBy = $request->query('orderBy') ?? 'asc';
+
+        //Filtering query parameters
+        $division_id = $request->query('division_id');
+        $district_id = $request->query('district_id');
+
+
+        $district_pouro_id = $request->query('district_pouro_id_search');
+
+        $upazila_id = $request->query('upazila_id_search');
+        $union_id = $request->query('union_id_search');
+
+        $city_id = $request->query('city_id_search');
+        $thana_id = $request->query('city_thana_id_search');
+
+        //Filtering query parameters
+
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayCode = [];
+
+        $parent4filterArrayNameEn = [];
+        $parent4filterArrayNameBn = [];
+        $parent4filterArrayCode = [];
+
+        $parent3filterArrayNameEn = [];
+        $parent3filterArrayNameBn = [];
+        $parent3filterArrayCode = [];
+
+        $parent2filterArrayNameEn = [];
+        $parent2filterArrayNameBn = [];
+        $parent2filterArrayCode = [];
+
+        $parent1filterArrayNameEn = [];
+        $parent1filterArrayNameBn = [];
+        $parent1filterArrayCode = [];
+
+        if ($searchText) {
+
+            /// Union/Thana/Pouro
+            $filterArrayNameEn[] = ['locations.name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['locations.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayCode[]   = ['locations.code', 'LIKE', '%' . $searchText . '%'];
+
+            /// Upazila/City/District Pouroshava
+            $parent4filterArrayNameEn[] = ['parent4.name_en', 'LIKE', '%' . $searchText . '%'];
+            $parent4filterArrayNameBn[] = ['parent4.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $parent4filterArrayCode[]   = ['parent4.code', 'LIKE', '%' . $searchText . '%'];
+
+            /// Upazila/City/District Pouroshava
+            $parent3filterArrayNameEn[] = ['parent3.name_en', 'LIKE', '%' . $searchText . '%'];
+            $parent3filterArrayNameBn[] = ['parent3.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $parent3filterArrayCode[]   = ['parent3.code', 'LIKE', '%' . $searchText . '%'];
+
+            /// District
+            $parent2filterArrayNameEn[] = ['parent2.name_en', 'LIKE', '%' . $searchText . '%'];
+            $parent2filterArrayNameBn[] = ['parent2.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $parent2filterArrayCode[]   = ['parent2.code', 'LIKE', '%' . $searchText . '%'];
+
+            /// Division
+            $parent1filterArrayNameEn[] = ['parent1.name_en', 'LIKE', '%' . $searchText . '%'];
+            $parent1filterArrayNameBn[] = ['parent1.name_bn', 'LIKE', '%' . $searchText . '%'];
+            $parent1filterArrayCode[]   = ['parent1.code', 'LIKE', '%' . $searchText . '%'];
+
+            if ($searchText != null) {
+                $page = 1;
+            }
+        }
+
+        //
+        // this is a 3 Level Search/Sorting
+        // so this will start from name which is at level 3
+        // then parent.name which is at level 2
+        // then parent.parent.name which is at level 1
+        //
+
+        // Level 3
+        if ($sortBy == 'name_en') {
+            $sortBy = 'name_en';
+        }
+        // Level 2
+        if ($sortBy == 'parent.name_en') {
+            $sortBy = 'parent4.name_en';
+        }
+        // Level 2
+        if ($sortBy == 'parent.parent.name_en') {
+            $sortBy = 'parent3.name_en';
+        }
+        // Level 2
+        if ($sortBy == 'parent.parent.parent.name_en') {
+            $sortBy = 'parent2.name_en';
+        }
+        // Level 1
+        if ($sortBy == 'parent.parent.parent.parent.name_en') {
+            $sortBy = 'parent1.name_en';
+        }
+
+        ///
+        // parent4
+        // parent3
+        // parent2
+        // parent1
+        /// JOIN and Search in Nested 1 is Nested of 2 which means parent2.parent1
+
+        $ward = Location::query()
+            ->leftJoin('locations as parent4', 'locations.parent_id', '=', 'parent4.id') // Join with the parent table
+            ->leftJoin('locations as parent3', 'parent4.parent_id', '=', 'parent3.id') // Join with the parent table
+            ->leftJoin('locations as parent2', 'parent3.parent_id', '=', 'parent2.id') // Join with the parent table
+            ->leftJoin('locations as parent1', 'parent2.parent_id', '=', 'parent1.id') // Join with the grandparent table
+            // ->leftJoin('locations as district', 'district.parent_id', '=', 'locations.id')
+            // ->leftJoin('locations as city', 'city.parent_id', '=', 'locations.id')
+            ->select(
+                'locations.*',
+            )
+
+            //searching
+
+            ->where(function ($query) use (
+                $filterArrayNameEn,
+                $filterArrayNameBn,
+                $filterArrayCode,
+                $parent4filterArrayNameEn,
+                $parent4filterArrayNameBn,
+                $parent4filterArrayCode,
+                $parent3filterArrayNameEn,
+                $parent3filterArrayNameBn,
+                $parent3filterArrayCode,
+                $parent2filterArrayNameEn,
+                $parent2filterArrayNameBn,
+                $parent2filterArrayCode,
+                $parent1filterArrayNameEn,
+                $parent1filterArrayNameBn,
+                $parent1filterArrayCode
+            ) {
+
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode) // Union Level Search
+
+                    ->orWhereHas('parent', function ($query) use (
+                        $parent4filterArrayNameEn,
+                        $parent4filterArrayNameBn,
+                        $parent4filterArrayCode,
+                        $parent3filterArrayNameEn,
+                        $parent3filterArrayNameBn,
+                        $parent3filterArrayCode,
+                        $parent2filterArrayNameEn,
+                        $parent2filterArrayNameBn,
+                        $parent2filterArrayCode,
+                        $parent1filterArrayNameEn,
+                        $parent1filterArrayNameBn,
+                        $parent1filterArrayCode
+                    ) {
+
+                        $query->where($parent4filterArrayNameEn)
+                            ->orWhere($parent4filterArrayNameBn)
+                            ->orWhere($parent4filterArrayCode) // City Level Search
+
+                            ->orWhereHas('parent', function ($query) use (
+                                $parent3filterArrayNameEn,
+                                $parent3filterArrayNameBn,
+                                $parent3filterArrayCode,
+                                $parent2filterArrayNameEn,
+                                $parent2filterArrayNameBn,
+                                $parent2filterArrayCode,
+                                $parent1filterArrayNameEn,
+                                $parent1filterArrayNameBn,
+                                $parent1filterArrayCode
+                            ) {
+
+                                $query->where($parent3filterArrayNameEn)
+                                    ->orWhere($parent3filterArrayNameBn)
+                                    ->orWhere($parent3filterArrayCode) // City Level Search
+
+                                    ->orWhereHas('parent', function ($query) use (
+                                        $parent2filterArrayNameEn,
+                                        $parent2filterArrayNameBn,
+                                        $parent2filterArrayCode,
+                                        $parent1filterArrayNameEn,
+                                        $parent1filterArrayNameBn,
+                                        $parent1filterArrayCode
+                                    ) {
+                                        $query->where($parent2filterArrayNameEn)
+                                            ->orWhere($parent2filterArrayNameBn)
+                                            ->orWhere($parent2filterArrayCode) // District Level Search
+
+                                            ->orWhereHas('parent', function ($query) use ($parent1filterArrayNameEn, $parent1filterArrayNameBn, $parent1filterArrayCode) {
+                                                $query->where($parent1filterArrayNameEn)
+                                                    ->orWhere($parent1filterArrayNameBn)
+                                                    ->orWhere($parent1filterArrayCode); // Division Level Search
+                                            });
+                                    });
+                            });
+                    });
+            })
+
+            //End searching
+            ->where('locations.type', '=', $this->ward)
+
+            // Filtering
+            ->when($district_pouro_id, function ($query, $district_pouro_id) {
+                return $query->where('parent4.id', $district_pouro_id);
+            })
+            ->when($city_id, function ($query, $city_id) {
+                return $query->where('parent3.id', $city_id)->where('parent3.type', $this->city);
+            })
+            ->when($upazila_id, function ($query, $upazila_id) {
+                return $query->where('parent3.id', $upazila_id);
+            })
+
+            // ------------------
+            ->when($thana_id, function ($query, $thana_id) {
+                return $query->where('parent4.id', $thana_id);
+            })
+            ->when($union_id, function ($query, $union_id) {
+                return $query->where('parent4.id', $union_id);
+            })
+            // ------------------
+
+            ->when($district_id, function ($query, $district_id) use ($district_pouro_id) {
+                // return $query->where('parent2.id', $district_id);
+                if (!$district_pouro_id) {
+                    $query
+                        ->where('parent3.id', $district_id)
+                        ->orwhere('parent3.parent_id', $district_id)
+                    ;
+                }
+            })
+
+            ->when($division_id, function ($query, $division_id) use ($district_pouro_id) {
+                // return $query->where('parent.id',  $division_id);
+                if (!$district_pouro_id) {
+                    $query->where('parent2.id', $division_id)->orwhere('parent1.id', $division_id);
+                }
+            })
+
+            // End Filtering
+
+            ->orderBy($sortBy, $orderBy)
+            ->with('parent.parent.parent.parent', 'locationType')
+            ->get()
+        ;
+
+        return $ward;
+    }
+
+
+
+    public function wardReport(Request $request)
+    {
+        $items = $this->getWards($request);
+
+        $data = ['items' => $items];
+
+        $pdf = LaravelMpdf::chunkLoadView('<html-separator/>','reports.ward', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-P',
+                'title' => 'উপজেলা/সিটি কর্পোরেশন/জেলা পৌরসভা তালিকা',
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+
+        $fileName = 'উপজেলা_সিটি_কর্পোরেশন_জেলা_পৌরসভা_তালিকা_' . now()->timestamp . '_'. auth()->id() . '.pdf';
 
         $pdfPath = public_path("/pdf/$fileName");
 

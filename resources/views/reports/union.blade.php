@@ -110,14 +110,20 @@
     </thead>
     <tbody>
     @php($count = 0);
-    @foreach($items as $row)
-        <tr>
-            <td>{{++$count}}</td>
-            <td>{{$row->parent?->parent?->parent?->name_bn}}</td>
-            <td>{{$row->parent?->parent?->name_bn}}</td>
-            <td>{{$row->parent?->name_bn}}</td>
-            <td>{{$row->name_bn}}</td>
-        </tr>
+
+    @foreach($items->chunk(300) as $chunkList)
+
+        @foreach($chunkList as $row)
+            <tr>
+                <td>{{++$count}}</td>
+                <td>{{$row->parent?->parent?->parent?->name_bn}}</td>
+                <td>{{$row->parent?->parent?->name_bn}}</td>
+                <td>{{$row->parent?->name_bn}}</td>
+                <td>{{$row->name_bn}}</td>
+            </tr>
+        @endforeach
+
+        <html-separator/>
     @endforeach
     </tbody>
 </table>
