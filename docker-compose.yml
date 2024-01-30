@@ -10,10 +10,10 @@ volumes:
 
 services:
   # ctm-app service
-  backend-app-stage:
+  backend-app-prod:
     #image: devibcs/ctm-apps:backend-service-1.0
-    container_name: ctm-backend-stage
-    image: 'ctm-app-backend-stage'
+    container_name: ctm-backend-prod
+    image: 'ctm-app-backend-prod'
 
     build:
       context: .
@@ -29,7 +29,7 @@ services:
       #DB_PASSWORD: root
 
     ports:
-       - "8080:80"
+       - "8070:80"
     networks:
        - web-ctm-app-net
 
