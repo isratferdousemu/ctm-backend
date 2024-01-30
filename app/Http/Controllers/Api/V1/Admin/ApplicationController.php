@@ -1603,7 +1603,7 @@ class ApplicationController extends Controller
                     "account_name" => $application->account_name,
                     "account_number" => $application->account_number,
                     "account_owner" => $application->account_owner,
-                    "status" => $application->status,
+                    "status" => 1,
                     "score" => $application->score,
                     "forward_committee_id" => $application->forward_committee_id,
                     "remarks" => $application->remark,
