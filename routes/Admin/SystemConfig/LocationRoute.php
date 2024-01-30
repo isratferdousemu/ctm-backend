@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\LocationController;
+use App\Http\Controllers\Api\V1\Admin\ReportController;
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -15,7 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get',[LocationController::class, 'getAllDivisionPaginated']);
         Route::post('/update', [LocationController::class, 'divisionUpdate'])->middleware(['role_or_permission:super-admin|division-update']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyDivision'])->middleware(['role_or_permission:super-admin|division-delete']);
-        Route::get('/generate-pdf', [\App\Http\Controllers\PDFController::class, 'index']);
+        Route::get('/generate-pdf', [ReportController::class, 'divisionReport']);
     });
 
     /* -------------------------------------------------------------------------- */

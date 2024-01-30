@@ -220,6 +220,12 @@ class Application extends Model
     }
 
 
+    public function beneficiary()
+    {
+        return $this->hasOne(Beneficiary::class, 'application_table_id', 'id');
+    }
+
+
     public function district()
     {
         return $this->belongsTo(Location::class, 'permanent_district_id', 'id');
@@ -286,6 +292,7 @@ class Application extends Model
             3 => 'বাতিল',
             4 => 'অপেক্ষমান'
         };
+
     }
 
 
