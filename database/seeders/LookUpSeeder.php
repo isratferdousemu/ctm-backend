@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Lookup;
+use DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -55,7 +56,20 @@ class LookUpSeeder extends Seeder
             //office Type
             ['id' => 35, 'type' => 3, 'value_en' => 'UCD (Dist Paurashava)', 'value_bn' => 'UCD (Dist Paurashava)','default'=>1],
 
+            // Beneficiary replace reasons
+            ['id' => 36, 'type' => 21, 'value_en' => 'Death', 'value_bn' => 'মৃত্যু','default'=>1],
+            ['id' => 37, 'type' => 21, 'value_en' => 'Program Switch', 'value_bn' => 'প্রোগ্রাম পরিবর্তন','default'=>1],
+            ['id' => 38, 'type' => 21, 'value_en' => 'Missing', 'value_bn' => 'অনুপস্থিত','default'=>1],
+
+            // Beneficiary shifting reasons
+            ['id' => 39, 'type' => 22, 'value_en' => 'Death', 'value_bn' => 'মৃত্যু','default'=>1],
+            ['id' => 40, 'type' => 22, 'value_en' => 'Financially Independent', 'value_bn' => 'আর্থিকভাবে স্বচ্ছল','default'=>1],
+            ['id' => 41, 'type' => 22, 'value_en' => 'Others', 'value_bn' => 'অন্যান্য','default'=>1],
+
         ];
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('lookups')->truncate();
         foreach ($lookups as $value) {
             $lookup = new Lookup;
             $lookup->id                   = $value['id'];
@@ -65,6 +79,6 @@ class LookUpSeeder extends Seeder
             $lookup->default               = $value['default'];
             $lookup ->save();
         }
-
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
