@@ -226,6 +226,76 @@ class Application extends Model
     }
 
 
+    public function district()
+    {
+        return $this->belongsTo(Location::class, 'permanent_district_id', 'id');
+    }
+
+
+    public function districtPouroshova()
+    {
+        return $this->belongsTo(Location::class, 'permanent_district_pourashava_id', 'id');
+    }
+
+
+    public function cityCorporation()
+    {
+        return $this->belongsTo(Location::class, 'permanent_city_corp_id', 'id');
+    }
+
+
+    public function upazila()
+    {
+        return $this->belongsTo(Location::class, 'permanent_upazila_id', 'id');
+    }
+
+
+    public function thana()
+    {
+        return $this->belongsTo(Location::class, 'permanent_thana_id', 'id');
+    }
+
+
+    public function union()
+    {
+        return $this->belongsTo(Location::class, 'permanent_union_id', 'id');
+    }
+
+
+    public function pourashava()
+    {
+        return $this->belongsTo(Location::class, 'permanent_pourashava_id', 'id');
+    }
+
+
+    public function ward()
+    {
+        return $this->belongsTo(Location::class, 'permanent_ward_id', 'id');
+    }
+
+
+    public function getStatus()
+    {
+
+        return match ($this->status) {
+            0 => 'Not Selected',
+            1 => 'Forward',
+            2 => 'Approved',
+            3 => 'Rejected',
+            4 => 'Waiting'
+        };
+
+        return match ($this->status) {
+            0 => 'অনির্বাচিত',
+            1 => 'ফরওয়ার্ড',
+            2 => 'অনুমোদিত',
+            3 => 'বাতিল',
+            4 => 'অপেক্ষমান'
+        };
+
+    }
+
+
 
 
 

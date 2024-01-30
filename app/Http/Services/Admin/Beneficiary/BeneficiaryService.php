@@ -6,6 +6,7 @@ namespace App\Http\Services\Admin\Beneficiary;
 use App\Models\Beneficiary;
 use App\Models\BeneficiaryExit;
 use App\Models\BeneficiaryReplace;
+use App\Models\BeneficiaryShifting;
 use Arr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -36,7 +37,9 @@ class BeneficiaryService
         $beneficiary_id = $request->query('beneficiary_id');
         $nominee_name = $request->query('nominee_name');
         $account_number = $request->query('account_number');
+        $verification_number = $request->query('nid');
         $status = $request->query('status');
+
         $perPage = $request->query('perPage', 10);
         $sortByColumn = $request->query('sortBy', 'created_at');
         $orderByDirection = $request->query('orderBy', 'asc');
@@ -52,14 +55,22 @@ class BeneficiaryService
             $query = $query->where('permanent_city_corp_id', $city_corp_id);
         if ($district_pourashava_id)
             $query = $query->where('permanent_district_pourashava_id', $district_pourashava_id);
-        if ($upazila_id)
-            $query = $query->where('permanent_upazila_id', $upazila_id);
-        if ($pourashava_id)
-            $query = $query->where('permanent_pourashava_id', $pourashava_id);
+//        if ($upazila_id)
+//            $query = $query->where('permanent_upazila_id', $upazila_id);
+//        if ($pourashava_id)
+//            $query = $query->where('permanent_pourashava_id', $pourashava_id);
         if ($thana_id)
-            $query = $query->where('permanent_thana_id', $thana_id);
+            $query = $query->where(function ($q) use ($thana_id) {
+                $q->where('permanent_thana_id', $thana_id)
+                    ->orWhere('permanent_upazila_id', $thana_id);
+            });
+//        $query = $query->where('permanent_thana_id', $thana_id);
         if ($union_id)
-            $query = $query->where('permanent_union_id', $union_id);
+            $query = $query->where(function ($q) use ($union_id) {
+                $q->where('permanent_union_id', $union_id)
+                    ->orWhere('permanent_pourashava_id', $union_id);
+            });
+//            $query = $query->where('permanent_union_id', $union_id);
         if ($ward_id)
             $query = $query->where('permanent_ward_id', $ward_id);
 
@@ -70,8 +81,11 @@ class BeneficiaryService
             $query = $query->whereRaw('UPPER(nominee_en) LIKE "%' . strtoupper($nominee_name) . '%"');
         if ($account_number)
             $query = $query->where('account_number', $account_number);
+        if ($verification_number)
+            $query = $query->where('verification_number', $verification_number);
         if ($status)
             $query = $query->where('status', $status);
+
 
 
         return $query->with('program',
@@ -112,7 +126,7 @@ class BeneficiaryService
             'permanentThana',
             'permanentUnion',
             'permanentWard')
-            ->findOrFail($id);
+            ->find($id);
     }
 
     /**
@@ -121,7 +135,16 @@ class BeneficiaryService
      */
     public function get($id): mixed
     {
-        return Beneficiary::findOrFail($id);
+        return Beneficiary::find($id);
+    }
+
+    /**
+     * @param $beneficiary_id
+     * @return mixed
+     */
+    public function getByBeneficiaryId($beneficiary_id): mixed
+    {
+        return Beneficiary::with('program')->where('application_id', $beneficiary_id)->first();
     }
 
     /**
@@ -185,8 +208,8 @@ class BeneficiaryService
         $district_id = $request->query('district_id');
         $city_corp_id = $request->query('city_corp_id');
         $district_pourashava_id = $request->query('district_pourashava_id');
-        $upazila_id = $request->query('upazila_id');
-        $pourashava_id = $request->query('pourashava_id');
+//        $upazila_id = $request->query('upazila_id');
+//        $pourashava_id = $request->query('pourashava_id');
         $thana_id = $request->query('thana_id');
         $union_id = $request->query('union_id');
         $ward_id = $request->query('ward_id');
@@ -194,6 +217,9 @@ class BeneficiaryService
         $beneficiary_id = $request->query('beneficiary_id');
         $nominee_name = $request->query('nominee_name');
         $account_number = $request->query('account_number');
+        $verification_number = $request->query('nid');
+        $status = $request->query('status');
+
         $perPage = $request->query('perPage', 10);
         $sortByColumn = $request->query('sortBy', 'created_at');
         $orderByDirection = $request->query('orderBy', 'asc');
@@ -209,14 +235,25 @@ class BeneficiaryService
             $query = $query->where('permanent_city_corp_id', $city_corp_id);
         if ($district_pourashava_id)
             $query = $query->where('permanent_district_pourashava_id', $district_pourashava_id);
-        if ($upazila_id)
-            $query = $query->where('permanent_upazila_id', $upazila_id);
-        if ($pourashava_id)
-            $query = $query->where('permanent_pourashava_id', $pourashava_id);
+//        if ($upazila_id)
+//            $query = $query->where('permanent_upazila_id', $upazila_id);
+//        if ($pourashava_id)
+//            $query = $query->where('permanent_pourashava_id', $pourashava_id);
+//        if ($thana_id)
+//            $query = $query->where('permanent_thana_id', $thana_id);
         if ($thana_id)
-            $query = $query->where('permanent_thana_id', $thana_id);
+            $query = $query->where(function ($q) use ($thana_id) {
+                $q->where('permanent_thana_id', $thana_id)
+                    ->orWhere('permanent_upazila_id', $thana_id);
+            });
         if ($union_id)
-            $query = $query->where('permanent_union_id', $union_id);
+            $query = $query->where(function ($q) use ($union_id) {
+                $q->where('permanent_union_id', $union_id)
+                    ->orWhere('permanent_pourashava_id', $union_id);
+            });
+
+//        if ($union_id)
+//            $query = $query->where('permanent_union_id', $union_id);
         if ($ward_id)
             $query = $query->where('permanent_ward_id', $ward_id);
 
@@ -227,7 +264,10 @@ class BeneficiaryService
             $query = $query->whereRaw('UPPER(nominee_en) LIKE "%' . strtoupper($nominee_name) . '%"');
         if ($account_number)
             $query = $query->where('account_number', $account_number);
-        $query = $query->where('status', 3); // waiting
+        if ($verification_number)
+            $query = $query->where('verification_number', $verification_number);
+        if ($status)
+            $query = $query->where('status', $status);
 
 
         return $query->with('program',
@@ -302,13 +342,13 @@ class BeneficiaryService
                     'beneficiary_id' => $beneficiary['beneficiary_id'],
                     'exit_reason_id' => $request->input('exit_reason_id'),
                     'exit_reason_detail' => $request->input('exit_reason_detail'),
-                    'exit_date' => Carbon::parse($request->input('exit_date')),
+                    'exit_date' => $request->input('exit_date') ? Carbon::parse($request->input('exit_date')) : now(),
                 ];
             }
             BeneficiaryExit::insert($exitDataList);
             $beneficiary_ids = Arr::pluck($exitDataList, 'beneficiary_id');
 
-            Beneficiary::whereIn('id', $beneficiary_ids)->update(['status' => 2]);
+            Beneficiary::whereIn('id', $beneficiary_ids)->update(['status' => 2]); // Inactive
 
             DB::commit();
             return true;
@@ -324,16 +364,31 @@ class BeneficiaryService
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
      * @throws \Throwable
      */
-    public function shiftingSave(Request $request, $id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
+    public function shiftingSave(Request $request): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
     {
         DB::beginTransaction();
         try {
-            $beneficiary = Beneficiary::findOrFail($id);
-            $validatedData = $request->safe()->all();
-            $beneficiary->fill($validatedData);
-            $beneficiary->save();
+            if (!$request->has('beneficiaries')) {
+                DB::rollBack();
+                throw new \Exception('No beneficiaries was selected for shifting!');
+            }
+            $shiftingDataList = [];
+            foreach ($request->input('beneficiaries') as $beneficiary) {
+                $shiftingDataList[] = [
+                    'beneficiary_id' => $beneficiary['beneficiary_id'],
+                    'from_program_id' => $beneficiary['from_program_id'],
+                    'to_program_id' => $request->input('to_program_id'),
+//                    'shifting_cause_id' => $request->input('shifting_cause_id'),
+                    'shifting_cause' => $request->input('shifting_cause'),
+                    'activation_date' => $request->input('activation_date') ? Carbon::parse($request->input('activation_date')) : now(),
+                ];
+            }
+            BeneficiaryShifting::insert($shiftingDataList);
+            foreach ($shiftingDataList as $shiftingData) {
+                Beneficiary::where('id', $shiftingData['beneficiary_id'])->update(['program_id' => $shiftingData['to_program_id']]);
+            }
             DB::commit();
-            return $beneficiary;
+            return $shiftingDataList;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
