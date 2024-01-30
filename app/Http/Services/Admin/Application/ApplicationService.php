@@ -240,7 +240,7 @@ class ApplicationService
             SELECT poverty_score_cut_offs.*, financial_years.financial_year AS financial_year, financial_years.end_date
             FROM poverty_score_cut_offs
             JOIN financial_years ON financial_years.id = poverty_score_cut_offs.financial_year_id
-            WHERE poverty_score_cut_offs.location_id = ? AND poverty_score_cut_offs.default = 0
+            WHERE poverty_score_cut_offs.location_id = ? AND poverty_score_cut_offs.type = 1
             ORDER BY financial_years.end_date DESC LIMIT 1", [$division->id]);
             $division_cut_off =$division_cut_off[0]->id;
             $application->cut_off_id= $division_cut_off;
@@ -405,7 +405,7 @@ class ApplicationService
         SELECT poverty_score_cut_offs.*, financial_years.financial_year AS financial_year, financial_years.end_date
         FROM poverty_score_cut_offs
         JOIN financial_years ON financial_years.id = poverty_score_cut_offs.financial_year_id
-        WHERE poverty_score_cut_offs.location_id = ? AND poverty_score_cut_offs.default = 1
+        WHERE poverty_score_cut_offs.location_id = ? AND poverty_score_cut_offs.type = 2
         ORDER BY financial_years.end_date DESC LIMIT 1", [$district->id]);
         // $division_cut_off=$division_cut_off[0]->id;
         $districtFE=$districtFE[0];
