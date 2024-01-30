@@ -59,6 +59,7 @@ trait PermissionTrait
     private $subBeneficiaryReplacement = "beneficiary-replacement";
     private $subBeneficiaryIDCard = "beneficiary-id-card";
     private $subBeneficiaryIDShifting = "beneficiary-id-shifting";
+    private $subBeneficiaryIDExit = "beneficiary-id-exit";
 
 
     // module 4 sub modules

@@ -22,6 +22,7 @@ class BeneficiaryFactory extends Factory
         $spouse_name = fake()->name();
         $age = fake()->numberBetween(45, 70);
         $date_of_birth = now()->subYears($age);
+        $location_type_id = 2; // Upazila
         $division_id = 6;
         $district_id = 55;
         $city_corp_id = null;
@@ -29,8 +30,8 @@ class BeneficiaryFactory extends Factory
         $upazila_id = 469;
         $pourashava_id = null;
         $thana_id = null;
-        $union_id = 3871;
-        $ward_id = null;
+        $union_id = 3870;
+        $ward_id = 5154;
         $post_code = fake()->postcode();
         $address = fake()->streetAddress();
         $mobile = '01816345678';
@@ -39,6 +40,7 @@ class BeneficiaryFactory extends Factory
         return [
             'program_id' => fake()->numberBetween(1, 4),
 //            'application_table_id' => 1,
+            'financial_year_id' => 1,
             'application_id' => fake()->unique()->numberBetween(1001,9999),
             'name_en' => $name,
             'name_bn' => $name,
@@ -64,6 +66,7 @@ class BeneficiaryFactory extends Factory
             'image' => fake()->imageUrl(300,300),
             'signature' => fake()->imageUrl(300,100),
 
+            'current_location_type_id' => $location_type_id,
             'current_division_id' => $division_id,
             'current_district_id' => $district_id,
             'current_city_corp_id' => $city_corp_id,
@@ -76,6 +79,7 @@ class BeneficiaryFactory extends Factory
             'current_post_code' => $post_code,
             'current_address' => $address,
 
+            'permanent_location_type_id' => $location_type_id,
             'permanent_division_id' => $division_id,
             'permanent_district_id' => $district_id,
             'permanent_city_corp_id' => $city_corp_id,
@@ -97,9 +101,12 @@ class BeneficiaryFactory extends Factory
             'nominee_relation_with_beneficiary' => 'Son',
             'nominee_nationality' => 'Bangladeshi',
 
+            'account_type' => 1,
             'account_name' => $name,
             'account_number' => fake()->isbn13(),
             'account_owner' => $name,
+            'bank_name' => 'Janata Bank PLC',
+            'branch_name' => 'Savar',
             'status' => 1,
             'score' => fake()->numberBetween(50, 100),
         ];

@@ -29,4 +29,7 @@ Route::prefix('global')->group(function () {
     Route::post('/online-application/registration',[ApplicationController::class, 'onlineApplicationRegistration']);
      Route::get('/applicants copy/{id}',[ApplicationController::class, 'getApplicationCopyById']);
     Route::get('/online-application/check',[ApplicationController::class, 'onlineApplicationCheck']);
+
+//    Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);
+    Route::get('/pdf', [\App\Http\Controllers\Api\V1\Admin\ReportController::class, 'divisionReport']);
 });

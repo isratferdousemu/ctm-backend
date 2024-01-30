@@ -31,6 +31,7 @@ use App\Models\Committee;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Validator;
 
 class LocationController extends Controller

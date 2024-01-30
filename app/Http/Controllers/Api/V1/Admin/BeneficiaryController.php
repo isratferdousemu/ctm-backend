@@ -59,10 +59,17 @@ class BeneficiaryController extends Controller
     {
         try {
             $beneficiary = $this->beneficiaryService->detail($id);
-            return BeneficiaryResource::make($beneficiary)->additional([
-                'success' => true,
-                'message' => $this->fetchSuccessMessage,
-            ]);
+            if ($beneficiary) {
+                return BeneficiaryResource::make($beneficiary)->additional([
+                    'success' => true,
+                    'message' => $this->fetchSuccessMessage,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $this->notFoundMessage,
+                ], ResponseAlias::HTTP_OK);
+            }
 
         } catch (\Throwable $th) {
             //throw $th;
@@ -78,10 +85,39 @@ class BeneficiaryController extends Controller
     {
         try {
             $beneficiary = $this->beneficiaryService->get($id);
-            return BeneficiaryResource::make($beneficiary)->additional([
-                'success' => true,
-                'message' => $this->fetchSuccessMessage,
-            ]);
+            if ($beneficiary) {
+                return BeneficiaryResource::make($beneficiary)->additional([
+                    'success' => true,
+                    'message' => $this->fetchSuccessMessage,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $this->notFoundMessage,
+                ], ResponseAlias::HTTP_OK);
+            }
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    public function getByBeneficiaryId($beneficiary_id): \Illuminate\Http\JsonResponse|BeneficiaryResource
+    {
+        try {
+            $beneficiary = $this->beneficiaryService->getByBeneficiaryId($beneficiary_id);
+            if ($beneficiary) {
+                return BeneficiaryResource::make($beneficiary)->additional([
+                    'success' => true,
+                    'message' => $this->fetchSuccessMessage,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $this->notFoundMessage,
+                ], ResponseAlias::HTTP_OK);
+            }
 
         } catch (\Throwable $th) {
             //throw $th;
@@ -195,15 +231,14 @@ class BeneficiaryController extends Controller
      * @param BeneficiaryShiftingRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function shiftingSave(BeneficiaryShiftingRequest $request)
+    public function shiftingSave(BeneficiaryShiftingRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         try {
-            $beneficiaryList = $this->beneficiaryService->shiftingSave($request);
-//            return response()->json($beneficiaryList);
-            return BeneficiaryResource::collection($beneficiaryList)->additional([
+            $this->beneficiaryService->shiftingSave($request);
+            return response()->json([
                 'success' => true,
-                'message' => $this->fetchSuccessMessage,
-            ]);
+                'message' => $this->updateSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);

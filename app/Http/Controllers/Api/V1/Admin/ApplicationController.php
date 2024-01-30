@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\BeneficiaryTrait;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Exceptions\AuthBasicErrorException;
 use App\Http\Requests\Admin\Application\ApplicationRequest;
@@ -34,6 +35,7 @@ use App\Http\Resources\Admin\Application\MobileOperatorResource;
 use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
 use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
 use Illuminate\Validation\ValidationException;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 
 class ApplicationController extends Controller
 {
@@ -631,9 +633,7 @@ class ApplicationController extends Controller
 
         $query = Application::query();
 
-        $this->applyApplicationListFilter($query);
-
-
+        $this->applyUserWiseFiltering($query);
 
             $query->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayApplicationId, $filterArrayNomineeNameEn, $filterArrayNomineeNameBn, $filterArrayAccountNo, $filterArrayNidNo, $filterArrayListTypeId, $filterArrayProgramId) {
                 $query->where($filterArrayNameEn)
@@ -650,29 +650,225 @@ class ApplicationController extends Controller
                     ->orWhere($filterArrayListTypeId)
                     ->orWhere($filterArrayProgramId)
                 ;
-            })
-            ->when($request->status, function ($q, $v) {
-                $q->where('status', $v);
-            })
-        ->with('current_location', 'permanent_location.parent.parent.parent.parent', 'program',
+            });
+
+            if ($request->has('status')) {
+                $query->where('status', $request->status);
+            }
+
+
+        $query->with('current_location', 'permanent_location.parent.parent.parent.parent', 'program',
             'gender', 'pmtScore'
         )
          ->orderBy('score')
         ;
 
 
-
-
         return $query->paginate($perPage, ['*'], 'page',$page);
+    }
 
 
+    public function getColumnValue($column, $application)
+    {
+        return match ($column) {
+            'name_en' =>  $application->name_en,
+            'program.name_en' => $application->program?->name_en,
+            'application_id' => $application->application_id,
+            'status' => $application->getStatus(),
+            'score' => $application->score,
+            'account_number' => $application->account_number,
+            'verification_number' => $application->verification_number,
+            'division' => $application->division?->name_en,
+            'district' => $application->district?->name_en,
+            'location' => $application->cityCorporation?->name_en ?: ($application->districtPouroshova?->name_en ?: $application->upazila?->name_en),
+            'union_pouro_city' => $application->thana?->name_en ?: ($application->union?->name_en ?: $application->pourashava?->name_en),
+            'ward' => $application->ward?->name_en,
+            'father_name_en' => $application->father_name_en,
+            'mother_name_en' => $application->mother_name_en,
+            'marital_status' => $application->marital_status,
+            'spouse_name_en' => $application->spouse_name_en,
+            'nominee_en' => $application->nominee_en,
+            'nominee_relation_with_beneficiary' => $application->nominee_relation_with_beneficiary,
+            'mobile' => $application->mobile,
+        };
+    }
+
+
+    public function getTableHeaders()
+    {
+        return [
+            'name_en' =>  'নাম',
+            'program.name_en' => 'প্রোগ্রাম নাম',
+            'application_id' => 'আইডি',
+            'status' => 'স্ট্যাটাস',
+            'score' => 'প্রোভার্টি স্কোর',
+            'account_number' => 'একাউন্ট নং',
+            'verification_number' => 'ভেরিফিকেশন নম্বর',
+            'division' => 'বিভাগ',
+            'district' => 'জেলা',
+            'location' => 'সিটি / জেলা পৌর / উপজেলা',
+            'union_pouro_city' => 'থানা /ইউনিয়ন /পৌর',
+            'ward' => 'ওয়ার্ড',
+            'father_name_en' => 'পিতার নাম',
+            'mother_name_en' => 'মাতার নাম',
+            'marital_status' => 'বৈবাহিক অবস্থা',
+            'spouse_name_en' => 'স্বামী বা স্ত্রী নাম',
+            'nominee_en' => 'নমিনি',
+            'nominee_relation_with_beneficiary' => 'নমিনির সাথে সম্পর্ক',
+            'mobile' => 'মোবাইল',
+        ];
+    }
+
+
+    public function formatApplicationData($applications, $columns)
+    {
+        $data = [];
+
+        foreach ($applications as $key => $application) {
+            foreach ($columns as $column) {
+                $data[$key][$column] = $this->getColumnValue($column, $application);
+            }
+        }
+
+        return $data;
+    }
+
+
+    public function getPdf(Request $request)
+    {
+        $applications = $this->getApplicationsForPdf($request);
+        $applications = $this->formatApplicationData($applications, $request->selectedColumns);
+        $headers = $this->getTableHeaders();
+
+        $data = ['applications' => $applications, 'headers' => $headers, 'columns' => $request->selectedColumns];
+
+
+        $pdf = LaravelMpdf::loadView('reports.application', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-P',
+                'title' => 'আবেদনের তালিকা',
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+
+        $fileName = 'আবেদনের_তালিকা_' . now()->timestamp . '_'. auth()->id() . '.pdf';
+
+        $pdfPath = public_path("/pdf/$fileName");
+
+        $pdf->save($pdfPath);
+
+        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+
+
+    }
+
+
+    public function getApplicationsForPdf($request)
+    {
+        $searchText = $request->query('searchText');
+        $application_id = $request->query('application_id');
+        $nominee_name = $request->query('nominee_name');
+        $account_no = $request->query('account_no');
+        $nid_no = $request->query('nid_no');
+        $list_type_id = $request->query('list_type_id');
+        $program_id = $request->query('program_id');
+
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayFatherNameEn = [];
+        $filterArrayFatherNameBn = [];
+        $filterArrayMotherNameEn = [];
+        $filterArrayMotherNameBn = [];
+        $filterArrayApplicationId = [];
+        $filterArrayNomineeNameEn = [];
+        $filterArrayNomineeNameBn = [];
+        $filterArrayAccountNo = [];
+        $filterArrayNidNo = [];
+        $filterArrayListTypeId = [];
+        $filterArrayProgramId = [];
+
+        if($searchText){
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayMotherNameEn[] = ['mother_name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayMotherNameBn[] = ['mother_name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayFatherNameEn[] = ['father_name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayFatherNameBn[] = ['father_name_bn', 'LIKE', '%' . $searchText . '%'];
+        }
+
+        if($application_id){
+            $filterArrayApplicationId[] = ['application_id', 'LIKE', '%' . $application_id . '%'];
+        }
+
+        if($nominee_name){
+            $filterArrayNomineeNameEn[] = ['nominee_en', 'LIKE', '%' . $nominee_name . '%'];
+            $filterArrayNomineeNameBn[] = ['nominee_bn', 'LIKE', '%' . $nominee_name . '%'];
+        }
+
+        if($account_no){
+            $filterArrayAccountNo[] = ['account_number', 'LIKE', '%' . $account_no . '%'];
+        }
+
+        if($nid_no){
+            $filterArrayNidNo[] = ['verification_number', 'LIKE', '%' . $nid_no . '%'];
+        }
+
+        if($list_type_id){
+            $filterArrayListTypeId[] = ['forward_committee_id', '=', $list_type_id];
+        }
+
+        if($program_id){
+            $filterArrayProgramId[] = ['program_id', '=', $program_id];
+        }
+
+
+        $query = Application::query();
+
+        $this->applyUserWiseFiltering($query);
+
+        $query->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayApplicationId, $filterArrayNomineeNameEn, $filterArrayNomineeNameBn, $filterArrayAccountNo, $filterArrayNidNo, $filterArrayListTypeId, $filterArrayProgramId) {
+            $query->where($filterArrayNameEn)
+                ->orWhere($filterArrayNameBn)
+                ->orWhere($filterArrayFatherNameEn)
+                ->orWhere($filterArrayFatherNameBn)
+                ->orWhere($filterArrayMotherNameEn)
+                ->orWhere($filterArrayMotherNameBn)
+                ->orWhere($filterArrayApplicationId)
+                ->orWhere($filterArrayNomineeNameEn)
+                ->orWhere($filterArrayNomineeNameBn)
+                ->orWhere($filterArrayAccountNo)
+                ->orWhere($filterArrayNidNo)
+                ->orWhere($filterArrayListTypeId)
+                ->orWhere($filterArrayProgramId)
+            ;
+        })
+            ->when($request->has('status'), function ($q, $v) {
+                $q->where('status', request('status'));
+            })
+
+            ->with('program', 'district', 'districtPouroshova', 'cityCorporation',
+                'upazila', 'thana', 'union', 'pourashava', 'ward'
+            )
+
+            ->orderBy('score')
+        ;
+
+        return $query->get();
     }
 
 
 
 
 
-    public function applyApplicationListFilter($query)
+    public function applyUserWiseFiltering($query)
     {
         $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
 
@@ -746,6 +942,7 @@ class ApplicationController extends Controller
                 )->first();
                 $image=Application::where('id','=',$id)
                 ->value('image');
+                $image= asset('uploads/application/' . $application->nominee_image);
 
                 // Grouping additional fields by ID
         $groupedAdditionalFields = $application->allowAddiFields->groupBy('id');
@@ -1288,7 +1485,7 @@ class ApplicationController extends Controller
 
         $query = Application::query();
 
-        $this->applyApplicationListFilter($query);
+        $this->applyUserWiseFiltering($query);
         $query->with(['committeeApplication']);
         $query->whereIn('id', $request->applications_id);
 
