@@ -61,7 +61,7 @@ class LookUpSeeder extends Seeder
             ['id' => 37, 'type' => 21, 'value_en' => 'Program Switch', 'value_bn' => 'প্রোগ্রাম পরিবর্তন','default'=>1],
             ['id' => 38, 'type' => 21, 'value_en' => 'Missing', 'value_bn' => 'অনুপস্থিত','default'=>1],
 
-            // Beneficiary shifting reasons
+            // Beneficiary exit reasons
             ['id' => 39, 'type' => 22, 'value_en' => 'Death', 'value_bn' => 'মৃত্যু','default'=>1],
             ['id' => 40, 'type' => 22, 'value_en' => 'Financially Independent', 'value_bn' => 'আর্থিকভাবে স্বচ্ছল','default'=>1],
             ['id' => 41, 'type' => 22, 'value_en' => 'Others', 'value_bn' => 'অন্যান্য','default'=>1],
