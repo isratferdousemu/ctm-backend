@@ -87,7 +87,6 @@ class BeneficiaryService
             $query = $query->where('status', $status);
 
 
-
         return $query->with('program',
             'permanentDivision',
             'permanentDistrict',
@@ -266,8 +265,8 @@ class BeneficiaryService
             $query = $query->where('account_number', $account_number);
         if ($verification_number)
             $query = $query->where('verification_number', $verification_number);
-        if ($status)
-            $query = $query->where('status', $status);
+//        if ($status)
+        $query = $query->where('status', 3); // only waiting beneficiaries
 
 
         return $query->with('program',
@@ -309,7 +308,7 @@ class BeneficiaryService
             $beneficiaryReplace->cause_id = $request->input('cause_id');
             $beneficiaryReplace->cause_detail = $request->input('cause_detail');
             $beneficiaryReplace->cause_date = $request->input('cause_date') ? Carbon::parse($request->input('cause_date')) : null;
-            $beneficiaryReplace->cause_proof_doc = $request->input('causecause_proof_doc_date');
+            $beneficiaryReplace->cause_proof_doc = $request->input('cause_proof_doc');
             $beneficiaryReplace->created_at = now();
             $beneficiaryReplace->save();
 
