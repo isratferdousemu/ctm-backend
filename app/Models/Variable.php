@@ -67,5 +67,10 @@ class Variable extends Model
     {
         return $this->hasMany(ApplicationPovertyValues::class, 'variable_id');
     }
+     public function allowAddiFieldValues()
+    {
+        return $this->belongsToMany(AdditionalFieldValues::class, 'application_allowance_values', 'allow_addi_fields_id', 'allow_addi_field_values_id')
+            ->withPivot('value');
+    }
   
 }

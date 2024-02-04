@@ -179,11 +179,21 @@ class Application extends Model
     //     return $this->hasMany(ApplicationAllowanceValues::class, 'application_id', 'id')
     //                 ->join('additional_field_values', 'application_allowance_values.allow_addi_field_values_id', '=', 'additional_field_values.id');
     // }
-        public function allowAddiFields()
+    public function allowAddiFields()
     {
         return $this->belongsToMany(AdditionalFields::class, 'application_allowance_values', 'application_id', 'allow_addi_fields_id')
             ->withPivot('value')
             ->with('allowAddiFieldValues');
+    }
+      public function subvariable()
+    {
+        return $this->belongsToMany(Variable::class, 'application_poverty_values', 'application_id', 'sub_variable_id')
+            ->with('parent');
+    }
+      public function variable()
+    {
+        return $this->belongsToMany(Variable::class, 'application_poverty_values', 'application_id', 'variable_id');
+           
     }
 
 
