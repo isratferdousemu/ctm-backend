@@ -3,6 +3,7 @@
 namespace App\Http\Services\Admin\Beneficiary;
 
 
+use App\Http\Resources\Admin\Location\LocationResource;
 use App\Models\Beneficiary;
 use App\Models\BeneficiaryExit;
 use App\Models\BeneficiaryReplace;
@@ -18,21 +19,194 @@ use Illuminate\Support\Facades\DB;
 class BeneficiaryService
 {
     /**
-     * @param Request $request
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return array
      */
-    public function list(Request $request): \Illuminate\Contracts\Pagination\Paginator
+    public function getUserLocation(): array
     {
-        $program_id = $request->query('program_id');
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+        $assignLocation = $user->assign_location;
+        $locationType = $user->assign_location?->localtion_type;
+        // 1=District Pouroshava, 2=Upazila, 3=City Corporation
+        $type = $user->assign_location?->type;
+        // division->district
+        // localtion_type=1; district-pouroshava->ward
+        // localtion_type=2; thana->{union/pouro}->ward
+        // localtion_type=3; thana->ward
+        $userLocation = [];
+        if ($assignLocation?->type == 'ward') {
+            $userLocation['ward_id'] = $assignLocation?->id;
+            // 1st parent
+            if ($assignLocation?->parent?->type == 'union') {
+                $userLocation['union'] = $assignLocation?->parent;
+                $userLocation['sub_location_type'] = $assignLocation?->parent?->type;
+            } elseif ($assignLocation?->parent?->type == 'pouro') {
+                $userLocation['pourashava'] = $assignLocation?->parent;
+                $userLocation['sub_location_type'] = $assignLocation?->parent?->type;
+            } elseif ($assignLocation?->parent?->type == 'city') {
+                $userLocation['district_pourashava'] = $assignLocation?->parent;
+                $userLocation['location_type'] = $assignLocation?->parent?->location_type;
+            } elseif ($assignLocation?->parent?->type == 'thana') {
+                $userLocation['thana'] = $assignLocation?->parent;
+            }
+
+            // 2nd parent
+            if ($assignLocation?->parent?->parent?->type == 'thana') {
+                $userLocation['thana'] = $assignLocation?->parent?->parent;
+                $userLocation['location_type'] = 2;//$assignLocation?->parent?->location_type;
+            } elseif ($assignLocation?->parent?->parent?->type == 'city') {
+                $userLocation['city_corp'] = $assignLocation?->parent;
+                $userLocation['location_type'] = $assignLocation?->parent?->location_type;
+            }
+            // 3rd parent
+            $userLocation['district'] = $assignLocation?->parent?->parent;
+            // 4th parent
+            $userLocation['division'] = $assignLocation?->parent?->parent?->parent;
+        } elseif ($assignLocation?->type == 'union' || $assignLocation?->type == 'pouro') {
+            if ($assignLocation?->type == 'union')
+                $userLocation['union'] = $assignLocation;
+            elseif ($assignLocation?->type == 'pouro')
+                $userLocation['pourashava'] = $assignLocation;
+            $userLocation['sub_location_type'] = 2;//$assignLocation?->type;
+            $userLocation['location_type'] = $assignLocation?->location_type;
+            // parents
+            $userLocation['thana'] = $assignLocation?->parent;
+            $userLocation['district'] = $assignLocation?->parent?->parent;
+            $userLocation['division'] = $assignLocation?->parent?->parent?->parent;
+        } elseif ($assignLocation?->type == 'thana') {
+            $userLocation['thana'] = $assignLocation;
+            $userLocation['location_type'] = $assignLocation?->location_type;
+            if ($assignLocation?->location_type == 2) {
+                // parents
+                $userLocation['district'] = $assignLocation?->parent;
+                $userLocation['division'] = $assignLocation?->parent?->parent;
+            } elseif ($assignLocation?->location_type == 3) {
+                // parents
+                $userLocation['city_corp'] = $assignLocation?->parent;
+                $userLocation['district'] = $assignLocation?->parent?->parent;
+                $userLocation['division'] = $assignLocation?->parent?->parent?->parent;
+            }
+
+        } elseif ($assignLocation?->type == 'city') {
+            if ($assignLocation?->location_type == 1)
+                $userLocation['district_pourashava'] = $assignLocation;
+            elseif ($assignLocation?->parent?->location_type == 3)
+                $userLocation['city_corp'] = $assignLocation;
+            $userLocation['location_type'] = $assignLocation?->location_type;
+            // parents
+            $userLocation['district'] = $assignLocation?->parent;
+            $userLocation['division'] = $assignLocation?->parent?->parent;
+        } elseif ($assignLocation?->type == 'district') {
+            $userLocation['district'] = new LocationResource($assignLocation);
+            $userLocation['division'] = new LocationResource($assignLocation?->parent);
+        } elseif ($assignLocation?->type == 'division')
+            $userLocation['division'] = $assignLocation;
+
+
+        return $userLocation;
+    }
+
+    /**
+     * @param $query
+     * @param $request
+     * @return mixed
+     */
+    private function applyLocationFilter($query, $request): mixed
+    {
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+        $assignedLocationId = $user->assign_location?->id;
+        $subLocationType = $user->assign_location?->localtion_type;
+        // 1=District Pouroshava, 2=Upazila, 3=City Corporation
+        $locationType = $user->assign_location?->type;
+        // division->district
+        // localtion_type=1; district-pouroshava->ward
+        // localtion_type=2; thana->{union/pouro}->ward
+        // localtion_type=3; thana->ward
+
         $division_id = $request->query('division_id');
         $district_id = $request->query('district_id');
+//        $location_type_id = $request->query('location_type_id');
         $city_corp_id = $request->query('city_corp_id');
         $district_pourashava_id = $request->query('district_pourashava_id');
         $upazila_id = $request->query('upazila_id');
+//        $sub_location_type_id = $request->query('sub_location_type_id');
         $pourashava_id = $request->query('pourashava_id');
         $thana_id = $request->query('thana_id');
         $union_id = $request->query('union_id');
         $ward_id = $request->query('ward_id');
+
+        if ($user->assign_location) {
+            if ($locationType == 'ward') {
+                $ward_id = $assignedLocationId;
+                $division_id = $district_id = $city_corp_id = $district_pourashava_id = $upazila_id = $thana_id = $pourashava_id = $union_id = -1;
+            } elseif ($locationType == 'union') {
+                $union_id = $assignedLocationId;
+                $division_id = $district_id = $city_corp_id = $district_pourashava_id = $upazila_id = $thana_id = $pourashava_id = -1;
+            } elseif ($locationType == 'pouro') {
+                $pourashava_id = $assignedLocationId;
+                $division_id = $district_id = $city_corp_id = $district_pourashava_id = $upazila_id = $thana_id = $union_id = -1;
+            } elseif ($locationType == 'thana') {
+//                if ($subLocationType == 2) {
+//                    $upazila_id = $assignedLocationId;
+//                    $division_id = $district_id = $city_corp_id = $district_pourashava_id = $thana_id = -1;
+//                } elseif ($subLocationType == 3) {
+//                    $thana_id = $assignedLocationId;
+//                    $division_id = $district_id = $city_corp_id = $district_pourashava_id = $upazila_id = -1;
+//                }
+                $thana_id = $assignedLocationId;
+                $division_id = $district_id = $city_corp_id = $district_pourashava_id = -1;
+            } elseif ($locationType == 'city') {
+                if ($subLocationType == 1) {
+                    $district_pourashava_id = $assignedLocationId;
+                    $division_id = $district_id = $city_corp_id = $upazila_id = $thana_id = -1;
+                } elseif ($subLocationType == 3) {
+                    $city_corp_id = $assignedLocationId;
+                    $division_id = $district_id = $district_pourashava_id = $upazila_id = $thana_id = -1;
+                }
+//            } elseif ($locationType == 'district-pouroshava') {
+//                $district_pourashava_id = $assignedLocationId;
+//                $division_id = $district_id = $city_corp_id = $upazila_id = $thana_id = -1;
+            } elseif ($locationType == 'district') {
+                $district_id = $assignedLocationId;
+                $division_id = -1;
+            } elseif ($locationType == 'division') {
+                $division_id = $assignedLocationId;
+            } else {
+                $query = $query->where('id', -1); // wrong location assigned
+            }
+        }
+
+        if ($division_id && $division_id > 0)
+            $query = $query->where('permanent_division_id', $division_id);
+        if ($district_id && $district_id > 0)
+            $query = $query->where('permanent_district_id', $district_id);
+        if ($city_corp_id && $city_corp_id > 0)
+            $query = $query->where('permanent_city_corp_id', $city_corp_id);
+        if ($district_pourashava_id && $district_pourashava_id > 0)
+            $query = $query->where('permanent_district_pourashava_id', $district_pourashava_id);
+//        if ($upazila_id && $upazila_id > 0)
+//            $query = $query->where('permanent_upazila_id', $upazila_id);
+        if ($pourashava_id && $pourashava_id > 0)
+            $query = $query->where('permanent_pourashava_id', $pourashava_id);
+        if ($thana_id && $thana_id > 0) {
+            $query = $query->where(function ($q) use ($thana_id) {
+                $q->where('permanent_upazila_id', $thana_id)->orWhere('permanent_thana_id', $thana_id);
+            });
+        }
+        if ($union_id && $union_id > 0)
+            $query = $query->where('permanent_union_id', $union_id);
+        if ($ward_id && $ward_id > 0)
+            $query = $query->where('permanent_ward_id', $ward_id);
+
+        return $query;
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\Pagination\Paginator
+     */
+    public function list(Request $request, $forPdf = false)
+    {
+        $program_id = $request->query('program_id');
 
         $beneficiary_id = $request->query('beneficiary_id');
         $nominee_name = $request->query('nominee_name');
@@ -47,32 +221,8 @@ class BeneficiaryService
         $query = Beneficiary::query();
         if ($program_id)
             $query = $query->where('program_id', $program_id);
-        if ($division_id)
-            $query = $query->where('permanent_division_id', $division_id);
-        if ($district_id)
-            $query = $query->where('permanent_district_id', $district_id);
-        if ($city_corp_id)
-            $query = $query->where('permanent_city_corp_id', $city_corp_id);
-        if ($district_pourashava_id)
-            $query = $query->where('permanent_district_pourashava_id', $district_pourashava_id);
-//        if ($upazila_id)
-//            $query = $query->where('permanent_upazila_id', $upazila_id);
-//        if ($pourashava_id)
-//            $query = $query->where('permanent_pourashava_id', $pourashava_id);
-        if ($thana_id)
-            $query = $query->where(function ($q) use ($thana_id) {
-                $q->where('permanent_thana_id', $thana_id)
-                    ->orWhere('permanent_upazila_id', $thana_id);
-            });
-//        $query = $query->where('permanent_thana_id', $thana_id);
-        if ($union_id)
-            $query = $query->where(function ($q) use ($union_id) {
-                $q->where('permanent_union_id', $union_id)
-                    ->orWhere('permanent_pourashava_id', $union_id);
-            });
-//            $query = $query->where('permanent_union_id', $union_id);
-        if ($ward_id)
-            $query = $query->where('permanent_ward_id', $ward_id);
+
+        $query = $this->applyLocationFilter($query, $request);
 
         // advance search
         if ($beneficiary_id)
@@ -86,17 +236,28 @@ class BeneficiaryService
         if ($status)
             $query = $query->where('status', $status);
 
-
-        return $query->with('program',
-            'permanentDivision',
-            'permanentDistrict',
-            'permanentCityCorporation',
-            'permanentDistrictPourashava',
-            'permanentUpazila',
-            'permanentPourashava',
-            'permanentThana',
-            'permanentUnion',
-            'permanentWard')->orderBy("$sortByColumn", "$orderByDirection")->paginate($perPage);
+        if ($forPdf)
+            return $query->with('program',
+                'permanentDivision',
+                'permanentDistrict',
+                'permanentCityCorporation',
+                'permanentDistrictPourashava',
+                'permanentUpazila',
+                'permanentPourashava',
+                'permanentThana',
+                'permanentUnion',
+                'permanentWard')->orderBy("$sortByColumn", "$orderByDirection")->get();
+        else
+            return $query->with('program',
+                'permanentDivision',
+                'permanentDistrict',
+                'permanentCityCorporation',
+                'permanentDistrictPourashava',
+                'permanentUpazila',
+                'permanentPourashava',
+                'permanentThana',
+                'permanentUnion',
+                'permanentWard')->orderBy("$sortByColumn", "$orderByDirection")->paginate($perPage);
     }
 
     /**

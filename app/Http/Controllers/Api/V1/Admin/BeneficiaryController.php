@@ -11,6 +11,10 @@ use App\Http\Requests\Admin\Beneficiary\UpdateBeneficiaryRequest;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
 use App\Http\Services\Admin\Beneficiary\BeneficiaryService;
 use App\Http\Traits\MessageTrait;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
+use Mpdf\MpdfException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
@@ -31,6 +35,19 @@ class BeneficiaryController extends Controller
     public function __construct(BeneficiaryService $beneficiaryService)
     {
         $this->beneficiaryService = $beneficiaryService;
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUserLocation(): \Illuminate\Http\JsonResponse
+    {
+        $uerLocation = $this->beneficiaryService->getUserLocation();
+        return response()->json([
+            'data' => $uerLocation,
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ], ResponseAlias::HTTP_OK);
     }
 
     /**
@@ -103,6 +120,10 @@ class BeneficiaryController extends Controller
         }
     }
 
+    /**
+     * @param $beneficiary_id
+     * @return \Illuminate\Http\JsonResponse|BeneficiaryResource
+     */
     public function getByBeneficiaryId($beneficiary_id): \Illuminate\Http\JsonResponse|BeneficiaryResource
     {
         try {
@@ -213,7 +234,7 @@ class BeneficiaryController extends Controller
      * @param BeneficiaryExitRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function exitSave(BeneficiaryExitRequest $request)
+    public function exitSave(BeneficiaryExitRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         try {
             $this->beneficiaryService->exitSave($request);
@@ -244,4 +265,67 @@ class BeneficiaryController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+
+    /**
+     * @param SearchBeneficiaryRequest $request
+     * @return ResponseAlias
+     * @throws MpdfException
+     */
+    public function getBeneficiaryListPdf(SearchBeneficiaryRequest $request): ResponseAlias
+    {
+        $beneficiaries = $this->beneficiaryService->list($request, true);
+        $data = ['beneficiaries' => $beneficiaries];
+        $pdf = LaravelMpdf::loadView('reports.beneficiary.beneficiary_list', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-P',
+                'title' => 'উপকারভোগীর তালিকা',
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+        return $pdf->stream($fileName);
+
+//        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+//
+//        $pdfPath = public_path("/pdf/$fileName");
+//
+//        $pdf->save($pdfPath);
+//
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+    }
+
+    private function getColumnValue($column, $application)
+    {
+        return match ($column) {
+            'name_en' => $application->name_en,
+            'program.name_en' => $application->program?->name_en,
+            'application_id' => $application->application_id,
+            'status' => $application->getStatus(),
+            'score' => $application->score,
+            'account_number' => $application->account_number,
+            'verification_number' => $application->verification_number,
+            'division' => $application->division?->name_en,
+            'district' => $application->district?->name_en,
+            'location' => $application->cityCorporation?->name_en ?: ($application->districtPouroshova?->name_en ?: $application->upazila?->name_en),
+            'union_pouro_city' => $application->thana?->name_en ?: ($application->union?->name_en ?: $application->pourashava?->name_en),
+            'ward' => $application->ward?->name_en,
+            'father_name_en' => $application->father_name_en,
+            'mother_name_en' => $application->mother_name_en,
+            'marital_status' => $application->marital_status,
+            'spouse_name_en' => $application->spouse_name_en,
+            'nominee_en' => $application->nominee_en,
+            'nominee_relation_with_beneficiary' => $application->nominee_relation_with_beneficiary,
+            'mobile' => $application->mobile,
+        };
+    }
+
 }

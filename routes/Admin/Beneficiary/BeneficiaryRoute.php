@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Admin\LocationController;
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin/beneficiary')->group(function () {
+        Route::get('/getUserLocation', [BeneficiaryController::class, 'getUserLocation'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::get('/list', [BeneficiaryController::class, 'list'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::get('/show/{id}', [BeneficiaryController::class, 'show'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::get('/get/{id}', [BeneficiaryController::class, 'get'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
@@ -19,6 +20,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/replace/{id}', [BeneficiaryController::class, 'replaceSave'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::post('/exit', [BeneficiaryController::class, 'exitSave'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::post('/shift', [BeneficiaryController::class, 'shiftingSave'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        // report
+        Route::get('/getBeneficiaryListPdf', [BeneficiaryController::class, 'getBeneficiaryListPdf'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
     });
 
     Route::prefix('admin/committee')->group(function () {
