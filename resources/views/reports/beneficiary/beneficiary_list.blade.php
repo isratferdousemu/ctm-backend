@@ -39,6 +39,12 @@
             border: none;
         }
 
+        .border-table th {
+            border: 1px solid #dddddd;
+            text-align: center;
+            background-color: ;
+        }
+
         .border-table td {
             border: 1px solid #dddddd;
             text-align: left;

@@ -279,7 +279,7 @@ class BeneficiaryController extends Controller
         $pdf = LaravelMpdf::loadView('reports.beneficiary.beneficiary_list', $data, [],
             [
                 'mode' => 'utf-8',
-                'format' => 'A4-P',
+                'format' => 'A4-L',
                 'title' => 'উপকারভোগীর তালিকা',
                 'orientation' => 'L',
                 'default_font_size' => 10,
@@ -291,16 +291,16 @@ class BeneficiaryController extends Controller
                 'margin_footer' => 10,
             ]);
 
-        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-        return $pdf->stream($fileName);
-
 //        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//
-//        $pdfPath = public_path("/pdf/$fileName");
-//
-//        $pdf->save($pdfPath);
-//
-//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+//        return $pdf->stream($fileName);
+
+        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+
+        $pdfPath = public_path("/pdf/$fileName");
+
+        $pdf->save($pdfPath);
+
+        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
     private function getColumnValue($column, $application)
