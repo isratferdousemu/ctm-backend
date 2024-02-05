@@ -11,6 +11,7 @@ use App\Http\Traits\MessageTrait;
 use App\Models\Committee;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
@@ -146,6 +147,34 @@ class CommitteeController extends Controller
                 'message' => $this->deleteSuccessMessage,
             ], ResponseAlias::HTTP_OK);
         } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    public function getCommitteeListPdf(Request $request): \Illuminate\Http\JsonResponse|AnonymousResourceCollection
+    {
+        try {
+            $committeeList = $this->committeeService->list($request, true);
+            $data = ['committeeList' => $committeeList];
+            $pdf = LaravelMpdf::loadView('reports.beneficiary.committee_list', $data, [],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'title' => 'কমিটি তালিকা',
+                    'orientation' => 'L',
+                    'default_font_size' => 10,
+                    'margin_left' => 10,
+                    'margin_right' => 10,
+                    'margin_top' => 10,
+                    'margin_bottom' => 10,
+                    'margin_header' => 10,
+                    'margin_footer' => 10,
+                ]);
+
+            $fileName = 'কমিটি_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+            return $pdf->stream($fileName);
+        } catch (\Throwable $th) {
+            //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
         }
     }

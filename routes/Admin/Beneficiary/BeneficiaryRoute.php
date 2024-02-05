@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/shift', [BeneficiaryController::class, 'shiftingSave'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         // report
         Route::get('/getBeneficiaryListPdf', [BeneficiaryController::class, 'getBeneficiaryListPdf'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/getBeneficiaryExitListPdf', [BeneficiaryController::class, 'getBeneficiaryExitListPdf'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
     });
 
     Route::prefix('admin/committee')->group(function () {
@@ -31,6 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/update/{id}', [CommitteeController::class, 'update'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
         Route::delete('/delete/{id}', [CommitteeController::class, 'delete'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
         Route::get('/{typeId}/{locationId}', [LocationController::class, 'getCommitteesByLocation'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        // report
+        Route::get('/getCommitteeListPdf', [CommitteeController::class, 'getCommitteeListPdf'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
     });
 
     Route::apiResource('admin/committee-permissions', CommitteePermissionController::class)

@@ -303,29 +303,36 @@ class BeneficiaryController extends Controller
         return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
-    private function getColumnValue($column, $application)
+    public function getBeneficiaryExitListPdf(SearchBeneficiaryRequest $request): ResponseAlias
     {
-        return match ($column) {
-            'name_en' => $application->name_en,
-            'program.name_en' => $application->program?->name_en,
-            'application_id' => $application->application_id,
-            'status' => $application->getStatus(),
-            'score' => $application->score,
-            'account_number' => $application->account_number,
-            'verification_number' => $application->verification_number,
-            'division' => $application->division?->name_en,
-            'district' => $application->district?->name_en,
-            'location' => $application->cityCorporation?->name_en ?: ($application->districtPouroshova?->name_en ?: $application->upazila?->name_en),
-            'union_pouro_city' => $application->thana?->name_en ?: ($application->union?->name_en ?: $application->pourashava?->name_en),
-            'ward' => $application->ward?->name_en,
-            'father_name_en' => $application->father_name_en,
-            'mother_name_en' => $application->mother_name_en,
-            'marital_status' => $application->marital_status,
-            'spouse_name_en' => $application->spouse_name_en,
-            'nominee_en' => $application->nominee_en,
-            'nominee_relation_with_beneficiary' => $application->nominee_relation_with_beneficiary,
-            'mobile' => $application->mobile,
-        };
+        $beneficiaries = $this->beneficiaryService->exitList($request, true);
+//        return response()->json($beneficiaries);
+        $data = ['beneficiaries' => $beneficiaries];
+        $pdf = LaravelMpdf::loadView('reports.beneficiary.beneficiary_exit_list', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-L',
+                'title' => 'উপকারভোগীর প্রস্থান তালিকা',
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+        $fileName = 'উপকারভোগীর_প্রস্থান_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+        return $pdf->stream($fileName);
+
+//        $fileName = 'উপকারভোগীর_প্রস্থান_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+//
+//        $pdfPath = public_path("/pdf/$fileName");
+//
+//        $pdf->save($pdfPath);
+//
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
 }
