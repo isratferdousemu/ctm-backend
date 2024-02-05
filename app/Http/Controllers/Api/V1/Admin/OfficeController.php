@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Services\Admin\Office\OfficeListService;
 use Validator;
 use App\Models\Office;
 use Illuminate\Http\Request;
@@ -52,14 +53,14 @@ class OfficeController extends Controller
      *         description="page number",
      *         @OA\Schema(type="integer")
      *     ),
-     * 
+     *
      *     @OA\Parameter(
      *         name="user_id",
      *         in="query",
      *         description="user_id",
      *         @OA\Schema(type="integer")
      *     ),
-     * 
+     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -110,13 +111,13 @@ class OfficeController extends Controller
                 $page = 1;
             }
         }
-        $office = Office::query()
+        $query = Office::query()
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayComment, $filterArrayAddress) {
                 $query->where($filterArrayNameEn)
                     ->orWhere($filterArrayNameBn)
                     ->orWhere($filterArrayComment)
                     ->orWhere($filterArrayAddress);
-            })
+            });
 
             // ->latest()
             // ->paginate($perPage, ['*'], 'page');
@@ -124,18 +125,29 @@ class OfficeController extends Controller
             //     return $query->where('assign_location_id', $office_location_id);
             // })
 
-            ->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
-            
 
+        return $this->filterByLocation($query);
+
+            $query->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
             ->orderBy($sortBy, $orderBy)
-            ->paginate($perPage, ['*'], 'page', $page);
+            ;
 
-        return $office;
+        return $query->paginate($perPage);
         return OfficeResource::collection($office)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
         ]);
     }
+
+
+
+    public function filterByLocation($query)
+    {
+        return (new OfficeListService)->getOfficesUnderUser();
+        return $query;
+    }
+
+
     /**
      * @OA\Get(
      *     path="/admin/office/get-ward-under-office",
@@ -152,7 +164,7 @@ class OfficeController extends Controller
      *         description="Office Id",
      *         @OA\Schema(type="integer")
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -298,13 +310,13 @@ class OfficeController extends Controller
      *                      description="status",
      *                      type="tinyInteger",
      *                   ),
-     * 
+     *
      *                  @OA\Property(
      *                      property="ward_under_office[0][office_id]",
      *                      description="insert Office id",
      *                      type="integer",
      *                   ),
-     * 
+     *
      *                  @OA\Property(
      *                     property="ward_under_office[0][ward_id]",
      *                      description="insert ward id",
@@ -632,7 +644,7 @@ class OfficeController extends Controller
      *             ),
      *
      *         ),
-     * 
+     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
