@@ -71,7 +71,7 @@ class SystemconfigController extends Controller
      *                      type="text",
      *
      *                   ),
-     * 
+     *
      *                 ),
      *             ),
      *
@@ -168,7 +168,7 @@ class SystemconfigController extends Controller
      *                      type="text",
      *
      *                   ),
-     * 
+     *
      *                 ),
      *             ),
      *
@@ -204,15 +204,15 @@ class SystemconfigController extends Controller
 
      public function updateAllowanceAdditionalField(AllowanceAdditionalFieldUpdateRequest $request){
         // print_r($request->all());
-        
-        
-        
+
+
+
 
         // return $this->sendError('err', $request->field_value);
 
 
-              
-        
+
+
         try {
             $data = $this->systemconfigService->updateAllowanceAdditionalField($request);
             activity("AllowanceAdditionalField")
@@ -221,7 +221,7 @@ class SystemconfigController extends Controller
             ->log('AllowanceAdditionalField Created !');
 
             // return $data;
-             
+
             return AdditionalFieldsResource::make($data)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -313,7 +313,7 @@ class SystemconfigController extends Controller
             if($request->has('itemsPerPage')) {
                 $itemsPerPage = $request->get('itemsPerPage');
 
-                return $allowance->paginate($itemsPerPage, ['*'], $request->get('page'));
+                return $allowance->paginate($itemsPerPage);
             }
         }else{
             $itemsPerPage = 10;
@@ -323,7 +323,7 @@ class SystemconfigController extends Controller
                 $itemsPerPage = $request->get('itemsPerPage');
 
             }
-            
+
         return $allowance->paginate($itemsPerPage);
         }
 
@@ -736,12 +736,12 @@ class SystemconfigController extends Controller
     //             if ($request->is_active == "1" ||$request->is_active == true)
     //             {
     //                 $allowance_program->is_active = 1;
-                    
+
     //             }
     //              if ($request->is_active == "0" || $request->is_active == false)
     //             {
     //                 $allowance_program->is_active = 0;
-                    
+
     //             }
 
     //             if ($request->system_status == true)
@@ -777,8 +777,8 @@ class SystemconfigController extends Controller
 
 
     //             $allowance_program->save();
-          
-               
+
+
 
 
     //             if ($request->input('age_limit') != null)
@@ -1255,14 +1255,14 @@ class SystemconfigController extends Controller
 
         $validator->validated();
 
-     
+
 
         $allowance=AllowanceAdditionalField::where('id', $id)->delete();
 
- 
 
 
-       
+
+
         activity("Allowance")
         ->causedBy(auth()->user())
         ->log('Allowance Deleted!!');
@@ -1332,8 +1332,8 @@ class SystemconfigController extends Controller
      */
        public function AllowanceStatusUpdate($id)
     {
- 
-      
+
+
         $device = AllowanceProgram::findOrFail($id);
 
         if($device->system_status == 0)
