@@ -252,7 +252,7 @@ class ApplicationController extends Controller
         return response()->json([
             'status' => true,
             'data' => $data,
-             'id' => $data->id,
+             'id' => $data->application_id,
             'message' => $this->insertSuccessMessage,
         ], 200);
 
@@ -932,39 +932,82 @@ class ApplicationController extends Controller
      *      ),
      *     )
      */
-   public function getApplicationById($id){
+    public function getApplicationById($id)
+{
+    $application = Application::where('id', '=', $id)
+        ->with([
+            'current_location.parent.parent.parent.parent',
+            'permanent_location.parent.parent.parent.parent',
+            'program',
+            'allowAddiFields.allowAddiFieldValues',
+             'variable',
+            'subvariable'
+        ])->first();
 
-        $application = Application::where('id','=',$id)
-        ->with('current_location.parent.parent.parent.parent',
-                'permanent_location.parent.parent.parent.parent',
-                'program',  // Assuming you have defined this relationship in your Application model
-            'allowAddiFields.allowAddiFieldValues', // Assuming you have defined these relationships in your models
-                )->first();
-                $image=Application::where('id','=',$id)
-                ->value('image');
-                $image= asset('uploads/application/' . $application->nominee_image);
+    if (!$application) {
+        return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
+    }
 
-                // Grouping additional fields by ID
-        $groupedAdditionalFields = $application->allowAddiFields->groupBy('id');
+    // Manually filter subvariable based on application_id
+   
 
-        // Mapping to get only one instance of each additional field with its values
-        $uniqueAdditionalFields = $groupedAdditionalFields->map(function ($fields) {
-        $additionalField = $fields->first();
-        $additionalField->allowAddiFieldValues = $fields->first()->allowAddiFieldValues;
-        return $additionalField;
+    $emu = $application->image;
+    $image = url('uploads/application/' . $application->image);
+    $signature = url('uploads/application/' . $application->signature);
+    $nominee_image = url('uploads/application/' . $application->nominee_image);
+    $nominee_signature = url('uploads/application/' . $application->nominee_signature);
+    $groupedAllowAddiFields = $application->allowAddiFields->groupBy('id')->values();
+    $groupedAllowAddiFields = $application->allowAddiFields->groupBy('pivot.allow_addi_fields_id');
 
+    // Get the first item from each group (assuming it's the same for each 'allow_addi_fields_id')
+    $distinctAllowAddiFields = $groupedAllowAddiFields->map(function ($group) {
+        return $group->first();
     });
 
-        return \response()->json([
-            'application' => $application,
-            'image'=>$image,
-            // 'id'=>$id
+    return response()->json([
+        'emu' => $emu,
+        'application' => $application,
+        'unique_additional_fields' => $distinctAllowAddiFields,
+        'image' => $image,
+        'signature' => $signature,
+        'nominee_image' => $nominee_image,
+        'nominee_signature' => $nominee_signature,
+     
+    ], Response::HTTP_OK);
+}
+//    public function getApplicationById($id){
 
-            'unique_additional_fields' => $uniqueAdditionalFields->values(), // Convert to values to remove keys
+//         $application = Application::where('id','=',$id)
+//         ->with('current_location.parent.parent.parent.parent',
+//                 'permanent_location.parent.parent.parent.parent',
+//                 'program',  // Assuming you have defined this relationship in your Application model
+//             'allowAddiFields.allowAddiFieldValues', // Assuming you have defined these relationships in your models
+//                 )->first();
+//                 $image=Application::where('id','=',$id)
+//                 ->value('image');
+//                 $image= asset('uploads/application/' . $application->nominee_image);
 
-            ],Response::HTTP_OK);
+//                 // Grouping additional fields by ID
+//         $groupedAdditionalFields = $application->allowAddiFields->groupBy('id');
 
-    }
+//         // Mapping to get only one instance of each additional field with its values
+//         $uniqueAdditionalFields = $groupedAdditionalFields->map(function ($fields) {
+//         $additionalField = $fields->first();
+//         $additionalField->allowAddiFieldValues = $fields->first()->allowAddiFieldValues;
+//         return $additionalField;
+
+//     });
+
+//         return \response()->json([
+//             'application' => $application,
+//             'image'=>$image,
+//             // 'id'=>$id
+
+//             'unique_additional_fields' => $uniqueAdditionalFields->values(), // Convert to values to remove keys
+
+//             ],Response::HTTP_OK);
+
+//     }
     /**
      * @OA\Get(
      *      path="/global/applicants copy/{id}",
