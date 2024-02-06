@@ -126,7 +126,7 @@ class OfficeController extends Controller
             // })
 
 
-        return $this->filterByLocation($query);
+//        return $this->filterByLocation($query);
 
             $query->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
             ->orderBy($sortBy, $orderBy)
