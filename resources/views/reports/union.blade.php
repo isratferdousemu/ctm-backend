@@ -109,21 +109,16 @@
     </tr>
     </thead>
     <tbody>
+
     @php($count = 0);
-
-    @foreach($items->chunk(300) as $chunkList)
-
-        @foreach($chunkList as $row)
+    @foreach($items as $chunkList)
             <tr>
-                <td>{{++$count}}</td>
-                <td>{{$row->parent?->parent?->parent?->name_bn}}</td>
-                <td>{{$row->parent?->parent?->name_bn}}</td>
-                <td>{{$row->parent?->name_bn}}</td>
-                <td>{{$row->name_bn}}</td>
+                <td>{{ ++$count }}</td>
+                <td>{{ $chunkList['parent']['parent']['parent']['name_bn'] ?? '' }}</td>
+                <td>{{ $chunkList['parent']['parent']['name_bn'] ?? '' }}</td>
+                <td>{{ $chunkList['parent']['name_bn'] ?? '' }}</td>
+                <td>{{ $chunkList['name_bn'] ?? '' }}</td>
             </tr>
-        @endforeach
-
-        <html-separator/>
     @endforeach
     </tbody>
 </table>
