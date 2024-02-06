@@ -946,15 +946,17 @@ class BeneficiaryService
 
     public function shiftingList(Request $request, $forPdf = false)
     {
-        $program_id = $request->query('program_id');
+        $from_program_id = $request->query('from_program_id');
+        $to_program_id = $request->query('to_program_id');
 
         $perPage = $request->query('perPage', 10);
-        $sortByColumn = $request->query('sortBy', 'beneficiary_exits.created_at');
+        $sortByColumn = $request->query('sortBy', 'beneficiary_shiftings.created_at');
         $orderByDirection = $request->query('orderBy', 'asc');
 
-        $query = DB::table('beneficiary_exits')
-            ->join('beneficiaries', 'beneficiaries.id', '=', 'beneficiary_exits.beneficiary_id')
-            ->join('allowance_programs', 'allowance_programs.id', '=', 'beneficiaries.program_id')
+        $query = DB::table('beneficiary_shiftings')
+            ->join('beneficiaries', 'beneficiaries.id', '=', 'beneficiary_shiftings.beneficiary_id')
+            ->join('allowance_programs AS from_program', 'from_program.id', '=', 'beneficiary_shiftings.from_program_id')
+            ->join('allowance_programs AS to_program', 'to_program.id', '=', 'beneficiary_shiftings.to_program_id')
             ->join('locations AS division', 'division.id', '=', 'beneficiaries.permanent_division_id', 'left')
             ->join('locations AS district', 'district.id', '=', 'beneficiaries.permanent_district_id', 'left')
             ->join('locations AS city_corporation', 'city_corporation.id', '=', 'beneficiaries.permanent_city_corp_id', 'left')
@@ -963,19 +965,18 @@ class BeneficiaryService
             ->join('locations AS pourashava', 'pourashava.id', '=', 'beneficiaries.permanent_pourashava_id', 'left')
             ->join('locations AS thana', 'thana.id', '=', 'beneficiaries.permanent_thana_id', 'left')
             ->join('locations AS union', 'union.id', '=', 'beneficiaries.permanent_union_id', 'left')
-            ->join('locations AS ward', 'ward.id', '=', 'beneficiaries.permanent_ward_id', 'left')
-            ->join('lookups AS exit_reason', 'exit_reason.id', '=', 'beneficiary_exits.exit_reason_id', 'left');
-        if ($program_id)
-            $query = $query->where('beneficiaries.program_id', $program_id);
+            ->join('locations AS ward', 'ward.id', '=', 'beneficiaries.permanent_ward_id', 'left');
+        if ($from_program_id)
+            $query = $query->where('beneficiary_shiftings.from_program_id', $from_program_id);
+        if ($to_program_id)
+            $query = $query->where('beneficiary_shiftings.to_program_id', $to_program_id);
 
         $query = $this->applyLocationFilterForExit($query, $request);
 
         if ($forPdf)
-            return $query->select('beneficiary_exits.id',
-                'exit_reason.value_en as exit_reason_en',
-                'exit_reason.value_bn as exit_reason_bn',
-                'beneficiary_exits.exit_reason_detail',
-                'beneficiary_exits.exit_date',
+            return $query->select('beneficiary_shiftings.id',
+                'beneficiary_shiftings.shifting_cause',
+                'beneficiary_shiftings.activation_date',
                 'beneficiaries.application_id',
                 'beneficiaries.name_en',
                 'beneficiaries.name_bn',
@@ -983,8 +984,10 @@ class BeneficiaryService
                 'beneficiaries.father_name_bn',
                 'beneficiaries.mother_name_en',
                 'beneficiaries.mother_name_bn',
-                'allowance_programs.name_en as program_name_en',
-                'allowance_programs.name_bn as program_name_bn',
+                'from_program.name_en as from_program_name_en',
+                'from_program.name_bn as from_program_name_bn',
+                'to_program.name_en as to_program_name_en',
+                'to_program.name_bn as to_program_name_bn',
                 'division.name_en as division_name_en',
                 'division.name_bn as division_name_bn',
                 'district.name_en as district_name_en',
@@ -1004,11 +1007,9 @@ class BeneficiaryService
                 'ward.name_en as ward_en',
                 'ward.name_bn as ward_bn')->orderBy("$sortByColumn", "$orderByDirection")->get();
         else
-            return $query->select('beneficiary_exits.id',
-                'exit_reason.value_en as exit_reason_en',
-                'exit_reason.value_bn as exit_reason_bn',
-                'beneficiary_exits.exit_reason_detail',
-                'beneficiary_exits.exit_date',
+            return $query->select('beneficiary_shiftings.id',
+                'beneficiary_shiftings.shifting_cause',
+                'beneficiary_shiftings.activation_date',
                 'beneficiaries.application_id',
                 'beneficiaries.name_en',
                 'beneficiaries.name_bn',
@@ -1016,8 +1017,10 @@ class BeneficiaryService
                 'beneficiaries.father_name_bn',
                 'beneficiaries.mother_name_en',
                 'beneficiaries.mother_name_bn',
-                'allowance_programs.name_en as program_name_en',
-                'allowance_programs.name_bn as program_name_bn',
+                'from_program.name_en as from_program_name_en',
+                'from_program.name_bn as from_program_name_bn',
+                'to_program.name_en as to_program_name_en',
+                'to_program.name_bn as to_program_name_bn',
                 'division.name_en as division_name_en',
                 'division.name_bn as division_name_bn',
                 'district.name_en as district_name_en',
