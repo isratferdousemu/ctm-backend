@@ -13,6 +13,7 @@ use App\Http\Resources\Admin\Beneficiary\BeneficiaryReplaceResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
 use App\Http\Services\Admin\Beneficiary\BeneficiaryService;
 use App\Http\Traits\MessageTrait;
+use App\Models\AllowanceProgramAmount;
 use App\Models\BeneficiaryReplace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -322,7 +323,23 @@ class BeneficiaryController extends Controller
     public function getBeneficiaryListPdf(SearchBeneficiaryRequest $request): ResponseAlias
     {
         $beneficiaries = $this->beneficiaryService->list($request, true);
-        $data = ['beneficiaries' => $beneficiaries];
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+        $generated_by = $user->full_name;
+        $assign_location = '';
+        if ($user->assign_location) {
+            $assign_location .= ', ' . $user->assign_location?->name_en;
+            if ($user->assign_location?->parent) {
+                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                if ($user->assign_location?->parent?->parent) {
+                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
+                    if ($user->assign_location?->parent?->parent?->parent) {
+                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
+                    }
+                }
+            }
+        }
+//        $allowance_amount = AllowanceProgramAmount::where('allowance_program_id', $id)->get();
+        $data = ['beneficiaries' => $beneficiaries, 'generated_by' => $generated_by, 'assign_location' => $assign_location];
         $pdf = LaravelMpdf::loadView('reports.beneficiary.beneficiary_list', $data, [],
             [
                 'mode' => 'utf-8',
@@ -338,20 +355,34 @@ class BeneficiaryController extends Controller
                 'margin_footer' => 10,
             ]);
 
-        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-        return $pdf->stream($fileName);
-
 //        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//        $pdfPath = public_path("/pdf/$fileName");
-//        $pdf->save($pdfPath);
-//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+//        return $pdf->stream($fileName);
+
+        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+        $pdfPath = public_path("/pdf/$fileName");
+        $pdf->save($pdfPath);
+        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
     public function getBeneficiaryExitListPdf(SearchBeneficiaryRequest $request): ResponseAlias
     {
         $beneficiaries = $this->beneficiaryService->exitList($request, true);
-//        return response()->json($beneficiaries);
-        $data = ['beneficiaries' => $beneficiaries];
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+        $generated_by = $user->full_name;
+        $assign_location = '';
+        if ($user->assign_location) {
+            $assign_location .= ', ' . $user->assign_location?->name_en;
+            if ($user->assign_location?->parent) {
+                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                if ($user->assign_location?->parent?->parent) {
+                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
+                    if ($user->assign_location?->parent?->parent?->parent) {
+                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
+                    }
+                }
+            }
+        }
+        $data = ['beneficiaries' => $beneficiaries, 'generated_by' => $generated_by, 'assign_location' => $assign_location];
         $pdf = LaravelMpdf::loadView('reports.beneficiary.beneficiary_exit_list', $data, [],
             [
                 'mode' => 'utf-8',
@@ -367,20 +398,34 @@ class BeneficiaryController extends Controller
                 'margin_footer' => 10,
             ]);
 
-        $fileName = 'উপকারভোগীর_প্রস্থান_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-        return $pdf->stream($fileName);
-
 //        $fileName = 'উপকারভোগীর_প্রস্থান_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//        $pdfPath = public_path("/pdf/$fileName");
-//        $pdf->save($pdfPath);
-//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+//        return $pdf->stream($fileName);
+
+        $fileName = 'উপকারভোগীর_প্রস্থান_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+        $pdfPath = public_path("/pdf/$fileName");
+        $pdf->save($pdfPath);
+        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
     public function getBeneficiaryReplaceListPdf(SearchBeneficiaryRequest $request): ResponseAlias
     {
         $beneficiaries = $this->beneficiaryService->replaceList($request, true);
-//        return response()->json($beneficiaries);
-        $data = ['beneficiaries' => $beneficiaries];
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+        $generated_by = $user->full_name;
+        $assign_location = '';
+        if ($user->assign_location) {
+            $assign_location .= ', ' . $user->assign_location?->name_en;
+            if ($user->assign_location?->parent) {
+                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                if ($user->assign_location?->parent?->parent) {
+                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
+                    if ($user->assign_location?->parent?->parent?->parent) {
+                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
+                    }
+                }
+            }
+        }
+        $data = ['beneficiaries' => $beneficiaries, 'generated_by' => $generated_by, 'assign_location' => $assign_location];
         $pdf = LaravelMpdf::loadView('reports.beneficiary.beneficiary_replace_list', $data, [],
             [
                 'mode' => 'utf-8',
@@ -396,20 +441,34 @@ class BeneficiaryController extends Controller
                 'margin_footer' => 10,
             ]);
 
-        $fileName = 'উপকারভোগী_পরিবর্তন_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-        return $pdf->stream($fileName);
-
 //        $fileName = 'উপকারভোগী_পরিবর্তন_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//        $pdfPath = public_path("/pdf/$fileName");
-//        $pdf->save($pdfPath);
-//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+//        return $pdf->stream($fileName);
+
+        $fileName = 'উপকারভোগী_পরিবর্তন_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+        $pdfPath = public_path("/pdf/$fileName");
+        $pdf->save($pdfPath);
+        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
     public function getBeneficiaryShiftingListPdf(SearchBeneficiaryRequest $request): ResponseAlias
     {
         $beneficiaries = $this->beneficiaryService->shiftingList($request, true);
-//        return response()->json($beneficiaries);
-        $data = ['beneficiaries' => $beneficiaries];
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+        $generated_by = $user->full_name;
+        $assign_location = '';
+        if ($user->assign_location) {
+            $assign_location .= ', ' . $user->assign_location?->name_en;
+            if ($user->assign_location?->parent) {
+                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                if ($user->assign_location?->parent?->parent) {
+                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
+                    if ($user->assign_location?->parent?->parent?->parent) {
+                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
+                    }
+                }
+            }
+        }
+        $data = ['beneficiaries' => $beneficiaries, 'generated_by' => $generated_by, 'assign_location' => $assign_location];
         $pdf = LaravelMpdf::loadView('reports.beneficiary.beneficiary_shifting_list', $data, [],
             [
                 'mode' => 'utf-8',
@@ -425,13 +484,13 @@ class BeneficiaryController extends Controller
                 'margin_footer' => 10,
             ]);
 
-        $fileName = 'উপকারভোগী_স্থানান্তর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-        return $pdf->stream($fileName);
-
 //        $fileName = 'উপকারভোগী_স্থানান্তর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//        $pdfPath = public_path("/pdf/$fileName");
-//        $pdf->save($pdfPath);
-//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+//        return $pdf->stream($fileName);
+
+        $fileName = 'উপকারভোগী_স্থানান্তর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+        $pdfPath = public_path("/pdf/$fileName");
+        $pdf->save($pdfPath);
+        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
 }
