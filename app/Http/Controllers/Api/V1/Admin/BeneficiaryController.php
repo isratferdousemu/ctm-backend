@@ -11,6 +11,7 @@ use App\Http\Requests\Admin\Beneficiary\UpdateBeneficiaryRequest;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryExitResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryReplaceResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
+use App\Http\Resources\Admin\Beneficiary\BeneficiaryShiftingResource;
 use App\Http\Services\Admin\Beneficiary\BeneficiaryService;
 use App\Http\Traits\MessageTrait;
 use App\Models\AllowanceProgramAmount;
@@ -305,7 +306,7 @@ class BeneficiaryController extends Controller
         try {
             $beneficiaryList = $this->beneficiaryService->shiftingList($request);
 //            return response()->json($beneficiaryList);
-            return BeneficiaryResource::collection($beneficiaryList)->additional([
+            return BeneficiaryShiftingResource::collection($beneficiaryList)->additional([
                 'success' => true,
                 'message' => $this->fetchSuccessMessage,
             ]);

@@ -42,7 +42,7 @@
         .border-table th {
             border: 1px solid #dddddd;
             text-align: center;
-            background-color: ;
+            background-color: #d1d1d1;
         }
 
         .border-table td {

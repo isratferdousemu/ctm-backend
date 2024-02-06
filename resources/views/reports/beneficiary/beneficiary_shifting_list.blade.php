@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>উপকারভোগীর প্রস্থান তালিকা</title>
+    <title>উপকারভোগী স্থানান্তরের তালিকা</title>
 
     <style>
         body {
@@ -103,7 +103,7 @@
             <h6>কশ্যামলী স্কোয়ার, ২৪/১-২, মিরপুর রোড, ঢাকা -১২০৭</h6>
             <p>www.dss.gov.bd</p>
             <br />
-            <h2>উপকারভোগীর প্রস্থান</h2>
+            <h2>উপকারভোগীর স্থানান্তর</h2>
         </td>
         <td class="right"><img src="{{ public_path('image/logo.png') }}" alt="Right Image"
                                style="width: 80px; height: 80px;"></td>
@@ -118,13 +118,14 @@
         <th>উপকারভোগীর আইডি</th>
         <th>উপকারভোগীর নাম</th>
         <th>পিতার নাম</th>
-        <th>প্রোগ্রাম নাম</th>
         <th>জেলা</th>
         <th>সিটি / জেলা পৌর / উপজেলা</th>
         <th>থানা /ইউনিয়ন /পৌর</th>
         <th>ওয়ার্ড</th>
-        <th>প্রস্থানের কারণ</th>
-        <th>প্রস্থানের তারিখ</th>
+        <th>পূর্বের প্রোগ্রাম</th>
+        <th>স্থানান্তরিত প্রোগ্রাম</th>
+        <th>স্থানান্তরের কারণ</th>
+        <th>একটিভেশনের তারিখ</th>
     </tr>
     </thead>
     <tbody>
@@ -134,13 +135,14 @@
             <td>{{$beneficiary?->application_id}}</td>
             <td>{{$beneficiary?->name_en}}</td>
             <td>{{$beneficiary?->father_name_en}}</td>
-            <td>{{$beneficiary?->program_name_en}}</td>
             <td>{{$beneficiary?->district_name_en}}</td>
             <td>{{$beneficiary?->upazila_name_en}}</td>
             <td>{{$beneficiary?->union_en}}</td>
             <td>{{$beneficiary?->ward_en}}</td>
-            <td>{{$beneficiary->exit_reason_en}}</td>
-            <td>{{\Illuminate\Support\Carbon::parse($beneficiary->exit_date)->format('d/m/Y')}}</td>
+            <td>{{$beneficiary?->from_program_name_en}}</td>
+            <td>{{$beneficiary?->to_program_name_en}}</td>
+            <td>{{$beneficiary->shifting_cause}}</td>
+            <td>{{\Illuminate\Support\Carbon::parse($beneficiary->activation_date)->format('d/m/Y')}}</td>
         </tr>
     @endforeach
     </tbody>
