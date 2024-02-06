@@ -16,13 +16,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/getByBeneficiaryId/{beneficiary_id}', [BeneficiaryController::class, 'getByBeneficiaryId'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::get('/edit/{id}', [BeneficiaryController::class, 'edit'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::put('/update/{id}', [BeneficiaryController::class, 'update'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
-        Route::get('/replaceList', [BeneficiaryController::class, 'getListForReplace'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/getListForReplace', [BeneficiaryController::class, 'getListForReplace'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::put('/replace/{id}', [BeneficiaryController::class, 'replaceSave'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/replaceList', [BeneficiaryController::class, 'replaceList'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::post('/exit', [BeneficiaryController::class, 'exitSave'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/exitList', [BeneficiaryController::class, 'exitList'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::post('/shift', [BeneficiaryController::class, 'shiftingSave'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::post('/shiftingList', [BeneficiaryController::class, 'shiftingList'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         // report
         Route::get('/getBeneficiaryListPdf', [BeneficiaryController::class, 'getBeneficiaryListPdf'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
         Route::get('/getBeneficiaryExitListPdf', [BeneficiaryController::class, 'getBeneficiaryExitListPdf'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/getBeneficiaryReplaceListPdf', [BeneficiaryController::class, 'getBeneficiaryReplaceListPdf'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/getBeneficiaryShiftingListPdf', [BeneficiaryController::class, 'getBeneficiaryShiftingListPdf'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
     });
 
     Route::prefix('admin/committee')->group(function () {

@@ -8,9 +8,12 @@ use App\Http\Requests\Admin\Beneficiary\BeneficiaryShiftingRequest;
 use App\Http\Requests\Admin\Beneficiary\ReplaceBeneficiaryRequest;
 use App\Http\Requests\Admin\Beneficiary\SearchBeneficiaryRequest;
 use App\Http\Requests\Admin\Beneficiary\UpdateBeneficiaryRequest;
+use App\Http\Resources\Admin\Beneficiary\BeneficiaryExitResource;
+use App\Http\Resources\Admin\Beneficiary\BeneficiaryReplaceResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
 use App\Http\Services\Admin\Beneficiary\BeneficiaryService;
 use App\Http\Traits\MessageTrait;
+use App\Models\BeneficiaryReplace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
@@ -230,6 +233,21 @@ class BeneficiaryController extends Controller
         }
     }
 
+    public function replaceList(SearchBeneficiaryRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        try {
+            $beneficiaryList = $this->beneficiaryService->replaceList($request);
+//            return response()->json($beneficiaryList);
+            return BeneficiaryReplaceResource::collection($beneficiaryList)->additional([
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
     /**
      * @param BeneficiaryExitRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
@@ -242,6 +260,21 @@ class BeneficiaryController extends Controller
                 'success' => true,
                 'message' => $this->deleteSuccessMessage,
             ], ResponseAlias::HTTP_OK);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    public function exitList(SearchBeneficiaryRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        try {
+            $beneficiaryList = $this->beneficiaryService->exitList($request);
+//            return response()->json($beneficiaryList);
+            return BeneficiaryExitResource::collection($beneficiaryList)->additional([
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ]);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
@@ -266,6 +299,20 @@ class BeneficiaryController extends Controller
         }
     }
 
+    public function shiftingList(SearchBeneficiaryRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        try {
+            $beneficiaryList = $this->beneficiaryService->shiftingList($request);
+//            return response()->json($beneficiaryList);
+            return BeneficiaryResource::collection($beneficiaryList)->additional([
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
 
     /**
      * @param SearchBeneficiaryRequest $request
@@ -291,16 +338,13 @@ class BeneficiaryController extends Controller
                 'margin_footer' => 10,
             ]);
 
-//        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//        return $pdf->stream($fileName);
-
         $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+        return $pdf->stream($fileName);
 
-        $pdfPath = public_path("/pdf/$fileName");
-
-        $pdf->save($pdfPath);
-
-        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+//        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+//        $pdfPath = public_path("/pdf/$fileName");
+//        $pdf->save($pdfPath);
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
     public function getBeneficiaryExitListPdf(SearchBeneficiaryRequest $request): ResponseAlias
@@ -327,11 +371,66 @@ class BeneficiaryController extends Controller
         return $pdf->stream($fileName);
 
 //        $fileName = 'উপকারভোগীর_প্রস্থান_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//
 //        $pdfPath = public_path("/pdf/$fileName");
-//
 //        $pdf->save($pdfPath);
-//
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+    }
+
+    public function getBeneficiaryReplaceListPdf(SearchBeneficiaryRequest $request): ResponseAlias
+    {
+        $beneficiaries = $this->beneficiaryService->replaceList($request, true);
+//        return response()->json($beneficiaries);
+        $data = ['beneficiaries' => $beneficiaries];
+        $pdf = LaravelMpdf::loadView('reports.beneficiary.beneficiary_replace_list', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-L',
+                'title' => 'উপকারভোগী পরিবর্তন তালিকা',
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+        $fileName = 'উপকারভোগী_পরিবর্তন_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+        return $pdf->stream($fileName);
+
+//        $fileName = 'উপকারভোগী_পরিবর্তন_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+//        $pdfPath = public_path("/pdf/$fileName");
+//        $pdf->save($pdfPath);
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+    }
+
+    public function getBeneficiaryShiftingListPdf(SearchBeneficiaryRequest $request): ResponseAlias
+    {
+        $beneficiaries = $this->beneficiaryService->shiftingList($request, true);
+//        return response()->json($beneficiaries);
+        $data = ['beneficiaries' => $beneficiaries];
+        $pdf = LaravelMpdf::loadView('reports.beneficiary.beneficiary_shifting_list', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-L',
+                'title' => 'উপকারভোগী স্থানান্তর তালিকা',
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+        $fileName = 'উপকারভোগী_স্থানান্তর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+        return $pdf->stream($fileName);
+
+//        $fileName = 'উপকারভোগী_স্থানান্তর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+//        $pdfPath = public_path("/pdf/$fileName");
+//        $pdf->save($pdfPath);
 //        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
