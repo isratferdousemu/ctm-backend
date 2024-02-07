@@ -941,7 +941,8 @@ class ApplicationController extends Controller
             'current_location.parent.parent.parent.parent',
             'permanent_location.parent.parent.parent.parent',
             'program',
-            'allowAddiFields.allowAddiFieldValues',
+            'allowAddiFields',
+            'allowAddiFieldValue.allowAddiField',
              'variable',
             'subvariable'
         ])->first();

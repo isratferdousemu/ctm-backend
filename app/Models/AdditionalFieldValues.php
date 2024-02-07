@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\AdditionalFields;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\AdditionalFieldValues
@@ -30,5 +31,10 @@ class AdditionalFieldValues extends Model
     {
         return parent::newQuery($excludeDeleted)
             ->orderBy('value', 'asc');
+    }
+    
+     public function allowAddiField()
+    {
+        return $this->belongsTo(AdditionalFields::class, 'additional_field_id');
     }
 }
