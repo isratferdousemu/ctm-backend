@@ -74,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/update', [LocationController::class, 'unionUpdate'])->middleware(['role_or_permission:super-admin|union-update']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyUnion'])->middleware(['role_or_permission:super-admin|union-delete']);
         Route::get('/generate-pdf', [ReportController::class, 'unionReport']);
+        Route::get('/generate-excel', [ReportController::class, 'unionReportExcel']);
     });
 
 

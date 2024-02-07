@@ -21,6 +21,7 @@ use App\Models\AllowanceProgram;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\LocationTrait;
 use Illuminate\Support\Facades\DB;
+use App\Http\Services\Notification\SMSservice;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\BeneficiaryTrait;
@@ -248,11 +249,12 @@ class ApplicationController extends Controller
 
         // return gettype(json_decode($request->application_allowance_values)[19]->value);
         $data = $this->applicationService->onlineApplicationRegistration($request);
+        
 
         return response()->json([
             'status' => true,
             'data' => $data,
-             'id' => $data->id,
+             'id' => $data->application_id,
             'message' => $this->insertSuccessMessage,
         ], 200);
 
@@ -932,39 +934,82 @@ class ApplicationController extends Controller
      *      ),
      *     )
      */
-   public function getApplicationById($id){
+    public function getApplicationById($id)
+{
+    $application = Application::where('application_id', '=', $id)
+        ->with([
+            'current_location.parent.parent.parent.parent',
+            'permanent_location.parent.parent.parent.parent',
+            'program',
+            'allowAddiFields.allowAddiFieldValues',
+             'variable',
+            'subvariable'
+        ])->first();
 
-        $application = Application::where('id','=',$id)
-        ->with('current_location.parent.parent.parent.parent',
-                'permanent_location.parent.parent.parent.parent',
-                'program',  // Assuming you have defined this relationship in your Application model
-            'allowAddiFields.allowAddiFieldValues', // Assuming you have defined these relationships in your models
-                )->first();
-                $image=Application::where('id','=',$id)
-                ->value('image');
-                $image= asset('uploads/application/' . $application->nominee_image);
+    if (!$application) {
+        return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
+    }
 
-                // Grouping additional fields by ID
-        $groupedAdditionalFields = $application->allowAddiFields->groupBy('id');
+    // Manually filter subvariable based on application_id
+   
 
-        // Mapping to get only one instance of each additional field with its values
-        $uniqueAdditionalFields = $groupedAdditionalFields->map(function ($fields) {
-        $additionalField = $fields->first();
-        $additionalField->allowAddiFieldValues = $fields->first()->allowAddiFieldValues;
-        return $additionalField;
+    $emu = $application->image;
+    $image = url('uploads/application/' . $application->image);
+    $signature = url('uploads/application/' . $application->signature);
+    $nominee_image = url('uploads/application/' . $application->nominee_image);
+    $nominee_signature = url('uploads/application/' . $application->nominee_signature);
+    $groupedAllowAddiFields = $application->allowAddiFields->groupBy('id')->values();
+    $groupedAllowAddiFields = $application->allowAddiFields->groupBy('pivot.allow_addi_fields_id');
 
+    // Get the first item from each group (assuming it's the same for each 'allow_addi_fields_id')
+    $distinctAllowAddiFields = $groupedAllowAddiFields->map(function ($group) {
+        return $group->first();
     });
 
-        return \response()->json([
-            'application' => $application,
-            'image'=>$image,
-            // 'id'=>$id
+    return response()->json([
+        'emu' => $emu,
+        'application' => $application,
+        'unique_additional_fields' => $distinctAllowAddiFields,
+        'image' => $image,
+        'signature' => $signature,
+        'nominee_image' => $nominee_image,
+        'nominee_signature' => $nominee_signature,
+     
+    ], Response::HTTP_OK);
+}
+//    public function getApplicationById($id){
 
-            'unique_additional_fields' => $uniqueAdditionalFields->values(), // Convert to values to remove keys
+//         $application = Application::where('id','=',$id)
+//         ->with('current_location.parent.parent.parent.parent',
+//                 'permanent_location.parent.parent.parent.parent',
+//                 'program',  // Assuming you have defined this relationship in your Application model
+//             'allowAddiFields.allowAddiFieldValues', // Assuming you have defined these relationships in your models
+//                 )->first();
+//                 $image=Application::where('id','=',$id)
+//                 ->value('image');
+//                 $image= asset('uploads/application/' . $application->nominee_image);
 
-            ],Response::HTTP_OK);
+//                 // Grouping additional fields by ID
+//         $groupedAdditionalFields = $application->allowAddiFields->groupBy('id');
 
-    }
+//         // Mapping to get only one instance of each additional field with its values
+//         $uniqueAdditionalFields = $groupedAdditionalFields->map(function ($fields) {
+//         $additionalField = $fields->first();
+//         $additionalField->allowAddiFieldValues = $fields->first()->allowAddiFieldValues;
+//         return $additionalField;
+
+//     });
+
+//         return \response()->json([
+//             'application' => $application,
+//             'image'=>$image,
+//             // 'id'=>$id
+
+//             'unique_additional_fields' => $uniqueAdditionalFields->values(), // Convert to values to remove keys
+
+//             ],Response::HTTP_OK);
+
+//     }
     /**
      * @OA\Get(
      *      path="/global/applicants copy/{id}",
@@ -1005,31 +1050,86 @@ class ApplicationController extends Controller
      *      ),
      *     )
      */
-   public function getApplicationCopyById($id){
+       public function getApplicationCopyById(Request $request)
 
-    $application = Application::where('id','=',$id)
-    ->with('current_location.parent.parent.parent',
-            'permanent_location.parent.parent.parent',
+{
+    $id=$request->application_id;
+    $application = Application::where('application_id', '=', $id)
+        ->with([
+            'current_location.parent.parent.parent.parent',
+            'permanent_location.parent.parent.parent.parent',
+            'program',
+            'allowAddiFields.allowAddiFieldValues',
+             'variable',
+            'subvariable'
+        ])->first();
+        // return  $application;
 
-
-            // 'povertyValues.variable.subVariables',
-            // 'application',
-            // 'variable',
-
-
-            )->first();
-            $image=Application::where('id','=',$id)
-            ->pluck('image');
-
-
-        return \response()->json([
-            'application' => $application,
-
-
-
-            ],Response::HTTP_OK);
-
+    if (!$application) {
+        return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
     }
+
+    // Manually filter subvariable based on application_id
+   
+
+    $emu = $application->image;
+    $image = url('uploads/application/' . $application->image);
+    $signature = url('uploads/application/' . $application->signature);
+    $nominee_image = url('uploads/application/' . $application->nominee_image);
+    $nominee_signature = url('uploads/application/' . $application->nominee_signature);
+    $groupedAllowAddiFields = $application->allowAddiFields->groupBy('id')->values();
+    $groupedAllowAddiFields = $application->allowAddiFields->groupBy('pivot.allow_addi_fields_id');
+
+    // Get the first item from each group (assuming it's the same for each 'allow_addi_fields_id')
+    $distinctAllowAddiFields = $groupedAllowAddiFields->map(function ($group) {
+        return $group->first();
+    });
+
+    // return response()->json([
+    //     'emu' => $emu,
+    //     'application' => $application,
+    //     'unique_additional_fields' => $distinctAllowAddiFields,
+    //     'image' => $image,
+    //     'signature' => $signature,
+    //     'nominee_image' => $nominee_image,
+    //     'nominee_signature' => $nominee_signature,
+     
+    // ], Response::HTTP_OK);
+     $dynamic=$request->all();
+    
+     $title=$request->title;
+     $data = ['data' => $application,
+                'request'=>$dynamic,
+                 'title' => $title,
+                 
+
+                ];
+  
+
+        $pdf = LaravelMpdf::loadView('reports.applicant_copy', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-P',
+                'title' => $title,
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+
+        $fileName = 'বিভাগের_তালিকা_' . now()->timestamp . '_'. auth()->id() . '.pdf';
+
+        $pdfPath = public_path("/pdf/$fileName");
+
+        $pdf->save($pdfPath);
+
+        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+}
 
   /**
     * @OA\Get(

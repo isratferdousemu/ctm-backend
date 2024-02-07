@@ -10,6 +10,7 @@ use App\Http\Traits\MessageTrait;
 use App\Http\Traits\UserTrait;
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 
 class ReportController extends Controller
@@ -543,11 +544,12 @@ class ReportController extends Controller
 
     public function unionReport(Request $request)
     {
+        set_time_limit(120);
         $items = $this->getUnionList($request);
 
         $data = ['items' => $items];
-
-        $pdf = LaravelMpdf::chunkLoadView('<html-separator/>','reports.union', $data, [],
+        ini_set("pcre.backtrack_limit", "5000000");
+        $pdf = LaravelMpdf::loadView('reports.union', $data, [],
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-P',
@@ -563,15 +565,23 @@ class ReportController extends Controller
             ]);
 
 
-        $fileName = 'থানা_ইউনিয়ন_পৌরসভা_তালিকা_' . now()->timestamp . '_'. auth()->id() . '.pdf';
+        return Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
+            ]);
 
-        $pdfPath = public_path("/pdf/$fileName");
-
-        $pdf->save($pdfPath);
-
-        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
+    public function unionReportExcel(Request $request){
+        $items = $this->getUnionList($request);
+        $items = $items->toArray();
+        return $this->sendResponse($items, 'Excell Data');
+    }
 
     public function getWards($request)
     {

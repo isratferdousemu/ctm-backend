@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>থানা/ইউনিয়ন/পৌরসভা তালিকা</title>
+    <title>{{$title}}/title>
 
     <style>
         body {
@@ -69,6 +69,11 @@
             width: 100%;
             text-align: center;
         }
+
+        @page {
+            header: page-header;
+            footer: page-footer;
+        }
     </style>
 </head>
 <body>
@@ -95,37 +100,50 @@
         </tr>
     </tbody>
 </table>
-
-<table class="border-table">
-    <thead>
-    <tr>
-        <th style="width: 10%;">ক্রমিক নং </th>
-
-            <th>বিভাগ</th>
-            <th>জেলা</th>
-            <th>উপজেলা/সিটি কর্পোরেশন/জেলা পৌরসভা</th>
-            <th>থানা/ইউনিয়ন/পৌরসভা</th>
-
-    </tr>
-    </thead>
+<table style="border: none;">
     <tbody>
+        <tr>
+            <td class="left"></td>
+              <div style="background-color: #ccc; padding: 10px; border-radius: 5px;">
+            <td class="center">
+              
+                  <h2 class="title" style="margin: 0; text-decoration: underline;">
+    {{$request['title']}}
+</h2>
+               
+            </td>
+             </div>
+        </tr>
+    </tbody>
+</table>
+<table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+    <tbody>
+      <tr>
+    <td class="left" style="width: 20%;  background-color: #ccc;">
+        {{$request['program']}} <span class="right">:</span>
+    </td>
+ <td class="left" style="width: 50%;">
+     {{ $request['language'] == 'bn' ? $data->program->first()->name_bn : $data->program->first()->name_en }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    <td class="right" style="width: 30%; "></td>
+</tr>
 
-    @php($count = 0);
-    @foreach($items as $chunkList)
-            <tr>
-                <td>{{ ++$count }}</td>
-                <td>{{ $chunkList['parent']['parent']['parent']['name_bn'] ?? '' }}</td>
-                <td>{{ $chunkList['parent']['parent']['name_bn'] ?? '' }}</td>
-                <td>{{ $chunkList['parent']['name_bn'] ?? '' }}</td>
-                <td>{{ $chunkList['name_bn'] ?? '' }}</td>
-            </tr>
-    @endforeach
+        
     </tbody>
 </table>
 
-<div class="footer">
-    Copyright &copy; 2024, DSS
-</div>
+
+
+
+<htmlpageheader name="page-header">
+</htmlpageheader>
+
+<htmlpagefooter name="page-footer">
+    <div class="footer">
+        Copyright &copy; 2024, DSS
+    </div>
+</htmlpagefooter>
 
 </body>
 </html>

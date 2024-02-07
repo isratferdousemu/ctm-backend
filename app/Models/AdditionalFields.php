@@ -54,4 +54,5 @@ class AdditionalFields extends Model
         return $this->belongsToMany(AdditionalFieldValues::class, 'application_allowance_values', 'allow_addi_fields_id', 'allow_addi_field_values_id')
             ->withPivot('value');
     }
+   
 }
