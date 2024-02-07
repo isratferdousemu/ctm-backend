@@ -21,6 +21,7 @@ services:
         - APP_ENV=${APP_ENV}
     restart: unless-stopped
     environment:
+      PHP_MAX_EXECUTION_TIME: 300
       - TZ=Asia/Dhaka
       #DB_HOST: mariadb
       #DB_PORT: 3306
