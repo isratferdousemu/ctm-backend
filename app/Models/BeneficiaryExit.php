@@ -30,4 +30,12 @@ class BeneficiaryExit extends Model
     {
         return $this->belongsTo(Beneficiary::class, 'beneficiary_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function exitReason()
+    {
+        return $this->belongsTo(Lookup::class, 'exit_reason_id');
+    }
 }

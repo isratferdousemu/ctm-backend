@@ -52,7 +52,7 @@ class CommitteeService
      * @param Request $request
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function list(Request $request): LengthAwarePaginator
+    public function list(Request $request, $forPdf = false): \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
     {
         $location_id = $request->query('location_id');
         $searchText = $request->query('searchText');
@@ -70,9 +70,14 @@ class CommitteeService
                     ->orWhereRaw('LOWER(details) LIKE "%' . strtolower($searchText) . '%"');
             });
         }
-        return $query->with('program', 'members', 'committeeType', 'location.parent.parent.parent')
-            ->orderBy("$sortByColumn", "$orderByDirection")
-            ->paginate($perPage);
+        if ($forPdf)
+            return $query->with('program', 'members', 'committeeType', 'location.parent.parent.parent')
+                ->orderBy("$sortByColumn", "$orderByDirection")
+                ->get();
+        else
+            return $query->with('program', 'members', 'committeeType', 'location.parent.parent.parent')
+                ->orderBy("$sortByColumn", "$orderByDirection")
+                ->paginate($perPage);
     }
 
     /**
