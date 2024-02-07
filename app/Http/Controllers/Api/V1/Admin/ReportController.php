@@ -544,6 +544,7 @@ class ReportController extends Controller
 
     public function unionReport(Request $request)
     {
+        set_time_limit(120);
         $items = $this->getUnionList($request);
 
         $data = ['items' => $items];
