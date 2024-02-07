@@ -18,6 +18,7 @@ class BeneficiaryShiftingResource extends JsonResource
             "id" => $this->id,
             'from_program_name_en' => $this->from_program_name_en,
             'to_program_name_en' => $this->to_program_name_en,
+            "beneficiary_id" => $this->beneficiary_id,
             "application_id" => $this->application_id,
             "name_en" => $this->name_en,
             "name_bn" => $this->name_bn,

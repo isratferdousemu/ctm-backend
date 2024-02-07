@@ -17,6 +17,7 @@ class BeneficiaryReplaceResource extends JsonResource
         return [
             "id" => $this->id,
             'program_name_en' => $this->program_name_en,
+            "beneficiary_id" => $this->beneficiary_id,
             "application_id" => $this->application_id,
             "name_en" => $this->name_en,
             "name_bn" => $this->name_bn,

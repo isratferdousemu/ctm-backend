@@ -18,6 +18,7 @@ class BeneficiaryExitResource extends JsonResource
             "id" => $this->id,
             'program_name_en' => $this->program_name_en,
             'program_name_bn' => $this->program_name_bn,
+            "beneficiary_id" => $this->beneficiary_id,
             "application_id" => $this->application_id,
             "name_en" => $this->name_en,
             "name_bn" => $this->name_bn,
