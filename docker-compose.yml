@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
     environment:
       PHP_MAX_EXECUTION_TIME: 300
-      - TZ=Asia/Dhaka
+      #- TZ=Asia/Dhaka
       #DB_HOST: mariadb
       #DB_PORT: 3306
       #DB_DATABASE: ctm
