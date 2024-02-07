@@ -610,6 +610,7 @@ class BeneficiaryService
 
         if ($forPdf)
             return $query->select('beneficiary_replaces.id',
+                'beneficiaries.id as beneficiary_id',
                 'replace_cause.value_en as replace_cause_en',
                 'replace_cause.value_bn as replace_cause_bn',
                 'beneficiary_replaces.cause_detail',
@@ -652,6 +653,7 @@ class BeneficiaryService
                 'replace_with_upazila.name_bn as replace_with_upazila_name_bn')->orderBy("$sortByColumn", "$orderByDirection")->get();
         else
             return $query->select('beneficiary_replaces.id',
+                'beneficiaries.id as beneficiary_id',
                 'replace_cause.value_en as replace_cause_en',
                 'replace_cause.value_bn as replace_cause_bn',
                 'beneficiary_replaces.cause_detail',
@@ -768,6 +770,7 @@ class BeneficiaryService
                 'exit_reason.value_bn as exit_reason_bn',
                 'beneficiary_exits.exit_reason_detail',
                 'beneficiary_exits.exit_date',
+                'beneficiaries.id as beneficiary_id',
                 'beneficiaries.application_id',
                 'beneficiaries.name_en',
                 'beneficiaries.name_bn',
@@ -801,6 +804,7 @@ class BeneficiaryService
                 'exit_reason.value_bn as exit_reason_bn',
                 'beneficiary_exits.exit_reason_detail',
                 'beneficiary_exits.exit_date',
+                'beneficiaries.id as beneficiary_id',
                 'beneficiaries.application_id',
                 'beneficiaries.name_en',
                 'beneficiaries.name_bn',
@@ -900,6 +904,7 @@ class BeneficiaryService
             return $query->select('beneficiary_shiftings.id',
                 'beneficiary_shiftings.shifting_cause',
                 'beneficiary_shiftings.activation_date',
+                'beneficiaries.id as beneficiary_id',
                 'beneficiaries.application_id',
                 'beneficiaries.name_en',
                 'beneficiaries.name_bn',
@@ -933,6 +938,7 @@ class BeneficiaryService
             return $query->select('beneficiary_shiftings.id',
                 'beneficiary_shiftings.shifting_cause',
                 'beneficiary_shiftings.activation_date',
+                'beneficiaries.id as beneficiary_id',
                 'beneficiaries.application_id',
                 'beneficiaries.name_en',
                 'beneficiaries.name_bn',
