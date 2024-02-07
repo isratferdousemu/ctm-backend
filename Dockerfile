@@ -42,6 +42,7 @@ RUN set -eux; \
             --with-xpm \
             --with-freetype; \
     docker-php-ext-install gd; \
+    docker-php-ext-install sockets; \
     php -r 'var_dump(gd_info());'
 
 RUN echo 'max_execution_time = 1200' >> /usr/local/etc/php/conf.d/docker-php-maxexectime.ini;    
