@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use App\Http\Traits\ApplicationTrait;
+use Illuminate\Support\Facades\Storage;
 use App\Models\ApplicationPovertyValues;
 use App\Models\ApplicationAllowanceValues;
 use App\Exceptions\AuthBasicErrorException;
@@ -90,12 +91,7 @@ class ApplicationService
             $application->spouse_name_en = $request->spouse_name_en;
             $application->spouse_name_bn = $request->spouse_name_bn;
             $application->identification_mark = $request->identification_mark;
-            if($request->hasFile('image') && $request->image!=null){
-                $application->image = $this->uploadFile($request->image, 'application');
-            }
-            if($request->hasFile('signature') && $request->signature!=null){
-                $application->signature = $this->uploadFile($request->signature, 'application');
-            }
+  
             $application->nationality = $request->nationality;
             $application->gender_id = $request->gender_id;
             $application->education_status = $request->education_status;
@@ -219,12 +215,12 @@ class ApplicationService
             $application->nominee_bn = $request->nominee_bn;
             $application->nominee_verification_number = $request->nominee_verification_number;
             $application->nominee_address = $request->nominee_address;
-            if($request->hasFile('nominee_image') && $request->nominee_image!=null){
-                $application->nominee_image = $this->uploadFile($request->nominee_image, 'application');
-            }
-            if($request->hasFile('nominee_signature') && $request->nominee_signature!=null){
-                $application->nominee_signature = $this->uploadFile($request->nominee_signature, 'application');
-            }
+            // if($request->hasFile('nominee_image') && $request->nominee_image!=null){
+            //     $application->nominee_image = $this->uploadFile($request->nominee_image, 'application');
+            // }
+            // if($request->hasFile('nominee_signature') && $request->nominee_signature!=null){
+            //     $application->nominee_signature = $this->uploadFile($request->nominee_signature, 'application');
+            // }
             $application->nominee_relation_with_beneficiary = $request->nominee_relation_with_beneficiary;
             $application->nominee_nationality = $request->nominee_nationality;
             $application->account_name = $request->account_name;
@@ -251,7 +247,53 @@ class ApplicationService
             $financial_year_id=$financial_year_id->id;
             $application->financial_year_id= $financial_year_id;
              }
+  
 
+// if ($request->hasFile('image') && $request->image != null) {
+//     $image = $request->file('image');
+//     $imageName = time() . '.' . $image->getClientOriginalExtension();
+//     $image->move(public_path('uploads/application'), $imageName);
+//     $application->image = $imageName;
+// }
+
+// if ($request->hasFile('signature') && $request->signature != null) {
+//     $signature = $request->file('signature');
+//     $signatureName = time() . '.' . $signature->getClientOriginalExtension();
+//     $signature->move(public_path('uploads/application'), $signatureName);
+//     $application->signature = $signatureName;
+// }
+
+// if ($request->hasFile('nominee_image') && $request->nominee_image != null) {
+//     $nomineeImage = $request->file('nominee_image');
+//     $nomineeImageName = time() . '.' . $nomineeImage->getClientOriginalExtension();
+//     $nomineeImage->move(public_path('uploads/application'), $nomineeImageName);
+//     $application->nominee_image = $nomineeImageName;
+// }
+
+// if ($request->hasFile('nominee_signature') && $request->nominee_signature != null) {
+//     $nomineeSignature = $request->file('nominee_signature');
+//     $nomineeSignatureName = time() . '.' . $nomineeSignature->getClientOriginalExtension();
+//     $nomineeSignature->move(public_path('uploads/application'), $nomineeSignatureName);
+//     $application->nominee_signature = $nomineeSignatureName;
+// }
+// $path= $request->file('image')->store('public/application');
+// $application->image = 'application/' . $path;
+// $path_1= $request->file('signature')->store('public/application');
+// $application->image = 'application/' . $path_1;
+// $path_2= $request->file('nominee_image')->store('public/application');
+// $application->image = 'application/' . $path_2;
+// $path_3= $request->file('nominee_signature')->store('public/application');
+// $application->image = 'application/' . $path_3;
+
+    $application->image = $request->file('image')->store('public');
+ 
+    $application->signature = $request->file('signature')->store('public');
+
+    $application->nominee_image = $request->file('nominee_image')->store('public');
+ 
+    $application->nominee_signature = $request->file('nominee_signature')->store('public');
+   
+    
             $application->save();
 
 
