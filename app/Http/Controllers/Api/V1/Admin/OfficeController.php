@@ -126,7 +126,7 @@ class OfficeController extends Controller
             // })
 
 
-//        return $this->filterByLocation($query);
+        $this->filterByLocation($query);
 
             $query->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
             ->orderBy($sortBy, $orderBy)
@@ -143,7 +143,7 @@ class OfficeController extends Controller
 
     public function filterByLocation($query)
     {
-        return (new OfficeListService)->getOfficesUnderUser();
+        return (new OfficeListService)->getOfficesUnderUser($query);
         return $query;
     }
 
