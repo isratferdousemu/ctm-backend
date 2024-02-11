@@ -20,6 +20,7 @@ Route::prefix('v1')->group(function () {
     include "Admin/Application/Poverty/PMTScoreRoute.php";
     include "Admin/Application/application-selection/applicationSelectionRoute.php";
     include "Admin/GlobalSetting/GlobalSettingRoute.php";
+    include "Admin/ReportRoute.php";
 
 });
 
