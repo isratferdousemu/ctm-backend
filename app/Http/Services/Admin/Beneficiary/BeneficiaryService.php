@@ -164,7 +164,7 @@ class BeneficiaryService
                 } elseif ($subLocationType == 3) {
                     $thana_id = $assignedLocationId;
                     $division_id = $district_id = $city_corp_id = $district_pourashava_id = $upazila_id = -1;
-                }else {
+                } else {
                     $query = $query->where('id', -1); // wrong location type
                 }
             } elseif ($locationType == 'city') {
@@ -174,7 +174,7 @@ class BeneficiaryService
                 } elseif ($subLocationType == 3) {
                     $city_corp_id = $assignedLocationId;
                     $division_id = $district_id = $district_pourashava_id = $upazila_id = $thana_id = -1;
-                }else {
+                } else {
                     $query = $query->where('id', -1); // wrong location type
                 }
             } elseif ($locationType == 'district') {
@@ -255,7 +255,7 @@ class BeneficiaryService
                 } elseif ($subLocationType == 3) {
                     $thana_id = $assignedLocationId;
                     $division_id = $district_id = $city_corp_id = $district_pourashava_id = $upazila_id = -1;
-                }else {
+                } else {
                     $query = $query->where('id', -1); // wrong location type
                 }
             } elseif ($locationType == 'city') {
@@ -265,7 +265,7 @@ class BeneficiaryService
                 } elseif ($subLocationType == 3) {
                     $city_corp_id = $assignedLocationId;
                     $division_id = $district_id = $district_pourashava_id = $upazila_id = $thana_id = -1;
-                }else {
+                } else {
                     $query = $query->where('id', -1); // wrong location type
                 }
             } elseif ($locationType == 'district') {
@@ -360,6 +360,21 @@ class BeneficiaryService
     }
 
     /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function listDropDown(Request $request): mixed
+    {
+        $srcText = $request->query('srcText');
+        $query = Beneficiary::query();
+        $query = $query->where('status', 1); // only active
+        if ($srcText)
+            $query = $query->where('application_id', 'like', '%' . $srcText . '%');
+        $query = $this->applyLocationFilter($query, $request);
+        return $query->orderBy("application_id", "asc")->take(100)->get();
+    }
+
+    /**
      * @param $id
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
      */
@@ -445,11 +460,129 @@ class BeneficiaryService
         DB::beginTransaction();
         try {
             $beneficiary = Beneficiary::findOrFail($id);
-            $validatedData = $request->all();
+
+            $validatedData = $request->only([
+                'nominee_en',
+                'nominee_bn',
+                'nominee_verification_number',
+                'nominee_address',
+                'nominee_relation_with_beneficiary',
+                'nominee_nationality',
+                'account_name',
+                'account_owner',
+                'account_number',
+                'financial_year_id',
+                'account_type',
+                'bank_name',
+                'branch_name',
+                'monthly_allowance'
+            ]);
             $beneficiary->fill($validatedData);
             $beneficiary->save();
             DB::commit();
             return $beneficiary;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function delete(Request $request, $id): mixed
+    {
+        DB::beginTransaction();
+        try {
+            $beneficiary = Beneficiary::findOrFail($id);
+            $beneficiary->delete_cause = $request->input('delete_cause');
+            $beneficiary->save();
+            $beneficiary->delete();
+            DB::commit();
+            return $beneficiary;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param $forPdf
+     * @return mixed
+     */
+    public function deletedList(Request $request, $forPdf = false)
+    {
+        $program_id = $request->query('program_id');
+
+        $beneficiary_id = $request->query('beneficiary_id');
+        $nominee_name = $request->query('nominee_name');
+        $account_number = $request->query('account_number');
+        $verification_number = $request->query('nid');
+        $status = $request->query('status');
+
+        $perPage = $request->query('perPage', 10);
+        $sortByColumn = $request->query('sortBy', 'deleted_at');
+        $orderByDirection = $request->query('orderBy', 'asc');
+
+        $query = Beneficiary::query()->onlyTrashed();
+        if ($program_id)
+            $query = $query->where('program_id', $program_id);
+
+        $query = $this->applyLocationFilter($query, $request);
+
+        // advance search
+        if ($beneficiary_id)
+            $query = $query->where('application_id', $beneficiary_id);
+        if ($nominee_name)
+            $query = $query->whereRaw('UPPER(nominee_en) LIKE "%' . strtoupper($nominee_name) . '%"');
+        if ($account_number)
+            $query = $query->where('account_number', $account_number);
+        if ($verification_number)
+            $query = $query->where('verification_number', $verification_number);
+        if ($status)
+            $query = $query->where('status', $status);
+
+        if ($forPdf)
+            return $query->with('program',
+                'permanentDivision',
+                'permanentDistrict',
+                'permanentCityCorporation',
+                'permanentDistrictPourashava',
+                'permanentUpazila',
+                'permanentPourashava',
+                'permanentThana',
+                'permanentUnion',
+                'permanentWard')->orderBy("$sortByColumn", "$orderByDirection")->get();
+        else
+            return $query->with('program',
+                'permanentDivision',
+                'permanentDistrict',
+                'permanentCityCorporation',
+                'permanentDistrictPourashava',
+                'permanentUpazila',
+                'permanentPourashava',
+                'permanentThana',
+                'permanentUnion',
+                'permanentWard')->orderBy("$sortByColumn", "$orderByDirection")->paginate($perPage);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function restore($id)
+    {
+        DB::beginTransaction();
+        try {
+            Beneficiary::where('id', $id)->withTrashed()->update(['delete_cause' => null]);
+            Beneficiary::where('id', $id)->withTrashed()->restore();
+            DB::commit();
+            return true;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -580,6 +713,11 @@ class BeneficiaryService
         }
     }
 
+    /**
+     * @param Request $request
+     * @param $forPdf
+     * @return mixed
+     */
     public function replaceList(Request $request, $forPdf = false)
     {
         $program_id = $request->query('program_id');
@@ -871,6 +1009,11 @@ class BeneficiaryService
         }
     }
 
+    /**
+     * @param Request $request
+     * @param $forPdf
+     * @return mixed
+     */
     public function shiftingList(Request $request, $forPdf = false)
     {
         $from_program_id = $request->query('from_program_id');

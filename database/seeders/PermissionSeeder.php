@@ -255,8 +255,11 @@ class PermissionSeeder extends Seeder
                     ["id" => 97, "name" => "beneficiaryInfo-create", "page_url" => "/beneficiary-management/beneficiary-info/create", "parent_page" => 1],
                     ["id" => 98, "name" => "beneficiaryInfo-view", "page_url" => "/beneficiary-management/beneficiary-info", "parent_page" => 1],
                     ["id" => 99, "name" => "beneficiaryInfo-edit", "page_url" => "/beneficiary-management/beneficiary-info/edit/:id", "parent_page" => 1],
-                    ["id" => 100, "name" => "beneficiaryInfo-delete", "page_url" => "/beneficiary-management/beneficiary-info", "parent_page" => 1]
-
+                    ["id" => 100, "name" => "beneficiaryInfo-delete", "page_url" => "/beneficiary-management/beneficiary-info", "parent_page" => 1],
+                    ["id" => 186, "name" => "beneficiaryInfoActive-view", "page_url" => "/beneficiary-management/beneficiary-info-active", "parent_page" => 1],
+                    ["id" => 187, "name" => "beneficiaryInfoInactive-view", "page_url" => "/beneficiary-management/beneficiary-info-inactive", "parent_page" => 1],
+                    ["id" => 188, "name" => "beneficiaryInfoWaiting-view", "page_url" => "/beneficiary-management/beneficiary-info-waiting", "parent_page" => 1],
+                    ["id" => 189, "name" => "beneficiaryInfoDelete-view", "page_url" => "/beneficiary-management/beneficiary-info-delete", "parent_page" => 1],
                 ]
             ],
             [
@@ -287,7 +290,7 @@ class PermissionSeeder extends Seeder
                 'guard_name' => $this->guard,
                 'permissions' => [
                     ["id" => 109, "name" => "beneficiaryReplacement-create", "page_url" => "/beneficiary-management/beneficiary-replacement/create", "parent_page" => 1],
-                    ["id" => 110, "name" => "beneficiaryReplacement-view", "page_url" => "/beneficiary-management/beneficiary-replacement", "parent_page" => 1],
+                    ["id" => 110, "name" => "beneficiaryReplacement-view", "page_url" => "/beneficiary-management/beneficiary-replacement-list", "parent_page" => 1],
                     ["id" => 111, "name" => "beneficiaryReplacement-edit", "page_url" => "/beneficiary-management/beneficiary-replacement/edit/:id", "parent_page" => 1],
                     ["id" => 112, "name" => "beneficiaryReplacement-delete", "page_url" => "/beneficiary-management/beneficiary-replacement", "parent_page" => 1]
 

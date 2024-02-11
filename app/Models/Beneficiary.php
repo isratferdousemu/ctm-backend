@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Beneficiary extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
 //    protected $table = 'beneficiaries';
 
@@ -17,13 +17,30 @@ class Beneficiary extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        "nominee_en",
+        "nominee_bn",
+        "nominee_verification_number",
+        "nominee_address",
+        "nominee_image",
+        "nominee_signature",
+        "nominee_relation_with_beneficiary",
+        "nominee_nationality",
+        "account_name",
+        "account_number",
+        "account_owner",
+        'financial_year_id',
+        'account_type',
+        'bank_name',
+        'branch_name',
+        'monthly_allowance'
+    ];
     /**
      * The attributes that aren't mass assignable.
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
