@@ -964,10 +964,10 @@ class ApplicationController extends Controller
 
     // $emu = $application->image;
     // $image =Storage::url($application->image);
-     $image =  Storage::disk('public')->url($application->image);
-       $signature =  Storage::disk('public')->url($application->signature);
-         $nominee_image =  Storage::disk('public')->url($application->nominee_image);
-           $nominee_signature =  Storage::disk('public')->url($application->nominee_signature);
+     $image = $application->image;
+       $signature =  $application->signature;
+         $nominee_image =  $application->nominee_image;
+           $nominee_signature =  $application->nominee_signature;
     //  Storage::url($application->image);
     // $signature = url('storage/app/' . $application->signature);
     // $nominee_image = url('uploads/application/app' . $application->nominee_image);
@@ -1680,8 +1680,13 @@ class ApplicationController extends Controller
                     "email" => $application->email,
                     "verification_type" => $application->verification_type,
                     "verification_number" => $application->verification_number,
-                    "image" => asset('uploads/application/'. $application->image),
-                    "signature" => asset('uploads/application/'. $application->signature),
+
+                    // "image" => asset('uploads/application/'. $application->image),
+                    // "signature" => asset('uploads/application/'. $application->signature),
+                    "image" => $application->image,
+                    "signature" => $application->signature,
+
+
                     "current_division_id" => $application->current_division_id,
                     "current_district_id" => $application->current_district_id,
                     "current_city_corp_id" => $application->current_city_corp_id,
@@ -1710,8 +1715,10 @@ class ApplicationController extends Controller
                     "nominee_bn" => $application->nominee_bn,
                     "nominee_verification_number" => $application->nominee_verification_number,
                     "nominee_address" => $application->nominee_address,
-                    "nominee_image" => asset('uploads/application/' . $application->nominee_image),
-                    "nominee_signature" => asset('uploads/application/'. $application->nominee_signature),
+                    // "nominee_image" => asset('uploads/application/' . $application->nominee_image),
+                    // "nominee_signature" => asset('uploads/application/'. $application->nominee_signature),
+                    "nominee_image" =>  $application->nominee_image,
+                    "nominee_signature" =>$application->nominee_signature,
                     "nominee_relation_with_beneficiary" => $application->nominee_relation_with_beneficiary,
                     "nominee_nationality" => $application->nominee_nationality,
                     "account_name" => $application->account_name,
