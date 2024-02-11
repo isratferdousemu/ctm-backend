@@ -39,4 +39,17 @@ class Helper{
 
     }
 
+
+    public static function englishToBangla($number) {
+
+        $banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+        $englishDigits = range(0, 9);
+
+        $banglaNumber = str_replace($englishDigits, $banglaDigits, $number);
+
+        return $banglaNumber;
+    }
+
+
+
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Services\Admin\Office\OfficeListService;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Validator;
 use App\Models\Office;
 use Illuminate\Http\Request;
@@ -685,4 +687,81 @@ class OfficeController extends Controller
 
         return $this->sendResponse($office, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
+
+
+    public function generatePdf(Request $request)
+    {
+
+        set_time_limit(120);
+        $searchText = $request->query('searchText');
+        $sortBy = $request->query('sortBy') ?? 'name_en';
+        $orderBy = $request->query('orderBy') ?? 'asc';
+
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayComment = [];
+        $filterArrayAddress = [];
+
+        if ($searchText) {
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayComment[] = ['comment', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayAddress[] = ['office_address', 'LIKE', '%' . $searchText . '%'];
+        }
+        $query = Office::query()
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayComment, $filterArrayAddress) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayComment)
+                    ->orWhere($filterArrayAddress);
+            });
+
+        $query->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
+            ->orderBy($sortBy, $orderBy)
+        ;
+
+        $fullData =  $query->get();
+
+        $OBJ = $fullData->toArray();
+        $CustomInfo = array_map(function($i, $index) use($request) {
+            return [
+                 $request->language == "bn" ? Helper::englishToBangla($index + 1) : $index + 1,
+                $request->language == "bn" ? Helper::englishToBangla($i['assign_location']['id']) : $i['assign_location']['id'],
+                $request->language == "bn" ? Helper::englishToBangla($i['office_type']['value_bn']) : $i['office_type']['value_en'],
+                $request->language == "bn" ? $i['name_bn'] : $i['name_en'],
+                $request->language == "bn" ? $i['assign_location']['parent']['name_bn'] : $i['assign_location']['parent']['name_en'],
+                $request->language == "bn" ? $i['assign_location']['parent']['parent']['name_bn'] : $i['assign_location']['parent']['parent']['name_en']
+            ];
+        }, $OBJ, array_keys($OBJ));
+
+        $data = ['headerInfo' => $request->header,'dataInfo'=>$CustomInfo,'fileName' => $request->fileName];
+
+        ini_set("pcre.backtrack_limit", "5000000");
+        $pdf = LaravelMpdf::loadView('reports.dynamic', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-P',
+                'title' => $request->fileName,
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+
+        return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
+            ]);
+    }
+
 }
