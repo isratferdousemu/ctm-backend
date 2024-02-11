@@ -17,9 +17,11 @@ class AdditionalFieldsResource extends JsonResource
         return [
 
             'id'                  => $this->id,
-            'name_en'     => $this->name_en,
-            'name_bn'          => $this->name_bn,
-            'type'            => $this->type,
+            'name_en'             => $this->name_en,
+            'name_bn'             => $this->name_bn,
+            'type'                => $this->type,
+            'verified'            => $this->verified,
+
             'additional_field_value'              => $this->whenLoaded('additional_field_value'),
             'created_at'              => $this->created_at,
             'updated_at'              => $this->updated_at,

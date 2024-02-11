@@ -25,8 +25,8 @@ class AditionalFieldSeeder extends Seeder
             ['id' => 8, 'name_en' => 'Financial Status', 'name_bn' => 'আর্থিক অবস্থা','type' => 'dropdown'],
             ['id' => 9,'name_en' => 'Social Status', 'name_bn' => 'সামাজিক অবস্থা','type' => 'dropdown'],
             ['id' => 10,'name_en' => 'Land Ownership', 'name_bn' => 'ভুমির মালিকানা','type' => 'dropdown'],
-            ['id' => 11,'name_en' => 'DIS No.', 'name_bn' => 'ডিআইএস নং','type' => 'number'],
-            ['id' => 12,'name_en' => 'Disability Type', 'name_bn' => 'অক্ষমতার ধরন','type' => 'disabled'],
+            ['id' => 11,'name_en' => 'DIS No.', 'name_bn' => 'ডিআইএস নং','type' => 'number','verified'=>1],
+           
             ['id' => 13,'name_en' => 'Disability Type According to DIS', 'name_bn' => 'ডি আই এস অনুযায়ী   অক্ষমতার ধরণ','type' => 'dropdown'],
             ['id' => 14,'name_en' => 'Disability Level According to DIS', 'name_bn' => 'ডিআইএস অনুযায়ী প্রতিবন্ধী স্তর','type' => 'dropdown'],
             ['id' => 15,'name_en' => 'Upload (Any Kind of Recommendation)', 'name_bn' => 'আপলোড (যেকোনো ধরনের সুপারিশ)','type' => 'file'],
