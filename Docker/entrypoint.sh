@@ -18,6 +18,7 @@ if [ "$role" = "app" ]; then
     php artisan cache:clear
     php artisan optimize:clear
     php artisan l5-swagger:generate
+    php artisan storage:link
 
 
     php artisan serve --port=$PORT --host=0.0.0.0 --env=.env
