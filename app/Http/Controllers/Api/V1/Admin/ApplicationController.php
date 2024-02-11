@@ -964,10 +964,10 @@ class ApplicationController extends Controller
 
     // $emu = $application->image;
     // $image =Storage::url($application->image);
-     $image = $application->image;
-       $signature =  $application->signature;
-         $nominee_image =  $application->nominee_image;
-           $nominee_signature =  $application->nominee_signature;
+     $image = url(Storage::url($application->image));
+       $signature =  url(Storage::url($application->signature));
+         $nominee_image =  url(Storage::url($application->nominee_image));
+           $nominee_signature = url(Storage::url( $application->nominee_signature));
     //  Storage::url($application->image);
     // $signature = url('storage/app/' . $application->signature);
     // $nominee_image = url('uploads/application/app' . $application->nominee_image);

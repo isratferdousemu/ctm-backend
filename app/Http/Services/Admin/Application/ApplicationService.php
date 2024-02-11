@@ -287,19 +287,19 @@ class ApplicationService
 
     // $application->image = $request->file('image')->store('public');
     $imagePath = $request->file('image')->store('public');
-    $application->image=url(Storage::url($imagePath) );
+    $application->image=$imagePath;
     $signaturePath = $request->file('signature')->store('public');
-    $application->signature=url(Storage::url($signaturePath)) ;
+    $application->signature=$signaturePath ;
     // $application->signature = $request->file('signature')->store('public');
 
 
     // $application->nominee_image = $request->file('nominee_image')->store('public');
     $nominee_imagePath = $request->file('nominee_image')->store('public');
-    $application->nominee_image=url(Storage::url($nominee_imagePath)) ;
+    $application->nominee_image=$nominee_imagePath ;
  
     // $application->nominee_signature = $request->file('nominee_signature')->store('public');
     $nominee_signaturePath = $request->file('nominee_signature')->store('public');
-    $application->nominee_signature=url(Storage::url($nominee_signaturePath)) ;
+    $application->nominee_signature=$nominee_signaturePath;
     
             $application->save();
 
