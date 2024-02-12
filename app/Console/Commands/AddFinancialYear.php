@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use App\Helpers\Helper;
 use App\Models\FinancialYear;
+use App\Models\FinancialYear1;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -47,15 +48,15 @@ class AddFinancialYear extends Command
       
     ];
 
-    $existingFinancialYear = FinancialYear::where('financial_year', $financialYear)->first();
+    $existingFinancialYear = FinancialYear1::where('financial_year', $financialYear)->first();
     if ($existingFinancialYear) {
         $this->info('Financial year already exists.');
         return;
     }
     
-    FinancialYear::where('status', 1)->update(['status' => 0]);
+    FinancialYear1::where('status', 1)->update(['status' => 0]);
 
-    FinancialYear::create($financialYearData);
+    FinancialYear1::create($financialYearData);
 
     $this->info("Financial year inserted successfully.");
     }
