@@ -20,14 +20,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // // Run the command on every minutes
-        //  $schedule->command('financial-year:add')->everyMinute();
+         $schedule->command('financial-year:add')->everyMinute();
          // Run the command ochaeck work or not
            
             // $schedule->command('financial-year:add')->cron('52
             //  13 12 2 *');
 
             // Run the command on June 1st
-            $schedule->command('financial-year:add')->cron('0 0 1 6 *');
+            // $schedule->command('financial-year:add')->cron('0 0 1 6 *');
     }
 
     /**
