@@ -8,6 +8,8 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     protected $commands = [
+     
+        \App\Console\Commands\AddFinancialYear::class
     ];
     /**
      * Define the application's command schedule.
@@ -17,7 +19,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // // Run the command on every minutes
+        //  $schedule->command('financial-year:add')->everyMinute();
+         // Run the command ochaeck work or not
+           
+            // $schedule->command('financial-year:add')->cron('52
+            //  13 12 2 *');
+
+            // Run the command on June 1st
+            $schedule->command('financial-year:add')->cron('0 0 1 6 *');
     }
 
     /**
