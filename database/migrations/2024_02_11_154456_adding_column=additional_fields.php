@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('variables', function (Blueprint $table) {
-            $table->string('payment_cycle', 40)->nullable()->change();
-            $table->tinyInteger('pmt_status')->default(1);
-            $table->tinyInteger('system_status')->default(1);
-         
-            
-        });
+           Schema::table('additional_fields', function (Blueprint $table) {
+ 
+               $table->boolean('verified')->default(0);
+    });
     }
 
     /**
@@ -25,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+          Schema::table('additional_fields', function (Blueprint $table) {
+            $table->dropColumn('verified');
+    });
     }
 };
