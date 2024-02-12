@@ -86,10 +86,13 @@
             <img src="{{ public_path('image/bangladesh-govt-logo.png') }}" alt="Left Image" style="width: 100px; height: auto;">
         </td>
         <td class="center">
-            <h2 class="title">
-                সমাজসেবা অধিদফতর <br>
-                সামাজিক নিরাপত্তা কর্মসূচি
-            </h2>
+            <h3 class="title">
+                গণপ্রজাতন্ত্রী বাংলাদেশ সরকার <br>
+                সমাজসেবা অধিদফতর
+            </h3>
+            <p style="font-size:15px" class="center">ক্যাশ ট্রান্সফার মডার্নাইজেশন (সিটিএম) প্রকল্প</p>
+            <p style="font-size:12px">শ্যামলী স্কোয়ার, ২৪/১-২, মিরপুর রোড, ঢাকা -১২০৭</p>
+            <a target="_blank" href="https://dss.gov.bd/">www.dss.gov.bd</a>
         </td>
         <td class="right">  <img src="{{ public_path('image/logo.png') }}" alt="Right Image" style="width: 80px; height: 80px;"></td>
     </tr>
