@@ -101,7 +101,7 @@
             <h3>গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</h3>
             <h4>সমাজসেবা অধিদফতর</h4>
             <h5>ক্যাশ ট্রান্সফার মডার্নাইজেশন (সিটিএম) প্রকল্প</h5>
-            <h6>কশ্যামলী স্কোয়ার, ২৪/১-২, মিরপুর রোড, ঢাকা -১২০৭</h6>
+            <h6>শ্যামলী স্কোয়ার, ২৪/১-২, মিরপুর রোড, ঢাকা -১২০৭</h6>
             <p>www.dss.gov.bd</p>
             <br/>
             <h2>কমিটি তালিকা</h2>
@@ -129,7 +129,7 @@
         <tr>
             <td>{{$index + 1}}</td>
             <td>{{$committee->code}}</td>
-            <td>{{$committee?->committeeType?->name_en}}</td>
+            <td>{{$committee?->committeeType?->value_en}}</td>
             <td>{{$committee->name}}</td>
             <td>{{$committee->details}}</td>
             <td>{{$committee?->location?->name_en}}</td>

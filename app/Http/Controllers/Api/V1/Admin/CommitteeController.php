@@ -155,7 +155,22 @@ class CommitteeController extends Controller
     {
         try {
             $committeeList = $this->committeeService->list($request, true);
-            $data = ['committeeList' => $committeeList];
+            $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+            $generated_by = $user->full_name;
+            $assign_location = '';
+            if ($user->assign_location) {
+                $assign_location .= ', ' . $user->assign_location?->name_en;
+                if ($user->assign_location?->parent) {
+                    $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                    if ($user->assign_location?->parent?->parent) {
+                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
+                        if ($user->assign_location?->parent?->parent?->parent) {
+                            $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
+                        }
+                    }
+                }
+            }
+            $data = ['committeeList' => $committeeList, 'generated_by' => $generated_by, 'assign_location' => $assign_location];
             $pdf = LaravelMpdf::loadView('reports.beneficiary.committee_list', $data, [],
                 [
                     'mode' => 'utf-8',
@@ -172,7 +187,10 @@ class CommitteeController extends Controller
                 ]);
 
             $fileName = 'কমিটি_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-            return $pdf->stream($fileName);
+//            return $pdf->stream($fileName);
+            $pdfPath = public_path("/pdf/$fileName");
+            $pdf->save($pdfPath);
+            return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
