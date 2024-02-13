@@ -252,11 +252,14 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subBeneficiaryInformationManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 97, "name" => "beneficiaryInfo-create", "page_url" => "/beneficiary-management/beneficiary-info/create", "parent_page" => 1],
-                    ["id" => 98, "name" => "beneficiaryInfo-view", "page_url" => "/beneficiary-management/beneficiary-info", "parent_page" => 1],
-                    ["id" => 99, "name" => "beneficiaryInfo-edit", "page_url" => "/beneficiary-management/beneficiary-info/edit/:id", "parent_page" => 1],
-                    ["id" => 100, "name" => "beneficiaryInfo-delete", "page_url" => "/beneficiary-management/beneficiary-info", "parent_page" => 1]
-
+                    ["id" => 97, "name" => "beneficiary-info-create", "page_url" => "/beneficiary-management/beneficiary-info/create", "parent_page" => 1],
+                    ["id" => 98, "name" => "beneficiary-info-view", "page_url" => "/beneficiary-management/beneficiary-info", "parent_page" => 1],
+                    ["id" => 99, "name" => "beneficiary-info-edit", "page_url" => "/beneficiary-management/beneficiary-info/edit/:id", "parent_page" => 1],
+                    ["id" => 100, "name" => "beneficiary-info-delete", "page_url" => "/beneficiary-management/beneficiary-info-delete", "parent_page" => 1],
+                    ["id" => 186, "name" => "beneficiary-info-active-view", "page_url" => "/beneficiary-management/beneficiary-info-active", "parent_page" => 1],
+                    ["id" => 187, "name" => "beneficiary-info-inactive-view", "page_url" => "/beneficiary-management/beneficiary-info-inactive", "parent_page" => 1],
+                    ["id" => 188, "name" => "beneficiary-info-waiting-view", "page_url" => "/beneficiary-management/beneficiary-info-waiting", "parent_page" => 1],
+                    ["id" => 189, "name" => "beneficiary-info-delete-view", "page_url" => "/beneficiary-management/beneficiary-info-delete", "parent_page" => 1],
                 ]
             ],
             [
@@ -286,10 +289,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subBeneficiaryReplacement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 109, "name" => "beneficiaryReplacement-create", "page_url" => "/beneficiary-management/beneficiary-replacement/create", "parent_page" => 1],
-                    ["id" => 110, "name" => "beneficiaryReplacement-view", "page_url" => "/beneficiary-management/beneficiary-replacement", "parent_page" => 1],
-                    ["id" => 111, "name" => "beneficiaryReplacement-edit", "page_url" => "/beneficiary-management/beneficiary-replacement/edit/:id", "parent_page" => 1],
-                    ["id" => 112, "name" => "beneficiaryReplacement-delete", "page_url" => "/beneficiary-management/beneficiary-replacement", "parent_page" => 1]
+                    ["id" => 109, "name" => "beneficiary-replacement-create", "page_url" => "/beneficiary-management/beneficiary-replacement/create", "parent_page" => 1],
+                    ["id" => 110, "name" => "beneficiary-replacement-view", "page_url" => "/beneficiary-management/beneficiary-replacement-list", "parent_page" => 1],
+                    ["id" => 111, "name" => "beneficiary-replacement-edit", "page_url" => "/beneficiary-management/beneficiary-replacement/edit/:id", "parent_page" => 1],
+                    ["id" => 112, "name" => "beneficiary-replacement-delete", "page_url" => "/beneficiary-management/beneficiary-replacement", "parent_page" => 1]
 
                 ]
             ],
@@ -298,10 +301,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subBeneficiaryIDCard,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 113, "name" => "beneficiaryCard-create", "page_url" => "/beneficiary-management/beneficiary-card/create", "parent_page" => 1],
-                    ["id" => 114, "name" => "beneficiaryCard-view", "page_url" => "/beneficiary-management/beneficiary-card", "parent_page" => 1],
-                    ["id" => 115, "name" => "beneficiaryCard-edit", "page_url" => "/beneficiary-management/beneficiary-card/edit/:id", "parent_page" => 1],
-                    ["id" => 116, "name" => "beneficiaryCard-delete", "page_url" => "/beneficiary-management/beneficiary-card", "parent_page" => 1]
+                    ["id" => 113, "name" => "beneficiary-idCard-create", "page_url" => "/beneficiary-management/beneficiary-card/create", "parent_page" => 1],
+                    ["id" => 114, "name" => "beneficiary-idCard-view", "page_url" => "/beneficiary-management/beneficiary-card", "parent_page" => 1],
+                    ["id" => 115, "name" => "beneficiary-idCard-edit", "page_url" => "/beneficiary-management/beneficiary-card/edit/:id", "parent_page" => 1],
+                    ["id" => 116, "name" => "beneficiary-idCard-delete", "page_url" => "/beneficiary-management/beneficiary-card", "parent_page" => 1]
 
                 ]
             ],
@@ -310,10 +313,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subBeneficiaryIDShifting,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 117, "name" => "beneficiaryShifting-create", "page_url" => "/beneficiary-management/beneficiary-shifting/create", "parent_page" => 1],
-                    ["id" => 118, "name" => "beneficiaryShifting-view", "page_url" => "/beneficiary-management/beneficiary-shifting", "parent_page" => 1],
-                    ["id" => 119, "name" => "beneficiaryShifting-edit", "page_url" => "/beneficiary-management/beneficiary-shifting/edit/:id", "parent_page" => 1],
-                    ["id" => 120, "name" => "beneficiaryShifting-delete", "page_url" => "/beneficiary-management/beneficiary-shifting/delete/:id", "parent_page" => 1]
+                    ["id" => 117, "name" => "beneficiary-shifting-create", "page_url" => "/beneficiary-management/beneficiary-shifting/create", "parent_page" => 1],
+                    ["id" => 118, "name" => "beneficiary-shifting-view", "page_url" => "/beneficiary-management/beneficiary-shifting", "parent_page" => 1],
+                    ["id" => 119, "name" => "beneficiary-shifting-edit", "page_url" => "/beneficiary-management/beneficiary-shifting/edit/:id", "parent_page" => 1],
+                    ["id" => 120, "name" => "beneficiary-shifting-delete", "page_url" => "/beneficiary-management/beneficiary-shifting/delete/:id", "parent_page" => 1]
 
                 ]
             ],
@@ -322,10 +325,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subBeneficiaryIDExit,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 182, "name" => "beneficiaryExit-create", "page_url" => "/beneficiary-management/beneficiary-exit/create", "parent_page" => 1],
-                    ["id" => 183, "name" => "beneficiaryExit-view", "page_url" => "/beneficiary-management/beneficiary-exit", "parent_page" => 1],
-                    ["id" => 184, "name" => "beneficiaryExit-edit", "page_url" => "/beneficiary-management/beneficiary-exit/edit/:id", "parent_page" => 1],
-                    ["id" => 185, "name" => "beneficiaryExit-delete", "page_url" => "/beneficiary-management/beneficiary-exit/delete/:id", "parent_page" => 1]
+                    ["id" => 182, "name" => "beneficiary-exit-create", "page_url" => "/beneficiary-management/beneficiary-exit/create", "parent_page" => 1],
+                    ["id" => 183, "name" => "beneficiary-exit-view", "page_url" => "/beneficiary-management/beneficiary-exit", "parent_page" => 1],
+                    ["id" => 184, "name" => "beneficiary-exit-edit", "page_url" => "/beneficiary-management/beneficiary-exit/edit/:id", "parent_page" => 1],
+                    ["id" => 185, "name" => "beneficiary-exit-delete", "page_url" => "/beneficiary-management/beneficiary-exit/delete/:id", "parent_page" => 1]
 
                 ]
             ],

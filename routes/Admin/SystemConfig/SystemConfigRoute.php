@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::post('/update', [OfficeController::class, 'OfficeUpdate'])->middleware(['role_or_permission:super-admin|office-update']);
         Route::get('/destroy/{id}', [OfficeController::class, 'destroyOffice'])->middleware(['role_or_permission:super-admin|office-destroy']);
         Route::get('/get/{district_id}',[OfficeController::class, 'getAllOfficeByDistrictId'])->middleware(['role_or_permission:super-admin|office-view']);
+        Route::get('/generate-pdf', [OfficeController::class, 'generatePdf']);
 
         // For multiple ward under office
         Route::get('/get-ward-under-office',[OfficeController::class, 'getAllWardUnderOffice']);
@@ -87,6 +88,9 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::get('/edit/{id}',[DeviceController::class, 'deviceEdit'])->middleware(['role_or_permission:super-admin|device-list']);
         Route::post('/update', [DeviceController::class, 'deviceUpdate'])->middleware(['role_or_permission:super-admin|device-update']);
         Route::delete('/destroy/{id}', [DeviceController::class, 'destroyDevice'])->middleware(['role_or_permission:super-admin|device-destroy']);
+
+        Route::get('/generate-excel', [DeviceController::class, 'deviceReportExcel']);
+        Route::get('/generate-pdf', [DeviceController::class, 'deviceReportPdf']);
     });
 
 

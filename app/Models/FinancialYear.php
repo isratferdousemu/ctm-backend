@@ -38,6 +38,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class FinancialYear extends Model
 {
     use HasFactory,SoftDeletes;
+     protected $fillable = [
+        'financial_year','start_date','end_date','status'
+        // Add other fillable attributes here if any
+    ];
     public function newQuery($excludeDeleted = true)
     {
         return parent::newQuery($excludeDeleted)

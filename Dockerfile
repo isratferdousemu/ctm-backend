@@ -52,6 +52,7 @@ WORKDIR /var/www
 COPY . .
 
 COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
+CMD ["php", "artisan", "schedule:run"]
 
 #for staging
 ENV PORT=80

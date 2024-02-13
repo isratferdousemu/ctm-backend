@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Beneficiary\BeneficiaryExitRequest;
 use App\Http\Requests\Admin\Beneficiary\BeneficiaryShiftingRequest;
+use App\Http\Requests\Admin\Beneficiary\DeleteBeneficiaryRequest;
 use App\Http\Requests\Admin\Beneficiary\ReplaceBeneficiaryRequest;
 use App\Http\Requests\Admin\Beneficiary\SearchBeneficiaryRequest;
 use App\Http\Requests\Admin\Beneficiary\UpdateBeneficiaryRequest;
+use App\Http\Resources\Admin\Beneficiary\BeneficiaryDropDownResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryExitResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryReplaceResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
@@ -15,6 +17,7 @@ use App\Http\Resources\Admin\Beneficiary\BeneficiaryShiftingResource;
 use App\Http\Services\Admin\Beneficiary\BeneficiaryService;
 use App\Http\Traits\MessageTrait;
 use App\Models\AllowanceProgramAmount;
+use App\Models\Beneficiary;
 use App\Models\BeneficiaryReplace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -64,6 +67,21 @@ class BeneficiaryController extends Controller
             $beneficiaryList = $this->beneficiaryService->list($request);
 //            return response()->json($beneficiaryList);
             return BeneficiaryResource::collection($beneficiaryList)->additional([
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    public function listDropDown(Request $request)
+    {
+        try {
+            $beneficiaryList = $this->beneficiaryService->listDropDown($request);
+//            return response()->json($beneficiaryList);
+            return BeneficiaryDropDownResource::collection($beneficiaryList)->additional([
                 'success' => true,
                 'message' => $this->fetchSuccessMessage,
             ]);
@@ -194,6 +212,64 @@ class BeneficiaryController extends Controller
     }
 
     /**
+     * @param DeleteBeneficiaryRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(DeleteBeneficiaryRequest $request, $id): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $this->beneficiaryService->delete($request, $id);
+            activity("Beneficiary")
+                ->causedBy(auth()->user())
+                ->log('Beneficiary Deleted!!');
+            return response()->json([
+                'success' => true,
+                'message' => $this->deleteSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    public function deletedList(SearchBeneficiaryRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        try {
+            $beneficiaryList = $this->beneficiaryService->deletedList($request);
+//            return response()->json($beneficiaryList);
+            return BeneficiaryResource::collection($beneficiaryList)->additional([
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     * @param $id
+     * @return BeneficiaryResource|\Illuminate\Http\JsonResponse
+     */
+    public function restore($id): \Illuminate\Http\JsonResponse|BeneficiaryResource
+    {
+        try {
+            $this->beneficiaryService->restore($id);
+            activity("Beneficiary")
+                ->causedBy(auth()->user())
+                ->performedOn(new Beneficiary())
+                ->log('Beneficiary Restored!');
+            return response()->json([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
      * @param SearchBeneficiaryRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
@@ -235,6 +311,10 @@ class BeneficiaryController extends Controller
         }
     }
 
+    /**
+     * @param SearchBeneficiaryRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function replaceList(SearchBeneficiaryRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         try {
@@ -268,6 +348,10 @@ class BeneficiaryController extends Controller
         }
     }
 
+    /**
+     * @param SearchBeneficiaryRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function exitList(SearchBeneficiaryRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         try {
@@ -301,6 +385,10 @@ class BeneficiaryController extends Controller
         }
     }
 
+    /**
+     * @param SearchBeneficiaryRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function shiftingList(SearchBeneficiaryRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         try {
@@ -365,6 +453,11 @@ class BeneficiaryController extends Controller
         return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
+    /**
+     * @param SearchBeneficiaryRequest $request
+     * @return ResponseAlias
+     * @throws MpdfException
+     */
     public function getBeneficiaryExitListPdf(SearchBeneficiaryRequest $request): ResponseAlias
     {
         $beneficiaries = $this->beneficiaryService->exitList($request, true);
@@ -408,6 +501,11 @@ class BeneficiaryController extends Controller
         return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
+    /**
+     * @param SearchBeneficiaryRequest $request
+     * @return ResponseAlias
+     * @throws MpdfException
+     */
     public function getBeneficiaryReplaceListPdf(SearchBeneficiaryRequest $request): ResponseAlias
     {
         $beneficiaries = $this->beneficiaryService->replaceList($request, true);
@@ -451,6 +549,11 @@ class BeneficiaryController extends Controller
         return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
+    /**
+     * @param SearchBeneficiaryRequest $request
+     * @return ResponseAlias
+     * @throws MpdfException
+     */
     public function getBeneficiaryShiftingListPdf(SearchBeneficiaryRequest $request): ResponseAlias
     {
         $beneficiaries = $this->beneficiaryService->shiftingList($request, true);

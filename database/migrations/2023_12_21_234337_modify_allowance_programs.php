@@ -25,6 +25,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+         Schema::table('allowance_programs', function (Blueprint $table) {
+            $table->dropColumn('pmt_status');
+            $table->dropColumn('system_status');
+        });
     }
 };

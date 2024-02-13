@@ -2,41 +2,42 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Constants\ApplicationStatus;
-use App\Http\Services\Admin\Application\CommitteeApplicationService;
-use App\Http\Services\Admin\Application\CommitteeListService;
-use App\Http\Services\Admin\Application\OfficeApplicationService;
-use App\Http\Traits\RoleTrait;
-use App\Models\Beneficiary;
-use App\Models\PMTScore;
-use App\Http\Requests\Admin\Application\UpdateStatusRequest;
-use App\Models\Application;
-use App\Models\Committee;
-use App\Models\CommitteePermission;
 use App\Models\Location;
+use App\Models\PMTScore;
+use App\Models\Committee;
+use App\Models\Application;
+use App\Models\Beneficiary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Traits\RoleTrait;
 use App\Models\MobileOperator;
 use App\Models\AllowanceProgram;
 use App\Http\Traits\MessageTrait;
 use App\Http\Traits\LocationTrait;
 use Illuminate\Support\Facades\DB;
-use App\Http\Services\Notification\SMSservice;
-
+use App\Models\CommitteePermission;
+use Illuminate\Support\Facades\Log;
+use App\Constants\ApplicationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\BeneficiaryTrait;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+
 use App\Exceptions\AuthBasicErrorException;
+use App\Http\Services\Notification\SMSservice;
+use Illuminate\Validation\ValidationException;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use App\Http\Requests\Admin\Application\ApplicationRequest;
 use App\Http\Services\Admin\Application\ApplicationService;
+use App\Http\Requests\Admin\Application\UpdateStatusRequest;
+use App\Http\Services\Admin\Application\CommitteeListService;
 use App\Http\Requests\Admin\Application\MobileOperatorRequest;
 use App\Http\Services\Admin\Application\MobileOperatorService;
 use App\Http\Resources\Admin\Application\MobileOperatorResource;
 use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
+use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
-use Illuminate\Validation\ValidationException;
-use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
+use App\Http\Services\Admin\Application\CommitteeApplicationService;
 
 class ApplicationController extends Controller
 {
@@ -196,6 +197,13 @@ class ApplicationController extends Controller
     }
 
     public function onlineApplicationRegistration(ApplicationRequest $request){
+   
+        // return $request->all();
+        //   if($request->hasFile('image') && $request->image!=null){
+
+        //         // $application->image = $this->uploadFile($request->image, 'application');
+        //         $image = $request->file('image');
+        //         return  $image;}
 
         // check allowance validation
         $allowance = AllowanceProgram::find($request->program_id);
@@ -954,11 +962,16 @@ class ApplicationController extends Controller
     // Manually filter subvariable based on application_id
    
 
-    $emu = $application->image;
-    $image = url('uploads/application/' . $application->image);
-    $signature = url('uploads/application/' . $application->signature);
-    $nominee_image = url('uploads/application/' . $application->nominee_image);
-    $nominee_signature = url('uploads/application/' . $application->nominee_signature);
+    // $emu = $application->image;
+    // $image =Storage::url($application->image);
+     $image = url(Storage::url($application->image));
+       $signature =  url(Storage::url($application->signature));
+         $nominee_image =  url(Storage::url($application->nominee_image));
+           $nominee_signature = url(Storage::url( $application->nominee_signature));
+    //  Storage::url($application->image);
+    // $signature = url('storage/app/' . $application->signature);
+    // $nominee_image = url('uploads/application/app' . $application->nominee_image);
+    // $nominee_signature = url('uploads/application/app' . $application->nominee_signature);
     $groupedAllowAddiFields = $application->allowAddiFields->groupBy('id')->values();
     $groupedAllowAddiFields = $application->allowAddiFields->groupBy('pivot.allow_addi_fields_id');
 
@@ -968,7 +981,7 @@ class ApplicationController extends Controller
     });
 
     return response()->json([
-        'emu' => $emu,
+        // 'emu' => $emu,
         'application' => $application,
         'unique_additional_fields' => $distinctAllowAddiFields,
         'image' => $image,
@@ -1667,8 +1680,13 @@ class ApplicationController extends Controller
                     "email" => $application->email,
                     "verification_type" => $application->verification_type,
                     "verification_number" => $application->verification_number,
-                    "image" => asset('uploads/application/'. $application->image),
-                    "signature" => asset('uploads/application/'. $application->signature),
+
+                    // "image" => asset('uploads/application/'. $application->image),
+                    // "signature" => asset('uploads/application/'. $application->signature),
+                    "image" => $application->image,
+                    "signature" => $application->signature,
+
+
                     "current_division_id" => $application->current_division_id,
                     "current_district_id" => $application->current_district_id,
                     "current_city_corp_id" => $application->current_city_corp_id,
@@ -1697,8 +1715,10 @@ class ApplicationController extends Controller
                     "nominee_bn" => $application->nominee_bn,
                     "nominee_verification_number" => $application->nominee_verification_number,
                     "nominee_address" => $application->nominee_address,
-                    "nominee_image" => asset('uploads/application/' . $application->nominee_image),
-                    "nominee_signature" => asset('uploads/application/'. $application->nominee_signature),
+                    // "nominee_image" => asset('uploads/application/' . $application->nominee_image),
+                    // "nominee_signature" => asset('uploads/application/'. $application->nominee_signature),
+                    "nominee_image" =>  $application->nominee_image,
+                    "nominee_signature" =>$application->nominee_signature,
                     "nominee_relation_with_beneficiary" => $application->nominee_relation_with_beneficiary,
                     "nominee_nationality" => $application->nominee_nationality,
                     "account_name" => $application->account_name,

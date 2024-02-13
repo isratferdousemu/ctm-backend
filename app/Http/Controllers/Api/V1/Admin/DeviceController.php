@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Device\DeviceRequest;
 use App\Http\Requests\Admin\Device\DeviceUpdateRequest;
@@ -13,6 +14,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 
 class DeviceController extends Controller
 {
@@ -508,6 +510,91 @@ class DeviceController extends Controller
             ],Response::HTTP_OK);
         }
     }
+
+    public function deviceReportExcel(Request $request){
+
+        $device = new Device;
+
+        if ($request->has('sortBy') && $request->has('sortDesc')) {
+            $sortBy = $request->query('sortBy');
+
+            $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+
+            $device = $device->orderBy($sortBy, $sortDesc);
+        } else {
+            $device = $device->orderBy('name', 'asc');
+        }
+
+
+        $device->with('user');
+
+        $searchValue = $request->input('search');
+
+        if($searchValue)
+        {
+            $device->where(function($query) use ($searchValue) {
+                $query->where('name', 'like', '%' . $searchValue . '%');
+                $query->orWhere('ip_address', 'like', '%' . $searchValue . '%');
+                $query->orWhere('device_type', 'like', '%' . $searchValue . '%');
+            });
+
+             $device->get();
+
+        }else{
+                 $device->get();
+        }
+
+        $items = $device->get()->toArray();
+return $items;
+        return $this->sendResponse($items, 'Excell Data');
+    }
+
+    public function deviceReportPdf(Request $request)
+    {
+
+        $data =  $this->deviceReportExcel($request);
+
+        $CustomInfo = array_map(function($i, $index) use($request) {
+            return [
+                $request->language == "bn" ? Helper::englishToBangla($index + 1) : $index + 1,
+                $i['user']['username'],
+                $i['device_type'],
+                $i['device_id'],
+                $i['purpose_use'],
+            ];
+        }, $data, array_keys($data));
+
+        $data = ['headerInfo' => $request->header,'dataInfo'=>$CustomInfo,'fileName' => $request->fileName];
+
+        ini_set("pcre.backtrack_limit", "5000000");
+        $pdf = LaravelMpdf::loadView('reports.dynamic', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-P',
+                'title' => $request->fileName,
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+
+        return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
+            ]);
+
+    }
+
 
 
 }
