@@ -86,7 +86,7 @@ class BeneficiaryResource extends JsonResource
             "permanent_post_code" => $this->permanent_post_code,
             "permanent_address" => $this->permanent_address,
             "permanent_mobile" => $this->permanent_mobile,
-            "union_or_pourashava" => ($this->whenLoaded('permanentUnion')?->name_en ?: $this->whenLoaded('permanentPourashava')?->name_en),
+            "union_or_pourashava" => ($this->permanentUnion?->name_en ?: $this->permanentPourashava?->name_en),
             "nominee_en" => $this->nominee_en,
             "nominee_bn" => $this->nominee_bn,
             "nominee_verification_number" => $this->nominee_verification_number,
@@ -115,22 +115,22 @@ class BeneficiaryResource extends JsonResource
     private function beneficiary_address()
     {
         $beneficiary_address = $this->permanent_address;
-        if ($this->whenLoaded('permanentUnion'))
-            $beneficiary_address .= ', ' . $this->whenLoaded('permanentUnion')->name_en;
-        elseif ($this->whenLoaded('permanentPourashava'))
-            $beneficiary_address .= ', ' . $this->whenLoaded('permanentPourashava')->name_en;
-        elseif ($this->whenLoaded('permanentThana'))
-            $beneficiary_address .= ', ' . $this->whenLoaded('permanentThana')->name_en;
+        if ($this->permanentUnion)
+            $beneficiary_address .= ', ' . $this->permanentUnion?->name_en;
+        elseif ($this->permanentPourashava)
+            $beneficiary_address .= ', ' . $this->permanentPourashava?->name_en;
+        elseif ($this->permanentThana)
+            $beneficiary_address .= ', ' . $this->permanentThana?->name_en;
 
-        if ($this->whenLoaded('permanentUpazila'))
-            $beneficiary_address .= ', ' . $this->whenLoaded('permanentUpazila')->name_en;
-        elseif ($this->whenLoaded('permanentCityCorporation'))
-            $beneficiary_address .= ', ' . $this->whenLoaded('permanentCityCorporation')->name_en;
-        elseif ($this->whenLoaded('permanentDistrictPourashava'))
-            $beneficiary_address .= ', ' . $this->whenLoaded('permanentDistrictPourashava')->name_en;
+        if ($this->permanentUpazila)
+            $beneficiary_address .= ', ' . $this->permanentUpazila?->name_en;
+        elseif ($this->permanentCityCorporation)
+            $beneficiary_address .= ', ' . $this->permanentCityCorporation?->name_en;
+        elseif ($this->permanentDistrictPourashava)
+            $beneficiary_address .= ', ' . $this->permanentDistrictPourashava?->name_en;
 
-        if ($this->whenLoaded('permanentDistrict'))
-            $beneficiary_address .= ', ' . $this->whenLoaded('permanentDistrict')->name_en;
+        if ($this->permanentDistrict)
+            $beneficiary_address .= ', ' . $this->permanentDistrict?->name_en;
 
         return $beneficiary_address;
     }
