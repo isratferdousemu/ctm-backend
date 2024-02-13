@@ -409,7 +409,7 @@ class BeneficiaryService
      */
     public function get($id): mixed
     {
-        return Beneficiary::find($id);
+        return Beneficiary::with('program')->find($id);
     }
 
     /**

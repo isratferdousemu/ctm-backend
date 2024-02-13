@@ -18,6 +18,7 @@ class BeneficiaryResource extends JsonResource
     {
         return [
             "id" => $this->id,
+            "program_id" => $this->program_id,
             'program' => AllowanceResource::make($this->whenLoaded('program')),
             "application_id" => $this->application_id,
             "name_en" => $this->name_en,
@@ -28,6 +29,7 @@ class BeneficiaryResource extends JsonResource
             "father_name_bn" => $this->father_name_bn,
             "spouse_name_en" => $this->spouse_name_en,
             "spouse_name_bn" => $this->spouse_name_bn,
+            "beneficiary_address" => $this->beneficiary_address(),
             "identification_mark" => $this->identification_mark,
             "age" => $this->age,
             "date_of_birth" => $this->date_of_birth,
@@ -84,6 +86,7 @@ class BeneficiaryResource extends JsonResource
             "permanent_post_code" => $this->permanent_post_code,
             "permanent_address" => $this->permanent_address,
             "permanent_mobile" => $this->permanent_mobile,
+            "union_or_pourashava" => ($this->whenLoaded('permanentUnion')?->name_en ?: $this->whenLoaded('permanentPourashava')?->name_en),
             "nominee_en" => $this->nominee_en,
             "nominee_bn" => $this->nominee_bn,
             "nominee_verification_number" => $this->nominee_verification_number,
@@ -104,7 +107,31 @@ class BeneficiaryResource extends JsonResource
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             "score" => $this->score,
-            "delete_cause" => $this->delete_cause
+            "delete_cause" => $this->delete_cause,
+            "deleted_at" => $this->deleted_at
         ];
+    }
+
+    private function beneficiary_address()
+    {
+        $beneficiary_address = $this->permanent_address;
+        if ($this->whenLoaded('permanentUnion'))
+            $beneficiary_address .= ', ' . $this->whenLoaded('permanentUnion')->name_en;
+        elseif ($this->whenLoaded('permanentPourashava'))
+            $beneficiary_address .= ', ' . $this->whenLoaded('permanentPourashava')->name_en;
+        elseif ($this->whenLoaded('permanentThana'))
+            $beneficiary_address .= ', ' . $this->whenLoaded('permanentThana')->name_en;
+
+        if ($this->whenLoaded('permanentUpazila'))
+            $beneficiary_address .= ', ' . $this->whenLoaded('permanentUpazila')->name_en;
+        elseif ($this->whenLoaded('permanentCityCorporation'))
+            $beneficiary_address .= ', ' . $this->whenLoaded('permanentCityCorporation')->name_en;
+        elseif ($this->whenLoaded('permanentDistrictPourashava'))
+            $beneficiary_address .= ', ' . $this->whenLoaded('permanentDistrictPourashava')->name_en;
+
+        if ($this->whenLoaded('permanentDistrict'))
+            $beneficiary_address .= ', ' . $this->whenLoaded('permanentDistrict')->name_en;
+
+        return $beneficiary_address;
     }
 }
