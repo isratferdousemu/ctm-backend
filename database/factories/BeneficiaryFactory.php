@@ -107,7 +107,7 @@ class BeneficiaryFactory extends Factory
             'account_owner' => $name,
             'bank_name' => 'Janata Bank PLC',
             'branch_name' => 'Savar',
-            'status' => 1,
+            'status' => fake()->numberBetween(1, 3),
             'score' => fake()->numberBetween(50, 100),
         ];
     }
