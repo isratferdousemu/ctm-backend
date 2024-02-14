@@ -478,6 +478,13 @@ class BeneficiaryService
                 'monthly_allowance'
             ]);
             $beneficiary->fill($validatedData);
+
+            $nominee_image_path = $request->file('nominee_image')->store('public');
+            $beneficiary->nominee_image = $nominee_image_path;
+
+            $nominee_signature_path = $request->file('nominee_signature')->store('public');
+            $beneficiary->nominee_signature = $nominee_signature_path;
+
             $beneficiary->save();
             DB::commit();
             return $beneficiary;
