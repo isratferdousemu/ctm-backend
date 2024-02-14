@@ -20,7 +20,6 @@ services:
       args:
         - APP_ENV=${APP_ENV}
     restart: always
-      #unless-stopped
     environment:
       - TZ=Asia/Dhaka
       #DB_HOST: mariadb
