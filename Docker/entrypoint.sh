@@ -9,8 +9,8 @@ cp .env.example .env
 role=${CONTAINER_ROLE:-app}
 
 if [ "$role" = "app" ]; then
-    #php artisan migrate:fresh --seed
-    php artisan migrate
+    php artisan migrate:fresh --seed
+    #php artisan migrate
     php artisan key:generate
     php artisan route:clear
     php artisan config:clear
@@ -19,6 +19,7 @@ if [ "$role" = "app" ]; then
     php artisan optimize:clear
     php artisan l5-swagger:generate
     php artisan storage:link
+    php artisan schedule:run
 
 
     php artisan serve --port=$PORT --host=0.0.0.0 --env=.env

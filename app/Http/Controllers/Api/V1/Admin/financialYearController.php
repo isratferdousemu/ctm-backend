@@ -86,6 +86,9 @@ class financialYearController extends Controller
             $filterFinancialYear[] = ['financial_year', 'LIKE', '%' . $searchText . '%'];
             $filterStartDate[] = ['start_date', 'LIKE', '%' . $searchText . '%'];
             $filterEndDate[] = ['end_date', 'LIKE', '%' . $searchText . '%'];
+             if ($searchText != null) {
+                $page = 1;
+            }
         }
     $financial = FinancialYear::query()
      ->where(function ($query) use ($filterFinancialYear, $filterStartDate, $filterEndDate) {
@@ -94,7 +97,8 @@ class financialYearController extends Controller
                     ->orWhere($filterEndDate);
             })
     ->latest()
-    ->paginate($perPage, ['*'], 'page');
+      ->paginate($perPage, ['*'], 'page', $page);
+   
 
     return FinancialResource::collection($financial)->additional([
         'success' => true,
