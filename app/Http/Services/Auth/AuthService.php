@@ -167,9 +167,12 @@ class AuthService
 
     public function AdminForgotPassword(Request $request){
         $user = User::withoutGlobalScope('assign_location_type')->whereMobile($request->phone)->first();
-        return $otp = $this->sendLoginOtp($user,5);
+        $code = $this->generateOtpCode($user, 5);
+        $message = 'Your OTP is '. $code;
 
+        return $message;
     }
+
     public function AdminForgotPasswordSubmit(Request $request){
         $user = User::withoutGlobalScope('assign_location_type')->whereMobile($request->phone)->first();
         $code = $request->otp;
