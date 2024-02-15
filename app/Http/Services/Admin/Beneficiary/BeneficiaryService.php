@@ -460,7 +460,7 @@ class BeneficiaryService
         DB::beginTransaction();
         try {
             $beneficiary = Beneficiary::findOrFail($id);
-
+//            dump($request->file());
             $validatedData = $request->only([
                 'nominee_en',
                 'nominee_bn',
@@ -478,12 +478,11 @@ class BeneficiaryService
                 'monthly_allowance'
             ]);
             $beneficiary->fill($validatedData);
+            if ($request->hasFile('nominee_image'))
+                $beneficiary->nominee_image = $request->file('nominee_image')->store('public');
 
-            $nominee_image_path = $request->file('nominee_image')->store('public');
-            $beneficiary->nominee_image = $nominee_image_path;
-
-            $nominee_signature_path = $request->file('nominee_signature')->store('public');
-            $beneficiary->nominee_signature = $nominee_signature_path;
+            if ($request->hasFile('nominee_signature'))
+                $beneficiary->nominee_signature = $request->file('nominee_signature')->store('public');
 
             $beneficiary->save();
             DB::commit();
