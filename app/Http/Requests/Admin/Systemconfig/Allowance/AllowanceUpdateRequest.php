@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin\Systemconfig\Allowance;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AllowanceUpdateRequest extends FormRequest
 {
@@ -27,7 +28,8 @@ class AllowanceUpdateRequest extends FormRequest
             'is_active'      => 'sometimes',
             'age_limit'      => 'required|array',
             'age_limit.*.gender_id'      => 'required|exists:lookups,id',
-            'age_limit.*.min_age'      => 'required|numeric|min:5|max:115|different:age_limit.*.max_age',
+            'age_limit.*.min_age'      => [Rule::requiredIf($this->is_age_limit == '1'), 'numeric', 'min:5',
+                'max:115', 'different:age_limit.*.max_age'],
             'age_limit.*.max_age'      => 'required|numeric|different:age_limit.*.min_age',
             'amount.*.type_id'        => 'required|exists:lookups,id',
             'amount.*.amount'        => 'required|numeric|min:0'
