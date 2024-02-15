@@ -304,7 +304,7 @@ class SystemconfigController extends Controller
         {
             $allowance->where(function($query) use ($searchValue) {
                 $query->where('name_en', 'like', '%' . $searchValue . '%');
-                $query->where('name_bn', 'like', '%' . $searchValue . '%');
+                $query->orWhere('name_bn', 'like', '%' . $searchValue . '%');
                 $query->orWhere('payment_cycle', 'like', '%' . $searchValue . '%');
             });
 
@@ -363,9 +363,32 @@ class SystemconfigController extends Controller
      *          )
      * )
      */
-    public function getAdditionalField()
+    public function getAdditionalField(Request $request)
     {
-        $additional_fields = AdditionalFields::latest()->with('additional_field_value')->get();
+        $query = AdditionalFields::query();
+
+        if ($request->has('sortBy') && $request->has('sortDesc')) {
+            $sortBy = $request->query('sortBy');
+            $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+            $query->orderBy($sortBy, $sortDesc);
+        } else {
+            $query->orderBy('name_en', 'asc');
+        }
+
+
+        $searchValue = $request->input('searchText');
+
+
+        if($searchValue) {
+            $query->where(function($query) use ($searchValue) {
+                $query->where('name_en', 'like', '%' . $searchValue . '%');
+                $query->orWhere('name_bn', 'like', '%' . $searchValue . '%');
+            });
+        }
+
+        $query->with('additional_field_value');
+
+        return $additional_fields = $query->paginate($request->perPage);
 
         return \response()->json([
             'data' => $additional_fields
