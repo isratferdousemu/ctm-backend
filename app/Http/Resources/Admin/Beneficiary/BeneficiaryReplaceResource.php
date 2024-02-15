@@ -35,7 +35,11 @@ class BeneficiaryReplaceResource extends JsonResource
             "replace_with_father_name_en" => $this->replace_with_father_name_en,
             "replace_with_father_name_bn" => $this->replace_with_father_name_bn,
             "replace_with_district_name_en" => $this->replace_with_district_name_en,
-            "replace_with_district_name_bn" => $this->replace_with_district_name_bn
+            "replace_with_district_name_bn" => $this->replace_with_district_name_bn,
+            "replace_cause_en" => $this->replace_cause_en,
+            "replace_cause_bn" => $this->replace_cause_bn,
+            "cause_detail" => $this->cause_detail,
+            "cause_date" => $this->cause_date,
         ];
     }
 }

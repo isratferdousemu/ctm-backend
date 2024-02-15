@@ -409,7 +409,7 @@ class BeneficiaryService
      */
     public function get($id): mixed
     {
-        return Beneficiary::find($id);
+        return Beneficiary::with('program')->find($id);
     }
 
     /**
@@ -460,7 +460,7 @@ class BeneficiaryService
         DB::beginTransaction();
         try {
             $beneficiary = Beneficiary::findOrFail($id);
-
+//            dump($request->file());
             $validatedData = $request->only([
                 'nominee_en',
                 'nominee_bn',
@@ -478,6 +478,12 @@ class BeneficiaryService
                 'monthly_allowance'
             ]);
             $beneficiary->fill($validatedData);
+            if ($request->hasFile('nominee_image'))
+                $beneficiary->nominee_image = $request->file('nominee_image')->store('public');
+
+            if ($request->hasFile('nominee_signature'))
+                $beneficiary->nominee_signature = $request->file('nominee_signature')->store('public');
+
             $beneficiary->save();
             DB::commit();
             return $beneficiary;
