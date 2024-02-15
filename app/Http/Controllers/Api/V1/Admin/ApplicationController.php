@@ -197,15 +197,9 @@ class ApplicationController extends Controller
     }
 
     public function onlineApplicationRegistration(ApplicationRequest $request){
+
+       
    
-        // return $request->all();
-        //   if($request->hasFile('image') && $request->image!=null){
-
-        //         // $application->image = $this->uploadFile($request->image, 'application');
-        //         $image = $request->file('image');
-        //         return  $image;}
-
-        // check allowance validation
         $allowance = AllowanceProgram::find($request->program_id);
 
         // check is marital
@@ -256,6 +250,7 @@ class ApplicationController extends Controller
         }
 
         // return gettype(json_decode($request->application_allowance_values)[19]->value);
+       
         $data = $this->applicationService->onlineApplicationRegistration($request);
         
 
