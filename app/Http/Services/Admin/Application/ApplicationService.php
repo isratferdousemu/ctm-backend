@@ -124,16 +124,16 @@ class ApplicationService
             $application->current_post_code = $request->post_code;
             $application->current_address = $request->address;
             $application->mobile = $request->mobile;
-            if($request->has('permanent_ward_id_city') && $request->permanent_ward_id_city!=null){
+            if($request->has('permanent_ward_id_city') && $request->permanent_ward_id_city!==null){
                 $application->permanent_location_id              = $request->permanent_ward_id_city;
             }
-            if($request->has('permanent_ward_id_dist') && $request->permanent_ward_id_dist!=null){
+            if($request->has('permanent_ward_id_dist') && ($request->permanent_ward_id_dist!==null) ){
                 $application->permanent_location_id              = $request->permanent_ward_id_dist;
             }
-            if($request->has('permanent_ward_id_union') && $request->permanent_ward_id_union!=null){
+            if($request->has('permanent_ward_id_union') && ($request->permanent_ward_id_union!==null)){
                 $application->permanent_location_id              = $request->permanent_ward_id_union;
             }
-              if($request->has('permanent_ward_id_pouro') && $request->permanent_ward_id_pouro!=null){
+              if($request->has('permanent_ward_id_pouro') && ($request->permanent_ward_id_pouro!==null)){
                 $application->permanent_location_id              = $request->permanent_ward_id_pouro;
             }
 
@@ -215,6 +215,8 @@ class ApplicationService
             $application->nominee_bn = $request->nominee_bn;
             $application->nominee_verification_number = $request->nominee_verification_number;
             $application->nominee_address = $request->nominee_address;
+            $application->nominee_date_of_birth = $request->nominee_date_of_birth;
+         
             // if($request->hasFile('nominee_image') && $request->nominee_image!=null){
             //     $application->nominee_image = $this->uploadFile($request->nominee_image, 'application');
             // }
@@ -376,6 +378,8 @@ class ApplicationService
             // check  $value->value type
             if(gettype($value->value)=='object'){
                 $field_value->value = $this->uploadBaseFile($value->file_value, 'application');
+                
+
             }else{
                 $field_value->value = is_array($value->value)?NULL:$value->value;
             }
@@ -393,8 +397,8 @@ class ApplicationService
 
     // base64 to image convert
     $image_parts = explode(";base64,", $base64File);
-    $image_type_aux = explode("image/", $image_parts[0]);
-    $image_type = $image_type_aux[1];
+    // $image_type_aux = explode("image/", $image_parts[0]);
+    // $image_type = $image_type_aux[1];
     $image_base64 = base64_decode($image_parts[1]);
         $file = uniqid() . '.png';
         file_put_contents(public_path('uploads/' .$folder.'/' . $file), $image_base64);
