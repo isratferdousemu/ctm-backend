@@ -16,7 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get/{id}', [BeneficiaryController::class, 'get'])->middleware(['role_or_permission:super-admin|beneficiary-info-view']);
         Route::get('/getByBeneficiaryId/{beneficiary_id}', [BeneficiaryController::class, 'getByBeneficiaryId'])->middleware(['role_or_permission:super-admin|beneficiary-info-view']);
         Route::get('/edit/{id}', [BeneficiaryController::class, 'edit'])->middleware(['role_or_permission:super-admin|beneficiary-info-edit']);
-        Route::put('/update/{id}', [BeneficiaryController::class, 'update'])->middleware(['role_or_permission:super-admin|beneficiary-info-edit']);
+        Route::post('/update/{id}', [BeneficiaryController::class, 'update'])->middleware(['role_or_permission:super-admin|beneficiary-info-edit']);
         Route::put('/delete/{id}', [BeneficiaryController::class, 'delete'])->middleware(['role_or_permission:super-admin|beneficiary-info-delete']);
         Route::get('/deletedList', [BeneficiaryController::class, 'deletedList'])->middleware(['role_or_permission:super-admin|beneficiary-info-delete-view']);
         Route::get('/restore/{id}', [BeneficiaryController::class, 'restore'])->middleware(['role_or_permission:super-admin|beneficiary-info-delete-view']);

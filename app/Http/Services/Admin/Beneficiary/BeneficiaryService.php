@@ -460,7 +460,6 @@ class BeneficiaryService
         DB::beginTransaction();
         try {
             $beneficiary = Beneficiary::findOrFail($id);
-//            dump($request->file());
             $validatedData = $request->only([
                 'nominee_en',
                 'nominee_bn',
