@@ -477,6 +477,7 @@ class BeneficiaryService
                 'monthly_allowance'
             ]);
             $beneficiary->fill($validatedData);
+
             if ($request->hasFile('nominee_image'))
                 $beneficiary->nominee_image = $request->file('nominee_image')->store('public');
 

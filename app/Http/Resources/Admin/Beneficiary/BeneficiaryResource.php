@@ -6,6 +6,7 @@ use App\Http\Resources\Admin\Lookup\LookupResource;
 use App\Http\Resources\Admin\Systemconfig\Allowance\AllowanceResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Storage;
 
 class BeneficiaryResource extends JsonResource
 {
@@ -91,8 +92,8 @@ class BeneficiaryResource extends JsonResource
             "nominee_bn" => $this->nominee_bn,
             "nominee_verification_number" => $this->nominee_verification_number,
             "nominee_address" => $this->nominee_address,
-            "nominee_image" => asset($this->nominee_image),
-            "nominee_signature" => asset($this->nominee_signature),
+            "nominee_image" => Storage::disk('public')->url($this->nominee_image),
+            "nominee_signature" => Storage::disk('public')->url($this->nominee_signature),
             "nominee_relation_with_beneficiary" => $this->nominee_relation_with_beneficiary,
             "nominee_nationality" => $this->nominee_nationality,
             "account_name" => $this->account_name,
