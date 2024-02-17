@@ -20,11 +20,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/delete/{id}', [BeneficiaryController::class, 'delete'])->middleware(['role_or_permission:super-admin|beneficiary-info-delete']);
         Route::get('/deletedList', [BeneficiaryController::class, 'deletedList'])->middleware(['role_or_permission:super-admin|beneficiary-info-delete-view']);
         Route::get('/restore/{id}', [BeneficiaryController::class, 'restore'])->middleware(['role_or_permission:super-admin|beneficiary-info-delete-view']);
+        Route::get('/restore-inactive/{id}', [BeneficiaryController::class, 'restoreInactive'])->middleware(['role_or_permission:super-admin|beneficiary-info-view']);
         Route::get('/getListForReplace', [BeneficiaryController::class, 'getListForReplace'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-create']);
-        Route::put('/replace/{id}', [BeneficiaryController::class, 'replaceSave'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-create']);
+        Route::post('/replace/{id}', [BeneficiaryController::class, 'replaceSave'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-create']);
         Route::get('/replaceList', [BeneficiaryController::class, 'replaceList'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-view']);
+        Route::get('/restore-replace/{id}', [BeneficiaryController::class, 'restoreReplace'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-view']);
         Route::post('/exit', [BeneficiaryController::class, 'exitSave'])->middleware(['role_or_permission:super-admin|beneficiary-exit-create']);
         Route::get('/exitList', [BeneficiaryController::class, 'exitList'])->middleware(['role_or_permission:super-admin|beneficiary-exit-view']);
+        Route::get('/restore-exit/{id}', [BeneficiaryController::class, 'restoreExit'])->middleware(['role_or_permission:super-admin|beneficiary-exit-view']);
         Route::post('/shift', [BeneficiaryController::class, 'shiftingSave'])->middleware(['role_or_permission:super-admin|beneficiary-shifting-create']);
         Route::get('/shiftingList', [BeneficiaryController::class, 'shiftingList'])->middleware(['role_or_permission:super-admin|beneficiary-shifting-view']);
         // report

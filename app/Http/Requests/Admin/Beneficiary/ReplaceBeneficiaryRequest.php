@@ -24,7 +24,7 @@ class ReplaceBeneficiaryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'beneficiary_id' => 'required|integer|exists:beneficiaries,id',
+//            'beneficiary_id' => 'required|integer|exists:beneficiaries,id',
             'replace_with_ben_id' => 'required|integer|exists:beneficiaries,id',
             'cause_id' => 'required|integer|exists:lookups,id',
             'cause_detail' => 'nullable|string|max:250',
