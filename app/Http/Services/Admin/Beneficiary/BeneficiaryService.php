@@ -765,7 +765,7 @@ class BeneficiaryService
             $beneficiaryReplace->replace_with_ben_id = $replaceWithBeneficiaryId;
             $beneficiaryReplace->cause_id = $request->input('cause_id');
             $beneficiaryReplace->cause_detail = $request->input('cause_detail');
-            $beneficiaryReplace->cause_date = $request->input('cause_date') ? Carbon::parse($request->input('cause_date')) : null;
+            $beneficiaryReplace->cause_date = $request->input('cause_date') ? Carbon::parse($request->input('cause_date')) : now();
             if ($request->hasFile('cause_proof_doc'))
                 $beneficiaryReplace->cause_proof_doc = $request->file('cause_proof_doc')->store('beneficiary/attachment');
             $beneficiaryReplace->created_at = now();
