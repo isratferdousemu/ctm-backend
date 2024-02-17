@@ -41,7 +41,7 @@ class BeneficiaryFactory extends Factory
             'program_id' => fake()->numberBetween(1, 4),
 //            'application_table_id' => 1,
             'financial_year_id' => 1,
-            'application_id' => fake()->unique()->numberBetween(1001,9999),
+            'application_id' => fake()->unique()->numberBetween(1001, 9999),
             'name_en' => $name,
             'name_bn' => $name,
             'mother_name_en' => $mother_name,
@@ -61,10 +61,10 @@ class BeneficiaryFactory extends Factory
             'marital_status' => 'Married',
             'email' => fake()->safeEmail(),
             'mobile' => $mobile,
-            'verification_type' => rand(1,2),
+            'verification_type' => rand(1, 2),
             'verification_number' => fake()->isbn10(),
-            'image' => fake()->imageUrl(300,300),
-            'signature' => fake()->imageUrl(300,100),
+            'image' => 'blank-profile-picture-300x300.png',
+            'signature' => 'blank-signature-300x100.png',
 
             'current_location_type_id' => $location_type_id,
             'current_division_id' => $division_id,
@@ -96,10 +96,11 @@ class BeneficiaryFactory extends Factory
             'nominee_bn' => $nominee,
             'nominee_verification_number' => '1234',
             'nominee_address' => $address,
-            'nominee_image' => fake()->imageUrl(300,300),
-            'nominee_signature' => fake()->imageUrl(300,100),
+            'nominee_image' => 'blank-profile-picture-300x300.png',
+            'nominee_signature' => 'blank-signature-300x100.png',
             'nominee_relation_with_beneficiary' => 'Son',
             'nominee_nationality' => 'Bangladeshi',
+            'nominee_date_of_birth' => now()->subYears(fake()->numberBetween(18, 70)),
 
             'account_type' => 1,
             'account_name' => $name,
@@ -107,8 +108,10 @@ class BeneficiaryFactory extends Factory
             'account_owner' => $name,
             'bank_name' => 'Janata Bank PLC',
             'branch_name' => 'Savar',
+            'monthly_allowance' => 700,
             'status' => fake()->numberBetween(1, 3),
             'score' => fake()->numberBetween(50, 100),
+
         ];
     }
 }
