@@ -140,7 +140,7 @@
             <td>{{$beneficiary->permanentUnion?->name_en}}</td>
             <td>{{$beneficiary->permanentWard?->name_en}}</td>
             <td>{{$beneficiary->account_number}}</td>
-            <td>700</td>
+            <td>{{$beneficiary->monthly_allowance}}</td>
         </tr>
     @endforeach
     </tbody>
