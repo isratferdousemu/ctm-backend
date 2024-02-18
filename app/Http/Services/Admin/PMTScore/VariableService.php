@@ -24,6 +24,7 @@ class VariableService
 
             $Variable                         = new Variable();
             $Variable->name_en                = $request->name_en;
+            $Variable->name_bn                = $request->name_bn;
             $Variable->score                  = $request->score;
             $Variable->field_type             = $request->field_type;
 
@@ -34,7 +35,8 @@ class VariableService
                 foreach($sub_variable as $item){
                 $sub = new Variable();
                 $sub->parent_id= $Variable->id;
-                $sub->name_en= $item['value'];
+                $sub->name_en= $item['value_en'];
+                $sub->name_bn= $item['value_bn'];
                 $sub->score= $item['score'];
                 $sub->save();
             }
@@ -57,6 +59,7 @@ class VariableService
 
             $Variable                         = Variable::find($request->id);;
             $Variable->name_en                = $request->name_en;
+            $Variable->name_bn                = $request->name_bn;
             $Variable->score                  = $request->score;
             $Variable->field_type             = $request->field_type;
 
@@ -69,7 +72,8 @@ class VariableService
                 foreach($sub_variable as $item){
                 $sub = new Variable();
                 $sub->parent_id= $Variable->id;
-                $sub->name_en= $item['value'];
+                $sub->name_en= $item['value_en'];
+                $sub->name_bn= $item['value_bn'];
                 $sub->score= $item['score'];
                 $sub->save();
             }

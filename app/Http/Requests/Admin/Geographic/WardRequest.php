@@ -72,45 +72,45 @@ class WardRequest extends FormRequest
                     }
                 },
             ],
-            'name_bn' => [
-                'required',
-                'string',
-                'max:50',
-                function ($attribute, $value, $fail) {
-                    if ($this->city_thana_id != null) {
-                        if (
-                            Location::where('name_bn', $value)
-                            ->where('id', '!=', $this->id)
-                            ->where('parent_id', $this->city_thana_id)
-                            ->exists()
-                        ) {
+            // 'name_bn' => [
+            //     'required',
+            //     'string',
+            //     'max:50',
+            //     function ($attribute, $value, $fail) {
+            //         if ($this->city_thana_id != null) {
+            //             if (
+            //                 Location::where('name_bn', $value)
+            //                 ->where('id', '!=', $this->id)
+            //                 ->where('parent_id', $this->city_thana_id)
+            //                 ->exists()
+            //             ) {
 
-                            $fail('The ' . $attribute . ' has already been taken.');
-                        }
-                    }
-                    if ($this->district_pouro_id != null) {
-                        if (
-                            Location::where('name_bn', $value)
-                            ->where('id', '!=', $this->id)
-                            ->where('parent_id', $this->district_pouro_id)
-                            ->exists()
-                        ) {
-                            $fail('The ' . $attribute . ' has already been taken.');
-                        }
-                    }
+            //                 $fail('The ' . $attribute . ' has already been taken.');
+            //             }
+            //         }
+            //         if ($this->district_pouro_id != null) {
+            //             if (
+            //                 Location::where('name_bn', $value)
+            //                 ->where('id', '!=', $this->id)
+            //                 ->where('parent_id', $this->district_pouro_id)
+            //                 ->exists()
+            //             ) {
+            //                 $fail('The ' . $attribute . ' has already been taken.');
+            //             }
+            //         }
 
-                    if ($this->union_id != null) {
-                        if (
-                            Location::where('name_bn', $value)
-                            ->where('id', '!=', $this->id)
-                            ->where('parent_id', $this->union_id)
-                            ->exists()
-                        ) {
-                            $fail('The ' . $attribute . ' has already been taken.');
-                        }
-                    }
-                },
-            ],
+            //         if ($this->union_id != null) {
+            //             if (
+            //                 Location::where('name_bn', $value)
+            //                 ->where('id', '!=', $this->id)
+            //                 ->where('parent_id', $this->union_id)
+            //                 ->exists()
+            //             ) {
+            //                 $fail('The ' . $attribute . ' has already been taken.');
+            //             }
+            //         }
+            //     },
+            // ],
             // 'code' => 'required|string|max:6|unique:locations,code,NULL,id,deleted_at,NULL'
         ];
     }
