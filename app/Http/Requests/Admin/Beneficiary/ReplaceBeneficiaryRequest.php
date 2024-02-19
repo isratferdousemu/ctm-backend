@@ -24,14 +24,14 @@ class ReplaceBeneficiaryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'beneficiary_id' => 'required|integer|exists:beneficiaries,id',
+//            'beneficiary_id' => 'required|integer|exists:beneficiaries,id',
             'replace_with_ben_id' => 'required|integer|exists:beneficiaries,id',
             'cause_id' => 'required|integer|exists:lookups,id',
             'cause_detail' => 'nullable|string|max:250',
-            'cause_date' => 'required|date',
+            'cause_date' => 'nullable|date',
             'cause_proof_doc' => [
                 'nullable',
-                File::types(['pdf'])
+                File::types(['pdf', 'jpeg', 'jpg', 'png'])
                     ->max('10mb'),
             ],
         ];

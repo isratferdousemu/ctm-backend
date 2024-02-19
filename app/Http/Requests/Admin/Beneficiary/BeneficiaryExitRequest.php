@@ -27,7 +27,7 @@ class BeneficiaryExitRequest extends FormRequest
     {
         return [
             'exit_reason_id' => 'required|integer|exists:lookups,id',
-            'exit_reason_detail' => 'required|string|max:250',
+            'exit_reason_detail' => 'nullable|string|max:250',
             'exit_date' => 'nullable|date',
             'beneficiaries.*.beneficiary_id' => 'required|integer|exists:beneficiaries,id',
         ];

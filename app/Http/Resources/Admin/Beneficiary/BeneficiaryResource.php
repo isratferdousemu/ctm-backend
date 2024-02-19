@@ -6,6 +6,7 @@ use App\Http\Resources\Admin\Lookup\LookupResource;
 use App\Http\Resources\Admin\Systemconfig\Allowance\AllowanceResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Storage;
 
 class BeneficiaryResource extends JsonResource
 {
@@ -42,8 +43,8 @@ class BeneficiaryResource extends JsonResource
             "email" => $this->email,
             "verification_type" => $this->verification_type,
             "verification_number" => $this->verification_number,
-            "image" => asset('storage/' . $this->image),
-            "signature" => asset('storage/' . $this->signature),
+            "image" => Storage::disk('public')->url($this->image),
+            "signature" => Storage::disk('public')->url($this->signature),
             "current_division_id" => $this->current_division_id,
             "currentDivision" => LocationResource::make($this->whenLoaded('currentDivision')),
             "current_district_id" => $this->current_district_id,
@@ -91,8 +92,8 @@ class BeneficiaryResource extends JsonResource
             "nominee_bn" => $this->nominee_bn,
             "nominee_verification_number" => $this->nominee_verification_number,
             "nominee_address" => $this->nominee_address,
-            "nominee_image" => asset('storage/' . $this->nominee_image),
-            "nominee_signature" => asset('storage/' . $this->nominee_signature),
+            "nominee_image" => Storage::disk('public')->url($this->nominee_image),
+            "nominee_signature" => Storage::disk('public')->url($this->nominee_signature),
             "nominee_relation_with_beneficiary" => $this->nominee_relation_with_beneficiary,
             "nominee_nationality" => $this->nominee_nationality,
             "account_name" => $this->account_name,

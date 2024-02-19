@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BeneficiaryExit extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     //    protected $table = 'beneficiaries';
 
     /**
@@ -21,7 +22,7 @@ class BeneficiaryExit extends Model
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

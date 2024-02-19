@@ -460,7 +460,6 @@ class BeneficiaryService
         DB::beginTransaction();
         try {
             $beneficiary = Beneficiary::findOrFail($id);
-//            dump($request->file());
             $validatedData = $request->only([
                 'nominee_en',
                 'nominee_bn',
@@ -478,6 +477,7 @@ class BeneficiaryService
                 'monthly_allowance'
             ]);
             $beneficiary->fill($validatedData);
+
             if ($request->hasFile('nominee_image'))
                 $beneficiary->nominee_image = $request->file('nominee_image')->store('public');
 
@@ -587,6 +587,65 @@ class BeneficiaryService
         try {
             Beneficiary::where('id', $id)->withTrashed()->update(['delete_cause' => null]);
             Beneficiary::where('id', $id)->withTrashed()->restore();
+            DB::commit();
+            return true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     * @throws \Throwable
+     */
+    public function restoreInactive($id): bool
+    {
+        DB::beginTransaction();
+        try {
+            Beneficiary::where('id', $id)->update(['status' => 1]); // Active
+            DB::commit();
+            return true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     * @throws \Throwable
+     */
+    public function restoreExit($id): bool
+    {
+        DB::beginTransaction();
+        try {
+            $beneficiaryExit = BeneficiaryExit::findOrFail($id);
+            Beneficiary::where('id', $beneficiaryExit->beneficiary_id)->update(['status' => ($beneficiaryExit->previous_status ?: 1)]);
+            $beneficiaryExit->delete();
+            DB::commit();
+            return true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     * @throws \Throwable
+     */
+    public function restoreReplace($id): bool
+    {
+        DB::beginTransaction();
+        try {
+            $beneficiaryReplace = BeneficiaryReplace::findOrFail($id);
+            Beneficiary::where('id', $beneficiaryReplace->beneficiary_id)->update(['status' => 1]); // Active
+            Beneficiary::where('id', $beneficiaryReplace->replace_with_ben_id)->update(['status' => 3]); // Waiting
+            $beneficiaryReplace->delete();
             DB::commit();
             return true;
         } catch (\Throwable $th) {
@@ -706,8 +765,9 @@ class BeneficiaryService
             $beneficiaryReplace->replace_with_ben_id = $replaceWithBeneficiaryId;
             $beneficiaryReplace->cause_id = $request->input('cause_id');
             $beneficiaryReplace->cause_detail = $request->input('cause_detail');
-            $beneficiaryReplace->cause_date = $request->input('cause_date') ? Carbon::parse($request->input('cause_date')) : null;
-            $beneficiaryReplace->cause_proof_doc = $request->input('cause_proof_doc');
+            $beneficiaryReplace->cause_date = $request->input('cause_date') ? Carbon::parse($request->input('cause_date')) : now();
+            if ($request->hasFile('cause_proof_doc'))
+                $beneficiaryReplace->cause_proof_doc = $request->file('cause_proof_doc')->store('beneficiary/attachment');
             $beneficiaryReplace->created_at = now();
             $beneficiaryReplace->save();
 
@@ -747,6 +807,7 @@ class BeneficiaryService
             ->join('locations AS replace_with_district_pourashava', 'replace_with_district_pourashava.id', '=', 'replace_with_beneficiaries.permanent_district_pourashava_id', 'left')
             ->join('locations AS replace_with_upazila', 'replace_with_upazila.id', '=', 'replace_with_beneficiaries.permanent_upazila_id', 'left')
             ->join('lookups AS replace_cause', 'replace_cause.id', '=', 'beneficiary_replaces.cause_id', 'left');
+        $query = $query->whereNull('beneficiary_replaces.deleted_at');
         if ($program_id)
             $query = $query->where('beneficiaries.program_id', $program_id);
 

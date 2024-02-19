@@ -143,7 +143,7 @@
     <table style="border: none;">
         <tbody>
         <tr>
-            <td class="left">প্রিন্ট: {{\Illuminate\Support\Carbon::now()->format('d-m-y h:i a')}}</td>
+            <td class="left">প্রিন্ট: {{\Illuminate\Support\Carbon::now()->format('d-m-y h:i A')}}</td>
             <td class="center">
                 {{--                <htmlpagefooter name="page-footer">--}}
                 {{--                    {PAGENO}--}}

@@ -140,7 +140,7 @@
             <td>{{$beneficiary->permanentUnion?->name_en}}</td>
             <td>{{$beneficiary->permanentWard?->name_en}}</td>
             <td>{{$beneficiary->account_number}}</td>
-            <td>700</td>
+            <td>{{$beneficiary->monthly_allowance}}</td>
         </tr>
     @endforeach
     </tbody>
@@ -150,7 +150,7 @@
     <table style="border: none;">
         <tbody>
         <tr>
-            <td class="left">প্রিন্ট: {{\Illuminate\Support\Carbon::now()->format('d-m-y h:i a')}}</td>
+            <td class="left">প্রিন্ট: {{\Illuminate\Support\Carbon::now()->format('d-m-y h:i A')}}</td>
             <td class="center">
 {{--                <html-separator/>--}}
 {{--                <htmlpagefooter name="page-footer">--}}

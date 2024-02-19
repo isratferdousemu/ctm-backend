@@ -269,6 +269,59 @@ class BeneficiaryController extends Controller
         }
     }
 
+    public function restoreInactive($id): \Illuminate\Http\JsonResponse|BeneficiaryResource
+    {
+        try {
+            $this->beneficiaryService->restoreInactive($id);
+            activity("Beneficiary")
+                ->causedBy(auth()->user())
+                ->performedOn(new Beneficiary())
+                ->log('Inactive Beneficiary Restored!');
+            return response()->json([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+    public function restoreExit($id): \Illuminate\Http\JsonResponse|BeneficiaryResource
+    {
+        try {
+            $this->beneficiaryService->restoreExit($id);
+            activity("Beneficiary")
+                ->causedBy(auth()->user())
+                ->performedOn(new Beneficiary())
+                ->log('Inactive Beneficiary Restored!');
+            return response()->json([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    public function restoreReplace($id): \Illuminate\Http\JsonResponse|BeneficiaryResource
+    {
+        try {
+            $this->beneficiaryService->restoreReplace($id);
+            activity("Beneficiary")
+                ->causedBy(auth()->user())
+                ->performedOn(new Beneficiary())
+                ->log('Replaced Beneficiary Restored!');
+            return response()->json([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
     /**
      * @param SearchBeneficiaryRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
