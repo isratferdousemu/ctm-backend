@@ -26,15 +26,33 @@ class AllowanceUpdateRequest extends FormRequest
             'name_en'        => 'required|string|max:50',
             'name_bn'        => 'required|string|max:50',
             'is_active'      => 'sometimes',
+            'is_age_limit'      => 'required',
             'age_limit'      => 'required|array',
             'age_limit.*.gender_id'      => 'required|exists:lookups,id',
-            'age_limit.*.min_age'      => [Rule::requiredIf($this->is_age_limit == '1'), 'numeric', 'min:5',
-                'max:115', 'different:age_limit.*.max_age'],
-            'age_limit.*.max_age'      => 'required|numeric|different:age_limit.*.min_age',
-            'amount.*.type_id'        => 'required|exists:lookups,id',
-            'amount.*.amount'        => 'required|numeric|min:0'
+
+            'age_limit.*.min_age'      => [Rule::excludeIf(!$this->is_age_limit), 'numeric', 'min:5', 'max:115', 'different:age_limit.*.max_age'],
+            'age_limit.*.max_age'      => [Rule::excludeIf(!$this->is_age_limit), 'numeric', 'different:age_limit.*.min_age'],
+
+            'amount.*.type_id'        => [Rule::excludeIf(!$this->is_disable_class), 'exists:lookups,id'],
+            'amount.*.amount'        => [Rule::excludeIf(!$this->is_disable_class), 'numeric', 'min:0']
         ];
     }
+
+
+
+    protected function prepareForValidation()
+    {
+        $this->merge(
+            [
+                'is_disable_class' => $this->is_disable_class == 'true',
+                'is_age_limit' => $this->is_age_limit == 'true',
+                'is_marital' => $this->is_marital == 'true',
+                'is_active' => $this->is_active == 'true',
+            ]
+        );
+
+    }
+
 
     public function messages()
     {

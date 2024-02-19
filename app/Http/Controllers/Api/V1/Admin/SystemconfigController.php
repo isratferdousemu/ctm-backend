@@ -1003,8 +1003,7 @@ class SystemconfigController extends Controller
                 $allowance_program->save();
 
 
-                if ($request->input('age_limit') != null)
-                {
+                if ($request->age_limit) {
                     $prevAges = $allowance_program->ages()->delete();
 
                     foreach ($request->input('age_limit') as $al)
@@ -1031,7 +1030,12 @@ class SystemconfigController extends Controller
 
 
 
-                if ($request->input('amount') != null)
+                if (!$request->is_disable_class) {
+                    AllowanceProgramAmount::where('allowance_program_id', $allowance_program->id)->delete();
+                }
+
+
+                if ($request->is_disable_class && $request->input('amount') != null)
                 {
                     $allowanceProgramId = $allowance_program->id; // Assuming $allowance_program->id holds the ID you're working with
 
