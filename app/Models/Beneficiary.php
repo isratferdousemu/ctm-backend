@@ -18,22 +18,22 @@ class Beneficiary extends Model
      * @var array
      */
     protected $fillable = [
-        "nominee_en",
-        "nominee_bn",
-        "nominee_verification_number",
-        "nominee_address",
-        "nominee_image",
-        "nominee_signature",
-        "nominee_relation_with_beneficiary",
-        "nominee_nationality",
-        "account_name",
-        "account_number",
-        "account_owner",
-        'financial_year_id',
-        'account_type',
-        'bank_name',
-        'branch_name',
-        'monthly_allowance'
+//        "nominee_en",
+//        "nominee_bn",
+//        "nominee_verification_number",
+//        "nominee_address",
+//        "nominee_image",
+//        "nominee_signature",
+//        "nominee_relation_with_beneficiary",
+//        "nominee_nationality",
+//        "account_name",
+//        "account_number",
+//        "account_owner",
+//        'financial_year_id',
+//        'account_type',
+//        'bank_name',
+//        'branch_name',
+//        'monthly_allowance'
     ];
     /**
      * The attributes that aren't mass assignable.
