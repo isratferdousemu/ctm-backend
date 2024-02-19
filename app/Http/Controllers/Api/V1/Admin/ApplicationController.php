@@ -198,8 +198,8 @@ class ApplicationController extends Controller
 
     public function onlineApplicationRegistration(ApplicationRequest $request){
 
-       
-   
+
+
         $allowance = AllowanceProgram::find($request->program_id);
 
         // check is marital
@@ -250,10 +250,10 @@ class ApplicationController extends Controller
         }
 
         // return gettype(json_decode($request->application_allowance_values)[19]->value);
-       
+
         $data = $this->applicationService->onlineApplicationRegistration($request);
 
-        
+
      $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
 
         // Log::info('password-'. $user->id, [$message]);
@@ -645,22 +645,45 @@ class ApplicationController extends Controller
 
         $this->applyUserWiseFiltering($query);
 
-            $query->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayApplicationId, $filterArrayNomineeNameEn, $filterArrayNomineeNameBn, $filterArrayAccountNo, $filterArrayNidNo, $filterArrayListTypeId, $filterArrayProgramId) {
-                $query->where($filterArrayNameEn)
-                    ->orWhere($filterArrayNameBn)
-                    ->orWhere($filterArrayFatherNameEn)
-                    ->orWhere($filterArrayFatherNameBn)
-                    ->orWhere($filterArrayMotherNameEn)
-                    ->orWhere($filterArrayMotherNameBn)
-                    ->orWhere($filterArrayApplicationId)
-                    ->orWhere($filterArrayNomineeNameEn)
-                    ->orWhere($filterArrayNomineeNameBn)
-                    ->orWhere($filterArrayAccountNo)
-                    ->orWhere($filterArrayNidNo)
-                    ->orWhere($filterArrayListTypeId)
-                    ->orWhere($filterArrayProgramId)
-                ;
-            });
+
+
+        $query->when($searchText, function ($q) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn) {
+            $q->where($filterArrayNameEn)
+                ->orWhere($filterArrayNameBn)
+                ->orWhere($filterArrayMotherNameEn)
+                ->orWhere($filterArrayMotherNameBn)
+                ->orWhere($filterArrayFatherNameEn)
+                ->orWhere($filterArrayFatherNameBn)
+            ;
+        });
+
+
+        $query->when($nominee_name, function ($q) use ($filterArrayNomineeNameBn, $filterArrayNomineeNameEn) {
+            $q->where($filterArrayNomineeNameEn)
+                ->orWhere($filterArrayNomineeNameBn)
+            ;
+        });
+
+        $query->when($application_id, function ($q) use ($filterArrayApplicationId) {
+            $q->where($filterArrayApplicationId);
+        });
+
+
+        $query->when($nid_no, function ($q) use ($filterArrayNidNo) {
+            $q->where($filterArrayNidNo);
+        });
+
+
+        $query->when($nid_no, function ($q) use ($filterArrayNidNo) {
+            $q->where($filterArrayNidNo);
+        });
+
+
+        $query->when($program_id, function ($q) use ($filterArrayProgramId) {
+            $q->where($filterArrayProgramId);
+        });
+
+
 
             if ($request->has('status')) {
                 $query->where('status', $request->status);
@@ -960,11 +983,11 @@ class ApplicationController extends Controller
     }
 
     // Manually filter subvariable based on application_id
-   
+
 
     // $emu = $application->image;
     // $image =Storage::url($application->image);
-  
+
     //    $image = Storage::disk('public')->url($application->image);
        $image = asset('storage/' . $application->image);
     //   url(Storage::url($application->image));
@@ -995,7 +1018,7 @@ class ApplicationController extends Controller
         'signature' => $signature,
         'nominee_image' => $nominee_image,
         'nominee_signature' => $nominee_signature,
-     
+
     ], Response::HTTP_OK);
 }
 //    public function getApplicationById($id){
@@ -1091,7 +1114,7 @@ class ApplicationController extends Controller
     }
 
     // Manually filter subvariable based on application_id
-   
+
 
     $emu = $application->image;
     $image = url('uploads/application/' . $application->image);
@@ -1114,18 +1137,18 @@ class ApplicationController extends Controller
     //     'signature' => $signature,
     //     'nominee_image' => $nominee_image,
     //     'nominee_signature' => $nominee_signature,
-     
+
     // ], Response::HTTP_OK);
      $dynamic=$request->all();
-    
+
      $title=$request->title;
      $data = ['data' => $application,
                 'request'=>$dynamic,
                  'title' => $title,
-                 
+
 
                 ];
-  
+
 
         $pdf = LaravelMpdf::loadView('reports.applicant_copy', $data, [],
             [
