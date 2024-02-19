@@ -161,6 +161,15 @@ class AdminController extends Controller
         ]);
      }
 
+
+    public function getClassList(){
+        $lookup = Lookup::whereType(20)->orderBy('id')->get();
+        return LookupResource::collection($lookup)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
+
     /**
      *
      * @OA\Post(

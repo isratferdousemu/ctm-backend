@@ -366,6 +366,8 @@ class PMTScoreController extends Controller
        $cutOff = PMTScore::select(
             'poverty_score_cut_offs.*',
             'locations.name_en',
+            'locations.name_bn',
+
             'financial_years.financial_year',
         )
             ->leftJoin('locations', function ($join) {
@@ -502,7 +504,7 @@ class PMTScoreController extends Controller
                     // Duplicate entry found, handle accordingly (e.g., return an error response)
                     return response()->json([
                         'success' => false,
-                        'error' => 'This year all disvision has already reached the cutoff score.',
+                        'error' => 'Already record created for this year .',
                     ]);
                 }
                 $existingRecord2 = PMTScore::where('financial_year_id',$request->financial_year_id)
@@ -512,7 +514,7 @@ class PMTScoreController extends Controller
                     // Duplicate entry found, handle accordingly (e.g., return an error response)
                     return response()->json([
                         'success' => false,
-                        'error' => 'This year all districts has already reached the cutoff score.',
+                        'error' => 'Already record created for this year.',
                     ]);
                 }
                  
@@ -566,7 +568,7 @@ class PMTScoreController extends Controller
                 // Duplicate entry found, handle accordingly (e.g., return an error response)
                 return response()->json([
                     'success' => false,
-                    'error' => 'This years location has already reached the cutoff score.',
+                    'error' => 'Already record created for this year.',
                 ]);
             }
 

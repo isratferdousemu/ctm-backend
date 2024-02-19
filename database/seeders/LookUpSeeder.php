@@ -43,16 +43,16 @@ class LookUpSeeder extends Seeder
             ['id' => 24, 'type' => 2, 'value_en' => 'Female', 'value_bn' => 'মহিলা','default'=>1],
 
             ///CLASS Seeder
-            ['id' => 25, 'type' => 20, 'value_en' => '1', 'value_bn' => 'এক','default'=>1],
-            ['id' => 26, 'type' => 20, 'value_en' => '2', 'value_bn' => 'দুই','default'=>1],
-            ['id' => 27, 'type' => 20, 'value_en' => '3', 'value_bn' => 'তিন','default'=>1],
-            ['id' => 28, 'type' => 20, 'value_en' => '4', 'value_bn' => 'চার','default'=>1],
-            ['id' => 29, 'type' => 20, 'value_en' => '5', 'value_bn' => 'পাঁচ','default'=>1],
-            ['id' => 30, 'type' => 20, 'value_en' => '6', 'value_bn' => 'ছয়','default'=>1],
-            ['id' => 31, 'type' => 20, 'value_en' => '7', 'value_bn' => 'সাত','default'=>1],
-            ['id' => 32, 'type' => 20, 'value_en' => '8', 'value_bn' => 'আট','default'=>1],
-            ['id' => 33, 'type' => 20, 'value_en' => '9', 'value_bn' => 'নয়','default'=>1],
-            ['id' => 34, 'type' => 20, 'value_en' => '10', 'value_bn' => 'দশ','default'=>1],
+            ['id' => 25, 'type' => 20, 'value_en' => 'Class One', 'value_bn' => 'প্রথম শ্রেণী','default'=>1],
+            ['id' => 26, 'type' => 20, 'value_en' => 'Class Two', 'value_bn' => 'দ্বিতীয় শ্রেণী','default'=>1],
+            ['id' => 27, 'type' => 20, 'value_en' => 'Class Three', 'value_bn' => 'তৃতীয় শ্রেণী','default'=>1],
+            ['id' => 28, 'type' => 20, 'value_en' => 'Class Four', 'value_bn' => 'চতুর্থ শ্রেণী','default'=>1],
+            ['id' => 29, 'type' => 20, 'value_en' => 'Class Five', 'value_bn' => 'পঞ্চম শ্রেণী','default'=>1],
+            ['id' => 30, 'type' => 20, 'value_en' => 'Class Six', 'value_bn' => 'ষষ্ঠ শ্রেণী','default'=>1],
+            ['id' => 31, 'type' => 20, 'value_en' => 'Class Seven', 'value_bn' => 'সপ্তম শ্রেণী','default'=>1],
+            ['id' => 32, 'type' => 20, 'value_en' => 'Class Eight', 'value_bn' => 'অষ্টম শ্রেণী','default'=>1],
+            ['id' => 33, 'type' => 20, 'value_en' => 'Class Nine', 'value_bn' => 'নবম শ্রেণী','default'=>1],
+            ['id' => 34, 'type' => 20, 'value_en' => 'Class Ten', 'value_bn' => 'দশম শ্রেণী','default'=>1],
             //office Type
             ['id' => 35, 'type' => 3, 'value_en' => 'UCD (Dist Paurashava)', 'value_bn' => 'UCD (Dist Paurashava)','default'=>1],
 
@@ -65,6 +65,10 @@ class LookUpSeeder extends Seeder
             ['id' => 39, 'type' => 22, 'value_en' => 'Death', 'value_bn' => 'মৃত্যু','default'=>1],
             ['id' => 40, 'type' => 22, 'value_en' => 'Financially Independent', 'value_bn' => 'আর্থিকভাবে স্বচ্ছল','default'=>1],
             ['id' => 41, 'type' => 22, 'value_en' => 'Others', 'value_bn' => 'অন্যান্য','default'=>1],
+
+
+            ['id' => 42, 'type' => 20, 'value_en' => 'Others', 'value_bn' => 'অনন্য','default'=>1],
+
 
         ];
 

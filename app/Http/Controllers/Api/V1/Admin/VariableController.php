@@ -121,7 +121,9 @@ class VariableController extends Controller
         if($searchValue)
         {
             $variable->where(function($query) use ($searchValue) {
-                $query->where('name_en', 'like', '%' . $searchValue . '%');
+                $query->where('name_en', 'like', '%' . $searchValue . '%')
+                 ->orWhere('name_bn', 'like', '%' . $searchValue . '%');
+                  
               
             });
 
@@ -303,13 +305,13 @@ class VariableController extends Controller
         $page = $request->query('page');
 
         $filterArrayNameEn = [];
-        // $filterArrayNameBn = [];
+        $filterArrayNameBn = [];
         // $filterArrayComment = [];
         // $filterArrayAddress = [];
 
         if ($searchText) {
             $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-            // $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
             // $filterArrayComment[] = ['comment', 'LIKE', '%' . $searchText . '%'];
         }
         // $menu = Menu::select(
@@ -322,7 +324,7 @@ class VariableController extends Controller
         $office = Variable::query()
             ->where(function ($query) use ($filterArrayNameEn) {
                 $query->where($filterArrayNameEn)
-                    // ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayNameBn)
                     // ->orWhere($filterArrayComment)
                     // ->orWhere($filterArrayAddress)
                 ;
@@ -583,6 +585,7 @@ class VariableController extends Controller
 
     public function updateVariable(VariableRequest $request)
     {
+       
 
         try {
             $Variable = $this->VariableService->updateVariable($request);

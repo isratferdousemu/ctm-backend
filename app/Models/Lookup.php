@@ -39,7 +39,7 @@ class Lookup extends Model
     public function newQuery($excludeDeleted = true)
     {
         return parent::newQuery($excludeDeleted)
-            ->orderBy('value_en', 'asc');
+            /*->orderBy('value_en', 'asc')*/;
     }
 
 
