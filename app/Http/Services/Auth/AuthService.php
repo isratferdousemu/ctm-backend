@@ -129,6 +129,12 @@ class AuthService
 
     protected function verifyBeforeLogin(Request $request, User $user)
     {
+        $passwordCheck = Hash::check($user->salt . $request->password, $user->password);
+
+        if (!$passwordCheck) {
+            return $this->authBasicErrorCode;
+        }
+
 
         if ($user->status == $this->userAccountDeactivate) return $this->authDeactivateUserErrorCode;
         if ($user->status == $this->userAccountBanned) return $this->authBannedUserErrorCode;
@@ -142,14 +148,14 @@ class AuthService
                     }
 
                 }
-                if (Hash::check($user->salt . $request->password, $user->password)) {
+                if ($passwordCheck) {
                     return $this->authSuccessCode;
                 }
             } else {
                 return $this->nonAllowedUserErrorCode;
             }
         }
-        if (Hash::check($user->salt . $request->password, $user->password)) {
+        if ($passwordCheck) {
             return $this->authSuccessCode;
         }
 
