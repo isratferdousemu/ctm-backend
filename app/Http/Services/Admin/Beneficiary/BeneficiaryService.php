@@ -399,7 +399,8 @@ class BeneficiaryService
             'permanentPourashava',
             'permanentThana',
             'permanentUnion',
-            'permanentWard')
+            'permanentWard',
+            'financialYear')
             ->find($id);
     }
 
