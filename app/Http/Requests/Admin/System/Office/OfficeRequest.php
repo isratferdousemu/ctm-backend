@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin\System\Office;
 
+use App\Models\Office;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class OfficeRequest extends FormRequest
 {
@@ -26,8 +28,20 @@ class OfficeRequest extends FormRequest
             'district_id'         => 'sometimes|integer|exists:locations,id',
             'thana_id'            => 'sometimes|integer|exists:locations,id',
             'city_corpo_id'       => 'sometimes|integer|exists:locations,id',
-            'name_en'             => 'required|string|max:50',
-            'name_bn'             => 'required|string|max:50',
+
+
+            'name_en'             => ['required', 'string', 'max:50',
+                Rule::unique(Office::class)
+                    ->where('assign_location_id', $this->location_id)
+                    ->ignore($this->id),
+                ],
+
+            'name_bn'             => ['required', 'string', 'max:50',
+                Rule::unique(Office::class)
+                    ->where('assign_location_id', $this->location_id)
+                    ->ignore($this->id),
+                ],
+
             'office_type'         => 'required|integer|exists:lookups,id',
             'office_address'      => 'required|string',
             'comment'             => 'string|max:120,Null',
@@ -37,6 +51,39 @@ class OfficeRequest extends FormRequest
             'ward_under_office.*.ward_id'       =>'sometimes|integer',
         ];
     }
+
+
+
+
+
+    protected function prepareForValidation()
+    {
+        $this->merge(
+            [
+                'location_id' => $this->getLocationId()
+            ]
+        );
+    }
+
+
+    public function getLocationId()
+    {
+        $officeType = (int) $this->office_type;
+
+        return match ($officeType) {
+            6 => $this->division_id,
+            7 => $this->district_id,
+            8,10,11 => $this->upazila_id,
+            9 => $this->city_id,
+            35 => $this->dist_pouro_id,
+            default => null
+        };
+
+    }
+
+
+
+
 }
 
 
