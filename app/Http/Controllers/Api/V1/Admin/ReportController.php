@@ -903,7 +903,7 @@ class ReportController extends Controller
     {
         set_time_limit(120);
 
-        $data = ['headerInfo' => $request->header,'dataInfo'=>$request->data,'fileName' => $request->fileName];
+        $data = ['headerInfo' => $request->header,'dataInfo'=>$request->data,'fileName' => $request->fileName,'language' => $request->language];
 
         ini_set("pcre.backtrack_limit", "5000000");
         $pdf = LaravelMpdf::loadView('reports.dynamic', $data, [],
@@ -928,7 +928,7 @@ class ReportController extends Controller
             },
             200,
             [
-                'Content-Type' => 'application/pdf',
+                'Content-Type' => 'application/pdf;charset=utf-8',
                 'Content-Disposition' => 'inline; filename="preview.pdf"',
             ]);
     }
