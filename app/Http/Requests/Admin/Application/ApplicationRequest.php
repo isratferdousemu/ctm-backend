@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin\Application;
 
 use App\Rules\UniqueMobileNumber;
+use App\Rules\UniqueBeneficiaryNumber;
 use App\Rules\UniqueVerificationNumber;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -30,6 +31,7 @@ class ApplicationRequest extends FormRequest
                 'verification_number' => [
             'required',
             new UniqueVerificationNumber(),
+            new UniqueBeneficiaryNumber(),
         ],
             'age'                  =>'required',
             'date_of_birth'         =>'required|date',
