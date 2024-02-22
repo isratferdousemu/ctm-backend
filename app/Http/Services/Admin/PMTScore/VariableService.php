@@ -68,6 +68,7 @@ class VariableService
             $sub_variable=$request->field_value;
               $israt=Variable::where('parent_id',"=",$Variable->id)->forceDelete();
             if($sub_variable){
+                $Variable->score                  = NULL;
               
                 foreach($sub_variable as $item){
                 $sub = new Variable();
