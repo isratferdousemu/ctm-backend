@@ -73,7 +73,7 @@
 </head>
 <body>
 
-<p>তালিকাভুক্ত  রিপোর্ট | সমাজসেবা অধিদফতর </p>
+<p>{{ $language == 'en' ? "Listed Report |Department of Social Services" : "তালিকাভুক্ত  রিপোর্ট | সমাজসেবা অধিদফতর" }} </p>
 
 <div class="title-container">
     <!-- Empty div for the first table -->
@@ -85,15 +85,27 @@
         <td class="left">
             <img src="{{ public_path('image/bangladesh-govt-logo.png') }}" alt="Left Image" style="width: 100px; height: auto;">
         </td>
-        <td class="center">
-            <h3 class="title">
-                গণপ্রজাতন্ত্রী বাংলাদেশ সরকার <br>
-                সমাজসেবা অধিদফতর
-            </h3>
-            <p style="font-size:15px" class="center">ক্যাশ ট্রান্সফার মডার্নাইজেশন (সিটিএম) প্রকল্প</p>
-            <p style="font-size:12px">শ্যামলী স্কোয়ার, ২৪/১-২, মিরপুর রোড, ঢাকা -১২০৭</p>
-            <a target="_blank" href="https://dss.gov.bd/">www.dss.gov.bd</a>
-        </td>
+        @if($language == "en")
+            <td class="center">
+                <h3 class="title">
+                    Government of the People's Republic of Bangladesh <br>
+                    Department of Social Services
+                </h3>
+                <p style="font-size:15px" class="center">Cash Transfer Modernization(CTM)Project</p>
+                <p style="font-size:12px">Social Service Building, E-8/B-1, Agargaon, Sherbangla Nagar, Dhaka-1207, Bangladesh.</p>
+                <a target="_blank" href="https://dss.gov.bd/">www.dss.gov.bd</a>
+            </td>
+        @else
+            <td class="center">
+                <h3 class="title">
+                    গণপ্রজাতন্ত্রী বাংলাদেশ সরকার <br>
+                    সমাজসেবা অধিদফতর
+                </h3>
+                <p style="font-size:15px" class="center">ক্যাশ ট্রান্সফার মডার্নাইজেশন (সিটিএম) প্রকল্প</p>
+                <p style="font-size:12px">সমাজসেবা ভবন, ই-৮/বি-১, আগারগাঁও, শেরেবাংলা নগর, ঢাকা-১২০৭, বাংলাদেশ।</p>
+                <a target="_blank" href="https://dss.gov.bd/">www.dss.gov.bd</a>
+            </td>
+        @endif
         <td class="right">  <img src="{{ public_path('image/logo.png') }}" alt="Right Image" style="width: 80px; height: 80px;"></td>
     </tr>
     </tbody>
@@ -126,7 +138,8 @@
 </table>
 
 <div class="footer">
-    Copyright &copy; 2024, DSS  <div align="right"><b>{PAGENO} / {nbpg}</b></div>
+    {{ $language == 'en' ? "Copyright @, " . date("Y ") . ", DSS" : "কপিরাইট @, " . \App\Helpers\Helper::englishToBangla(date("Y ")) . ", ডিএসএস" }}
+    <div align="right"><b>{PAGENO} / {nbpg}</b></div>
 </div>
 
 </body>
