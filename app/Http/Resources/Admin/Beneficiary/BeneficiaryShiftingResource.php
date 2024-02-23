@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin\Beneficiary;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -45,7 +46,7 @@ class BeneficiaryShiftingResource extends JsonResource
             "ward_en" => $this->ward_en,
             "ward_bn" => $this->ward_bn,
             "shifting_cause" => $this->shifting_cause,
-            "activation_date" => $this->activation_date,
+            "activation_date" => Carbon::parse($this->activation_date)->format('d/m/Y'),
         ];
     }
 }

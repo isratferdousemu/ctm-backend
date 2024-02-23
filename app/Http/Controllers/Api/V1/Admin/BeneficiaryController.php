@@ -469,13 +469,13 @@ class BeneficiaryController extends Controller
         $generated_by = $user->full_name;
         $assign_location = '';
         if ($user->assign_location) {
-            $assign_location .= ', ' . $user->assign_location?->name_en;
+            $assign_location .= ', ' . $user->assign_location?->name_bn;
             if ($user->assign_location?->parent) {
-                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                $assign_location .= ', ' . $user->assign_location?->parent?->name_bn;
                 if ($user->assign_location?->parent?->parent) {
-                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
+                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_bn;
                     if ($user->assign_location?->parent?->parent?->parent) {
-                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
+                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
                     }
                 }
             }
@@ -492,7 +492,7 @@ class BeneficiaryController extends Controller
                 'margin_left' => 10,
                 'margin_right' => 10,
                 'margin_top' => 10,
-                'margin_bottom' => 10,
+                'margin_bottom' => 25,
                 'margin_header' => 10,
                 'margin_footer' => 10,
             ]);
@@ -518,13 +518,13 @@ class BeneficiaryController extends Controller
         $generated_by = $user->full_name;
         $assign_location = '';
         if ($user->assign_location) {
-            $assign_location .= ', ' . $user->assign_location?->name_en;
+            $assign_location .= ', ' . $user->assign_location?->name_bn;
             if ($user->assign_location?->parent) {
-                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                $assign_location .= ', ' . $user->assign_location?->parent?->name_bn;
                 if ($user->assign_location?->parent?->parent) {
-                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
+                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_bn;
                     if ($user->assign_location?->parent?->parent?->parent) {
-                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
+                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
                     }
                 }
             }
@@ -566,13 +566,13 @@ class BeneficiaryController extends Controller
         $generated_by = $user->full_name;
         $assign_location = '';
         if ($user->assign_location) {
-            $assign_location .= ', ' . $user->assign_location?->name_en;
+            $assign_location .= ', ' . $user->assign_location?->name_bn;
             if ($user->assign_location?->parent) {
-                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                $assign_location .= ', ' . $user->assign_location?->parent?->name_bn;
                 if ($user->assign_location?->parent?->parent) {
-                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
+                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_bn;
                     if ($user->assign_location?->parent?->parent?->parent) {
-                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
+                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
                     }
                 }
             }
@@ -614,13 +614,13 @@ class BeneficiaryController extends Controller
         $generated_by = $user->full_name;
         $assign_location = '';
         if ($user->assign_location) {
-            $assign_location .= ', ' . $user->assign_location?->name_en;
+            $assign_location .= ', ' . $user->assign_location?->name_bn;
             if ($user->assign_location?->parent) {
-                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                $assign_location .= ', ' . $user->assign_location?->parent?->name_bn;
                 if ($user->assign_location?->parent?->parent) {
-                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
+                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_bn;
                     if ($user->assign_location?->parent?->parent?->parent) {
-                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
+                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
                     }
                 }
             }

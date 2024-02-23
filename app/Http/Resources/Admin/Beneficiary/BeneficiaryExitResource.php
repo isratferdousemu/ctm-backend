@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin\Beneficiary;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -47,7 +48,7 @@ class BeneficiaryExitResource extends JsonResource
             "exit_reason_en" => $this->exit_reason_en,
             "exit_reason_bn" => $this->exit_reason_bn,
             "exit_reason_detail" => $this->exit_reason_detail,
-            "exit_date" => $this->exit_date,
+            "exit_date" => Carbon::parse($this->exit_date)->format('d/m/Y'),
         ];
     }
 }

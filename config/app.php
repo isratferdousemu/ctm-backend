@@ -219,6 +219,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'PDF' => Mccarlosen\LaravelMpdf\Facades\LaravelMpdf::class,
+        'BengaliUtil' => App\Facades\BengaliUtil::class,
     ])->toArray(),
 
 ];
