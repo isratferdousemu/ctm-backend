@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\V1\Admin\CommitteePermissionController;
 use App\Http\Controllers\Api\V1\Admin\LocationController;
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'language'])->group(function () {
 
     Route::prefix('admin/beneficiary')->group(function () {
         Route::get('/getUserLocation', [BeneficiaryController::class, 'getUserLocation']);
