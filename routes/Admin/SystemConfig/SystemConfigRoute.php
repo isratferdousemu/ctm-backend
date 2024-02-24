@@ -71,9 +71,9 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
     Route::prefix('admin/financial-year')->group(function () {
 
-        Route::post('/insert', [financialYearController::class, 'insertFinancialYear'])->middleware(['role_or_permission:super-admin|financial-year-create']);
-        Route::get('/get',[financialYearController::class, 'getFinancialPaginated'])->middleware(['role_or_permission:super-admin|financial-year-view']);
-        Route::get('/destroy/{id}', [financialYearController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|financial-year-destroy']);
+        Route::post('/insert', [financialYearController::class, 'insertFinancialYear'])->middleware(['role_or_permission:super-admin|financial-create']);
+        Route::get('/get',[financialYearController::class, 'getFinancialPaginated'])->middleware(['role_or_permission:super-admin|financial-view']);
+        Route::get('/destroy/{id}', [financialYearController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|financial-delete']);
     });
 
     /* -------------------------------------------------------------------------- */
@@ -81,13 +81,13 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
     /* -------------------------------------------------------------------------- */
 
     Route::prefix('admin/device')->group(function () {
-        Route::post('/status/{id}', [DeviceController::class, 'deviceStatusUpdate'])->middleware(['role_or_permission:super-admin|device-edit']);
-        Route::post('/insert', [DeviceController::class, 'insertDevice'])->middleware(['role_or_permission:super-admin|device-create']);
-        Route::get('/get',[DeviceController::class, 'getAllDevicePaginated'])->middleware(['role_or_permission:super-admin|device-list']);
-        Route::get('/get_users',[DeviceController::class, 'getUsers'])->middleware(['role_or_permission:super-admin|device-list']);
-        Route::get('/edit/{id}',[DeviceController::class, 'deviceEdit'])->middleware(['role_or_permission:super-admin|device-list']);
-        Route::post('/update', [DeviceController::class, 'deviceUpdate'])->middleware(['role_or_permission:super-admin|device-update']);
-        Route::delete('/destroy/{id}', [DeviceController::class, 'destroyDevice'])->middleware(['role_or_permission:super-admin|device-destroy']);
+        Route::post('/status/{id}', [DeviceController::class, 'deviceStatusUpdate'])->middleware(['role_or_permission:super-admin|device-registration-edit']);
+        Route::post('/insert', [DeviceController::class, 'insertDevice'])->middleware(['role_or_permission:super-admin|device-registration-create']);
+        Route::get('/get',[DeviceController::class, 'getAllDevicePaginated'])->middleware(['role_or_permission:super-admin|device-registration-view']);
+        Route::get('/get_users',[DeviceController::class, 'getUsers'])->middleware(['role_or_permission:super-admin|device-registration-view']);
+        Route::get('/edit/{id}',[DeviceController::class, 'deviceEdit'])->middleware(['role_or_permission:super-admin|device-registration-view']);
+        Route::post('/update', [DeviceController::class, 'deviceUpdate'])->middleware(['role_or_permission:super-admin|device-registration-edit']);
+        Route::delete('/destroy/{id}', [DeviceController::class, 'destroyDevice'])->middleware(['role_or_permission:super-admin|device-registration-delete']);
 
         Route::get('/generate-excel', [DeviceController::class, 'deviceReportExcel']);
         Route::get('/generate-pdf', [DeviceController::class, 'deviceReportPdf']);
@@ -106,7 +106,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::get('/get_parent', [MenuController::class, 'getParent']);
         Route::get('/edit/{id}', [MenuController::class, 'menuEdit']);
         Route::put('/update/{id}', [MenuController::class, 'updateMenu']);
-        Route::delete('/destroy/{id}', [MenuController::class, 'destroyMenu'])->middleware(['role_or_permission:super-admin|menu-destroy']);
+        Route::delete('/destroy/{id}', [MenuController::class, 'destroyMenu'])->middleware(['role_or_permission:super-admin|menu-delete']);
     });
 
 });

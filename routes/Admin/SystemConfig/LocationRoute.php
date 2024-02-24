@@ -13,8 +13,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin/division')->group(function () {
 
         Route::post('/insert', [LocationController::class, 'insertDivision'])->middleware(['role_or_permission:super-admin|division-create']);
-        Route::get('/get',[LocationController::class, 'getAllDivisionPaginated']);
-        Route::post('/update', [LocationController::class, 'divisionUpdate'])->middleware(['role_or_permission:super-admin|division-update']);
+        Route::get('/get',[LocationController::class, 'getAllDivisionPaginated'])->middleware(['role_or_permission:super-admin|division-view']);
+        Route::post('/update', [LocationController::class, 'divisionUpdate'])->middleware(['role_or_permission:super-admin|division-edit']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyDivision'])->middleware(['role_or_permission:super-admin|division-delete']);
         Route::get('/generate-pdf', [ReportController::class, 'divisionReport']);
     });
@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/insert', [LocationController::class, 'insertDistrict'])->middleware(['role_or_permission:super-admin|district-create']);
         Route::get('/get',[LocationController::class, 'getAllDistrictPaginated']);
         Route::get('/get/{division_id}',[LocationController::class, 'getAllDistrictByDivisionId']);
-        Route::post('/update', [LocationController::class, 'districtUpdate'])->middleware(['role_or_permission:super-admin|district-update']);
+        Route::post('/update', [LocationController::class, 'districtUpdate'])->middleware(['role_or_permission:super-admin|district-edit']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyDistrict'])->middleware(['role_or_permission:super-admin|district-delete']);
         Route::get('/generate-pdf', [\App\Http\Controllers\PDFController::class, 'index']);
         Route::get('/generate-pdf', [ReportController::class, 'districtReport']);
@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/insert', [LocationController::class, 'insertCity'])->middleware(['role_or_permission:super-admin|city-create']);
         Route::get('/get',[LocationController::class, 'getAllCityPaginated']);
-        Route::post('/update', [LocationController::class, 'cityUpdate'])->middleware(['role_or_permission:super-admin|city-update']);
+        Route::post('/update', [LocationController::class, 'cityUpdate'])->middleware(['role_or_permission:super-admin|city-edit']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyCity'])->middleware(['role_or_permission:super-admin|city-delete']);
         Route::get('/get/{district_id}/{location_type}',[LocationController::class, 'getAllCityByDistrictId']);
         Route::get('/generate-pdf', [ReportController::class, 'cityReport']);
@@ -55,7 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get',[LocationController::class, 'getAllThanaPaginated']);
         Route::get('/get/{district_id}',[LocationController::class, 'getAllThanaByDistrictId']);
         Route::get('/get/city/{city_id}',[LocationController::class, 'getAllThanaByCityId']);
-        Route::post('/update', [LocationController::class, 'thanaUpdate'])->middleware(['role_or_permission:super-admin|thana-update']);
+        Route::post('/update', [LocationController::class, 'thanaUpdate'])->middleware(['role_or_permission:super-admin|thana-edit']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyThana'])->middleware(['role_or_permission:super-admin|thana-delete']);
         Route::get('/generate-pdf', [\App\Http\Controllers\PDFController::class, 'index']);
 
@@ -71,7 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get',[LocationController::class, 'getAllUnionPaginated']);
         Route::get('/get/{thana_id}',[LocationController::class, 'getAllUnionByThanaId']);
         Route::get('/pouro/get/{thana_id}',[LocationController::class, 'getAllPouroByThanaId']);
-        Route::post('/update', [LocationController::class, 'unionUpdate'])->middleware(['role_or_permission:super-admin|union-update']);
+        Route::post('/update', [LocationController::class, 'unionUpdate'])->middleware(['role_or_permission:super-admin|union-edit']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyUnion'])->middleware(['role_or_permission:super-admin|union-delete']);
         Route::get('/generate-pdf', [ReportController::class, 'unionReport']);
         Route::get('/generate-excel', [ReportController::class, 'unionReportExcel']);
@@ -89,7 +89,7 @@ Route::middleware('auth:sanctum')->group(function () {
          Route::get('/get/district_pouro/{district_pouro_id}',[LocationController::class, 'getAllWardByDistPouroId']);
         Route::get('/get/pouro/{pouro_id}',[LocationController::class, 'getAllWardByPouroId']);
         Route::get('/get/{union_id}',[LocationController::class, 'getAllWardByUnionId']);
-        Route::post('/update', [LocationController::class, 'wardUpdate'])->middleware(['role_or_permission:super-admin|ward-update']);
+        Route::post('/update', [LocationController::class, 'wardUpdate'])->middleware(['role_or_permission:super-admin|ward-edit']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyWard'])->middleware(['role_or_permission:super-admin|ward-delete']);
         Route::get('/generate-pdf', [ReportController::class, 'wardReport']);
 
