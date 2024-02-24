@@ -55,11 +55,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AllowanceProgram extends Model
 {
-//    public function newQuery($excludeDeleted = true)
-//    {
-//        return parent::newQuery($excludeDeleted)
-//            ->orderBy('name_en', 'asc');
-//    }
+    public function newQuery($excludeDeleted = true)
+    {
+        return parent::newQuery($excludeDeleted)
+            ->orderBy('name_en', 'asc');
+    }
     public function lookup()
     {
         return $this->belongsTo(Lookup::class,'service_type');
@@ -73,6 +73,13 @@ class AllowanceProgram extends Model
     public function ages(){
         return $this->hasMany(AllowanceProgramAge::class,'allowance_program_id');
     }
+
+
+    public function classAmounts()
+    {
+        return $this->hasMany(AllowanceProgramAmount::class, 'allowance_program_id', 'id');
+    }
+
 
 
 }

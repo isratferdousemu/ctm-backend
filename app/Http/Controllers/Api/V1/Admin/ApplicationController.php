@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Services\Admin\Application\VerificationService;
 use App\Models\Location;
 use App\Models\PMTScore;
 use App\Models\Committee;
 use App\Models\Application;
 use App\Models\Beneficiary;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Traits\RoleTrait;
@@ -124,7 +126,12 @@ class ApplicationController extends Controller
      *
      */
     public function onlineApplicationVerifyCard(ApplicationVerifyRequest $request){
-        $data = $this->applicationService->onlineApplicationVerifyCard($request);
+        $data = [
+            'nid' => $request->verification_number,
+            'dob' => $request->date_of_birth,
+        ];
+
+        $data = (new VerificationService)->callVerificationApi($data);
 
         return response()->json([
             'status' => true,
@@ -197,9 +204,7 @@ class ApplicationController extends Controller
     }
 
     public function onlineApplicationRegistration(ApplicationRequest $request){
-
-
-
+        $allowanceAmount = 0;
         $allowance = AllowanceProgram::find($request->program_id);
 
         // check is marital
@@ -213,15 +218,19 @@ class ApplicationController extends Controller
                         $this->applicationGenderTypeMessage
                     );
                 }else{
+                    $data = [
+                        'nid' => $request->verification_number,
+                        'dob' => $request->date_of_birth,
+                    ];
+
+                    $nidInfo = (new VerificationService())->callVerificationApi($data);
+
                     $genderAge = $allowance->ages->where('gender_id',$request->gender_id)->first();
                     $minAge = $genderAge->min_age;
                     $maxAge = $genderAge->max_age;
+                    $age = $nidInfo['age'];
+
                     // get current age form date_of_birth field
-                    $birthDate = $request->date_of_birth;
-                    $birthDate = explode("-", $birthDate);
-                    $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[1], $birthDate[2], $birthDate[0]))) > date("md")
-                        ? ((date("Y") - $birthDate[0]) - 1)
-                        : (date("Y") - $birthDate[0]));
                     // return $genderAge;
                     // 60 -90 => age is 73
                 // age range is minAge to maxAge
@@ -233,9 +242,10 @@ class ApplicationController extends Controller
                         );
                     }
 
+                    $allowanceAmount = $genderAge->amount;
                 }
-
             }
+
             if($allowance->is_marital == 1){
                 // error code =>
                 if($allowance->marital_status!=$request->marital_status){
@@ -247,11 +257,14 @@ class ApplicationController extends Controller
                 }
             }
 
+
+            if ($allowance->is_disable_class) {
+                $allowanceAmount += $this->getClassWiseAmount($allowance, $request);
+            }
+
         }
 
-        // return gettype(json_decode($request->application_allowance_values)[19]->value);
-
-        $data = $this->applicationService->onlineApplicationRegistration($request);
+        $data = $this->applicationService->onlineApplicationRegistration($request, $allowanceAmount);
 
 
      $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
@@ -269,87 +282,27 @@ class ApplicationController extends Controller
     }
 
 
-    public function getWardIdOld()
+
+    public function getClassWiseAmount($allowance, $request)
     {
-        $parentsIdOfWards = [];
+        $addFields = json_decode($request->application_allowance_values, true) ?: [];
 
-        $user = auth()->user();
-        $user->load('assign_location.parent.parent.parent.parent');
+        $class = $allowance->addtionalfield()->where('name_en', 'class')->first();
 
-
-        $query = Location::query();
-
-
-        //search by assign location id
-        $query->when($user->assign_location_id, function ($q, $v) {
-            $q->where('parent_id', $v);
-        });
-
-        if ($user->office_type) {
-
-            //Upazila type
-            if (in_array($user->office_type, [8, 10, 11])) {
-                $query->when(request('sub_location_type'), function ($q, $v) {
-                    $q->where('type', $v == 1 ? $this->pouro : $this->union);
-                });
-
-                //load all wards under by pourosova
-                $query->when(request('pouro_id'), function ($q, $v) {
-                    $q->where('parent_id', $v);
-                });
-
-                //load all wards under by union
-                $query->when(request('union_id'), function ($q, $v) {
-                    $q->where('parent_id', $v);
-                });
-
-                $parentsIdOfWards = $query->pluck('id');
+        if ($class) {
+            foreach ($addFields as $addField) {
+                if ($addField['allowance_program_additional_fields_id'] == $class->id) {
+                    return $allowance->classAmounts()
+                        ->where('type_id', $addField['allowance_program_additional_field_values_id'])
+                        ->value('amount')
+                        ;
+                }
             }
-
-            //city corporation
-            if ($user->office_type == 9) {
-                $query->when(request('city_thana_id'), function ($q, $v) {
-                    $q->where('parent_id', $v)
-                        ->where('location_type', 3);
-                });
-
-                $parentsIdOfWards = $query->pluck('id');
-            }
-
-
-
-            //District pouroshova
-            if ($user->office_type == 35) {
-                $query->when(request('district_pouro_id'), function ($q, $v) {
-                    $q->where('parent_id', $v);
-                });
-
-                $parentsIdOfWards = $query->pluck('id');
-            }
-
-
         }
 
-
-        return Location::whereType($this->ward)
-            ->when(request('ward_id'), function ($q, $v) {
-                $q->whereId($v);
-            }, function ($q) use ($parentsIdOfWards) {
-                $q->whereIn('parent_id', $parentsIdOfWards);
-            })
-            ->pluck('id');
-
-
-        return $query->get()->groupBy('type');
-
-
-//        return Location::where('parent_id', $user->assign_location_id)->pluck('id');
-
-
-        return $user;
-//        if ()
-
     }
+
+
 
 
     public function getWardId()
@@ -1759,6 +1712,7 @@ class ApplicationController extends Controller
                     "score" => $application->score,
                     "forward_committee_id" => $application->forward_committee_id,
                     "remarks" => $application->remark,
+                    "monthly_allowance" => $application->allowance_amount,
                 ]
             );
 
