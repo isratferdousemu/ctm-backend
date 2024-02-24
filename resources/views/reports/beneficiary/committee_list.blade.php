@@ -1,19 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{app()->getLocale()}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>কমিটি তালিকা</title>
+    <title>{{__("committee_list.page_title")}}</title>
 
     <style>
         body {
-            font-family: 'kalpurush' !important;
-            margin: 0;
+            @if(app()->isLocale('bn'))
+                font-family: 'kalpurush', sans-serif !important;
+            @else
+              font-family: "Work Sans", sans-serif !important;
+            @endif
+               margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        h4, h5, h6{
+            font-weight: normal !important;
+        }
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -91,20 +98,20 @@
 <table border="none" width="100%">
     <tbody>
     <tr>
-        <td width="33%" class="left">
+        <td width="20%" class="left">
             <img src="{{ public_path('image/bangladesh-govt-logo.png') }}" alt="Left Image"
                  style="width: 100px; height: auto;">
         </td>
-        <td width="33%" align="center" class="center">
-            <h3>গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</h3>
-            <h4>সমাজসেবা অধিদফতর</h4>
-            <h5>ক্যাশ ট্রান্সফার মডার্নাইজেশন (সিটিএম) প্রকল্প</h5>
-            <h6>শ্যামলী স্কোয়ার, ২৪/১-২, মিরপুর রোড, ঢাকা -১২০৭</h6>
-            <p>www.dss.gov.bd</p>
-            <br />
-            <h2>কমিটি তালিকা</h2>
+        <td width="60%" align="center" class="center">
+            <h2>{{__("beneficiary_report.header_line_1")}}</h2>
+            <h3>{{__("beneficiary_report.header_line_2")}}</h3>
+            <h4>{{__("beneficiary_report.header_line_3")}}</h4>
+            <h5>{{__("beneficiary_report.header_line_4")}}</h5>
+            <p><a target="_blank" href="https://dss.gov.bd/">www.dss.gov.bd</a></p>
+            <br/>
+            <h2>{{__("committee_list.title")}}</h2>
         </td>
-        <td width="33%" class="right"><img src="{{ public_path('image/logo.png') }}" alt="Right Image"
+        <td width="20%" class="right"><img src="{{ public_path('image/logo.png') }}" alt="Right Image"
                                            style="width: 80px; height: 80px;"></td>
     </tr>
     </tbody>
@@ -113,25 +120,25 @@
 <table class="border-table">
     <thead>
     <tr>
-        <th>ক্রমিক নং</th>
-        <th>কমিটি কোড</th>
-        <th>কমিটি ধরণ</th>
-        <th>কমিটি নাম</th>
-        <th>বিস্তারিত</th>
-        <th>এলাকা</th>
-        <th>ভাতা নাম</th>
+        <th>{{__("committee_list.sl_no")}}</th>
+        <th>{{__("committee_list.committee_code")}}</th>
+        <th>{{__("committee_list.committee_type")}}</th>
+        <th>{{__("committee_list.committee_name")}}</th>
+        <th>{{__("committee_list.committee_details")}}</th>
+        <th>{{__("committee_list.location")}}</th>
+        <th>{{__("committee_list.program_name")}}</th>
     </tr>
     </thead>
     <tbody>
     @foreach($committeeList as $index => $committee)
         <tr>
-            <td>{{\App\Facades\BengaliUtil::bn_number($index + 1)}}</td>
+            <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($index + 1) : $index + 1}}</td>
             <td>{{$committee->code}}</td>
-            <td>{{$committee?->committeeType?->value_bn}}</td>
+            <td>{{app()->isLocale('bn') ? $committee?->committeeType?->value_bn : $committee?->committeeType?->value_en}}</td>
             <td>{{$committee->name}}</td>
             <td>{{$committee->details}}</td>
-            <td>{{$committee?->location?->name_en}}</td>
-            <td>{{$committee?->program?->name_en}}</td>
+            <td>{{app()->isLocale('bn') ? $committee?->location?->name_bn : $committee?->location?->name_en}}</td>
+            <td>{{app()->isLocale('bn') ? $committee?->program?->name_bn : $committee?->program?->name_en}}</td>
         </tr>
     @endforeach
     </tbody>

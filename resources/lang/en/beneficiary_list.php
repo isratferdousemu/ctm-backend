@@ -1,7 +1,7 @@
 <?php
 return [
-    "page_title"=>"Beneficiary Exit List",
-    "title" => "Beneficiary Exit List",
+    "page_title"=>"Beneficiary List",
+    "title" => "Beneficiary List",
     "sl_no" => "Sl No.",
     "beneficiary_id" => "Beneficiary ID",
     "beneficiary_name" => "Beneficiary Name",
@@ -11,6 +11,6 @@ return [
     "city_dis_pouro_upazila" => "City / District Pouro / Upazila",
     "thana_union_pouro" => "Thana / Union / Pouro",
     "ward" => "Ward",
-    "exit_reason" => "Exit Reason",
-    "exit_date" => "Exit Date",
+    "account_no" => "Account No.",
+    "monthly_allowance" => "Monthly Allowance (Tk.)",
 ];

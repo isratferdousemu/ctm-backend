@@ -103,10 +103,10 @@
                  style="width: 100px; height: auto;">
         </td>
         <td width="60%" align="center" class="center">
-            <h2>{{__("beneficiary_exit.header_line_1")}}</h2>
-            <h3>{{__("beneficiary_exit.header_line_2")}}</h3>
-            <h4>{{__("beneficiary_exit.header_line_3")}}</h4>
-            <h5>{{__("beneficiary_exit.header_line_4")}}</h5>
+            <h2>{{__("beneficiary_report.header_line_1")}}</h2>
+            <h3>{{__("beneficiary_report.header_line_2")}}</h3>
+            <h4>{{__("beneficiary_report.header_line_3")}}</h4>
+            <h5>{{__("beneficiary_report.header_line_4")}}</h5>
             <p><a target="_blank" href="https://dss.gov.bd/">www.dss.gov.bd</a></p>
             <br/>
             <h2>{{__("beneficiary_exit.title")}}</h2>
@@ -156,9 +156,9 @@
     <table width="100%">
         <tr>
             <td width="33%">
-                {{__("beneficiary_exit.print_date")}}{{app()->isLocale('bn') ?  \App\Facades\BengaliUtil::bn_date_time(\Illuminate\Support\Carbon::now()->format('j F Y h:i A')) : \Illuminate\Support\Carbon::now()->format('j F Y h:i A')}}</td>
+                {{__("beneficiary_report.print_date")}}{{app()->isLocale('bn') ?  \App\Facades\BengaliUtil::bn_date_time(\Illuminate\Support\Carbon::now()->format('j F Y h:i A')) : \Illuminate\Support\Carbon::now()->format('j F Y h:i A')}}</td>
             <td width="33%" align="center">{PAGENO}/{nbpg}</td>
-            <td width="33%" style="text-align: right;">{{__("beneficiary_exit.printed_by")}}{{$generated_by}}{{$assign_location}}</td>
+            <td width="33%" style="text-align: right;">{{__("beneficiary_report.printed_by")}}{{$generated_by}}{{$assign_location}}</td>
         </tr>
     </table>
 </htmlpagefooter>

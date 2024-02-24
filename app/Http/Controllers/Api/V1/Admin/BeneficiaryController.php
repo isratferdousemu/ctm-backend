@@ -494,7 +494,7 @@ class BeneficiaryController extends Controller
                 'margin_top' => 10,
                 'margin_bottom' => 25,
                 'margin_header' => 10,
-                'margin_footer' => 10,
+                'margin_footer' => 5,
             ]);
 
         return \Illuminate\Support\Facades\Response::stream(
@@ -549,7 +549,7 @@ class BeneficiaryController extends Controller
                 'margin_top' => 10,
                 'margin_bottom' => 10,
                 'margin_header' => 10,
-                'margin_footer' => 10,
+                'margin_footer' => 5,
             ]);
 
         return \Illuminate\Support\Facades\Response::stream(
@@ -604,7 +604,7 @@ class BeneficiaryController extends Controller
                 'margin_top' => 10,
                 'margin_bottom' => 10,
                 'margin_header' => 10,
-                'margin_footer' => 10,
+                'margin_footer' => 5,
             ]);
 
         return \Illuminate\Support\Facades\Response::stream(
@@ -659,7 +659,7 @@ class BeneficiaryController extends Controller
                 'margin_top' => 10,
                 'margin_bottom' => 10,
                 'margin_header' => 10,
-                'margin_footer' => 10,
+                'margin_footer' => 5,
             ]);
 
         return \Illuminate\Support\Facades\Response::stream(

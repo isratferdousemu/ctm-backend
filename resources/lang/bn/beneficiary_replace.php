@@ -1,8 +1,10 @@
 <?php
 return [
-    "page_title" => "উপকারভোগীর প্রস্থান তালিকা",
-    "title" => "উপকারভোগীর প্রস্থান",
+    "page_title" => "উপকারভোগী প্রতিস্থাপন তালিকা",
+    "title" => "উপকারভোগী প্রতিস্থাপন",
     "sl_no" => "ক্রমিক নং",
+    "departed_beneficiary" => "প্রস্থানকৃত  উপকারভোগী",
+    "added_beneficiary" => "সংযোজনকৃত উপকারভোগী",
     "beneficiary_id" => "উপকারভোগীর আইডি",
     "beneficiary_name" => "উপকারভোগীর নাম",
     "father_name" => "পিতার নাম",
@@ -11,6 +13,6 @@ return [
     "city_dis_pouro_upazila" => "সিটি / জেলা পৌর / উপজেলা",
     "thana_union_pouro" => "থানা /ইউনিয়ন /পৌর",
     "ward" => "ওয়ার্ড",
-    "exit_reason" => "প্রস্থানের কারণ",
-    "exit_date" => "প্রস্থানের তারিখ",
+    "replace_reason" => "প্রতিস্থাপনের কারণ",
+    "replace_date" => "প্রতিস্থাপনের তারিখ",
 ];
