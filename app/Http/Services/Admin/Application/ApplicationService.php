@@ -71,7 +71,7 @@ class ApplicationService
         }
     }
 
-    public function onlineApplicationRegistration(Request $request){
+    public function onlineApplicationRegistration(Request $request, $allowanceAmount){
         DB::beginTransaction();
 
         try {
@@ -91,7 +91,8 @@ class ApplicationService
             $application->spouse_name_en = $request->spouse_name_en;
             $application->spouse_name_bn = $request->spouse_name_bn;
             $application->identification_mark = $request->identification_mark;
-  
+            $application->allowance_amount = $allowanceAmount;
+
             $application->nationality = $request->nationality;
             $application->gender_id = $request->gender_id;
             $application->education_status = $request->education_status;
@@ -216,7 +217,7 @@ class ApplicationService
             $application->nominee_verification_number = $request->nominee_verification_number;
             $application->nominee_address = $request->nominee_address;
             $application->nominee_date_of_birth = $request->nominee_date_of_birth;
-         
+
             // if($request->hasFile('nominee_image') && $request->nominee_image!=null){
             //     $application->nominee_image = $this->uploadFile($request->nominee_image, 'application');
             // }
@@ -249,7 +250,7 @@ class ApplicationService
             $financial_year_id=$financial_year_id->id;
             $application->financial_year_id= $financial_year_id;
              }
-  
+
 
 // if ($request->hasFile('image') && $request->image != null) {
 //     $image = $request->file('image');
@@ -298,11 +299,11 @@ class ApplicationService
     // $application->nominee_image = $request->file('nominee_image')->store('public');
     $nominee_imagePath = $request->file('nominee_image')->store('public');
     $application->nominee_image=$nominee_imagePath ;
- 
+
     // $application->nominee_signature = $request->file('nominee_signature')->store('public');
     $nominee_signaturePath = $request->file('nominee_signature')->store('public');
     $application->nominee_signature=$nominee_signaturePath;
-    
+
             $application->save();
 
 
@@ -378,7 +379,7 @@ class ApplicationService
             // check  $value->value type
             if(gettype($value->value)=='object'){
                 $field_value->value = $this->uploadBaseFile($value->file_value, 'application');
-                
+
 
             }else{
                 $field_value->value = is_array($value->value)?NULL:$value->value;

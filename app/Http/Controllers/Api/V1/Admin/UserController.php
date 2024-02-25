@@ -382,8 +382,9 @@ class UserController extends Controller
         $user->save();
 
 
-        $message = "Congratulations! Your account has been approved.\nUsername: ". $user->username
-            ."\nPassword: ". $password;
+        $message = "Welcome to the CTM application.Your account has been approved.\nUsername: ". $user->username
+            ."\nPassword: ". $password .
+            "\nLogin URL: ". env('APP_FRONTEND_URL') . '/login';
 
         Log::info('password-'. $user->id, [$message]);
 
