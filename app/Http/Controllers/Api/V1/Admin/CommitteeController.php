@@ -151,7 +151,7 @@ class CommitteeController extends Controller
         }
     }
 
-    public function getCommitteeListPdf(Request $request): \Illuminate\Http\JsonResponse|AnonymousResourceCollection
+    public function getCommitteeListPdf(Request $request)
     {
         try {
             $committeeList = $this->committeeService->list($request, true);
@@ -159,14 +159,14 @@ class CommitteeController extends Controller
             $generated_by = $user->full_name;
             $assign_location = '';
             if ($user->assign_location) {
-                $assign_location .= ', ' . $user->assign_location?->name_en;
+                $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->name_bn : $user->assign_location?->name_en);
                 if ($user->assign_location?->parent) {
-                    $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                    $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->name_bn : $user->assign_location?->parent?->name_en);
                     if ($user->assign_location?->parent?->parent) {
-                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
-                        if ($user->assign_location?->parent?->parent?->parent) {
-                            $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
-                        }
+                        $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->parent?->name_bn : $user->assign_location?->parent?->parent?->name_en);
+//                    if ($user->assign_location?->parent?->parent?->parent) {
+//                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
+//                    }
                     }
                 }
             }
@@ -175,7 +175,7 @@ class CommitteeController extends Controller
                 [
                     'mode' => 'utf-8',
                     'format' => 'A4-L',
-                    'title' => 'কমিটি তালিকা',
+                    'title' => __("committee_list.page_title"),
                     'orientation' => 'L',
                     'default_font_size' => 10,
                     'margin_left' => 10,
@@ -186,11 +186,15 @@ class CommitteeController extends Controller
                     'margin_footer' => 10,
                 ]);
 
-            $fileName = 'কমিটি_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//            return $pdf->stream($fileName);
-            $pdfPath = public_path("/pdf/$fileName");
-            $pdf->save($pdfPath);
-            return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+            return \Illuminate\Support\Facades\Response::stream(
+                function () use ($pdf) {
+                    echo $pdf->output();
+                },
+                200,
+                [
+                    'Content-Type' => 'application/pdf;charset=utf-8',
+                    'Content-Disposition' => 'inline; filename="preview.pdf"',
+                ]);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);

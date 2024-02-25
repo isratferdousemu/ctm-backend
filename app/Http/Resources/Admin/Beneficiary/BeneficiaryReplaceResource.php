@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin\Beneficiary;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -39,7 +40,7 @@ class BeneficiaryReplaceResource extends JsonResource
             "replace_cause_en" => $this->replace_cause_en,
             "replace_cause_bn" => $this->replace_cause_bn,
             "cause_detail" => $this->cause_detail,
-            "cause_date" => $this->cause_date,
+            "cause_date" => Carbon::parse($this->cause_date)->format('d/m/Y'),
         ];
     }
 }

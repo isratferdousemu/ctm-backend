@@ -286,6 +286,7 @@ class BeneficiaryController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
     public function restoreExit($id): \Illuminate\Http\JsonResponse|BeneficiaryResource
     {
         try {
@@ -469,41 +470,47 @@ class BeneficiaryController extends Controller
         $generated_by = $user->full_name;
         $assign_location = '';
         if ($user->assign_location) {
-            $assign_location .= ', ' . $user->assign_location?->name_en;
+            $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->name_bn : $user->assign_location?->name_en);
             if ($user->assign_location?->parent) {
-                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->name_bn : $user->assign_location?->parent?->name_en);
                 if ($user->assign_location?->parent?->parent) {
-                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
-                    if ($user->assign_location?->parent?->parent?->parent) {
-                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
-                    }
+                    $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->parent?->name_bn : $user->assign_location?->parent?->parent?->name_en);
+//                    if ($user->assign_location?->parent?->parent?->parent) {
+//                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
+//                    }
                 }
             }
         }
-//        $allowance_amount = AllowanceProgramAmount::where('allowance_program_id', $id)->get();
         $data = ['beneficiaries' => $beneficiaries, 'generated_by' => $generated_by, 'assign_location' => $assign_location];
         $pdf = LaravelMpdf::loadView('reports.beneficiary.beneficiary_list', $data, [],
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-L',
-                'title' => 'উপকারভোগীর তালিকা',
+                'title' => __("beneficiary_list.page_title"),
                 'orientation' => 'L',
                 'default_font_size' => 10,
                 'margin_left' => 10,
                 'margin_right' => 10,
                 'margin_top' => 10,
-                'margin_bottom' => 10,
+                'margin_bottom' => 25,
                 'margin_header' => 10,
-                'margin_footer' => 10,
+                'margin_footer' => 5,
+            ]);
+
+        return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf;charset=utf-8',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
             ]);
 
 //        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//        return $pdf->stream($fileName);
-
-        $fileName = 'উপকারভোগীর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-        $pdfPath = public_path("/pdf/$fileName");
-        $pdf->save($pdfPath);
-        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+//        $pdfPath = public_path("/pdf/$fileName");
+//        $pdf->save($pdfPath);
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
     /**
@@ -518,14 +525,14 @@ class BeneficiaryController extends Controller
         $generated_by = $user->full_name;
         $assign_location = '';
         if ($user->assign_location) {
-            $assign_location .= ', ' . $user->assign_location?->name_en;
+            $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->name_bn : $user->assign_location?->name_en);
             if ($user->assign_location?->parent) {
-                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->name_bn : $user->assign_location?->parent?->name_en);
                 if ($user->assign_location?->parent?->parent) {
-                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
-                    if ($user->assign_location?->parent?->parent?->parent) {
-                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
-                    }
+                    $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->parent?->name_bn : $user->assign_location?->parent?->parent?->name_en);
+//                    if ($user->assign_location?->parent?->parent?->parent) {
+//                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
+//                    }
                 }
             }
         }
@@ -534,7 +541,7 @@ class BeneficiaryController extends Controller
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-L',
-                'title' => 'উপকারভোগীর প্রস্থান তালিকা',
+                'title' => __("beneficiary_exit.page_title"),
                 'orientation' => 'L',
                 'default_font_size' => 10,
                 'margin_left' => 10,
@@ -542,16 +549,23 @@ class BeneficiaryController extends Controller
                 'margin_top' => 10,
                 'margin_bottom' => 10,
                 'margin_header' => 10,
-                'margin_footer' => 10,
+                'margin_footer' => 5,
+            ]);
+
+        return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf;charset=utf-8',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
             ]);
 
 //        $fileName = 'উপকারভোগীর_প্রস্থান_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//        return $pdf->stream($fileName);
-
-        $fileName = 'উপকারভোগীর_প্রস্থান_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-        $pdfPath = public_path("/pdf/$fileName");
-        $pdf->save($pdfPath);
-        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+//        $pdfPath = public_path("/pdf/$fileName");
+//        $pdf->save($pdfPath);
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
     /**
@@ -566,14 +580,14 @@ class BeneficiaryController extends Controller
         $generated_by = $user->full_name;
         $assign_location = '';
         if ($user->assign_location) {
-            $assign_location .= ', ' . $user->assign_location?->name_en;
+            $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->name_bn : $user->assign_location?->name_en);
             if ($user->assign_location?->parent) {
-                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->name_bn : $user->assign_location?->parent?->name_en);
                 if ($user->assign_location?->parent?->parent) {
-                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
-                    if ($user->assign_location?->parent?->parent?->parent) {
-                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
-                    }
+                    $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->parent?->name_bn : $user->assign_location?->parent?->parent?->name_en);
+//                    if ($user->assign_location?->parent?->parent?->parent) {
+//                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
+//                    }
                 }
             }
         }
@@ -582,7 +596,7 @@ class BeneficiaryController extends Controller
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-L',
-                'title' => 'উপকারভোগী পরিবর্তন তালিকা',
+                'title' => __("beneficiary_replace.page_title"),
                 'orientation' => 'L',
                 'default_font_size' => 10,
                 'margin_left' => 10,
@@ -590,16 +604,23 @@ class BeneficiaryController extends Controller
                 'margin_top' => 10,
                 'margin_bottom' => 10,
                 'margin_header' => 10,
-                'margin_footer' => 10,
+                'margin_footer' => 5,
+            ]);
+
+        return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf;charset=utf-8',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
             ]);
 
 //        $fileName = 'উপকারভোগী_পরিবর্তন_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//        return $pdf->stream($fileName);
-
-        $fileName = 'উপকারভোগী_পরিবর্তন_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-        $pdfPath = public_path("/pdf/$fileName");
-        $pdf->save($pdfPath);
-        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+//        $pdfPath = public_path("/pdf/$fileName");
+//        $pdf->save($pdfPath);
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
     /**
@@ -614,14 +635,14 @@ class BeneficiaryController extends Controller
         $generated_by = $user->full_name;
         $assign_location = '';
         if ($user->assign_location) {
-            $assign_location .= ', ' . $user->assign_location?->name_en;
+            $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->name_bn : $user->assign_location?->name_en);
             if ($user->assign_location?->parent) {
-                $assign_location .= ', ' . $user->assign_location?->parent?->name_en;
+                $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->name_bn : $user->assign_location?->parent?->name_en);
                 if ($user->assign_location?->parent?->parent) {
-                    $assign_location .= ', ' . $user->assign_location?->parent?->parent?->name_en;
-                    if ($user->assign_location?->parent?->parent?->parent) {
-                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_en;
-                    }
+                    $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->parent?->name_bn : $user->assign_location?->parent?->parent?->name_en);
+//                    if ($user->assign_location?->parent?->parent?->parent) {
+//                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
+//                    }
                 }
             }
         }
@@ -630,7 +651,7 @@ class BeneficiaryController extends Controller
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-L',
-                'title' => 'উপকারভোগী স্থানান্তর তালিকা',
+                'title' => __("beneficiary_shifting.page_title"),
                 'orientation' => 'L',
                 'default_font_size' => 10,
                 'margin_left' => 10,
@@ -638,16 +659,23 @@ class BeneficiaryController extends Controller
                 'margin_top' => 10,
                 'margin_bottom' => 10,
                 'margin_header' => 10,
-                'margin_footer' => 10,
+                'margin_footer' => 5,
+            ]);
+
+        return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf;charset=utf-8',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
             ]);
 
 //        $fileName = 'উপকারভোগী_স্থানান্তর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-//        return $pdf->stream($fileName);
-
-        $fileName = 'উপকারভোগী_স্থানান্তর_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
-        $pdfPath = public_path("/pdf/$fileName");
-        $pdf->save($pdfPath);
-        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+//        $pdfPath = public_path("/pdf/$fileName");
+//        $pdf->save($pdfPath);
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
 }

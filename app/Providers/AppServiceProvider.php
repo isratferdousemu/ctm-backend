@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Services\Global\BengaliUtilService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -15,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton('bengali-util-service', function ($app) {
+            return new BengaliUtilService();
+        });
     }
 
     /**
