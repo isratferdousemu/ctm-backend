@@ -73,7 +73,7 @@ class BeneficiaryDashboardController extends Controller
             return $item->value;
         });
         $beneficiaries = $beneficiaries->map(function ($item) use ($total){
-            $item->percentage = ($item->value/ $total) * 100;
+            $item->percentage = round(($item->value/ $total) * 100, 2);
             return $item;
         });
 

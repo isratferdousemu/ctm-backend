@@ -32,6 +32,16 @@ class BeneficiaryFactory extends Factory
         $thana_id = null;
         $union_id = 3870;
         $ward_id = 5154;
+//        $location_type_id = 3; // City Corporation
+//        $division_id = 4;
+//        $district_id = 41;
+//        $city_corp_id = 73;
+//        $district_pourashava_id = null;
+//        $upazila_id = null;
+//        $pourashava_id = null;
+//        $thana_id = 5157;
+//        $union_id = null;
+//        $ward_id = 5158;
         $post_code = fake()->postcode();
         $address = fake()->streetAddress();
         $mobile = '01816345678';
@@ -110,6 +120,8 @@ class BeneficiaryFactory extends Factory
             'branch_name' => 'Savar',
             'monthly_allowance' => 700,
             'status' => fake()->numberBetween(1, 3),
+            'application_date' => now()->subDays(fake()->numberBetween(5, 10)),
+            'approve_date' => now()->subDays(fake()->numberBetween(1, 5)),
             'score' => fake()->numberBetween(50, 100),
 
         ];
