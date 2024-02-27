@@ -11,8 +11,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('beneficiaries', function (Blueprint $table) {
-            $table->date('application_date')->nullable();
-            $table->date('approve_date')->nullable();
+            $table->dateTime('application_date')->nullable();
+            $table->dateTime('approve_date')->nullable();
+            $table->date('nominee_date_of_birth')->nullable()->change();
         });
     }
 
