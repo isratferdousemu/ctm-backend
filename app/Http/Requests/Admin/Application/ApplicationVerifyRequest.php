@@ -23,7 +23,7 @@ class ApplicationVerifyRequest extends FormRequest
     {
         return [
             'verification_type'         =>      'required|in:1,2',
-            'verification_number'         =>      'required|unique:applications,verification_number',
+            'verification_number'         =>      'required',
             'date_of_birth'         =>      'required|date',
         ];
     }

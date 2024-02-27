@@ -133,6 +133,67 @@ class ApplicationController extends Controller
 
         $data = (new VerificationService)->callVerificationApi($data);
 
+        if (request('program_id') && request('gender_id')) {
+            $this->verifyAge($data);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+            'message' => $this->fetchSuccessMessage,
+        ], 200);
+    }
+
+
+
+
+    public function verifyAge($nidInfo)
+    {
+        $allowance = AllowanceProgram::find(request('program_id'));
+
+        if($allowance->is_age_limit == 1){
+            // error code => applicant_marital_status
+            if(!in_array(request('gender_id'), $allowance->ages->pluck('gender_id')->toArray())){
+                throw new AuthBasicErrorException(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    $this->applicantGenderTypeTextErrorCode,
+                    $this->applicationGenderTypeMessage
+                );
+            }else{
+                $genderAge = $allowance->ages->where('gender_id', request('gender_id'))->first();
+                $minAge = $genderAge->min_age;
+                $maxAge = $genderAge->max_age;
+                $age = $nidInfo['age'];
+
+                if($age<$minAge || $age>$maxAge){
+                    throw new AuthBasicErrorException(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        $this->applicantAgeLimitTextErrorCode,
+                        $this->applicantAgeLimitMessage
+                    );
+                }
+            }
+        }
+
+
+
+    }
+
+
+    public function nomineeVerifyNID(Request $request){
+        $request->validate([
+            'verification_number'         =>      'required',
+            'date_of_birth'         =>      'required|date',
+        ]);
+
+
+        $data = [
+            'nid' => $request->verification_number,
+            'dob' => $request->date_of_birth,
+        ];
+
+        $data = (new VerificationService)->callNomineeVerificationApi($data);
+
         return response()->json([
             'status' => true,
             'data' => $data,
@@ -246,6 +307,8 @@ class ApplicationController extends Controller
                 }
             }
 
+
+
             if($allowance->is_marital == 1){
                 // error code =>
                 if($allowance->marital_status!=$request->marital_status){
@@ -263,6 +326,16 @@ class ApplicationController extends Controller
             }
 
         }
+
+
+
+        $data = [
+            'nid' => $request->nominee_verification_number,
+            'dob' => $request->nominee_date_of_birth,
+        ];
+
+        $nidInfo = (new VerificationService())->callNomineeVerificationApi($data);
+
 
         $data = $this->applicationService->onlineApplicationRegistration($request, $allowanceAmount);
 
