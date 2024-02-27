@@ -25,6 +25,7 @@ Route::prefix('global')->group(function () {
 
     // online application
     Route::post('/online-application/card-verification',[ApplicationController::class, 'onlineApplicationVerifyCard']);
+    Route::post('/online-application/nominee-card-verification',[ApplicationController::class, 'nomineeVerifyNID']);
     Route::post('/online-application/dis-card-verification',[ApplicationController::class, 'onlineApplicationVerifyDISCard']);
     Route::post('/online-application/registration',[ApplicationController::class, 'onlineApplicationRegistration']);
      Route::get('/applicants_copy',[ApplicationController::class, 'getApplicationCopyById']);

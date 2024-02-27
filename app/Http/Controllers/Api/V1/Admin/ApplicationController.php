@@ -133,6 +133,67 @@ class ApplicationController extends Controller
 
         $data = (new VerificationService)->callVerificationApi($data);
 
+        if (request('program_id') && request('gender_id')) {
+            $this->verifyAge($data);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+            'message' => $this->fetchSuccessMessage,
+        ], 200);
+    }
+
+
+
+
+    public function verifyAge($nidInfo)
+    {
+        $allowance = AllowanceProgram::find(request('program_id'));
+
+        if($allowance->is_age_limit == 1){
+            // error code => applicant_marital_status
+            if(!in_array(request('gender_id'), $allowance->ages->pluck('gender_id')->toArray())){
+                throw new AuthBasicErrorException(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    $this->applicantGenderTypeTextErrorCode,
+                    $this->applicationGenderTypeMessage
+                );
+            }else{
+                $genderAge = $allowance->ages->where('gender_id', request('gender_id'))->first();
+                $minAge = $genderAge->min_age;
+                $maxAge = $genderAge->max_age;
+                $age = $nidInfo['age'];
+
+                if($age<$minAge || $age>$maxAge){
+                    throw new AuthBasicErrorException(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        $this->applicantAgeLimitTextErrorCode,
+                        $this->applicantAgeLimitMessage
+                    );
+                }
+            }
+        }
+
+
+
+    }
+
+
+    public function nomineeVerifyNID(Request $request){
+        $request->validate([
+            'verification_number'         =>      'required',
+            'date_of_birth'         =>      'required|date',
+        ]);
+
+
+        $data = [
+            'nid' => $request->verification_number,
+            'dob' => $request->date_of_birth,
+        ];
+
+        $data = (new VerificationService)->callNomineeVerificationApi($data);
+
         return response()->json([
             'status' => true,
             'data' => $data,
@@ -246,6 +307,8 @@ class ApplicationController extends Controller
                 }
             }
 
+
+
             if($allowance->is_marital == 1){
                 // error code =>
                 if($allowance->marital_status!=$request->marital_status){
@@ -263,6 +326,16 @@ class ApplicationController extends Controller
             }
 
         }
+
+
+
+        $data = [
+            'nid' => $request->nominee_verification_number,
+            'dob' => $request->nominee_date_of_birth,
+        ];
+
+        $nidInfo = (new VerificationService())->callNomineeVerificationApi($data);
+
 
         $data = $this->applicationService->onlineApplicationRegistration($request, $allowanceAmount);
 
@@ -1572,8 +1645,9 @@ class ApplicationController extends Controller
      *     )
      *
      */
-    public function updateApplications(UpdateStatusRequest $request)
+    public function changeApplicationsStatus(UpdateStatusRequest $request)
     {
+
         $user = auth()->user();
 
         if ($user->committee_type_id) {
@@ -1589,10 +1663,29 @@ class ApplicationController extends Controller
         $query->whereNot('status', ApplicationStatus::REJECTED)
             ->whereNot('status', ApplicationStatus::APPROVE);
 
-        $applications = $query->get();
+        DB::beginTransaction();
+        try {
+            $this->updateApplications($request, $user, $query->get());
+            DB::commit();
+            return $this->sendResponse([], 'Update success');
+        }catch (\Exception $exception) {
+            DB::rollBack();
 
+            return $this->sendError('Internal server error', []);
+        }
+
+
+
+
+    }
+
+
+    public function updateApplications($request, $user, $applications,)
+    {
         $data['status'] = $request->status;
         $data['remark'] = $request->remark;
+
+
 
         //Upazila committee & office user
         if ($request->status == ApplicationStatus::FORWARD) {
@@ -1606,10 +1699,16 @@ class ApplicationController extends Controller
             }
         }
 
-        $total = Application::whereIn('id', $applications->pluck('id'))->update($data);
 
-        return $this->sendResponse($applications, 'Total updated ' . $total);
+        Application::whereIn('id', $applications->pluck('id'))->update($data);
+
+        if ($request->status == ApplicationStatus::REJECTED) {
+            Beneficiary::whereIn('application_table_id', $applications->pluck('id'))->delete();
+        }
+
     }
+
+
 
 
     public function changeCommitteeApplicationsStatus($request, $applications, $committeeId)
@@ -1624,8 +1723,16 @@ class ApplicationController extends Controller
             $committeeApplication->remark = $request->remark;
             $committeeApplication->save();
 
-            if ($request->status == ApplicationStatus::APPROVE) {
-                $this->createBeneficiary($application);
+
+            if ($request->status == ApplicationStatus::APPROVE && !$application->approve_date) {
+                $application->approve_date = now();
+                $application->save();
+            }
+
+            if ($request->status == ApplicationStatus::APPROVE || $request->status == ApplicationStatus::WAITING) {
+                $status = ApplicationStatus::APPROVE == $request->status ? 1 : 3;
+
+                $this->createBeneficiary($application, $status);
             }
         }
     }
@@ -1635,89 +1742,86 @@ class ApplicationController extends Controller
      * @param Application $application
      * @return mixed
      */
-    public function createBeneficiary($application)
+    public function createBeneficiary($application, $status)
     {
-        if ($application->beneficiary()->doesntExist()) {
-            $beneficiary = new Beneficiary(
-                [
-                    "application_table_id" => $application->id,
-                    "program_id" => $application->program_id,
-                    "application_id" => $application->application_id,
-                    "name_en" => $application->name_en,
-                    "name_bn" => $application->name_bn,
-                    "mother_name_en" => $application->mother_name_en,
-                    "mother_name_bn" => $application->mother_name_bn,
-                    "father_name_en" => $application->father_name_en,
-                    "father_name_bn" => $application->father_name_bn,
-                    "spouse_name_en" => $application->spouse_name_en,
-                    "spouse_name_bn" => $application->spouse_name_bn,
-                    "identification_mark" => $application->identification_mark,
-                    "age" => $application->age,
-                    "date_of_birth" => $application->date_of_birth,
-                    "nationality" => $application->nationality,
-                    "gender_id" => $application->gender_id,
-                    "education_status" => $application->education_status,
-                    "profession" => $application->profession,
-                    "religion" => $application->religion,
-                    "marital_status" => $application->marital_status,
-                    "email" => $application->email,
-                    "verification_type" => $application->verification_type,
-                    "verification_number" => $application->verification_number,
 
-                    // "image" => asset('uploads/application/'. $application->image),
-                    // "signature" => asset('uploads/application/'. $application->signature),
-                    "image" => $application->image,
-                    "signature" => $application->signature,
+        $beneficiary = Beneficiary::firstOrNew(
+            [
+                "application_table_id" => $application->id
+            ], [
+                "program_id" => $application->program_id,
+                "application_id" => $application->application_id,
+                "name_en" => $application->name_en,
+                "name_bn" => $application->name_bn,
+                "mother_name_en" => $application->mother_name_en,
+                "mother_name_bn" => $application->mother_name_bn,
+                "father_name_en" => $application->father_name_en,
+                "father_name_bn" => $application->father_name_bn,
+                "spouse_name_en" => $application->spouse_name_en,
+                "spouse_name_bn" => $application->spouse_name_bn,
+                "identification_mark" => $application->identification_mark,
+                "age" => $application->age,
+                "date_of_birth" => $application->date_of_birth,
+                "nationality" => $application->nationality,
+                "gender_id" => $application->gender_id,
+                "education_status" => $application->education_status,
+                "profession" => $application->profession,
+                "religion" => $application->religion,
+                "marital_status" => $application->marital_status,
+                "email" => $application->email,
+                "verification_type" => $application->verification_type,
+                "verification_number" => $application->verification_number,
+                "image" => $application->image,
+                "signature" => $application->signature,
+                "current_division_id" => $application->current_division_id,
+                "current_district_id" => $application->current_district_id,
+                "current_city_corp_id" => $application->current_city_corp_id,
+                "current_district_pourashava_id" => $application->current_district_pourashava_id,
+                "current_upazila_id" => $application->current_upazila_id,
+                "current_pourashava_id" => $application->current_pourashava_id,
+                "current_thana_id" => $application->current_thana_id,
+                "current_union_id" => $application->current_union_id,
+                "current_ward_id" => $application->current_ward_id,
+                "current_post_code" => $application->current_post_code,
+                "current_address" => $application->current_address,
+                "mobile" => $application->mobile,
+                "permanent_division_id" => $application->permanent_division_id,
+                "permanent_district_id" => $application->permanent_district_id,
+                "permanent_city_corp_id" => $application->permanent_city_corp_id,
+                "permanent_district_pourashava_id" => $application->permanent_district_pourashava_id,
+                "permanent_upazila_id" => $application->permanent_upazila_id,
+                "permanent_pourashava_id" => $application->permanent_pourashava_id,
+                "permanent_thana_id" => $application->permanent_thana_id,
+                "permanent_union_id" => $application->permanent_union_id,
+                "permanent_ward_id" => $application->permanent_ward_id,
+                "permanent_post_code" => $application->permanent_post_code,
+                "permanent_address" => $application->permanent_address,
+                "permanent_mobile" => $application->permanent_mobile,
+                "nominee_en" => $application->nominee_en,
+                "nominee_bn" => $application->nominee_bn,
+                "nominee_verification_number" => $application->nominee_verification_number,
+                "nominee_address" => $application->nominee_address,
+                "nominee_date_of_birth" => $application->nominee_date_of_birth,
+                "nominee_image" =>  $application->nominee_image,
+                "nominee_signature" =>$application->nominee_signature,
+                "nominee_relation_with_beneficiary" => $application->nominee_relation_with_beneficiary,
+                "nominee_nationality" => $application->nominee_nationality,
+                "account_name" => $application->account_name,
+                "account_number" => $application->account_number,
+                "account_owner" => $application->account_owner,
 
+                "score" => $application->score,
+                "forward_committee_id" => $application->forward_committee_id,
+                "remarks" => $application->remark,
+                "monthly_allowance" => $application->allowance_amount,
+                "application_date" => $application->created_at,
+            ]
+        );
 
-                    "current_division_id" => $application->current_division_id,
-                    "current_district_id" => $application->current_district_id,
-                    "current_city_corp_id" => $application->current_city_corp_id,
-                    "current_district_pourashava_id" => $application->current_district_pourashava_id,
-                    "current_upazila_id" => $application->current_upazila_id,
-                    "current_pourashava_id" => $application->current_pourashava_id,
-                    "current_thana_id" => $application->current_thana_id,
-                    "current_union_id" => $application->current_union_id,
-                    "current_ward_id" => $application->current_ward_id,
-                    "current_post_code" => $application->current_post_code,
-                    "current_address" => $application->current_address,
-                    "mobile" => $application->mobile,
-                    "permanent_division_id" => $application->permanent_division_id,
-                    "permanent_district_id" => $application->permanent_district_id,
-                    "permanent_city_corp_id" => $application->permanent_city_corp_id,
-                    "permanent_district_pourashava_id" => $application->permanent_district_pourashava_id,
-                    "permanent_upazila_id" => $application->permanent_upazila_id,
-                    "permanent_pourashava_id" => $application->permanent_pourashava_id,
-                    "permanent_thana_id" => $application->permanent_thana_id,
-                    "permanent_union_id" => $application->permanent_union_id,
-                    "permanent_ward_id" => $application->permanent_ward_id,
-                    "permanent_post_code" => $application->permanent_post_code,
-                    "permanent_address" => $application->permanent_address,
-                    "permanent_mobile" => $application->permanent_mobile,
-                    "nominee_en" => $application->nominee_en,
-                    "nominee_bn" => $application->nominee_bn,
-                    "nominee_verification_number" => $application->nominee_verification_number,
-                    "nominee_address" => $application->nominee_address,
-                    "nominee_date_of_birth" => $application->nominee_date_of_birth,
-                    // "nominee_image" => asset('uploads/application/' . $application->nominee_image),
-                    // "nominee_signature" => asset('uploads/application/'. $application->nominee_signature),
-                    "nominee_image" =>  $application->nominee_image,
-                    "nominee_signature" =>$application->nominee_signature,
-                    "nominee_relation_with_beneficiary" => $application->nominee_relation_with_beneficiary,
-                    "nominee_nationality" => $application->nominee_nationality,
-                    "account_name" => $application->account_name,
-                    "account_number" => $application->account_number,
-                    "account_owner" => $application->account_owner,
-                    "status" => 1,
-                    "score" => $application->score,
-                    "forward_committee_id" => $application->forward_committee_id,
-                    "remarks" => $application->remark,
-                    "monthly_allowance" => $application->allowance_amount,
-                ]
-            );
+        $beneficiary->status = $status;
+        $beneficiary->approve_date = $application->approve_date;
 
-            return $beneficiary->save();
-        }
+        return $beneficiary->save();
 
     }
 

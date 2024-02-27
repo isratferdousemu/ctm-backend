@@ -3,8 +3,10 @@
 namespace App\Http\Services\Admin\Application;
 
 use App\Exceptions\AuthBasicErrorException;
+use App\Models\AllowanceProgram;
 use App\Models\FinancialYear;
 use Carbon\Carbon;
+use Illuminate\Http\Response;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Http;
 
@@ -27,13 +29,38 @@ class VerificationService
         if ($response->failed()) {
             throw new AuthBasicErrorException(
                 HttpResponse::HTTP_UNPROCESSABLE_ENTITY,
-                'not_valid',
-                "NID doesn't match",
+                'invalid_nid',
+                "NID or Date of birth is invalid",
             );
         }
 
         $nidInfo = $response->json('success.data');
         $nidInfo['age'] = $this->calculateAge($data);
+
+        return $nidInfo;
+    }
+
+
+
+
+
+    public function callNomineeVerificationApi($data)
+    {
+        $data['dob'] = Carbon::parse($data['dob'])->format('d-m-Y');
+
+        $response = Http::contentType('application/json')
+            ->post(self::BASE_URL . self::NID_API, $data);
+
+
+        if ($response->failed()) {
+            throw new AuthBasicErrorException(
+                HttpResponse::HTTP_UNPROCESSABLE_ENTITY,
+                'invalid_nominee_nid',
+                "Nominee NID or Date of birth is invalid",
+            );
+        }
+
+        $nidInfo = $response->json('success.data');
 
         return $nidInfo;
     }
