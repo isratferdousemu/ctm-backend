@@ -112,8 +112,8 @@ class BeneficiaryResource extends JsonResource
             "score" => $this->score,
             "delete_cause" => $this->delete_cause,
             "deleted_at" => $this->deleted_at,
-            "application_date" => now(),
-            "approve_date" => now()
+            "application_date" => $this->application_date,
+            "approve_date" => $this->approve_date
         ];
     }
 
