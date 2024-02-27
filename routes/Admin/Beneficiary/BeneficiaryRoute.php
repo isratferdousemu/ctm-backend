@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\BeneficiaryController;
+use App\Http\Controllers\Api\V1\Admin\BeneficiaryDashboardController;
 use App\Http\Controllers\Api\V1\Admin\CommitteeController;
 use App\Http\Controllers\Api\V1\Admin\CommitteePermissionController;
 use App\Http\Controllers\Api\V1\Admin\LocationController;
@@ -35,6 +36,16 @@ Route::middleware(['auth:sanctum', 'language'])->group(function () {
         Route::get('/getBeneficiaryExitListPdf', [BeneficiaryController::class, 'getBeneficiaryExitListPdf'])->middleware(['role_or_permission:super-admin|beneficiary-exit-view']);
         Route::get('/getBeneficiaryReplaceListPdf', [BeneficiaryController::class, 'getBeneficiaryReplaceListPdf'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-view']);
         Route::get('/getBeneficiaryShiftingListPdf', [BeneficiaryController::class, 'getBeneficiaryShiftingListPdf'])->middleware(['role_or_permission:super-admin|beneficiary-shifting-create']);
+    });
+
+    Route::prefix('admin/beneficiary-dashboard')->group(function () {
+        Route::get('/getTotalBeneficiaries', [BeneficiaryDashboardController::class, 'getTotalBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
+        Route::get('/getLocationWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getLocationWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
+        Route::get('/getGenderWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getGenderWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
+        Route::get('/getYearWiseWaitingBeneficiaries', [BeneficiaryDashboardController::class, 'getYearWiseWaitingBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
+        Route::get('/getProgramWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getProgramWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
+        Route::get('/getAgeWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getAgeWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
+        Route::get('/getShiftedBeneficiaries', [BeneficiaryDashboardController::class, 'getShiftedBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
     });
 
     Route::prefix('admin/committee')->group(function () {

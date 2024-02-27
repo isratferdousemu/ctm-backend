@@ -3,6 +3,7 @@
 namespace App\Http\Services\Admin\Beneficiary;
 
 
+use App\Constants\BeneficiaryStatus;
 use App\Http\Resources\Admin\Location\LocationResource;
 use App\Http\Resources\Admin\Lookup\LookupResource;
 use App\Models\Beneficiary;
@@ -1181,4 +1182,43 @@ class BeneficiaryService
                 'ward.name_en as ward_en',
                 'ward.name_bn as ward_bn')->orderBy("$sortByColumn", "$orderByDirection")->paginate($perPage);
     }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getStatusWiseTotalBeneficiaries(): \Illuminate\Support\Collection
+    {
+        return DB::table('beneficiaries')
+            ->select(DB::raw('count(*) as beneficiary_count, status'))
+            ->groupBy('status')
+            ->get();
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalReplacedBeneficiaries(): int
+    {
+        return DB::table('beneficiary_replaces')->count();
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Support\Collection
+     */
+    public function getLocationWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
+    {
+        $program_id = $request->query('program_id');
+        $query = DB::table('beneficiaries')
+            ->join('locations', 'beneficiaries.permanent_division_id', '=', 'locations.id')
+            ->select(DB::raw('locations.name_en AS division, count(*) as value'));
+        $query = $query->where('status', BeneficiaryStatus::ACTIVE);
+        if ($program_id)
+            $query = $query->where('program_id', $program_id);
+        $beneficiaries = $query->groupBy('locations.name_en')
+//            ->groupBy('locations.name_bn')
+            ->get();
+        return $beneficiaries;
+    }
+
 }
