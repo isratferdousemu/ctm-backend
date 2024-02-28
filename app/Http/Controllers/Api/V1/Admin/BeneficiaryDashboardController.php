@@ -73,7 +73,7 @@ class BeneficiaryDashboardController extends Controller
             return $item->value;
         });
         $beneficiaries = $beneficiaries->map(function ($item) use ($total){
-            $item->percentage = ($item->value/ $total) * 100;
+            $item->percentage = round(($item->value/ $total) * 100, 2);
             return $item;
         });
 
@@ -86,13 +86,14 @@ class BeneficiaryDashboardController extends Controller
 
     public function getGenderWiseBeneficiaries(Request $request): \Illuminate\Http\JsonResponse
     {
-        $beneficiaries = [
-            "totalBeneficiaries" => 10000,
-            "totalActiveBeneficiaries" => 8000,
-            "totalInactiveBeneficiaries" => 100,
-            "totalWaitingBeneficiaries" => 500,
-            "totalReplacedBeneficiaries" => 300
-        ];
+        $beneficiaries = $this->beneficiaryService->getGenderWiseBeneficiaries($request);
+        $total = $beneficiaries->sum(function ($item){
+            return $item->value;
+        });
+        $beneficiaries = $beneficiaries->map(function ($item) use ($total){
+            $item->percentage = round(($item->value/ $total) * 100, 2);
+            return $item;
+        });
         return response()->json([
             'data' => $beneficiaries,
             'success' => true,

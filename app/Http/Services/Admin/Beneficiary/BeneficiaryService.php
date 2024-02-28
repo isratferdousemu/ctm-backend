@@ -1210,15 +1210,27 @@ class BeneficiaryService
     {
         $program_id = $request->query('program_id');
         $query = DB::table('beneficiaries')
-            ->join('locations', 'beneficiaries.permanent_division_id', '=', 'locations.id')
+            ->join('locations', 'beneficiaries.permanent_division_id', '=', 'locations.id', 'left')
             ->select(DB::raw('locations.name_en AS division, count(*) as value'));
         $query = $query->where('status', BeneficiaryStatus::ACTIVE);
         if ($program_id)
             $query = $query->where('program_id', $program_id);
-        $beneficiaries = $query->groupBy('locations.name_en')
-//            ->groupBy('locations.name_bn')
+
+        return $query->groupBy('locations.name_en')
             ->get();
-        return $beneficiaries;
+    }
+    public function getGenderWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
+    {
+        $program_id = $request->query('program_id');
+        $query = DB::table('beneficiaries')
+            ->join('lookups', 'beneficiaries.gender_id', '=', 'lookups.id', 'left')
+            ->select(DB::raw('lookups.value_en AS gender, count(*) as value'));
+        $query = $query->where('status', BeneficiaryStatus::ACTIVE);
+        if ($program_id)
+            $query = $query->where('program_id', $program_id);
+
+        return $query->groupBy('lookups.value_en')
+            ->get();
     }
 
 }
