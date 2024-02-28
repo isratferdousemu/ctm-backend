@@ -30,7 +30,7 @@ class UserCreateMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'User Create Mail',
+            subject: 'Welcome to CTM application',
         );
     }
 

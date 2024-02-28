@@ -374,7 +374,6 @@ class UserController extends Controller
     public function approve($id)
     {
         $password = Helper::GeneratePassword();
-//        $password = '12341234';
 
         $user = User::findOrFail($id);
         $user->status = !$user->status;
@@ -382,7 +381,9 @@ class UserController extends Controller
         $user->save();
 
 
-        $message = "Welcome to the CTM application.Your account has been approved.\nUsername: ". $user->username
+        $message = "Welcome to the CTM application.Your account has been approved.You will shortly receive an email
+on registering your device through a Token.\n\nOnce your token is registered you can access the CTM Application via:
+\nUsername: ". $user->username
             ."\nPassword: ". $password .
             "\nLogin URL: ". env('APP_FRONTEND_URL') . '/login';
 
@@ -390,7 +391,7 @@ class UserController extends Controller
 
         $this->SMSservice->sendSms($user->mobile, $message);
 
-//        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
+        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
 
 
         activity("User")
