@@ -146,7 +146,7 @@ class User extends Authenticatable
 
         if (auth()->check() && auth()->user()->assign_location_id) {
             static::addGlobalScope('assign_location_type', function (EloquentBuilder $builder) {
-                $data = $this->getUserPermissionsForUser();
+//                $data = $this->getUserPermissionsForUser();
             });
         }
     }

@@ -123,7 +123,6 @@ class PermissionSeeder extends Seeder
                     ["id" => 43, "name" => "role-edit", "page_url" => "/system-configuration/role/edit/:id", "parent_page" => 1],
                     ["id" => 44, "name" => "role-delete", "page_url" => "/system-configuration/role", "parent_page" => 1],
 
-                    ["id" => 45, "name" => "role-permission", "page_url" => "/system-configuration/role-permission", "parent_page" => 1],
 
                 ]
             ],
@@ -133,6 +132,8 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subRolePermissionManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
+                    ["id" => 45, "name" => "role-permission-view", "page_url" => "/system-configuration/role-permission", "parent_page" => 1],
+                    ["id" => 190, "name" => "role-permission-edit", "page_url" => "/system-configuration/role-permission", "parent_page" => 1],
                     ["id" => 177, "name" => "role-permission-create", "page_url" => "/system-configuration/role-permission", "parent_page" => 1],
                 ]
             ],
@@ -495,6 +496,8 @@ class PermissionSeeder extends Seeder
                 ]
             ],
         ];
+
+        //last id 190
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
