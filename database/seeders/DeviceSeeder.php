@@ -190,6 +190,9 @@ class DeviceSeeder extends Seeder
                 'status' => 1,
             ],
         ];
+
+        $devices = [];
+
         foreach ($devices as $value) {
             $device = new Device;
             $device->id              = $value['id'];

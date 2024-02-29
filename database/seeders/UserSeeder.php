@@ -47,6 +47,8 @@ class UserSeeder extends Seeder
             ]
         ];
 
+        $users = [];
+
         foreach ($users as $value) {
             $salt = Helper::generateSalt();
 
