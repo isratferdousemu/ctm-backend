@@ -1016,11 +1016,11 @@ class ApplicationController extends Controller
 
     //    $image = Storage::disk('public')->url($application->image);
        $image = asset('storage/' . $application->image);
-    //   url(Storage::url($application->image));
+  
        $signature = asset('storage/' . $application->signature);
-        // url(Storage::url($application->signature));
+     
          $nominee_image = asset('storage/' . $application->nominee_image);
-        //   url(Storage::url($application->nominee_image));
+       
 
            $nominee_signature = asset('storage/' . $application->nominee_signature);
         //    url(Storage::url( $application->nominee_signature));
@@ -1142,38 +1142,24 @@ class ApplicationController extends Controller
     // Manually filter subvariable based on application_id
 
 
-    $emu = $application->image;
-    $image = url('uploads/application/' . $application->image);
-    $signature = url('uploads/application/' . $application->signature);
-    $nominee_image = url('uploads/application/' . $application->nominee_image);
-    $nominee_signature = url('uploads/application/' . $application->nominee_signature);
-    $groupedAllowAddiFields = $application->allowAddiFields->groupBy('id')->values();
-    $groupedAllowAddiFields = $application->allowAddiFields->groupBy('pivot.allow_addi_fields_id');
+    $image = asset('storage/' . $application->image);
+  
+    $signature = asset('storage/' . $application->signature);
+     
+    $nominee_image = asset('storage/' . $application->nominee_image);
+       
 
-    // Get the first item from each group (assuming it's the same for each 'allow_addi_fields_id')
-    $distinctAllowAddiFields = $groupedAllowAddiFields->map(function ($group) {
-        return $group->first();
-    });
+    $nominee_signature = asset('storage/' . $application->nominee_signature);
 
-    // return response()->json([
-    //     'emu' => $emu,
-    //     'application' => $application,
-    //     'unique_additional_fields' => $distinctAllowAddiFields,
-    //     'image' => $image,
-    //     'signature' => $signature,
-    //     'nominee_image' => $nominee_image,
-    //     'nominee_signature' => $nominee_signature,
-
-    // ], Response::HTTP_OK);
+  
      $dynamic=$request->all();
 
      $title=$request->title;
      $data = ['data' => $application,
                 'request'=>$dynamic,
                  'title' => $title,
-
-
-                ];
+                 'image'=>$image 
+ ];
 
 
         $pdf = LaravelMpdf::loadView('reports.applicant_copy', $data, [],
@@ -1192,13 +1178,23 @@ class ApplicationController extends Controller
             ]);
 
 
-        $fileName = 'বিভাগের_তালিকা_' . now()->timestamp . '_'. auth()->id() . '.pdf';
+        // $fileName = $application->application_id.'_'. now()->timestamp .'.pdf';
 
-        $pdfPath = public_path("/pdf/$fileName");
+        // $pdfPath = public_path("/pdf/$fileName");
 
-        $pdf->save($pdfPath);
+        // $pdf->save($pdfPath);
 
-        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+        // return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+        
+         return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf;charset=utf-8',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
+            ]);
 }
 
   /**
