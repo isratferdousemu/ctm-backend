@@ -18,6 +18,9 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        .center{
+             text-align: center;
+        }
 
         .title-container {
             text-align: center;
@@ -84,6 +87,8 @@
     <!-- Empty div for the first table -->
 </div>
 
+
+
 <table style="border: none;">
     <tbody>
         <tr>
@@ -100,38 +105,392 @@
         </tr>
     </tbody>
 </table>
-<table style="border: none;">
-    <tbody>
-        <tr>
-            <td class="left"></td>
-              <div style="background-color: #ccc; padding: 10px; border-radius: 5px;">
-            <td class="center">
-              
-                  <h2 class="title" style="margin: 0; text-decoration: underline;">
-    {{$request['title']}}
-</h2>
-               
-            </td>
-             </div>
-        </tr>
-    </tbody>
-</table>
-<table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
-    <tbody>
-      <tr>
-    <td class="left" style="width: 20%;  background-color: #ccc;">
-        {{$request['program']}} <span class="right">:</span>
+ 
+<table style="width: 100%; border-collapse: collapse;margin-left:40px;">
+ <tbody>
+     <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+         {{$request['program']}}
     </td>
- <td class="left" style="width: 50%;">
-     {{ $request['language'] == 'bn' ? $data->program->first()->name_bn : $data->program->first()->name_en }}
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{ $request['language'] == 'bn' ? $data->program->name_bn : $data->program->name_en }}
     <!-- Notice the space character before the Blade directive -->
 </td>
-    <td class="right" style="width: 30%; "></td>
+ <td class="right" style="width: 30%; font-size: 20px;"></td>
+
 </tr>
+     <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+      {{$request['application']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>  {{ $request['language'] == 'bn' ? $data->application_id : $data->application_id }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    <td class="right" style="width: 30%; font-size: 20px;"></td>
+</tr>
+    
+
 
         
     </tbody>
 </table>
+<div class="center" style="text-decoration: underline;margin-left: 40px;font-size: 20px;"> <b> {{$request['personal_info']}}</b></div>
+  
+<table style="width: 100%; border-collapse: collapse;margin-left:40px;">
+ <tbody>
+     <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['name_en']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->name_en }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+ <td class="right" style="width: 30%; font-size: 20px;"></td>
+
+</tr>
+     <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['name_bn']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->name_bn }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    <td class="right" style="width: 30%; font-size: 20px;"></td>
+</tr>
+    <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['nid']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->verification_number }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['nationality']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->nationality }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+    <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['mobile']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->mobile }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['date_of_birth']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->date_of_birth }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['father_name_en']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->father_name_en }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+   
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['father_name_bn']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->father_name_bn }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+   
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['mother_name_en']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->mother_name_en }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+ 
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['mother_name_bn']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->mother_name_bn }}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['marital_status']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{  $data->marital_status }} @if($data->marital_status == 'Married')
+      , &nbsp; {{ $request['language'] == 'bn' ? $request['spouse_name_bn'] : $request['spouse_name_en'] }}: {{ $data->spouse_name_en }}
+@endif
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    
+</tr>
+
+
+
+        
+    </tbody>
+</table>
+<div class="center" style="text-decoration: underline;margin-left: 40px;font-size: 20px;"> <b> {{$request['present_address']}}</b></div>
+  
+<table style="width: 100%; border-collapse: collapse;margin-left:40px;">
+ <tbody>
+     <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['division']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> @if($data->current_location->location_type == '1')
+    {{ $request['language'] == 'bn' ? $data->current_location->parent->parent->parent->name_bn : $data->current_location->parent->parent->parent->name_en }}
+@endif
+
+@if($data->current_location->location_type == '2' || $data->current_location->location_type == '3')
+{{ $request['language'] == 'bn' ?$data->current_location->parent->parent->parent->parent->name_bn  : $data->current_location->parent->parent->parent->parent->name_en  }}
+
+@endif
+    <!-- Notice the space character before the Blade directive -->
+</td>
+ <td class="right" style="width: 30%; font-size: 20px;"></td>
+
+</tr>
+     <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['district']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> @if($data->current_location->location_type == '1')
+    {{ $request['language'] == 'bn' ? $data->current_location->parent->parent->name_bn : $data->current_location->parent->parent->name_en }}
+@endif
+
+@if($data->current_location->location_type == '2' || $data->current_location->location_type == '3')
+{{ $request['language'] == 'bn' ?$data->current_location->parent->parent->parent->name_bn  : $data->current_location->parent->parent->parent->name_en  }}
+
+@endif
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    <td class="right" style="width: 30%; font-size: 20px;"></td>
+</tr>
+ <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['location']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> 
+     @if($data->current_location->location_type == '1')
+    {{ $request['language'] == 'bn' ? $data->current_location->parent->name_bn : $data->current_location->parent->name_en }}
+@endif
+
+@if($data->current_location->location_type == '2' || $data->current_location->location_type == '3')
+{{ $request['language'] == 'bn' ?$data->current_location->parent->parent->name_bn  : $data->current_location->parent->parent->name_en  }}
+
+@endif 
+      
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+    <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['union_pouro_city']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> @if($data->current_location->location_type == '2' || $data->current_location->location_type == '3')
+{{ $request['language'] == 'bn' ?$data->current_location->parent->name_bn  : $data->current_location->parent->name_en  }}
+
+@endif
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['ward']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>    {{ $request['language'] == 'bn' ?$data->current_location->name_bn   : $data->current_location->name_en   }}  
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>     
+    </tbody>
+</table>
+<div class="center" style="text-decoration: underline;margin-left: 40px;font-size: 20px;"> <b> {{$request['permanent_address']}}</b></div>
+  
+<table style="width: 100%; border-collapse: collapse;margin-left:40px;">
+ <tbody>
+          <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['division']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> @if($data->permanent_location->location_type == '1')
+    {{ $request['language'] == 'bn' ? $data->permanent_location->parent->parent->parent->name_bn : $data->permanent_location->parent->parent->parent->name_en }}
+@endif
+
+@if($data->permanent_location->location_type == '2' || $data->permanent_location->location_type == '3')
+{{ $request['language'] == 'bn' ?$data->permanent_location->parent->parent->parent->parent->name_bn  : $data->permanent_location->parent->parent->parent->parent->name_en  }}
+
+@endif
+    <!-- Notice the space character before the Blade directive -->
+</td>
+ <td class="right" style="width: 30%; font-size: 20px;"></td>
+
+</tr>
+     <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['district']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>  @if($data->permanent_location->location_type == '1')
+    {{ $request['language'] == 'bn' ? $data->permanent_location->parent->parent->name_bn : $data->permanent_location->parent->parent->name_en }}
+@endif
+
+@if($data->permanent_location->location_type == '2' || $data->permanent_location->location_type == '3')
+{{ $request['language'] == 'bn' ?$data->permanent_location->parent->parent->parent->name_bn  : $data->permanent_location->parent->parent->parent->name_en  }}
+
+@endif
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    <td class="right" style="width: 30%; font-size: 20px;"></td>
+</tr>
+    <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['location']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> 
+     @if($data->permanent_location->location_type == '1')
+    {{ $request['language'] == 'bn' ? $data->permanent_location->parent->name_bn : $data->permanent_location->parent->name_en }}
+@endif
+
+@if($data->permanent_location->location_type == '2' || $data->permanent_location->location_type == '3')
+{{ $request['language'] == 'bn' ?$data->permanent_location->parent->parent->name_bn  : $data->permanent_location->parent->parent->name_en  }}
+
+@endif 
+      
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+    <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['union_pouro_city']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> @if($data->permanent_location->location_type == '2' || $data->permanent_location->location_type == '3')
+{{ $request['language'] == 'bn' ?$data->permanent_location->parent->name_bn  : $data->permanent_location->parent->name_en  }}
+
+@endif
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['ward']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>  {{ $request['language'] == 'bn' ?$data->permanent_location->name_bn   : $data->permanent_location->name_en   }}  
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr> 
+
+
+
+        
+    </tbody>
+</table>
+<div class="center" style="text-decoration: underline;margin-left: 40px;font-size: 20px;"> <b> {{$request['nominee_info']}}</b></div>
+  
+<table style="width: 100%; border-collapse: collapse;margin-left:40px;">
+ <tbody>
+          <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['nominee_en']}}
+    </td>
+    <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{$data->nominee_en}}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+ <td class="right" style="width: 30%; font-size: 20px;"></td>
+
+</tr>
+     <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['nid']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> {{$data->nominee_verification_number}}
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    <td class="right" style="width: 30%; font-size: 20px;"></td>
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['date_of_birth']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>  {{$data->nominee_date_of_birth}}     
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+   <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['relationship']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>  {{$data->nominee_relation_with_beneficiary}}     
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+    <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['nominee_address']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>  {{$data->nominee_address}}     
+    <!-- Notice the space character before the Blade directive -->
+</td>
+
+</tr>
+    
+        
+    </tbody>
+</table>
+
+
 
 
 
