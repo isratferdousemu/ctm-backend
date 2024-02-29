@@ -80,6 +80,10 @@ class AllowanceProgram extends Model
         return $this->hasMany(AllowanceProgramAmount::class, 'allowance_program_id', 'id');
     }
 
+    public function applications()
+    {
+        return $this->hasMany(Application::class, 'program_id');
+    }
 
 
 }
