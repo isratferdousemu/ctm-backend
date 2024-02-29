@@ -52,7 +52,6 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
         Route::post('/insert', [SystemconfigController::class, 'insertallowance'])->middleware(['role_or_permission:super-admin|allowance-create']);
         Route::get('/get',[SystemconfigController::class, 'getAllallowancePaginated'])->middleware(['role_or_permission:super-admin|allowance-view']);
-        Route::get('/get_additional_field',[SystemconfigController::class, 'getAdditionalField'])->middleware(['role_or_permission:super-admin|allowance-view']);
         Route::get('/edit/{id}',[SystemconfigController::class, 'edit'])->middleware(['role_or_permission:super-admin|allowance-edit']);
         Route::put('/update/{id}', [SystemconfigController::class, 'AllowanceUpdate'])->middleware(['role_or_permission:super-admin|allowance-edit']);
         Route::delete('/destroy/{id}', [SystemconfigController::class, 'destroyAllowance'])->middleware(['role_or_permission:super-admin|allowance-delete']);
@@ -60,9 +59,11 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
         Route::post('/disable_delete/{id}', [SystemconfigController::class, 'destroyDisable'])->middleware(['role_or_permission:super-admin|allowance-delete']);
         Route::get('/status/{id}', [SystemconfigController::class, 'AllowanceStatusUpdate'])->middleware(['role_or_permission:super-admin|allowance-edit']);
         // Route::get('/allowance-additional-field/get', [SystemconfigController::class, 'getAllowanceAdditionalFieldPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-create|allowance-creat']);
-        Route::post('/allowance-additional-field/insert', [SystemconfigController::class, 'insertAllowanceAdditionalField'])->middleware(['role_or_permission:super-admin|allowance-create']);
-        Route::post('/allowance-additional-field/update', [SystemconfigController::class, 'updateAllowanceAdditionalField'])->middleware(['role_or_permission:super-admin|allowance-delete']);
-        Route::delete('field/destroy/{id}', [SystemconfigController::class, 'destroyField'])->middleware(['role_or_permission:super-admin|allowance-field-delete']);
+
+        Route::get('/get_additional_field',[SystemconfigController::class, 'getAdditionalField'])->middleware(['role_or_permission:super-admin|allowanceField-view']);
+        Route::post('/allowance-additional-field/insert', [SystemconfigController::class, 'insertAllowanceAdditionalField'])->middleware(['role_or_permission:super-admin|allowanceField-create']);
+        Route::post('/allowance-additional-field/update', [SystemconfigController::class, 'updateAllowanceAdditionalField'])->middleware(['role_or_permission:super-admin|allowanceField-delete']);
+        Route::delete('field/destroy/{id}', [SystemconfigController::class, 'destroyField'])->middleware(['role_or_permission:super-admin|allowanceField-delete']);
     });
 
     /* -------------------------------------------------------------------------- */
@@ -72,7 +73,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
     Route::prefix('admin/financial-year')->group(function () {
 
         Route::post('/insert', [financialYearController::class, 'insertFinancialYear'])->middleware(['role_or_permission:super-admin|financial-create']);
-        Route::get('/get',[financialYearController::class, 'getFinancialPaginated'])->middleware(['role_or_permission:super-admin|financial-view']);
+        Route::get('/get',[financialYearController::class, 'getFinancialPaginated'])/*->middleware(['role_or_permission:super-admin|financial-view'])*/;
         Route::get('/destroy/{id}', [financialYearController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|financial-delete']);
     });
 

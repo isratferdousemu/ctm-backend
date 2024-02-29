@@ -13,7 +13,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin/division')->group(function () {
 
         Route::post('/insert', [LocationController::class, 'insertDivision'])->middleware(['role_or_permission:super-admin|division-create']);
-        Route::get('/get',[LocationController::class, 'getAllDivisionPaginated'])->middleware(['role_or_permission:super-admin|division-view']);
+        Route::get('/get',[LocationController::class, 'getAllDivisionPaginated']);
         Route::post('/update', [LocationController::class, 'divisionUpdate'])->middleware(['role_or_permission:super-admin|division-edit']);
         Route::get('/destroy/{id}', [LocationController::class, 'destroyDivision'])->middleware(['role_or_permission:super-admin|division-delete']);
         Route::get('/generate-pdf', [ReportController::class, 'divisionReport']);
