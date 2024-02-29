@@ -80,7 +80,7 @@ class RoleController extends Controller
      *          )
     * )
     */
-    
+
     public function getAllRolePaginated(Request $request){
         // Retrieve the query parameters
          $role = Role::query();
@@ -307,7 +307,7 @@ class RoleController extends Controller
             ->log('Role Created !');
             return RoleResource::make($role->load('permissions'))->additional([
                 'success' => true,
-                'message' => $this->insertSuccessMessage,
+                'message' => 'Operation successful',
             ]);
         } catch (\Throwable $th) {
             //throw $th;

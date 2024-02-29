@@ -76,7 +76,14 @@ class PermissionSeeder extends Seeder
                     ["id" => 25, "name" => "allowance-create", "page_url" => "/system-configuration/allowance-program/create", "parent_page" => 0],
                     ["id" => 26, "name" => "allowance-view", "page_url" => "/system-configuration/allowance-program", "parent_page" => 0],
                     ["id" => 27, "name" => "allowance-edit", "page_url" => "/system-configuration/allowance-program/edit/:id", "parent_page" => 0],
-                    ["id" => 28, "name" => "allowance-delete", "page_url" => "/system-configuration/allowance-program", "parent_page" => 0]
+                    ["id" => 28, "name" => "allowance-delete", "page_url" => "/system-configuration/allowance-program", "parent_page" => 0],
+
+                    ["id" => 191, "name" => "allowanceField-create", "page_url" => "/system-configuration/allowance-program-additional-field", "parent_page" => 1],
+                    ["id" => 180, "name" => "allowanceField-view", "page_url" => "/system-configuration/allowance-program-additional-field", "parent_page" => 1],
+                    ["id" => 192, "name" => "allowanceField-edit", "page_url" => "/system-configuration/allowance-program-additional-field", "parent_page" => 1],
+                    ["id" => 193, "name" => "allowanceField-delete", "page_url" => "/system-configuration/allowance-program-additional-field", "parent_page" => 1],
+
+
                 ]
             ],
             [
@@ -115,7 +122,7 @@ class PermissionSeeder extends Seeder
 
             [
                 'module_name' => $this->modulePermissionSystemConfiguration,
-                'sub_module_name' => $this->subRoleManagement,
+                'sub_module_name' => $this->subUserManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
                     ["id" => 41, "name" => "role-create", "page_url" => "/system-configuration/role/create", "parent_page" => 1],
@@ -129,12 +136,12 @@ class PermissionSeeder extends Seeder
 
             [
                 'module_name' => $this->modulePermissionSystemConfiguration,
-                'sub_module_name' => $this->subRolePermissionManagement,
+                'sub_module_name' => $this->subUserManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 45, "name" => "role-permission-view", "page_url" => "/system-configuration/role-permission", "parent_page" => 1],
-                    ["id" => 190, "name" => "role-permission-edit", "page_url" => "/system-configuration/role-permission", "parent_page" => 1],
-                    ["id" => 177, "name" => "role-permission-create", "page_url" => "/system-configuration/role-permission", "parent_page" => 1],
+                    ["id" => 45, "name" => "rolePermission-view", "page_url" => "/system-configuration/role-permission", "parent_page" => 1],
+                    ["id" => 190, "name" => "rolePermission-edit", "page_url" => "/system-configuration/role-permission", "parent_page" => 1],
+                    ["id" => 177, "name" => "rolePermission-create", "page_url" => "/system-configuration/role-permission", "parent_page" => 1],
                 ]
             ],
 
@@ -195,30 +202,30 @@ class PermissionSeeder extends Seeder
                     ["id" => 63, "name" => "application-entry-edit", "page_url" => "/application-management/application/edit/:id", "parent_page" => 1],
                     ["id" => 64, "name" => "application-entry-delete", "page_url" => "/application-management/application", "parent_page" => 1],
 
-                    ["id" => 65, "name" => "primaryUnion-create", "page_url" => "/application-management/primary-selection-union/create", "parent_page" => 1],
-                    ["id" => 66, "name" => "primaryUnion-view", "page_url" => "/application-management/primary-selection-union", "parent_page" => 1],
-                    ["id" => 67, "name" => "primaryUnion-edit", "page_url" => "/application-management/primary-selection-union/edit/:id", "parent_page" => 1],
-                    ["id" => 68, "name" => "primaryUnion-delete", "page_url" => "/application-management/primary-selection-union", "parent_page" => 1],
-
-                    ["id" => 69, "name" => "primaryUpazila-create", "page_url" => "/application-management/primary-selection-upazila/create", "parent_page" => 1],
-                    ["id" => 70, "name" => "primaryUpazila-view", "page_url" => "/application-management/primary-selection-upazila", "parent_page" => 1],
-                    ["id" => 71, "name" => "primaryUpazila-edit", "page_url" => "/application-management/primary-selection-upazila/edit/:id", "parent_page" => 1],
-                    ["id" => 72, "name" => "primaryUpazila-delete", "page_url" => "/application-management/primary-selection-upazila", "parent_page" => 1],
-
-                    ["id" => 73, "name" => "final-view-create", "page_url" => "/application-management/final/create", "parent_page" => 1],
-                    ["id" => 74, "name" => "final-view-view", "page_url" => "/application-management/final", "parent_page" => 1],
-                    ["id" => 75, "name" => "final-view-edit", "page_url" => "/application-management/final/edit/:id", "parent_page" => 1],
-                    ["id" => 76, "name" => "final-view-delete", "page_url" => "/application-management/final", "parent_page" => 1],
-
-                    ["id" => 77, "name" => "approval-view-create", "page_url" => "/application-management/approval/create", "parent_page" => 1],
-                    ["id" => 78, "name" => "approval-view-view", "page_url" => "/application-management/approval", "parent_page" => 1],
-                    ["id" => 79, "name" => "approval-view-edit", "page_url" => "/application-management/approval/edit/:id", "parent_page" => 1],
-                    ["id" => 80, "name" => "approval-view-delete", "page_url" => "/application-management/approval", "parent_page" => 1],
+//                    ["id" => 65, "name" => "primaryUnion-create", "page_url" => "/application-management/primary-selection-union/create", "parent_page" => 1],
+//                    ["id" => 66, "name" => "primaryUnion-view", "page_url" => "/application-management/primary-selection-union", "parent_page" => 1],
+//                    ["id" => 67, "name" => "primaryUnion-edit", "page_url" => "/application-management/primary-selection-union/edit/:id", "parent_page" => 1],
+//                    ["id" => 68, "name" => "primaryUnion-delete", "page_url" => "/application-management/primary-selection-union", "parent_page" => 1],
+//
+//                    ["id" => 69, "name" => "primaryUpazila-create", "page_url" => "/application-management/primary-selection-upazila/create", "parent_page" => 1],
+//                    ["id" => 70, "name" => "primaryUpazila-view", "page_url" => "/application-management/primary-selection-upazila", "parent_page" => 1],
+//                    ["id" => 71, "name" => "primaryUpazila-edit", "page_url" => "/application-management/primary-selection-upazila/edit/:id", "parent_page" => 1],
+//                    ["id" => 72, "name" => "primaryUpazila-delete", "page_url" => "/application-management/primary-selection-upazila", "parent_page" => 1],
+//
+//                    ["id" => 73, "name" => "final-view-create", "page_url" => "/application-management/final/create", "parent_page" => 1],
+//                    ["id" => 74, "name" => "final-view-view", "page_url" => "/application-management/final", "parent_page" => 1],
+//                    ["id" => 75, "name" => "final-view-edit", "page_url" => "/application-management/final/edit/:id", "parent_page" => 1],
+//                    ["id" => 76, "name" => "final-view-delete", "page_url" => "/application-management/final", "parent_page" => 1],
+//
+//                    ["id" => 77, "name" => "approval-view-create", "page_url" => "/application-management/approval/create", "parent_page" => 1],
+//                    ["id" => 78, "name" => "approval-view-view", "page_url" => "/application-management/approval", "parent_page" => 1],
+//                    ["id" => 79, "name" => "approval-view-edit", "page_url" => "/application-management/approval/edit/:id", "parent_page" => 1],
+//                    ["id" => 80, "name" => "approval-view-delete", "page_url" => "/application-management/approval", "parent_page" => 1],
                 ]
             ],
             [
                 'module_name' => $this->modulePermissionApplicationSelection,
-                'sub_module_name' => $this->subPovertyScoreManagement,
+                'sub_module_name' => $this->subOnlineApplicationManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
                     ["id" => 81, "name" => "poverty-cut-off-score-create", "page_url" => "/application-management/poverty-cut-off-score/create", "parent_page" => 1],
@@ -491,7 +498,6 @@ class PermissionSeeder extends Seeder
                 'permissions' => [
                     ["id" => 178, "name" => "committee-permission-create", "page_url" => "/beneficiary-management/committee-permission/create", "parent_page" => 1],
                     ["id" => 179, "name" => "committee-permission-view", "page_url" => "/beneficiary-management/committee-permission", "parent_page" => 1],
-                    ["id" => 180, "name" => "allowance-Field-view", "page_url" => "/system-configuration/allowance-program-additional-field", "parent_page" => 1],
                     ["id" => 181, "name" => "committee-permission-delete", "page_url" => "/beneficiary-management/committee-permission", "parent_page" => 1]
                 ]
             ],
