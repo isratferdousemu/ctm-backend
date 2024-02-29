@@ -1178,13 +1178,23 @@ class ApplicationController extends Controller
             ]);
 
 
-        $fileName = $application->application_id.'_'. now()->timestamp .'.pdf';
+        // $fileName = $application->application_id.'_'. now()->timestamp .'.pdf';
 
-        $pdfPath = public_path("/pdf/$fileName");
+        // $pdfPath = public_path("/pdf/$fileName");
 
-        $pdf->save($pdfPath);
+        // $pdf->save($pdfPath);
 
-        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+        // return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
+        
+         return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf;charset=utf-8',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
+            ]);
 }
 
   /**
