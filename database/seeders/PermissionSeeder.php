@@ -225,7 +225,7 @@ class PermissionSeeder extends Seeder
             ],
             [
                 'module_name' => $this->modulePermissionApplicationSelection,
-                'sub_module_name' => $this->subOnlineApplicationManagement,
+                'sub_module_name' => $this->subPovertyScoreManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
                     ["id" => 81, "name" => "poverty-cut-off-score-create", "page_url" => "/application-management/poverty-cut-off-score/create", "parent_page" => 1],
