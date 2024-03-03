@@ -51,7 +51,7 @@ class OfficeHeadService
         }
 
         //Exclude own id
-        $query->whereNot('users.id', $user->id);
+//        $query->whereNot('users.id', $user->id);
 
         return $query->get();
     }
