@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\ApplicationController;
+use App\Http\Controllers\Api\V1\Admin\ApplicationSelectionDashboardController;
 
 Route::middleware('auth:sanctum')->group(function () {
     /* -------------------------------------------------------------------------- */
@@ -32,9 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
      Route::post('/update', [ApplicationController::class, 'updateMobileOperator'])->middleware(['role_or_permission:super-admin']);
     // Route::get('/{id}', [ApplicationController::class, 'editMobileOperato'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
 
+    });
 
-
-
+    Route::prefix('admin/application-dashboard')->group(function () {
+        Route::get('/get-total-received-application', [ApplicationSelectionDashboardController::class, 'programStatusWisetotalNumberOfdApplication'])->middleware(['role_or_permission:super-admin']);
+        Route::get('/get-total-numberof-application', [ApplicationSelectionDashboardController::class, 'programWisetotalNumberOfdApplication'])->middleware(['role_or_permission:super-admin']);
     });
 
 
