@@ -49,6 +49,15 @@ class Helper{
 
         return $banglaNumber;
     }
+      public static function urlToBase64($imageData)
+    {
+    $imageType = getimagesizefromstring($imageData)['mime'];
+
+    // Convert the image data to base64 format
+     $imageBase64= 'data:' . $imageType . ';base64,' . base64_encode($imageData);
+
+        return   $imageBase64;
+    }
 
 
 
