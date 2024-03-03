@@ -13,7 +13,7 @@
 {{--            </ul>--}}
 {{--    </ul>--}}
     <p>Please follow the link to get your device token.</p>
-    {{env('APP_FRONTEND_URL') . '/browser-token'}}
+    <a href="{{env('APP_FRONTEND_URL') . '/browser-token'}}">{{env('APP_FRONTEND_URL') . '/browser-token'}}</a>
 
 
 
