@@ -7,8 +7,18 @@ use App\Http\Controllers\Api\V1\Admin\AdminController;
 use App\Http\Controllers\Api\V1\Admin\financialYearController;
 use App\Http\Controllers\Api\V1\Admin\MenuController;
 use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
+use App\Http\Controllers\Api\V1\Admin\SystemconfigDashboardController;
 
-    Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
+
+
+        /* -------------------------------------------------------------------------- */
+        /*                               Lookup Management Routes                     */
+        /* -------------------------------------------------------------------------- */
+
+        Route::prefix('admin/system-configuration/dashboard')->group(function () {
+            Route::get('/get-all-location-application-count', [SystemconfigDashboardController::class, 'getAllLocationApplicationCount'])->middleware(['role_or_permission:super-admin']);
+        });
 
     /* -------------------------------------------------------------------------- */
     /*                               Office Management Routes                              */
