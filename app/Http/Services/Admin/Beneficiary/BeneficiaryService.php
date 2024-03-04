@@ -1209,25 +1209,87 @@ class BeneficiaryService
     public function getLocationWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
     {
         $program_id = $request->query('program_id');
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
         $query = DB::table('beneficiaries')
             ->join('locations', 'beneficiaries.permanent_division_id', '=', 'locations.id', 'left')
             ->select(DB::raw('locations.name_en AS division, count(*) as value'));
         $query = $query->where('status', BeneficiaryStatus::ACTIVE);
         if ($program_id)
             $query = $query->where('program_id', $program_id);
+        if ($from_date)
+            $query = $query->whereDate('approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
+        if ($to_date)
+            $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
 
         return $query->groupBy('locations.name_en')
             ->get();
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Support\Collection
+     */
     public function getGenderWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
     {
         $program_id = $request->query('program_id');
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
         $query = DB::table('beneficiaries')
             ->join('lookups', 'beneficiaries.gender_id', '=', 'lookups.id', 'left')
             ->select(DB::raw('lookups.value_en AS gender, count(*) as value'));
         $query = $query->where('status', BeneficiaryStatus::ACTIVE);
         if ($program_id)
             $query = $query->where('program_id', $program_id);
+        if ($from_date)
+            $query = $query->whereDate('approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
+        if ($to_date)
+            $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
+
+
+        return $query->groupBy('lookups.value_en')
+            ->get();
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Support\Collection
+     */
+    public function getYearWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
+    {
+        $program_id = $request->query('program_id');
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
+
+        $query = DB::table('beneficiaries')
+            ->select(DB::raw('year(approve_date) as year, status, count(status) `count`'));
+//        $query = $query->where('status', BeneficiaryStatus::ACTIVE);
+        if ($program_id)
+            $query = $query->where('program_id', $program_id);
+        if ($from_date)
+            $query = $query->whereDate('approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
+        if ($to_date)
+            $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
+
+        return $query->groupByRaw('year(approve_date), status')
+            ->get();
+    }
+
+    public function getProgramWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
+    {
+        $program_id = $request->query('program_id');
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
+        $query = DB::table('beneficiaries')
+            ->join('allowance_programs', 'beneficiaries.program_id', '=', 'allowance_programs.id', 'left')
+            ->select(DB::raw('lookups.value_en AS gender, count(*) as value'));
+        $query = $query->where('status', BeneficiaryStatus::ACTIVE);
+        if ($program_id)
+            $query = $query->where('program_id', $program_id);
+        if ($from_date)
+            $query = $query->whereDate('approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
+        if ($to_date)
+            $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
 
         return $query->groupBy('lookups.value_en')
             ->get();
