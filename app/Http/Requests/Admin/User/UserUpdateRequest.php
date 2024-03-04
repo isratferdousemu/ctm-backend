@@ -46,4 +46,15 @@ class UserUpdateRequest extends FormRequest
             'committee_id'              => [Rule::requiredIf((bool)$this->committee_type)],
         ];
     }
+
+
+
+    public function messages()
+    {
+        return [
+            'mobile.regex' => 'Enter a valid number eg. 013xxxxxxxx'
+        ];
+    }
+
+
 }

@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
         // For multiple ward under office
         Route::get('/get-ward-under-office',[OfficeController::class, 'getAllWardUnderOffice']);
+        Route::get('/wards/{officeId}',[OfficeController::class, 'getWardList']);
         // ->middleware(['role_or_permission:super-admin|office-create']);
         Route::post('/destroy/ward-under-office/', [OfficeController::class, 'destroyWardUnderOffice'])->middleware(['role_or_permission:super-admin|office-view']);
         // END For multiple ward under office

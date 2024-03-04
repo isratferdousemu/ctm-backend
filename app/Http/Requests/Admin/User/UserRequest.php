@@ -47,4 +47,18 @@ class UserRequest extends FormRequest
 
         ];
     }
+
+
+    public function messages()
+    {
+        return [
+            'mobile.regex' => 'Enter a valid number eg. 013xxxxxxxx'
+        ];
+    }
+
+
+
+
+
+
 }
