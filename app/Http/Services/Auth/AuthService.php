@@ -80,9 +80,11 @@ class AuthService
         $request->validate(
             [
                 'phone'      => 'required|exists:users,mobile',
+                'username'      => 'required|exists:users,username',
             ],
             [
-                'phone.exists'     => 'This phone does not match our database record!',
+                'username.exists'     => 'This username does not match our record!',
+                'phone.exists'     => 'This phone does not match our record!',
             ]
         );
     }
@@ -91,12 +93,14 @@ class AuthService
 
         $request->validate(
             [
+                'username'      => 'required|exists:users,username',
                 'phone'      => 'required|exists:users,mobile',
                 'password'      => 'required|min:6',
                 'confirm_password'      => 'required|same:password',
             ],
             [
-                'phone.exists'     => 'This phone does not match our database record!',
+                'username.exists'     => 'This username does not match our record!',
+                'phone.exists'     => 'This phone does not match our record!',
             ]
         );
     }
@@ -172,7 +176,7 @@ class AuthService
     }
 
     public function AdminForgotPassword(Request $request){
-        $user = User::withoutGlobalScope('assign_location_type')->whereMobile($request->phone)->first();
+        $user = User::whereUsername( $request->username)->first();
         $code = $this->generateOtpCode($user, 5);
         $message = 'Your OTP is '. $code;
 
@@ -180,7 +184,7 @@ class AuthService
     }
 
     public function AdminForgotPasswordSubmit(Request $request){
-        $user = User::withoutGlobalScope('assign_location_type')->whereMobile($request->phone)->first();
+        $user = User::whereUsername($request->username)->first();
         $code = $request->otp;
         $cachedCode = Cache::get($this->userLoginOtpPrefix . $user->id);
         if (!$cachedCode || $code != $cachedCode) {

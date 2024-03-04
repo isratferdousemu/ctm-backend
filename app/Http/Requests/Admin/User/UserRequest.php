@@ -25,7 +25,7 @@ class UserRequest extends FormRequest
         return [
             'full_name'                 => 'required|string|max:50',
             'username'                  => 'required|string|unique:users,username,deleted_at',
-            'mobile'                    => 'required|numeric|unique:users,mobile|regex:/^01[3-9]\d{8}$/',
+            'mobile'                    => 'required|numeric|regex:/^01[3-9]\d{8}$/',
             'email'                     => 'required|email|unique:users,email,deleted_at',
             'status'                    => 'sometimes|integer|in:0,1',
             'role_id'                   => 'sometimes|required|array|exists:roles,id',
