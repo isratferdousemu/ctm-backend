@@ -7,8 +7,18 @@ use App\Http\Controllers\Api\V1\Admin\AdminController;
 use App\Http\Controllers\Api\V1\Admin\financialYearController;
 use App\Http\Controllers\Api\V1\Admin\MenuController;
 use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
+use App\Http\Controllers\Api\V1\Admin\SystemconfigDashboardController;
 
-    Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
+
+
+        /* -------------------------------------------------------------------------- */
+        /*                               Lookup Management Routes                     */
+        /* -------------------------------------------------------------------------- */
+
+        Route::prefix('admin/system-configuration/dashboard')->group(function () {
+            Route::get('/get-all-location-application-count', [SystemconfigDashboardController::class, 'getAllLocationApplicationCount'])->middleware(['role_or_permission:super-admin']);
+        });
 
     /* -------------------------------------------------------------------------- */
     /*                               Office Management Routes                              */
@@ -25,6 +35,7 @@ use App\Http\Controllers\Api\V1\Admin\SystemconfigController;
 
         // For multiple ward under office
         Route::get('/get-ward-under-office',[OfficeController::class, 'getAllWardUnderOffice']);
+        Route::get('/wards/{officeId}',[OfficeController::class, 'getWardList']);
         // ->middleware(['role_or_permission:super-admin|office-create']);
         Route::post('/destroy/ward-under-office/', [OfficeController::class, 'destroyWardUnderOffice'])->middleware(['role_or_permission:super-admin|office-view']);
         // END For multiple ward under office

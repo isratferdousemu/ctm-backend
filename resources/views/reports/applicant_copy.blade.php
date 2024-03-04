@@ -80,12 +80,14 @@
     </style>
 </head>
 <body>
+  
 
-<p>তালিকাভুক্ত  রিপোর্ট | সমাজসেবা অধিদফতর </p>
+<p>{{ $request['language'] == 'en' ? "Listed Report |Department of Social Services" : "তালিকাভুক্ত  রিপোর্ট | সমাজসেবা অধিদফতর" }} </p>
 
 <div class="title-container">
     <!-- Empty div for the first table -->
 </div>
+
 
 
 
@@ -94,13 +96,30 @@
         <tr>
            <td class="left">
     <img src="{{ public_path('image/bangladesh-govt-logo.png') }}" alt="Left Image" style="width: 100px; height: auto;">
+   
 </td>
+</td>
+           @if($request['language'] == "en")
             <td class="center">
-                <h2 class="title">
-                    সমাজসেবা অধিদফতর <br>
-                    সামাজিক নিরাপত্তা কর্মসূচি
-                </h2>
+                <h3 class="title">
+                    Government of the People's Republic of Bangladesh <br>
+                    Department of Social Services
+                </h3>
+                <p style="font-size:15px" class="center">Cash Transfer Modernization(CTM)Project</p>
+                <p style="font-size:12px">Social Service Building, E-8/B-1, Agargaon, Sherbangla Nagar, Dhaka-1207, Bangladesh.</p>
+                <a target="_blank" href="https://dss.gov.bd/">www.dss.gov.bd</a>
             </td>
+        @else
+            <td class="center">
+                <h3 class="title">
+                    গণপ্রজাতন্ত্রী বাংলাদেশ সরকার <br>
+                    সমাজসেবা অধিদফতর
+                </h3>
+                <p style="font-size:15px" class="center">ক্যাশ ট্রান্সফার মডার্নাইজেশন (সিটিএম) প্রকল্প</p>
+                <p style="font-size:12px">সমাজসেবা ভবন, ই-৮/বি-১, আগারগাঁও, শেরেবাংলা নগর, ঢাকা-১২০৭, বাংলাদেশ।</p>
+                <a target="_blank" href="https://dss.gov.bd/">www.dss.gov.bd</a>
+            </td>
+        @endif
             <td class="right">  <img src="{{ public_path('image/logo.png') }}" alt="Right Image" style="width: 80px; height: 80px;"></td>
         </tr>
     </tbody>
@@ -125,6 +144,7 @@
     </td>
  <td class="left" style="width: 60%;font-size: 20px;">
      <span class="right">:</span>  {{ $request['language'] == 'bn' ? $data->application_id : $data->application_id }}
+     
     <!-- Notice the space character before the Blade directive -->
 </td>
     <td class="right" style="width: 30%; font-size: 20px;"></td>
@@ -140,51 +160,58 @@
 <table style="width: 100%; border-collapse: collapse;margin-left:40px;">
  <tbody>
      <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['name_en']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->name_en }}
     <!-- Notice the space character before the Blade directive -->
 </td>
- <td class="right" style="width: 30%; font-size: 20px;"></td>
+   <td class="center" style="width: 30%; font-size: 25px;" rowspan="5">
+   <div style="text-decoration: underline;">
+<img src="{{ $image }}" alt="Your Image">
+</div>
+ 
+
+  <div style="font-size: 20px; ">{{ $request['language'] == 'en' ? "Image" : "ছবি" }}</div>
+</td>
 
 </tr>
      <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['name_bn']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->name_bn }}
     <!-- Notice the space character before the Blade directive -->
 </td>
-    <td class="right" style="width: 30%; font-size: 20px;"></td>
+    <td class="right" style="width: 30%; font-size: 25px;"></td>
 </tr>
     <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['nid']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->verification_number }}
     <!-- Notice the space character before the Blade directive -->
 </td>
 
 </tr>
   <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['nationality']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->nationality }}
     <!-- Notice the space character before the Blade directive -->
 </td>
 
 </tr>
     <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['mobile']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->mobile }}
     <!-- Notice the space character before the Blade directive -->
 </td>
@@ -192,60 +219,60 @@
 </tr>
 
   <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['date_of_birth']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;ffont-size: 25px;">
      <span class="right">:</span> {{  $data->date_of_birth }}
     <!-- Notice the space character before the Blade directive -->
 </td>
 
 </tr>
   <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['father_name_en']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->father_name_en }}
     <!-- Notice the space character before the Blade directive -->
 </td>
    
 </tr>
   <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['father_name_bn']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->father_name_bn }}
     <!-- Notice the space character before the Blade directive -->
 </td>
    
 </tr>
   <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['mother_name_en']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->mother_name_en }}
     <!-- Notice the space character before the Blade directive -->
 </td>
  
 </tr>
   <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['mother_name_bn']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->mother_name_bn }}
     <!-- Notice the space character before the Blade directive -->
 </td>
     
 </tr>
   <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['marital_status']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->marital_status }} @if($data->marital_status == 'Married')
       , &nbsp; {{ $request['language'] == 'bn' ? $request['spouse_name_bn'] : $request['spouse_name_en'] }}: {{ $data->spouse_name_en }}
 @endif
@@ -434,59 +461,157 @@
 <table style="width: 100%; border-collapse: collapse;margin-left:40px;">
  <tbody>
           <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 30px;">
         {{$request['nominee_en']}}
     </td>
-    <td class="left" style="width: 60%;font-size: 20px;">
+    <td class="left" style="width: 60%;font-size: 30px;">
      <span class="right">:</span> {{$data->nominee_en}}
     <!-- Notice the space character before the Blade directive -->
 </td>
 
- <td class="right" style="width: 30%; font-size: 20px;"></td>
+ <td class="center" style="width: 30%; font-size: 30px;" rowspan="3">
+    <div style="text-decoration: underline;">
+        <img src="{{ $nominee_image }}" alt="Your Image" >
+    </div>
+   <div style="font-size: 20px; "class="center" >{{ $request['language'] == 'en' ? "Image" : "ছবি" }} 
+</div>
+   
+</td>
+ <td class="center" style="width: 60%;font-size: 30px;">
+  <div style="text-decoration: underline;">
+        <img src="{{ $nominee_signature }}" alt="Your Image"  style="width: 300px; height: 200px;">
+    </div>
+   <div style="font-size: 20px; ">{{ $request['language'] == 'en' ? "Signature" : "স্বাক্ষর" }} 
+</div>
+   
+    <!-- Notice the space character before the Blade directive -->
+</td>
 
 </tr>
      <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 30px;">
         {{$request['nid']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 30px;">
      <span class="right">:</span> {{$data->nominee_verification_number}}
     <!-- Notice the space character before the Blade directive -->
 </td>
-    <td class="right" style="width: 30%; font-size: 20px;"></td>
+    <td class="right" style="width: 30%; font-size: 30px;"></td>
 </tr>
   <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 30px;">
         {{$request['date_of_birth']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 30px;">
      <span class="right">:</span>  {{$data->nominee_date_of_birth}}     
     <!-- Notice the space character before the Blade directive -->
 </td>
 
 </tr>
    <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 30px;">
         {{$request['relationship']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 30px;">
      <span class="right">:</span>  {{$data->nominee_relation_with_beneficiary}}     
     <!-- Notice the space character before the Blade directive -->
 </td>
 
 </tr>
     <tr>
-    <td class="left" style="width: 40%;font-size: 20px;">
+    <td class="left" style="width: 40%;font-size: 30px;">
         {{$request['nominee_address']}}
     </td>
- <td class="left" style="width: 60%;font-size: 20px;">
+ <td class="left" style="width: 60%;font-size: 30px;">
      <span class="right">:</span>  {{$data->nominee_address}}     
     <!-- Notice the space character before the Blade directive -->
 </td>
+<td class="right" style="width: 30%; font-size: 30px;" rowspan="5">
+ 
+</td>
 
 </tr>
+
+ 
     
         
+    </tbody>
+</table>
+<div class="center" style="text-decoration: underline;margin-left: 40px;font-size: 20px;"> <b> {{$request['bank_info']}}</b></div>
+  
+<table style="width: 100%; border-collapse: collapse;margin-left:40px;">
+ <tbody>
+     <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['account_ownership']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span> 
+    {{$data->account_owner }}
+
+
+    <!-- Notice the space character before the Blade directive -->
+</td>
+ <td class="right" style="width: 30%; font-size: 20px;"></td>
+
+</tr>
+     <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['account_no']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>
+    {{  $data->account_number }}
+
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    <td class="right" style="width: 30%; font-size: 20px;"></td>
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['bank_name']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>
+ {{ $data->bank_name ?? "N/A" }}
+
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    <td class="right" style="width: 30%; font-size: 20px;"></td>
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['branch_name']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>
+    {{ $data->branch_name ?? "N/A" }}
+
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    <td class="right" style="width: 30%; font-size: 20px;"></td>
+</tr>
+<tr>
+    <td class="left" style="width: 40%;font-size: 30px;">
+   
+    </td>
+     <td class="left" style="width: 40%;font-size: 30px;">
+   
+    </td>
+     <td class="center" style="width: 30%; font-size: 25px;" rowspan="5">
+    <div style="text-decoration: underline;">
+        <img src="{{ $signature }}" alt="Your Image" style="width: 200px; height: 200px;">
+    </div>
+   <div style="font-size: 20px; border-bottom: 1px solid black;">{{ $request['language'] == 'en' ? "Date" : "তারিখ" }} :
+{{ $request['language'] == 'en' ? $data->created_at->toDateString() :  \App\Helpers\Helper::englishToBangla($data->created_at->toDateString()) }}</div>
+   
+</td>
+
+
+
+</tr>
+ 
+     
     </tbody>
 </table>
 
@@ -500,8 +625,9 @@
 
 <htmlpagefooter name="page-footer">
     <div class="footer">
-        Copyright &copy; 2024, DSS
-    </div>
+    {{ $request['language'] == 'en' ? "Copyright @, " . date("Y ") . ", DSS" : "কপিরাইট @, " . \App\Helpers\Helper::englishToBangla(date("Y ")) . ", ডিএসএস" }}
+   
+</div>
 </htmlpagefooter>
 
 </body>

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Http\Services\Admin\Application\VerificationService;
+use Carbon\Carbon;
+use App\Helpers\Helper;
 use App\Models\Location;
 use App\Models\PMTScore;
 use App\Models\Committee;
 use App\Models\Application;
 use App\Models\Beneficiary;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Traits\RoleTrait;
@@ -32,6 +32,7 @@ use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use App\Http\Requests\Admin\Application\ApplicationRequest;
 use App\Http\Services\Admin\Application\ApplicationService;
 use App\Http\Requests\Admin\Application\UpdateStatusRequest;
+use App\Http\Services\Admin\Application\VerificationService;
 use App\Http\Services\Admin\Application\CommitteeListService;
 use App\Http\Requests\Admin\Application\MobileOperatorRequest;
 use App\Http\Services\Admin\Application\MobileOperatorService;
@@ -40,6 +41,7 @@ use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
 use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
 use App\Http\Services\Admin\Application\CommitteeApplicationService;
+use Illuminate\Support\Facades\Http;
 
 class ApplicationController extends Controller
 {
@@ -1133,23 +1135,32 @@ class ApplicationController extends Controller
              'variable',
             'subvariable'
         ])->first();
-        // return  $application;
+      
 
     if (!$application) {
         return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
     }
 
-    // Manually filter subvariable based on application_id
+ 
 
+   
 
-    $image = asset('storage/' . $application->image);
-  
-    $signature = asset('storage/' . $application->signature);
-     
-    $nominee_image = asset('storage/' . $application->nominee_image);
-       
+    //  $image = asset('storage/' . $application->image);
 
-    $nominee_signature = asset('storage/' . $application->nominee_signature);
+    //  $imageUrl = 'https://picsum.photos/200/300';
+    //  $imageData = file_get_contents($image);
+    $imagePath = $application->image;
+    $imageData = Storage::disk('public')->get($imagePath);
+    $image=Helper::urlToBase64($imageData);
+    $signaturePath = $application->signature;
+    $signatureData = Storage::disk('public')->get($signaturePath );
+    $signature=Helper::urlToBase64($signatureData);
+    $nomineeimagePath = $application->nominee_image;
+    $nominee_imageData = Storage::disk('public')->get($nomineeimagePath);
+    $nominee_image=Helper::urlToBase64($nominee_imageData);
+    $nominee_signaturePath = $application->nominee_signature;
+    $nominee_signature_Data = Storage::disk('public')->get($nominee_signaturePath);
+    $nominee_signature=Helper::urlToBase64($nominee_signature_Data);
 
   
      $dynamic=$request->all();
@@ -1158,7 +1169,12 @@ class ApplicationController extends Controller
      $data = ['data' => $application,
                 'request'=>$dynamic,
                  'title' => $title,
-                 'image'=>$image 
+                 'image'=>$image ,
+                 'nominee_image'=>$nominee_image ,
+                 'signature'=>$signature ,
+                 'nominee_signature'=>$nominee_signature 
+              
+                
  ];
 
 
@@ -1178,13 +1194,7 @@ class ApplicationController extends Controller
             ]);
 
 
-        // $fileName = $application->application_id.'_'. now()->timestamp .'.pdf';
 
-        // $pdfPath = public_path("/pdf/$fileName");
-
-        // $pdf->save($pdfPath);
-
-        // return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
         
          return \Illuminate\Support\Facades\Response::stream(
             function () use ($pdf) {
@@ -1195,6 +1205,7 @@ class ApplicationController extends Controller
                 'Content-Type' => 'application/pdf;charset=utf-8',
                 'Content-Disposition' => 'inline; filename="preview.pdf"',
             ]);
+
 }
 
   /**

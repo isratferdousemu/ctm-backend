@@ -87,4 +87,13 @@ class Office extends Model
     {
         return $this->belongsTo(Location::class, 'parent_id');
     }
+
+
+    public function officeWards()
+    {
+        return $this->belongsToMany(Location::class, 'office_has_wards', 'office_id', 'ward_id');
+    }
+
+
+
 }

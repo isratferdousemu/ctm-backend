@@ -236,6 +236,15 @@ class OfficeController extends Controller
         ]);
     }
 
+
+    public function getWardList($officeId)
+    {
+        $office = Office::where('id', $officeId)->first();
+
+        return $this->sendResponse($office->officeWards);
+    }
+
+
     /**
      *
      * @OA\Post(

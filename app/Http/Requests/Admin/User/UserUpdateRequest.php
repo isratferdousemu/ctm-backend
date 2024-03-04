@@ -25,7 +25,7 @@ class UserUpdateRequest extends FormRequest
         return [
             'full_name'                 => 'required|string|max:50',
             'username'                  => 'required|string|unique:users,username,'. $this->id,
-            'mobile'                    => 'required|numeric|unique:users,mobile,'. $this->id.'|regex:/^01[3-9]\d{8}$/',
+            'mobile'                    => 'required|numeric|regex:/^01[3-9]\d{8}$/',
             'email'                     => 'required|email|unique:users,email,'. $this->id,
             'status'                    => 'sometimes|integer|in:0,1',
             'role_id'                   => 'sometimes|required|array|exists:roles,id',
@@ -46,4 +46,15 @@ class UserUpdateRequest extends FormRequest
             'committee_id'              => [Rule::requiredIf((bool)$this->committee_type)],
         ];
     }
+
+
+
+    public function messages()
+    {
+        return [
+            'mobile.regex' => 'Enter a valid number eg. 013xxxxxxxx'
+        ];
+    }
+
+
 }

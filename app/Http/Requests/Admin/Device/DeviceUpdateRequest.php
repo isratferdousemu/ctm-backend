@@ -24,7 +24,7 @@ class DeviceUpdateRequest extends FormRequest
         return [
             'id'    => 'required|exists:devices,id',
             'user_id' => "required|exists:users,user_id",
-            'ip_address' => "required|ip",
+//            'ip_address' => "required|ip",
             'name' => "required",
             'device_id' => "required",
             'device_type' => "required",

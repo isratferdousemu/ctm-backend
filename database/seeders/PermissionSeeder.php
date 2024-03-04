@@ -65,7 +65,10 @@ class PermissionSeeder extends Seeder
                     ["id" => 21, "name" => "ward-create", "page_url" => "/system-configuration/ward/create", "parent_page" => 1],
                     ["id" => 22, "name" => "ward-view", "page_url" => "/system-configuration/ward", "parent_page" => 1],
                     ["id" => 23, "name" => "ward-edit", "page_url" => "/system-configuration/ward/edit/:id", "parent_page" => 1],
-                    ["id" => 24, "name" => "ward-delete", "page_url" => "/system-configuration/ward", "parent_page" => 1]
+                    ["id" => 24, "name" => "ward-delete", "page_url" => "/system-configuration/ward", "parent_page" => 1],
+
+
+                    ["id" => 195, "name" => "systemConfigurationDashboard-view", "page_url" => "/system-configuration/dashboard", "parent_page" => 1]
                 ]
             ],
             [
@@ -201,6 +204,7 @@ class PermissionSeeder extends Seeder
                     ["id" => 62, "name" => "application-entry-view", "page_url" => "/application-management/application", "parent_page" => 1],
                     ["id" => 63, "name" => "application-entry-edit", "page_url" => "/application-management/application/edit/:id", "parent_page" => 1],
                     ["id" => 64, "name" => "application-entry-delete", "page_url" => "/application-management/application", "parent_page" => 1],
+                    ["id" => 194, "name" => "applicationDashboard-view", "page_url" => "/application-management/dashboard", "parent_page" => 1],
 
 //                    ["id" => 65, "name" => "primaryUnion-create", "page_url" => "/application-management/primary-selection-union/create", "parent_page" => 1],
 //                    ["id" => 66, "name" => "primaryUnion-view", "page_url" => "/application-management/primary-selection-union", "parent_page" => 1],
@@ -503,14 +507,15 @@ class PermissionSeeder extends Seeder
             ],
         ];
 
-        //last id 190
+        //last id 195
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('permissions')->truncate();
         for ($i = 0; $i < count($permissions); $i++) {
             $groupPermissions = $permissions[$i]['module_name'];
-            $subModulePermissions = $permissions[$i]['sub_module_name'];
+            $subModulePermissions = $permissions
+            [$i]['sub_module_name'];
             $guardPermissions = $permissions[$i]['guard_name'];
             for ($j = 0; $j < count($permissions[$i]['permissions']); $j++) {
                 //create permissions

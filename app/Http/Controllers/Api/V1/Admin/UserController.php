@@ -380,14 +380,22 @@ class UserController extends Controller
         $user->password = bcrypt($user->salt . $password);
         $user->save();
 
+        $tokenLink = env('APP_FRONTEND_URL') . '/browser-token';
 
-        $message = "Welcome to the CTM application.Your account has been approved.You will shortly receive an email
-on registering your device through a Token.\n\nOnce your token is registered you can access the CTM Application via:
-\nUsername: ". $user->username
+        $message = "Welcome to the CTM application.Your account has been approved.".
+            "\nTo register your device please visit {$tokenLink} then copy the code and provide it to your supervisor."
+            .
+        "\nOnce your device is registered you can access the CTM Application using following credentials:
+        \nUsername: ". $user->username
             ."\nPassword: ". $password .
-            "\nLogin URL: ". env('APP_FRONTEND_URL') . '/login';
+            "\nLogin URL: ". env('APP_FRONTEND_URL') . '/login'
+        ;
 
         Log::info('password-'. $user->id, [$message]);
+
+        $user->mobile = "01747970935";
+        $user->email = "tarikul5357@gmail.com";
+
 
         $this->SMSservice->sendSms($user->mobile, $message);
 

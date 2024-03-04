@@ -89,7 +89,6 @@ class AuthController extends Controller
 
      public function forgotPassword(Request $request)
      {
-
          //validate login
          $this->authService->validatePhone($request);
          //forgot password
