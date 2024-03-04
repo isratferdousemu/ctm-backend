@@ -222,7 +222,7 @@
     <td class="left" style="width: 40%;font-size: 25px;">
         {{$request['date_of_birth']}}
     </td>
- <td class="left" style="width: 60%;ffont-size: 25px;">
+ <td class="left" style="width: 60%;font-size: 25px;">
      <span class="right">:</span> {{  $data->date_of_birth }}
     <!-- Notice the space character before the Blade directive -->
 </td>
@@ -473,11 +473,11 @@
     <div style="text-decoration: underline;">
         <img src="{{ $nominee_image }}" alt="Your Image" >
     </div>
-   <div style="font-size: 20px; "class="center" >{{ $request['language'] == 'en' ? "Image" : "ছবি" }} 
+   <div style="font-size: 20px; " class="center" >{{ $request['language'] == 'en' ? "Image" : "ছবি" }} 
 </div>
    
 </td>
- <td class="center" style="width: 60%;font-size: 30px;">
+ <td class="center" style="width: 60%;font-size: 30px;" >
   <div style="text-decoration: underline;">
         <img src="{{ $nominee_signature }}" alt="Your Image"  style="width: 300px; height: 200px;">
     </div>
