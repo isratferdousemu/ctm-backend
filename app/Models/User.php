@@ -184,7 +184,14 @@ class User extends Authenticatable
             ->orderByDesc('id');
     }
 
+    public function lookup()
+    {
+        return $this->belongsTo(Lookup::class, 'office_type', 'id');
+    }
 
-
+    public function userWards()
+    {
+        return $this->belongsToMany(Location::class, 'user_has_wards', 'user_id', 'ward_id');
+    }
 
 }

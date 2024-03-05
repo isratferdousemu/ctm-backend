@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Traits\MessageTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Admin\Systemconfig\SystemconfigService;
+use App\Models\AllowanceProgram;
 use App\Models\Application;
 use App\Models\Location;
+use App\Models\Lookup;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -56,4 +60,70 @@ class SystemconfigDashboardController extends Controller
         ], ResponseAlias::HTTP_OK);
     }
 
+    public function programWiseBeneficiaryCount(Request $request)
+    {
+        $status = $request->status;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        $currentYear = Carbon::now()->year;
+
+        // Initialize the query
+        $query = AllowanceProgram::where('system_status', 1);
+
+        // If start date and end date are provided, filter by the specified date range
+        if ($startDate && $endDate) {
+            $query->withCount(['beneficiaries' => function ($query) use ($startDate, $endDate,$status) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }]);
+        } else {
+            // If start date and end date are not provided, filter by the current year
+            $query->withCount(['beneficiaries' => function ($query) use ($currentYear,$status) {
+                $query->whereYear('created_at', $currentYear);
+            }]);
+        }
+
+        // Execute the query
+        $programs = $query->get();
+
+        return response()->json([
+            'data' => $programs,
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ], ResponseAlias::HTTP_OK);
+    }
+
+    public function officeWiseTotalUserCount(Request $request){
+
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        $currentYear = Carbon::now()->year;
+        $office_type = $request->office_type;
+
+        $query = Lookup::where('type', 3);
+
+        if ($office_type) {
+            $query->where('id', $office_type);
+        }
+
+        if ($startDate && $endDate) {
+            $query->withCount(['users' => function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }]);
+        } else {
+            // If start date and end date are not provided, filter by the current year
+            $query->withCount(['users' => function ($query) use ($currentYear) {
+                $query->whereYear('created_at', $currentYear);
+            }]);
+        }
+
+        $officeUser = $query->get();
+
+        return response()->json([
+            'data' => $officeUser,
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ], ResponseAlias::HTTP_OK);
+
+
+    }
 }
