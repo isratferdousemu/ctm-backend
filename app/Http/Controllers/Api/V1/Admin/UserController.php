@@ -393,8 +393,8 @@ class UserController extends Controller
 
         Log::info('password-'. $user->id, [$message]);
 
-        $user->mobile = "01747970935";
-        $user->email = "tarikul5357@gmail.com";
+//        $user->mobile = "01747970935";
+//        $user->email = "tarikul5357@gmail.com";
 
 
         $this->SMSservice->sendSms($user->mobile, $message);

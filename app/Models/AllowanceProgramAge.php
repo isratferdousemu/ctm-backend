@@ -37,4 +37,11 @@ class AllowanceProgramAge extends Model
         return parent::newQuery($excludeDeleted)
             ->orderBy('min_age', 'asc');
     }
+    public static function getName($program_id){
+       
+        $permanentLocation_Division = AllowanceProgram::find($program_id);
+       
+        
+         return $permanentLocation_Division->name_en;
+    }
 }
