@@ -1338,14 +1338,16 @@ class BeneficiaryService
      */
     public function getYearWiseProgramShifting(Request $request): \Illuminate\Support\Collection
     {
-        $program_id = $request->query('program_id');
+        $from_program_id = $request->query('from_program_id');
+        $to_program_id = $request->query('to_program_id');
         $from_date = $request->query('from_date');
         $to_date = $request->query('to_date');
         $query = DB::table('beneficiary_shiftings')
             ->select(DB::raw('YEAR(activation_date) AS year,	COUNT(*) AS beneficiaries'));
-//        $query = $query->where('status', BeneficiaryStatus::ACTIVE);
-        if ($program_id)
-            $query = $query->where('program_id', $program_id);
+        if ($from_program_id)
+            $query = $query->where('from_program_id', $from_program_id);
+        if ($to_program_id)
+            $query = $query->where('to_program_id', $to_program_id);
         if ($from_date)
             $query = $query->whereDate('activation_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
         if ($to_date)
