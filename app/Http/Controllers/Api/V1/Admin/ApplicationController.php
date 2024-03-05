@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use Carbon\Carbon;
 use App\Helpers\Helper;
+use App\Jobs\SendEmail;
 use App\Models\Location;
 use App\Models\PMTScore;
 use App\Models\Committee;
@@ -21,10 +22,11 @@ use App\Models\CommitteePermission;
 use Illuminate\Support\Facades\Log;
 use App\Constants\ApplicationStatus;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 use App\Http\Traits\BeneficiaryTrait;
+
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
 use App\Exceptions\AuthBasicErrorException;
 use App\Http\Services\Notification\SMSservice;
 use Illuminate\Validation\ValidationException;
@@ -41,7 +43,6 @@ use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
 use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
 use App\Http\Services\Admin\Application\CommitteeApplicationService;
-use Illuminate\Support\Facades\Http;
 
 class ApplicationController extends Controller
 {
@@ -340,9 +341,14 @@ class ApplicationController extends Controller
 
 
         $data = $this->applicationService->onlineApplicationRegistration($request, $allowanceAmount);
+        $programName = AllowanceProgram::where('id',$data->program_id)->first('name_en');
+        $programName = $programName->name_en;
+
+  
+       $message = " Dear $data->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
 
 
-     $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
+    //  $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
 
         // Log::info('password-'. $user->id, [$message]);
 
@@ -1653,7 +1659,14 @@ class ApplicationController extends Controller
      *
      */
     public function changeApplicationsStatus(UpdateStatusRequest $request)
+
     {
+        if(!$request->applications_id){
+          return response()->json([
+                        'success' => false,
+                        'error' => 'You have to select atleast one applicant .',
+                    ]);
+        }
 
         $user = auth()->user();
 
@@ -1827,8 +1840,27 @@ class ApplicationController extends Controller
 
         $beneficiary->status = $status;
         $beneficiary->approve_date = $application->approve_date;
+        $beneficiary->save();
+          if($status === 1){
+        $programName = AllowanceProgram::where('id',$application->program_id)->first('name_en');
+        $program = $programName->name_en;
 
-        return $beneficiary->save();
+  
+         $message = " Dear $application->name_en, "."\n We are thrilled to inform you that you have been selected as a recipient for the ". $program ."\n Sincerely,"."\nDepartment of Social Services";
+
+
+        $this->SMSservice->sendSms($application->mobile, $message);
+        if($application->email){
+            $this->dispatch(new SendEmail($application->email,$application->name_en, $program));
+
+        }
+
+        
+
+        }
+
+        
+      
 
     }
 
