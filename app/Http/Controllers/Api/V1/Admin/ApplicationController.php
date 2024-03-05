@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use Carbon\Carbon;
 use App\Helpers\Helper;
+use App\Jobs\SendEmail;
 use App\Models\Location;
 use App\Models\PMTScore;
 use App\Models\Committee;
@@ -21,10 +22,11 @@ use App\Models\CommitteePermission;
 use Illuminate\Support\Facades\Log;
 use App\Constants\ApplicationStatus;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 use App\Http\Traits\BeneficiaryTrait;
+
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
 use App\Exceptions\AuthBasicErrorException;
 use App\Http\Services\Notification\SMSservice;
 use Illuminate\Validation\ValidationException;
@@ -41,7 +43,6 @@ use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
 use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
 use App\Http\Services\Admin\Application\CommitteeApplicationService;
-use Illuminate\Support\Facades\Http;
 
 class ApplicationController extends Controller
 {
@@ -340,9 +341,14 @@ class ApplicationController extends Controller
 
 
         $data = $this->applicationService->onlineApplicationRegistration($request, $allowanceAmount);
+        $programName = AllowanceProgram::where('id',$data->program_id)->first('name_en');
+        $programName = $programName->name_en;
 
 
-     $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
+       $message = " Dear $data->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
+
+
+    //  $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
 
         // Log::info('password-'. $user->id, [$message]);
 
@@ -378,78 +384,6 @@ class ApplicationController extends Controller
     }
 
 
-
-
-    public function getWardId()
-    {
-        $parentsIdOfWards = [];
-
-        $user = auth()->user();
-
-        $locationType = request('location_type_id');
-        $query = Location::query();
-
-        //search by assign location id
-        $query->when($user->assign_location_id, function ($q, $v) {
-            $q->where('parent_id', $v);
-        });
-
-        $query->when(request('division_id'), function ($q, $v) {
-            $q->where('parent_id', $v);
-        });
-
-        $query->when(request('district_id'), function ($q, $v) {
-            $q->where('parent_id', $v);
-        });
-
-
-        //Upazila type
-        if ($locationType == 2) {
-            $query->when(request('sub_location_type'), function ($q, $v) {
-                $q->where('type', $v == 1 ? $this->pouro : $this->union);
-            });
-
-            //load all wards under by pourosova
-            $query->when(request('pouro_id'), function ($q, $v) {
-                $q->where('parent_id', $v);
-            });
-
-            //load all wards under by union
-            $query->when(request('union_id'), function ($q, $v) {
-                $q->where('parent_id', $v);
-            });
-        }
-
-
-
-        //City corporation
-        if ($locationType == 3) {
-            $query->when(request('city_thana_id'), function ($q, $v) {
-                $q->where('parent_id', $v)
-                    ->where('location_type', 3);
-            });
-        }
-
-
-
-        //District pouroshova
-        if ($locationType == 1) {
-            $query->when(request('district_pouro_id'), function ($q, $v) {
-                $q->where('parent_id', $v);
-            });
-        }
-
-        $parentsIdOfWards = $query->pluck('id');
-
-        return Location::whereType($this->ward)
-            ->when(request('ward_id'), function ($q, $v) {
-                $q->whereId($v);
-            }, function ($q) use ($parentsIdOfWards) {
-                $q->whereIn('parent_id', $parentsIdOfWards);
-            })
-            ->pluck('id');
-
-    }
 
 
     /* -------------------------------------------------------------------------- */
@@ -709,6 +643,10 @@ class ApplicationController extends Controller
 
         $query->when($program_id, function ($q) use ($filterArrayProgramId) {
             $q->where($filterArrayProgramId);
+        });
+
+        $query->when($account_no, function ($q) use ($filterArrayAccountNo) {
+            $q->where($filterArrayAccountNo);
         });
 
 
@@ -1018,11 +956,11 @@ class ApplicationController extends Controller
 
     //    $image = Storage::disk('public')->url($application->image);
        $image = asset('storage/' . $application->image);
-  
+
        $signature = asset('storage/' . $application->signature);
-     
+
          $nominee_image = asset('storage/' . $application->nominee_image);
-       
+
 
            $nominee_signature = asset('storage/' . $application->nominee_signature);
         //    url(Storage::url( $application->nominee_signature));
@@ -1135,15 +1073,15 @@ class ApplicationController extends Controller
              'variable',
             'subvariable'
         ])->first();
-      
+
 
     if (!$application) {
         return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
     }
 
- 
 
-   
+
+
 
     //  $image = asset('storage/' . $application->image);
 
@@ -1162,7 +1100,7 @@ class ApplicationController extends Controller
     $nominee_signature_Data = Storage::disk('public')->get($nominee_signaturePath);
     $nominee_signature=Helper::urlToBase64($nominee_signature_Data);
 
-  
+
      $dynamic=$request->all();
 
      $title=$request->title;
@@ -1172,9 +1110,9 @@ class ApplicationController extends Controller
                  'image'=>$image ,
                  'nominee_image'=>$nominee_image ,
                  'signature'=>$signature ,
-                 'nominee_signature'=>$nominee_signature 
-              
-                
+                 'nominee_signature'=>$nominee_signature
+
+
  ];
 
 
@@ -1195,7 +1133,7 @@ class ApplicationController extends Controller
 
 
 
-        
+
          return \Illuminate\Support\Facades\Response::stream(
             function () use ($pdf) {
                 echo $pdf->output();
@@ -1653,7 +1591,14 @@ class ApplicationController extends Controller
      *
      */
     public function changeApplicationsStatus(UpdateStatusRequest $request)
+
     {
+        if(!$request->applications_id){
+          return response()->json([
+                        'success' => false,
+                        'error' => 'You have to select atleast one applicant .',
+                    ]);
+        }
 
         $user = auth()->user();
 
@@ -1827,8 +1772,27 @@ class ApplicationController extends Controller
 
         $beneficiary->status = $status;
         $beneficiary->approve_date = $application->approve_date;
+        $beneficiary->save();
+          if($status === 1){
+        $programName = AllowanceProgram::where('id',$application->program_id)->first('name_en');
+        $program = $programName->name_en;
 
-        return $beneficiary->save();
+
+         $message = " Dear $application->name_en, "."\n We are thrilled to inform you that you have been selected as a recipient for the ". $program ."\n Sincerely,"."\nDepartment of Social Services";
+
+
+        $this->SMSservice->sendSms($application->mobile, $message);
+        if($application->email){
+            $this->dispatch(new SendEmail($application->email,$application->name_en, $program));
+
+        }
+
+
+
+        }
+
+
+
 
     }
 

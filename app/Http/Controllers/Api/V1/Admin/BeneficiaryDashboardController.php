@@ -26,6 +26,10 @@ class BeneficiaryDashboardController extends Controller
         $this->beneficiaryService = $beneficiaryService;
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getTotalBeneficiaries(Request $request): \Illuminate\Http\JsonResponse
     {
         $beneficiaries = $this->beneficiaryService->getStatusWiseTotalBeneficiaries();
@@ -66,14 +70,18 @@ class BeneficiaryDashboardController extends Controller
         ], ResponseAlias::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getLocationWiseBeneficiaries(Request $request): \Illuminate\Http\JsonResponse
     {
         $beneficiaries = $this->beneficiaryService->getLocationWiseBeneficiaries($request);
-        $total = $beneficiaries->sum(function ($item){
+        $total = $beneficiaries->sum(function ($item) {
             return $item->value;
         });
-        $beneficiaries = $beneficiaries->map(function ($item) use ($total){
-            $item->percentage = round(($item->value/ $total) * 100, 2);
+        $beneficiaries = $beneficiaries->map(function ($item) use ($total) {
+            $item->percentage = round(($item->value / $total) * 100, 2);
             return $item;
         });
 
@@ -84,14 +92,18 @@ class BeneficiaryDashboardController extends Controller
         ], ResponseAlias::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getGenderWiseBeneficiaries(Request $request): \Illuminate\Http\JsonResponse
     {
         $beneficiaries = $this->beneficiaryService->getGenderWiseBeneficiaries($request);
-        $total = $beneficiaries->sum(function ($item){
+        $total = $beneficiaries->sum(function ($item) {
             return $item->value;
         });
-        $beneficiaries = $beneficiaries->map(function ($item) use ($total){
-            $item->percentage = round(($item->value/ $total) * 100, 2);
+        $beneficiaries = $beneficiaries->map(function ($item) use ($total) {
+            $item->percentage = round(($item->value / $total) * 100, 2);
             return $item;
         });
         return response()->json([
@@ -101,15 +113,22 @@ class BeneficiaryDashboardController extends Controller
         ], ResponseAlias::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getYearWiseWaitingBeneficiaries(Request $request): \Illuminate\Http\JsonResponse
     {
-        $beneficiaries = [
-            "totalBeneficiaries" => 10000,
-            "totalActiveBeneficiaries" => 8000,
-            "totalInactiveBeneficiaries" => 100,
-            "totalWaitingBeneficiaries" => 500,
-            "totalReplacedBeneficiaries" => 300
-        ];
+        $results = $this->beneficiaryService->getYearWiseBeneficiaries($request);
+        $beneficiaries = [];
+        foreach ($results as $result) {
+            $beneficiaries[$result->year]['year'] = $result->year;
+            if ($result->status == 1)
+                $beneficiaries[$result->year]['value'] = $result->value;
+            elseif ($result->status == 3)
+                $beneficiaries[$result->year]['waiting'] = $result->value;
+        }
+        $beneficiaries = array_values($beneficiaries);
         return response()->json([
             'data' => $beneficiaries,
             'success' => true,
@@ -117,15 +136,13 @@ class BeneficiaryDashboardController extends Controller
         ], ResponseAlias::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getProgramWiseBeneficiaries(Request $request): \Illuminate\Http\JsonResponse
     {
-        $beneficiaries = [
-            "totalBeneficiaries" => 10000,
-            "totalActiveBeneficiaries" => 8000,
-            "totalInactiveBeneficiaries" => 100,
-            "totalWaitingBeneficiaries" => 500,
-            "totalReplacedBeneficiaries" => 300
-        ];
+        $beneficiaries = $this->beneficiaryService->getProgramWiseBeneficiaries($request);
         return response()->json([
             'data' => $beneficiaries,
             'success' => true,
@@ -133,15 +150,19 @@ class BeneficiaryDashboardController extends Controller
         ], ResponseAlias::HTTP_OK);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAgeWiseBeneficiaries(Request $request): \Illuminate\Http\JsonResponse
     {
-        $beneficiaries = [
-            "totalBeneficiaries" => 10000,
-            "totalActiveBeneficiaries" => 8000,
-            "totalInactiveBeneficiaries" => 100,
-            "totalWaitingBeneficiaries" => 500,
-            "totalReplacedBeneficiaries" => 300
-        ];
+        $beneficiaries = $this->beneficiaryService->getAgeWiseBeneficiaries($request)->first();
+        $beneficiaries = collect($beneficiaries);
+        $beneficiaries = $beneficiaries->map(function ($item, $key) {
+            return ["age" => $key, "beneficiaries" => $item ?? 0];
+        });
+        $beneficiaries = array_values($beneficiaries->toArray());
+
         return response()->json([
             'data' => $beneficiaries,
             'success' => true,
@@ -149,15 +170,13 @@ class BeneficiaryDashboardController extends Controller
         ], ResponseAlias::HTTP_OK);
     }
 
-    public function getShiftedBeneficiaries(Request $request): \Illuminate\Http\JsonResponse
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getYearWiseProgramShifting(Request $request): \Illuminate\Http\JsonResponse
     {
-        $beneficiaries = [
-            "totalBeneficiaries" => 10000,
-            "totalActiveBeneficiaries" => 8000,
-            "totalInactiveBeneficiaries" => 100,
-            "totalWaitingBeneficiaries" => 500,
-            "totalReplacedBeneficiaries" => 300
-        ];
+        $beneficiaries = $this->beneficiaryService->getYearWiseProgramShifting($request);
         return response()->json([
             'data' => $beneficiaries,
             'success' => true,

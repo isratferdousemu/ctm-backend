@@ -482,10 +482,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->settingManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 173, "name" => "general-setting-create", "page_url" => "/setting/general/create", "parent_page" => 0],
-                    ["id" => 174, "name" => "general-setting-view", "page_url" => "/setting/general", "parent_page" => 0],
-                    ["id" => 175, "name" => "general-setting-edit", "page_url" => "/setting/general/edit/:id", "parent_page" => 0],
-                    ["id" => 176, "name" => "general-setting-delete", "page_url" => "/setting/general", "parent_page" => 0],
+                    ["id" => 173, "name" => "generalSetting-create", "page_url" => "/setting/general/create", "parent_page" => 0],
+                    ["id" => 174, "name" => "generalSetting-view", "page_url" => "/setting/general", "parent_page" => 0],
+                    ["id" => 175, "name" => "generalSetting-edit", "page_url" => "/setting/general/edit/:id", "parent_page" => 0],
+                    ["id" => 176, "name" => "generalSetting-delete", "page_url" => "/setting/general", "parent_page" => 0],
 
                     // ["id" => 177, "name"=>"global-setting-create", "page_url"=>"/setting/global/create", "parent_page"=>0],
                     // ["id" => 178, "name"=>"global-setting-view", "page_url"=>"/setting/global", "parent_page"=>0],

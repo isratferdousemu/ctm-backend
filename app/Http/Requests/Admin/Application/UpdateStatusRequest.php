@@ -33,4 +33,10 @@ class UpdateStatusRequest extends FormRequest
             'status' => 'required|'. Rule::in(array_keys(ApplicationStatus::ALL)),
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'applications_id.required' => 'You have to select at least one applicant.',
+        ];
+    }
 }

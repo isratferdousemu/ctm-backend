@@ -183,6 +183,8 @@ class OfficeApplicationService
             ->where('permanent_city_corp_id', $cityCorpId)
         ;
 
+        $query->whereIn('permanent_ward_id', $user->userWards()->pluck('id'));
+
         $query->when(request('city_thana_id'), function ($q, $v) {
             $q->where('thana_id', $v);
         });
@@ -208,6 +210,8 @@ class OfficeApplicationService
             ->where('permanent_district_id', $districtId)
             ->where('permanent_upazila_id', $upazilaId)
             ;
+
+        $query->whereIn('permanent_ward_id', $user->userWards()->pluck('id'));
 
         return $this->applySubLocationFilter($query);
 
