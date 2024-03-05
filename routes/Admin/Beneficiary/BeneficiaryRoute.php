@@ -45,7 +45,7 @@ Route::middleware(['auth:sanctum', 'language'])->group(function () {
         Route::get('/getYearWiseWaitingBeneficiaries', [BeneficiaryDashboardController::class, 'getYearWiseWaitingBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
         Route::get('/getProgramWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getProgramWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
         Route::get('/getAgeWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getAgeWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
-        Route::get('/getShiftedBeneficiaries', [BeneficiaryDashboardController::class, 'getShiftedBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
+        Route::get('/getYearWiseProgramShifting', [BeneficiaryDashboardController::class, 'getYearWiseProgramShifting'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
     });
 
     Route::prefix('admin/committee')->group(function () {
