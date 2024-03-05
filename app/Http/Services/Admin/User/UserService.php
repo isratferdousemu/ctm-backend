@@ -85,6 +85,9 @@ class UserService
             $user->user_id = $user->id;
             $user->save();
 
+            if ($request->office_type == 9 || $request->office_type == 10) {
+                $this->saveUserWards($user, $request);
+            }
 
             if ($request->user_type == 1) {
                 $user->assignRole(Arr::wrap($request->role_id));
@@ -98,6 +101,21 @@ class UserService
              DB::rollBack();
              throw $th;
          }
+    }
+
+
+    /**
+     * @param User $user
+     * @param $request
+     * @return string[]
+     */
+    public function saveUserWards($user, $request)
+    {
+        $wards = $request->office_ward_id ? explode(',', $request->office_ward_id) : [];
+
+        $user->userWards()->sync($wards);
+
+        return $user->userWards;
     }
 
 
@@ -183,6 +201,8 @@ class UserService
                 $user->syncRoles([]);
                 $user->assignRole('committee');
             }
+
+            $this->saveUserWards($user, $request);
 
             DB::commit();
             return $user;

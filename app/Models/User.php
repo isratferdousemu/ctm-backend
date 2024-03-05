@@ -185,6 +185,12 @@ class User extends Authenticatable
     }
 
 
+    public function userWards()
+    {
+        return $this->belongsToMany(Location::class, 'user_has_wards', 'user_id', 'ward_id');
+    }
+
+
 
 
 }

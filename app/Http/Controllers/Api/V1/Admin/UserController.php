@@ -143,7 +143,7 @@ class UserController extends Controller
         ;
     })
         ->whereIn('id', $this->officeHeadService->getUsersUnderOffice())
-    ->with('office','assign_location.parent.parent.parent.parent','officeTypeInfo','roles', 'committee')
+    ->with('office','assign_location.parent.parent.parent.parent','officeTypeInfo','roles', 'committee', 'userWards')
     ->orderByDesc('id')
     ->paginate($perPage, ['*'], 'page');
 // }
@@ -317,10 +317,7 @@ class UserController extends Controller
             }
         }
 
-
-
-            $user = $this->UserService->createUser($request,$password);
-
+        $user = $this->UserService->createUser($request,$password);
 
             activity("User")
             ->causedBy(auth()->user())
