@@ -1209,27 +1209,151 @@ class BeneficiaryService
     public function getLocationWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
     {
         $program_id = $request->query('program_id');
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
         $query = DB::table('beneficiaries')
             ->join('locations', 'beneficiaries.permanent_division_id', '=', 'locations.id', 'left')
             ->select(DB::raw('locations.name_en AS division, count(*) as value'));
         $query = $query->where('status', BeneficiaryStatus::ACTIVE);
         if ($program_id)
             $query = $query->where('program_id', $program_id);
+        if ($from_date)
+            $query = $query->whereDate('approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
+        if ($to_date)
+            $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
 
         return $query->groupBy('locations.name_en')
             ->get();
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Support\Collection
+     */
     public function getGenderWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
     {
         $program_id = $request->query('program_id');
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
         $query = DB::table('beneficiaries')
             ->join('lookups', 'beneficiaries.gender_id', '=', 'lookups.id', 'left')
             ->select(DB::raw('lookups.value_en AS gender, count(*) as value'));
         $query = $query->where('status', BeneficiaryStatus::ACTIVE);
         if ($program_id)
             $query = $query->where('program_id', $program_id);
+        if ($from_date)
+            $query = $query->whereDate('approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
+        if ($to_date)
+            $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
+
 
         return $query->groupBy('lookups.value_en')
+            ->get();
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Support\Collection
+     */
+    public function getYearWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
+    {
+        $program_id = $request->query('program_id');
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
+
+        $query = DB::table('beneficiaries')
+            ->select(DB::raw('year(approve_date) as year, status, count(status) as value'));
+//        $query = $query->where('status', BeneficiaryStatus::ACTIVE);
+        if ($program_id)
+            $query = $query->where('program_id', $program_id);
+        if ($from_date)
+            $query = $query->whereDate('approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
+        if ($to_date)
+            $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
+
+        return $query->groupByRaw('year(approve_date), status')
+//            ->orderByRaw('year(approve_date), status')
+            ->get();
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Support\Collection
+     */
+    public function getProgramWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
+    {
+        $program_id = $request->query('program_id');
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
+        $query = DB::table('beneficiaries')
+            ->select(DB::raw('YEAR(approve_date) as year, COUNT(*) beneficiaries'));
+        $query = $query->where('status', BeneficiaryStatus::ACTIVE);
+        if ($program_id)
+            $query = $query->where('program_id', $program_id);
+        if ($from_date)
+            $query = $query->whereDate('approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
+        if ($to_date)
+            $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
+
+        return $query->groupByRaw('YEAR(beneficiaries.approve_date)')
+            ->orderByRaw('YEAR(beneficiaries.approve_date)')
+//            ->limit(7)
+            ->get();
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAgeWiseBeneficiaries(Request $request): \Illuminate\Support\Collection
+    {
+        $program_id = $request->query('program_id');
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
+        $query = DB::table('beneficiaries')
+            ->select(DB::raw("SUM(IF(age < 20, 1, 0)) as 'Under 20',
+                                    SUM(IF(age BETWEEN 20 and 29, 1, 0)) as '20 - 29',
+                                    SUM(IF(age BETWEEN 30 and 39, 1, 0)) as '30 - 39',
+                                    SUM(IF(age BETWEEN 40 and 49, 1, 0)) as '40 - 49',
+                                    SUM(IF(age BETWEEN 50 and 59, 1, 0)) as '50 - 59',
+                                    SUM(IF(age BETWEEN 60 and 69, 1, 0)) as '60 - 69',
+                                    SUM(IF(age BETWEEN 70 and 79, 1, 0)) as '70 - 79',
+                                    SUM(IF(age BETWEEN 80 and 89, 1, 0)) as '80 - 89',
+                                    SUM(IF(age BETWEEN 90 and 99, 1, 0)) as '90 - 99',
+                                    SUM(IF(age > 89, 1, 0)) as 'Above 99'"));
+        $query = $query->where('status', BeneficiaryStatus::ACTIVE);
+        if ($program_id)
+            $query = $query->where('program_id', $program_id);
+        if ($from_date)
+            $query = $query->whereDate('approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
+        if ($to_date)
+            $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
+
+        return $query->get();
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Support\Collection
+     */
+    public function getYearWiseProgramShifting(Request $request): \Illuminate\Support\Collection
+    {
+        $program_id = $request->query('program_id');
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
+        $query = DB::table('beneficiary_shiftings')
+            ->select(DB::raw('YEAR(activation_date) AS year,	COUNT(*) AS beneficiaries'));
+//        $query = $query->where('status', BeneficiaryStatus::ACTIVE);
+        if ($program_id)
+            $query = $query->where('program_id', $program_id);
+        if ($from_date)
+            $query = $query->whereDate('activation_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
+        if ($to_date)
+            $query = $query->whereDate('activation_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
+
+        return $query->groupByRaw('YEAR(activation_date)')
+            ->orderByRaw('YEAR(activation_date)')
+//            ->limit(7)
             ->get();
     }
 
