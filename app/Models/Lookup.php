@@ -57,5 +57,8 @@ class Lookup extends Model
         return $this->hasOne(CommitteePermission::class, 'committee_type_id', 'id')->latest();
     }
 
+    public function users(){
+        return $this->hasMany(User::class,'office_type','id');
+    }
 
 }
