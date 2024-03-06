@@ -17,9 +17,9 @@ Route::middleware('auth:sanctum')->group(function () {
         /* -------------------------------------------------------------------------- */
 
         Route::prefix('admin/system-configuration/dashboard')->group(function () {
-            Route::get('/get-all-location-application-count', [SystemconfigDashboardController::class, 'getAllLocationApplicationCount'])->middleware(['role_or_permission:super-admin']);
-            Route::get('/get-program-wise-beneficiary-count', [SystemconfigDashboardController::class, 'programWiseBeneficiaryCount'])->middleware(['role_or_permission:super-admin']);
-            Route::get('/office-wise-total-user-count', [SystemconfigDashboardController::class, 'officeWiseTotalUserCount'])->middleware(['role_or_permission:super-admin']);
+            Route::get('/get-all-location-application-count', [SystemconfigDashboardController::class, 'getAllLocationApplicationCount'])/*->middleware(['role_or_permission:super-admin'])*/;
+            Route::get('/get-program-wise-beneficiary-count', [SystemconfigDashboardController::class, 'programWiseBeneficiaryCount'])/*->middleware(['role_or_permission:super-admin'])*/;
+            Route::get('/office-wise-total-user-count', [SystemconfigDashboardController::class, 'officeWiseTotalUserCount'])/*->middleware(['role_or_permission:super-admin'])*/;
         });
 
     /* -------------------------------------------------------------------------- */

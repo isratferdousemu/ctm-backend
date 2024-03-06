@@ -36,8 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('admin/application-dashboard')->group(function () {
-        Route::get('/get-total-received-application', [ApplicationSelectionDashboardController::class, 'programStatusWisetotalNumberOfdApplication'])->middleware(['role_or_permission:super-admin']);
-        Route::get('/get-total-numberof-application', [ApplicationSelectionDashboardController::class, 'programWisetotalNumberOfdApplication'])->middleware(['role_or_permission:super-admin']);
+        Route::get('/get-total-received-application', [ApplicationSelectionDashboardController::class, 'programStatusWisetotalNumberOfdApplication'])/*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
+        Route::get('/get-total-numberof-application', [ApplicationSelectionDashboardController::class, 'programWisetotalNumberOfdApplication'])/*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
     });
 
 
