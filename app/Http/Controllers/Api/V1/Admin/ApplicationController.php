@@ -138,7 +138,7 @@ class ApplicationController extends Controller
         $data = (new VerificationService)->callVerificationApi($data);
 
         $gender_id='';
-        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first(); 
+        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first();
         if($data['gender']=='পুরুষ'){
             $gender_id= $Lookup['id'];
         }else{
@@ -162,7 +162,7 @@ class ApplicationController extends Controller
     public function verifyAge($nidInfo)
     {
         $gender_id='';
-        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first(); 
+        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first();
         if($nidInfo['gender']=='পুরুষ'){
             $gender_id= $Lookup['id'];
         }else{
@@ -1752,6 +1752,7 @@ class ApplicationController extends Controller
                 "current_ward_id" => $application->current_ward_id,
                 "current_post_code" => $application->current_post_code,
                 "current_address" => $application->current_address,
+                "financial_year_id" => $application->financial_year_id,
                 "mobile" => $application->mobile,
                 "permanent_division_id" => $application->permanent_division_id,
                 "permanent_district_id" => $application->permanent_district_id,
