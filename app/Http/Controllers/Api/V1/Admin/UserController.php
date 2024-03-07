@@ -25,6 +25,7 @@ use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
@@ -411,6 +412,41 @@ class UserController extends Controller
         $status = $user->status ? 'approved' : 'deactivated';
 
         return $this->sendResponse($user, "User has been $status");
+    }
+
+
+    public function sendSms(Request $request)
+    {
+        $url = "bulksmsbd.net/api/smsapi";
+
+        $message = "Your OTP is 12132";
+        $number = $request->number ?: "01747970935";
+
+
+        $user = User::find(1);
+        $user->email = "tarikul5357@gmail.com";
+
+        $this->dispatch(new UserCreateJob($user->email,$user->username, '1223'));
+
+//        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->full_name, '1234'));
+
+
+        $data = [
+            'api_key' => "xp143oLW8GJtKk3ggwxW",
+            'type' => "text",
+            'message' => $message,
+            'number' => $number,
+            'senderid' => "8809617617434",
+        ];
+
+        if ($request->sms) {
+            $response = Http::contentType('application/json')
+                ->post($url, $data);
+
+            return $response->json();
+        }
+
+
     }
 
 
