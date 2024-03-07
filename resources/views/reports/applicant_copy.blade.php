@@ -173,7 +173,7 @@
 </div>
  
 
-  <div style="font-size: 20px; ">{{ $request['language'] == 'en' ? "Image" : "ছবি" }}</div>
+  <div style="font-size: 20px; ">{{ $request['language'] == 'en' ? " Applicant's Image" : "আবেদনকারীর ছবি" }}</div>
 </td>
 
 </tr>
@@ -473,15 +473,15 @@
     <div style="text-decoration: underline;">
         <img src="{{ $nominee_image }}" alt="Your Image" >
     </div>
-   <div style="font-size: 20px; " class="center" >{{ $request['language'] == 'en' ? "Image" : "ছবি" }} 
+   <div style="font-size: 20px; " class="center" >{{ $request['language'] == 'en' ? " Nominee Image" : "নমিনীর ছবি" }} 
 </div>
    
 </td>
- <td class="center" style="width: 60%;font-size: 30px;" >
+ <td class="center" style="width: 60%;font-size: 30px;" rowspan="3">
   <div style="text-decoration: underline;">
         <img src="{{ $nominee_signature }}" alt="Your Image"  style="width: 300px; height: 200px;">
     </div>
-   <div style="font-size: 20px; ">{{ $request['language'] == 'en' ? "Signature" : "স্বাক্ষর" }} 
+   <div style="font-size: 20px; ">{{ $request['language'] == 'en' ? "Nominee Signature" : "নমিনীর স্বাক্ষর" }} 
 </div>
    
     <!-- Notice the space character before the Blade directive -->
@@ -602,7 +602,7 @@
     <div style="text-decoration: underline;">
         <img src="{{ $signature }}" alt="Your Image" style="width: 200px; height: 200px;">
     </div>
-   <div style="font-size: 20px; border-bottom: 1px solid black;">{{ $request['language'] == 'en' ? "Date" : "তারিখ" }} :
+   <div style="font-size: 20px;">{{ $request['language'] == 'en' ? "Applicant's Signature" : "আবেদনকারীর স্বাক্ষর" }} {{ $request['language'] == 'en' ? "Date" : "তারিখ" }} :
 {{ $request['language'] == 'en' ? $data->created_at->toDateString() :  \App\Helpers\Helper::englishToBangla($data->created_at->toDateString()) }}</div>
    
 </td>

@@ -345,7 +345,7 @@ class ApplicationController extends Controller
         $programName = $programName->name_en;
 
   
-       $message = " Dear $data->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
+        $message = " Dear $data->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
 
 
     //  $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";

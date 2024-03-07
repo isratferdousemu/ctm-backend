@@ -102,7 +102,7 @@ trait MessageTrait
     private $updateSuccessMessage = 'Update Success';
     private $deleteSuccessMessage = 'Delete Success';
     //fetch success
-    private $fetchSuccessMessage = 'Fetch Success';
+    private $fetchSuccessMessage = 'NID information verified successfully';
     private $otpSendMessage = 'Otp Send Successfully';
     //not found
     private $unverifiedUserErrorResponse = 'Please Verify Your Account to login';
