@@ -399,9 +399,9 @@ class UserController extends Controller
 
         $this->SMSservice->sendSms($user->mobile, $message);
 
-//        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
+        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
 
-        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->full_name,$password));
+//        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->full_name,$password));
 
 
         activity("User")
