@@ -68,7 +68,8 @@ class PermissionSeeder extends Seeder
                     ["id" => 24, "name" => "ward-delete", "page_url" => "/system-configuration/ward", "parent_page" => 1],
 
 
-                    ["id" => 195, "name" => "systemConfigurationDashboard-view", "page_url" => "/system-configuration/dashboard", "parent_page" => 1]
+                    ["id" => 195, "name" => "systemConfigurationDashboard-create", "page_url" => "/system-configuration/dashboard", "parent_page" => 1],
+                    ["id" => 198, "name" => "systemConfigurationDashboard-view", "page_url" => "/system-configuration/dashboard", "parent_page" => 1]
                 ]
             ],
             [
@@ -510,7 +511,7 @@ class PermissionSeeder extends Seeder
             ],
         ];
 
-        //last id 195
+        //last id 198
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
