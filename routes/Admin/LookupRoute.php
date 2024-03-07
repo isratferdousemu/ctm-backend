@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\V1\Admin\AdminController;
 
 
-//Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
     /* -------------------------------------------------------------------------- */
     /*                               Lookup Management Routes                              */
@@ -21,4 +21,4 @@ use App\Http\Controllers\Api\V1\Admin\AdminController;
 
 
 
-//});
+});
