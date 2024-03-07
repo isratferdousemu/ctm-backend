@@ -270,10 +270,11 @@ class PermissionSeeder extends Seeder
                     ["id" => 98, "name" => "beneficiary-info-view", "page_url" => "/beneficiary-management/beneficiary-info", "parent_page" => 1],
                     ["id" => 99, "name" => "beneficiary-info-edit", "page_url" => "/beneficiary-management/beneficiary-info/edit/:id", "parent_page" => 1],
                     ["id" => 100, "name" => "beneficiary-info-delete", "page_url" => "/beneficiary-management/beneficiary-info-delete", "parent_page" => 1],
-                    ["id" => 186, "name" => "beneficiary-info-active-view", "page_url" => "/beneficiary-management/beneficiary-info-active", "parent_page" => 1],
-                    ["id" => 187, "name" => "beneficiary-info-inactive-view", "page_url" => "/beneficiary-management/beneficiary-info-inactive", "parent_page" => 1],
-                    ["id" => 188, "name" => "beneficiary-info-waiting-view", "page_url" => "/beneficiary-management/beneficiary-info-waiting", "parent_page" => 1],
-                    ["id" => 189, "name" => "beneficiary-info-delete-view", "page_url" => "/beneficiary-management/beneficiary-info-delete", "parent_page" => 1],
+                    ["id" => 186, "name" => "beneficiary-activeList-view", "page_url" => "/beneficiary-management/beneficiary-info-active", "parent_page" => 1],
+                    ["id" => 187, "name" => "beneficiary-inactiveList-view", "page_url" => "/beneficiary-management/beneficiary-info-inactive", "parent_page" => 1],
+                    ["id" => 188, "name" => "beneficiary-waitingList-view", "page_url" => "/beneficiary-management/beneficiary-info-waiting", "parent_page" => 1],
+                    ["id" => 189, "name" => "beneficiary-deleteList-view", "page_url" => "/beneficiary-management/beneficiary-info-delete", "parent_page" => 1],
+                    ["id" => 196, "name" => "beneficiary-dashboard-view", "page_url" => "/beneficiary-management/dashboard", "parent_page" => 1],
                 ]
             ],
             [
