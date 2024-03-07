@@ -18,6 +18,7 @@ if [ "$role" = "app" ]; then
     php artisan cache:clear
     php artisan optimize:clear
     php artisan l5-swagger:generate
+    php artisan db:seed --class=PermissionSeeder
     php artisan storage:link
     php artisan schedule:run
     php artisan queue:work

@@ -206,7 +206,7 @@ class PermissionSeeder extends Seeder
                     ["id" => 64, "name" => "application-entry-delete", "page_url" => "/application-management/application", "parent_page" => 1],
 
                     ["id" => 194, "name" => "applicationDashboard-create", "page_url" => "/application-management/dashboard", "parent_page" => 1],
-                    ["id" => 196, "name" => "applicationDashboard-view", "page_url" => "/application-management/dashboard", "parent_page" => 1],
+                    ["id" => 197, "name" => "applicationDashboard-view", "page_url" => "/application-management/dashboard", "parent_page" => 1],
 
 //                    ["id" => 65, "name" => "primaryUnion-create", "page_url" => "/application-management/primary-selection-union/create", "parent_page" => 1],
 //                    ["id" => 66, "name" => "primaryUnion-view", "page_url" => "/application-management/primary-selection-union", "parent_page" => 1],
