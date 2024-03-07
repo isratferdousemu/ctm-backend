@@ -25,7 +25,7 @@ class DeviceRequest extends FormRequest
             'user_id' => "required|exists:users,user_id",
 //            'ip_address' => "required|ip",
             'name' => "required",
-            'device_id' => "required|unique:devices,device_id",
+            'device_id' => "required",
             'device_type' => "required",
             'purpose_use' => "sometimes",
         ];

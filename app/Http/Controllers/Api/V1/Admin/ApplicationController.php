@@ -9,6 +9,7 @@ use App\Models\Location;
 use App\Models\PMTScore;
 use App\Models\Committee;
 use App\Models\Application;
+use App\Models\Lookup;
 use App\Models\Beneficiary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -136,7 +137,15 @@ class ApplicationController extends Controller
 
         $data = (new VerificationService)->callVerificationApi($data);
 
-        if (request('program_id') && request('gender_id')) {
+        $gender_id='';
+        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first(); 
+        if($data['gender']=='পুরুষ'){
+            $gender_id= $Lookup['id'];
+        }else{
+             $gender_id= $Lookup['id'];
+         }
+
+        if (request('program_id') && $gender_id) {
             $this->verifyAge($data);
         }
 
@@ -152,18 +161,25 @@ class ApplicationController extends Controller
 
     public function verifyAge($nidInfo)
     {
+        $gender_id='';
+        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first(); 
+        if($nidInfo['gender']=='পুরুষ'){
+            $gender_id= $Lookup['id'];
+        }else{
+             $gender_id= $Lookup['id'];
+         }
         $allowance = AllowanceProgram::find(request('program_id'));
 
         if($allowance->is_age_limit == 1){
             // error code => applicant_marital_status
-            if(!in_array(request('gender_id'), $allowance->ages->pluck('gender_id')->toArray())){
+            if(!in_array($gender_id, $allowance->ages->pluck('gender_id')->toArray())){
                 throw new AuthBasicErrorException(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     $this->applicantGenderTypeTextErrorCode,
                     $this->applicationGenderTypeMessage
                 );
             }else{
-                $genderAge = $allowance->ages->where('gender_id', request('gender_id'))->first();
+                $genderAge = $allowance->ages->where('gender_id', $gender_id)->first();
                 $minAge = $genderAge->min_age;
                 $maxAge = $genderAge->max_age;
                 $age = $nidInfo['age'];
@@ -344,8 +360,8 @@ class ApplicationController extends Controller
         $programName = AllowanceProgram::where('id',$data->program_id)->first('name_en');
         $programName = $programName->name_en;
 
-  
-        $message = " Dear $data->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
+
+       $message = " Dear $data->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
 
 
     //  $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
@@ -384,78 +400,6 @@ class ApplicationController extends Controller
     }
 
 
-
-
-    public function getWardId()
-    {
-        $parentsIdOfWards = [];
-
-        $user = auth()->user();
-
-        $locationType = request('location_type_id');
-        $query = Location::query();
-
-        //search by assign location id
-        $query->when($user->assign_location_id, function ($q, $v) {
-            $q->where('parent_id', $v);
-        });
-
-        $query->when(request('division_id'), function ($q, $v) {
-            $q->where('parent_id', $v);
-        });
-
-        $query->when(request('district_id'), function ($q, $v) {
-            $q->where('parent_id', $v);
-        });
-
-
-        //Upazila type
-        if ($locationType == 2) {
-            $query->when(request('sub_location_type'), function ($q, $v) {
-                $q->where('type', $v == 1 ? $this->pouro : $this->union);
-            });
-
-            //load all wards under by pourosova
-            $query->when(request('pouro_id'), function ($q, $v) {
-                $q->where('parent_id', $v);
-            });
-
-            //load all wards under by union
-            $query->when(request('union_id'), function ($q, $v) {
-                $q->where('parent_id', $v);
-            });
-        }
-
-
-
-        //City corporation
-        if ($locationType == 3) {
-            $query->when(request('city_thana_id'), function ($q, $v) {
-                $q->where('parent_id', $v)
-                    ->where('location_type', 3);
-            });
-        }
-
-
-
-        //District pouroshova
-        if ($locationType == 1) {
-            $query->when(request('district_pouro_id'), function ($q, $v) {
-                $q->where('parent_id', $v);
-            });
-        }
-
-        $parentsIdOfWards = $query->pluck('id');
-
-        return Location::whereType($this->ward)
-            ->when(request('ward_id'), function ($q, $v) {
-                $q->whereId($v);
-            }, function ($q) use ($parentsIdOfWards) {
-                $q->whereIn('parent_id', $parentsIdOfWards);
-            })
-            ->pluck('id');
-
-    }
 
 
     /* -------------------------------------------------------------------------- */
@@ -715,6 +659,10 @@ class ApplicationController extends Controller
 
         $query->when($program_id, function ($q) use ($filterArrayProgramId) {
             $q->where($filterArrayProgramId);
+        });
+
+        $query->when($account_no, function ($q) use ($filterArrayAccountNo) {
+            $q->where($filterArrayAccountNo);
         });
 
 
@@ -1024,11 +972,11 @@ class ApplicationController extends Controller
 
     //    $image = Storage::disk('public')->url($application->image);
        $image = asset('storage/' . $application->image);
-  
+
        $signature = asset('storage/' . $application->signature);
-     
+
          $nominee_image = asset('storage/' . $application->nominee_image);
-       
+
 
            $nominee_signature = asset('storage/' . $application->nominee_signature);
         //    url(Storage::url( $application->nominee_signature));
@@ -1141,15 +1089,15 @@ class ApplicationController extends Controller
              'variable',
             'subvariable'
         ])->first();
-      
+
 
     if (!$application) {
         return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
     }
 
- 
 
-   
+
+
 
     //  $image = asset('storage/' . $application->image);
 
@@ -1168,7 +1116,7 @@ class ApplicationController extends Controller
     $nominee_signature_Data = Storage::disk('public')->get($nominee_signaturePath);
     $nominee_signature=Helper::urlToBase64($nominee_signature_Data);
 
-  
+
      $dynamic=$request->all();
 
      $title=$request->title;
@@ -1178,9 +1126,9 @@ class ApplicationController extends Controller
                  'image'=>$image ,
                  'nominee_image'=>$nominee_image ,
                  'signature'=>$signature ,
-                 'nominee_signature'=>$nominee_signature 
-              
-                
+                 'nominee_signature'=>$nominee_signature
+
+
  ];
 
 
@@ -1201,7 +1149,7 @@ class ApplicationController extends Controller
 
 
 
-        
+
          return \Illuminate\Support\Facades\Response::stream(
             function () use ($pdf) {
                 echo $pdf->output();
@@ -1845,7 +1793,7 @@ class ApplicationController extends Controller
         $programName = AllowanceProgram::where('id',$application->program_id)->first('name_en');
         $program = $programName->name_en;
 
-  
+
          $message = " Dear $application->name_en, "."\n We are thrilled to inform you that you have been selected as a recipient for the ". $program ."\n Sincerely,"."\nDepartment of Social Services";
 
 
@@ -1855,12 +1803,12 @@ class ApplicationController extends Controller
 
         }
 
-        
+
 
         }
 
-        
-      
+
+
 
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Helpers\Helper;
 use App\Http\Services\Admin\Office\OfficeListService;
+use App\Models\Location;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Validator;
 use App\Models\Office;
@@ -239,9 +240,10 @@ class OfficeController extends Controller
 
     public function getWardList($officeId)
     {
-        $office = Office::where('id', $officeId)->first();
 
-        return $this->sendResponse($office->officeWards);
+        $wards = OfficeHasWard::where('office_id', $officeId)->pluck('ward_id');
+
+        return $this->sendResponse(Location::whereIn('id', $wards)->get());
     }
 
 

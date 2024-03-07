@@ -17,6 +17,7 @@ use App\Http\Traits\PermissionTrait;
 use App\Http\Traits\RoleTrait;
 use App\Http\Traits\UserTrait;
 use App\Jobs\UserCreateJob;
+use App\Mail\UserCreateMail;
 use App\Models\Location;
 use App\Models\Office;
 use App\Models\User;
@@ -25,6 +26,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -143,7 +145,7 @@ class UserController extends Controller
         ;
     })
         ->whereIn('id', $this->officeHeadService->getUsersUnderOffice())
-    ->with('office','assign_location.parent.parent.parent.parent','officeTypeInfo','roles', 'committee')
+    ->with('office','assign_location.parent.parent.parent.parent','officeTypeInfo','roles', 'committee', 'userWards')
     ->orderByDesc('id')
     ->paginate($perPage, ['*'], 'page');
 // }
@@ -317,10 +319,7 @@ class UserController extends Controller
             }
         }
 
-
-
-            $user = $this->UserService->createUser($request,$password);
-
+        $user = $this->UserService->createUser($request,$password);
 
             activity("User")
             ->causedBy(auth()->user())
@@ -383,7 +382,7 @@ class UserController extends Controller
         $tokenLink = env('APP_FRONTEND_URL') . '/browser-token';
 
         $message = "Welcome to the CTM application.Your account has been approved.".
-            "\nTo register your device please visit {$tokenLink} then copy the code and provide it to your supervisor."
+            "\nTo register your device please visit {$tokenLink} then copy the browser fingerprint code and provide it to your authority."
             .
         "\nOnce your device is registered you can access the CTM Application using following credentials:
         \nUsername: ". $user->username
@@ -393,13 +392,15 @@ class UserController extends Controller
 
         Log::info('password-'. $user->id, [$message]);
 
-//        $user->mobile = "01747970935";
+//        $user->mobile = "01687945606";
 //        $user->email = "tarikul5357@gmail.com";
 
 
         $this->SMSservice->sendSms($user->mobile, $message);
 
-        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
+//        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
+
+        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->full_name,$password));
 
 
         activity("User")
