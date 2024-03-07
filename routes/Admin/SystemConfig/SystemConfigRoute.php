@@ -50,11 +50,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin/lookup')->group(function () {
 
-        Route::post('/insert', [AdminController::class, 'insertlookup'])->middleware(['role_or_permission:super-admin|demo-graphic-create']);
-        Route::get('/get',[AdminController::class, 'getAllLookupPaginated'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
-        Route::post('/update', [AdminController::class, 'LookupUpdate'])->middleware(['role_or_permission:super-admin|demo-graphic-update']);
+        Route::post('/insert', [AdminController::class, 'insertlookup'])/*->middleware(['role_or_permission:super-admin|demo-graphic-create'])*/;
+        Route::get('/get',[AdminController::class, 'getAllLookupPaginated'])/*->middleware(['role_or_permission:super-admin|demo-graphic-view'])*/;
+        Route::post('/update', [AdminController::class, 'LookupUpdate'])/*->middleware(['role_or_permission:super-admin|demo-graphic-update'])*/;
         Route::get('/get/{type}',[AdminController::class, 'getAllLookupByType']);
-        Route::get('/destroy/{id}', [AdminController::class, 'destroyLookup'])->middleware(['role_or_permission:super-admin|demo-graphic-destroy']);
+        Route::get('/destroy/{id}', [AdminController::class, 'destroyLookup'])/*->middleware(['role_or_permission:super-admin|demo-graphic-destroy'])*/;
     });
 
     /* -------------------------------------------------------------------------- */

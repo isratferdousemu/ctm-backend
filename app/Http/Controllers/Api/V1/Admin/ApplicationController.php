@@ -9,6 +9,7 @@ use App\Models\Location;
 use App\Models\PMTScore;
 use App\Models\Committee;
 use App\Models\Application;
+use App\Models\Lookup;
 use App\Models\Beneficiary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -136,7 +137,15 @@ class ApplicationController extends Controller
 
         $data = (new VerificationService)->callVerificationApi($data);
 
-        if (request('program_id') && request('gender_id')) {
+        $gender_id='';
+        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first(); 
+        if($data['gender']=='পুরুষ'){
+            $gender_id= $Lookup['id'];
+        }else{
+             $gender_id= $Lookup['id'];
+         }
+
+        if (request('program_id') && $gender_id) {
             $this->verifyAge($data);
         }
 
@@ -152,18 +161,25 @@ class ApplicationController extends Controller
 
     public function verifyAge($nidInfo)
     {
+        $gender_id='';
+        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first(); 
+        if($nidInfo['gender']=='পুরুষ'){
+            $gender_id= $Lookup['id'];
+        }else{
+             $gender_id= $Lookup['id'];
+         }
         $allowance = AllowanceProgram::find(request('program_id'));
 
         if($allowance->is_age_limit == 1){
             // error code => applicant_marital_status
-            if(!in_array(request('gender_id'), $allowance->ages->pluck('gender_id')->toArray())){
+            if(!in_array($gender_id, $allowance->ages->pluck('gender_id')->toArray())){
                 throw new AuthBasicErrorException(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     $this->applicantGenderTypeTextErrorCode,
                     $this->applicationGenderTypeMessage
                 );
             }else{
-                $genderAge = $allowance->ages->where('gender_id', request('gender_id'))->first();
+                $genderAge = $allowance->ages->where('gender_id', $gender_id)->first();
                 $minAge = $genderAge->min_age;
                 $maxAge = $genderAge->max_age;
                 $age = $nidInfo['age'];
