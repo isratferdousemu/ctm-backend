@@ -393,15 +393,11 @@ class UserController extends Controller
 
         Log::info('password-'. $user->id, [$message]);
 
-//        $user->mobile = "01687945606";
-//        $user->email = "tarikul5357@gmail.com";
-
-
         $this->SMSservice->sendSms($user->mobile, $message);
 
 //        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
 
-        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->full_name,$password));
+        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->username,$password, $user->full_name));
 
 
         activity("User")
@@ -415,20 +411,12 @@ class UserController extends Controller
     }
 
 
-    public function sendSms(Request $request)
+    public function sendSmsTest(Request $request)
     {
         $url = "bulksmsbd.net/api/smsapi";
 
-        $message = "Your OTP is 12132";
+        $message = $request->message ?: "Your OTP is 12132";
         $number = $request->number ?: "01747970935";
-
-
-        $user = User::find(1);
-        $user->email = "tarikul5357@gmail.com";
-
-        $this->dispatch(new UserCreateJob($user->email,$user->username, '1223'));
-
-//        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->full_name, '1234'));
 
 
         $data = [
@@ -439,14 +427,20 @@ class UserController extends Controller
             'senderid' => "8809617617434",
         ];
 
-        if ($request->sms) {
-            $response = Http::contentType('application/json')
-                ->post($url, $data);
+        $response = Http::contentType('application/json')
+            ->post($url, $data);
 
-            return $response->json();
-        }
+        return $response->json();
+    }
 
 
+    public function sendMail(Request $request)
+    {
+        $user = User::find(1);
+        $user->email = $request->email ?: "tarikul5357@gmail.com";
+
+        $this->dispatch(new UserCreateJob($user->email,$user->username, '0000', 'Queue'));
+        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->username, '1234', $user->full_name));
     }
 
 
