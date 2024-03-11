@@ -40,6 +40,7 @@ use App\Http\Services\Admin\Application\CommitteeListService;
 use App\Http\Requests\Admin\Application\MobileOperatorRequest;
 use App\Http\Services\Admin\Application\MobileOperatorService;
 use App\Http\Resources\Admin\Application\MobileOperatorResource;
+use App\Http\Requests\Admin\Application\ApplicationUpdateRequest;
 use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
 use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
@@ -357,25 +358,143 @@ class ApplicationController extends Controller
 
 
         $data = $this->applicationService->onlineApplicationRegistration($request, $allowanceAmount);
-        $programName = AllowanceProgram::where('id',$data->program_id)->first('name_en');
-        $programName = $programName->name_en;
-
-
-       $message = " Dear $data->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
-
-
-    //  $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
-
-        // Log::info('password-'. $user->id, [$message]);
-
-        $this->SMSservice->sendSms($data->mobile, $message);
+       
         return response()->json([
             'status' => true,
             'data' => $data,
              'id' => $data->application_id,
+             'application_id'=>$data->id,
             'message' => $this->insertSuccessMessage,
         ], 200);
 
+    }
+    public function  onlineApplicationEditedRegistration(ApplicationUpdateRequest $request){
+        // return $request->all();
+
+       
+   
+        $allowance = AllowanceProgram::find($request->program_id);
+
+        // check is marital
+        if($allowance){
+            if($allowance->is_age_limit == 1){
+                // error code => applicant_marital_status
+                if(!in_array($request->gender_id, $allowance->ages->pluck('gender_id')->toArray())){
+                    throw new AuthBasicErrorException(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        $this->applicantGenderTypeTextErrorCode,
+                        $this->applicationGenderTypeMessage
+                    );
+                }else{
+                     $data = [
+                        'nid' => $request->verification_number,
+                        'dob' => $request->date_of_birth,
+                    ];
+
+                    $nidInfo = (new VerificationService())->callVerificationApi($data);
+                    $genderAge = $allowance->ages->where('gender_id',$request->gender_id)->first();
+                    $minAge = $genderAge->min_age;
+                    $maxAge = $genderAge->max_age;
+                    // get current age form date_of_birth field
+                    $birthDate = $request->date_of_birth;
+                    $birthDate = explode("-", $birthDate);
+                    $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[1], $birthDate[2], $birthDate[0]))) > date("md")
+                        ? ((date("Y") - $birthDate[0]) - 1)
+                        : (date("Y") - $birthDate[0]));
+                    // return $genderAge;
+                    // 60 -90 => age is 73
+                // age range is minAge to maxAge
+                    if($age<$minAge || $age>$maxAge){
+                        throw new AuthBasicErrorException(
+                            Response::HTTP_UNPROCESSABLE_ENTITY,
+                            $this->applicantAgeLimitTextErrorCode,
+                            $this->applicantAgeLimitMessage
+                        );
+                    }
+
+                }
+
+            }
+            if($allowance->is_marital == 1){
+                // error code =>
+                if($allowance->marital_status!=$request->marital_status){
+                    throw new AuthBasicErrorException(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        $this->applicantMaritalStatusTextErrorCode,
+                        $this->applicantMaritalStatusMessage
+                    );
+                }
+            }
+            
+
+        }
+         $data = [
+            'nid' => $request->nominee_verification_number,
+            'dob' => $request->nominee_date_of_birth,
+        ];
+
+        $nidInfo = (new VerificationService())->callNomineeVerificationApi($data);
+
+        // return gettype(json_decode($request->application_allowance_values)[19]->value);
+     
+        $data = $this->applicationService->onlineApplicationEdit($request);
+
+        
+       
+        
+
+        
+    //  $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
+
+        // Log::info('password-'. $user->id, [$message]);
+
+        // $this->SMSservice->sendSms($data->mobile, $message);
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+            'application_id'=>$data->id,
+             'id' => $data->application_id,
+            'message' => $this->insertSuccessMessage,
+        ], 200);
+
+    }
+
+  public function getStatusyId(Request  $request){
+        $id=$request->id;
+        $nid=$request->nid;
+       
+       
+       $application = Application::where('id','=',$id)
+       ->update(['status'=>0]);
+       $delete = Application::where('verification_number', '=', $nid)
+        ->where('status', '=', 9)
+        ->delete();
+        $application = Application::find($id);
+    
+    if (!$application) {
+        // Handle case where application with given id is not found
+        return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
+    }
+        $programName = AllowanceProgram::where('id',$application->program_id)->first('name_en');
+        $programName = $programName->name_en;
+
+  
+        $message = " Dear $application->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$application->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
+
+
+   
+      
+
+        $this->SMSservice->sendSms($application->mobile, $message);
+       return response()->json([
+    
+        'application' => $application,
+        'id' => $application->application_id,
+    
+     
+    ], Response::HTTP_OK);
+   
+        
     }
 
 
@@ -660,11 +779,7 @@ class ApplicationController extends Controller
         $query->when($program_id, function ($q) use ($filterArrayProgramId) {
             $q->where($filterArrayProgramId);
         });
-
-        $query->when($account_no, function ($q) use ($filterArrayAccountNo) {
-            $q->where($filterArrayAccountNo);
-        });
-
+        $query->where('status', '!=', 9);
 
 
             if ($request->has('status')) {
@@ -1161,6 +1276,55 @@ class ApplicationController extends Controller
             ]);
 
 }
+ public function getPreviewById($id)
+{
+    //   $decryptedId = Crypt::decryptString($id);
+    $application = Application::where('id', '=', $id)
+        ->with([
+            'current_location.parent.parent.parent.parent',
+            'permanent_location.parent.parent.parent.parent',
+            'program',
+            'allowAddiFields',
+                // 'allowAddiFieldValue.allowAddiField',
+            'allowAddiFieldValue.allowAddiField',
+             'variable',
+            'subvariable'
+        ])
+        ->where('status',9)->first();
+
+    if (!$application) {
+        return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
+    }
+
+  
+       $image = asset('storage/' . $application->image);
+  
+       $signature = asset('storage/' . $application->signature);
+   
+       $nominee_image = asset('storage/' . $application->nominee_image);
+ 
+       $nominee_signature = asset('storage/' . $application->nominee_signature);
+       
+    $groupedAllowAddiFields = $application->allowAddiFields->groupBy('id')->values();
+    $groupedAllowAddiFields = $application->allowAddiFields->groupBy('pivot.allow_addi_fields_id');
+
+    // Get the first item from each group (assuming it's the same for each 'allow_addi_fields_id')
+    $distinctAllowAddiFields = $groupedAllowAddiFields->map(function ($group) {
+        return $group->first();
+    });
+
+    return response()->json([
+        // 'emu' => $emu,
+        'application' => $application,
+        'unique_additional_fields' => $distinctAllowAddiFields,
+        'image' => $image,
+        'signature' => $signature,
+        'nominee_image' => $nominee_image,
+        'nominee_signature' => $nominee_signature,
+     
+    ], Response::HTTP_OK);
+}
+
 
   /**
     * @OA\Get(

@@ -30,9 +30,12 @@ Route::prefix('global')->group(function () {
     Route::post('/online-application/registration',[ApplicationController::class, 'onlineApplicationRegistration']);
      Route::get('/applicants_copy',[ApplicationController::class, 'getApplicationCopyById']);
     Route::get('/online-application/check',[ApplicationController::class, 'onlineApplicationCheck']);
+    Route::get('application/get/{id}', [ApplicationController::class, 'getPreviewById']);
+       Route::post('/online-edited-application/registration',[ApplicationController::class, 'onlineApplicationEditedRegistration']);
 
 //    Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);
     Route::get('/pdf', [\App\Http\Controllers\Api\V1\Admin\ReportController::class, 'unionReport']);
+    Route::post('online-application/final-submit', [ApplicationController::class, 'getStatusyId']);
 
     Route::get('/class-list',[AdminController::class, 'getClassList'])/*->middleware(['role_or_permission:super-admin|demo-graphic-view'])*/;
 
