@@ -77,19 +77,39 @@ class ActivityLogController extends Controller
             $filterArrayName[] = ['description', 'LIKE', '%' . $filteredText . '%'];
         }
 
-        $divisions = ActivityModel::query()
+        $activityLog = ActivityModel::query()
             ->where($filterArrayName)
             ->with('subject','causer')
             ->latest()
             ->paginate($perPage, ['*'], 'page');
-            return ActivityResource::collection($divisions)->additional([
+            return ActivityResource::collection($activityLog)->additional([
                 'success' => true,
                 'message' => $this->fetchSuccessMessage,
+                'meta' => [
+                    'current_page' => $activityLog->currentPage(),
+                    'per_page' => $activityLog->perPage(),
+                    'total' => $activityLog->total(),
+                    'last_page' => $activityLog->lastPage(),
+                ],
             ]);
+            // return $this->sendResponse($activityLog, $this->fetchSuccessMessage, Response::HTTP_OK);
+    }
 
-            // return $this->sendResponse($divisions, $this->fetchSuccessMessage, Response::HTTP_OK);
+    public function destroyActivityLog($id)
+    {
+        try {
+            $activity_log = ActivityModel::findOrFail($id);
+            $activity_log->delete();
+            activity("Activity Log")
+                ->causedBy(auth()->user())
+                ->performedOn($activity_log)
+                ->log('Activity Log Deleted !');
+            return $this->sendResponse($activity_log, $this->deleteSuccessMessage, Response::HTTP_OK);
 
-
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
     }
 
 }
