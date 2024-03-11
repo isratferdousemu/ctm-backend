@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\V1\Setting\ActivityLogController;
 Route::middleware('auth:sanctum')->group(function () {
 
 
-    Route::post('admin/activity-log/all/filtered',[ActivityLogController::class, 'getAllActivityLogsPaginated'])->middleware(['role_or_permission:super-admin|main-setting-activity-log']);
+//    Route::post('admin/activity-log/all/filtered',[ActivityLogController::class, 'getAllActivityLogsPaginated'])->middleware(['role_or_permission:super-admin|main-setting-activity-log']);
 
 
 
