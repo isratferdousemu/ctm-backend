@@ -835,7 +835,7 @@ class ApplicationController extends Controller
         $query->when($program_id, function ($q) use ($filterArrayProgramId) {
             $q->where($filterArrayProgramId);
         });
-
+        $query->where('status', '!=', 9);
 
 
             if ($request->has('status')) {
@@ -2009,7 +2009,7 @@ class ApplicationController extends Controller
         $beneficiary->status = $status;
         $beneficiary->approve_date = $application->approve_date;
         $beneficiary->save();
-          if($status == 1){
+          if($status === 1){
         $programName = AllowanceProgram::where('id',$application->program_id)->first('name_en');
         $program = $programName->name_en;
 
