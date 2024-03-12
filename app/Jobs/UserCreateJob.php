@@ -14,16 +14,17 @@ use Mail;
 class UserCreateJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    public $email,$name,$password;
+    public $email,$name,$password,$fullName;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($email,$name,$password)
+    public function __construct($email,$name,$password,$fullName)
     {
         $this->email = $email;
         $this->name = $name;
         $this->password = $password;
+        $this->fullName = $fullName;
     }
 
     /**
@@ -31,6 +32,6 @@ class UserCreateJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->email)->send(new UserCreateMail($this->email,$this->name,$this->password));
+        Mail::to($this->email)->send(new UserCreateMail($this->email,$this->name,$this->password,$this->fullName));
     }
 }

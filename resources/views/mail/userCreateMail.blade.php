@@ -4,7 +4,7 @@
     <title>Welcome Mail</title>
 </head>
 <body>
-    <h1>Hello, {{ $name }}!</h1>
+    <h1>Hello, {{ $fullName }}!</h1>
 
 {{--        <li>Your login credentials are:</li>--}}
 {{--            <ul>--}}
@@ -26,7 +26,7 @@
     <p>Once your device is registered you can access the CTM Application using following credentials:</p>
 
     <ul>
-        <li>Username: {{ $name }}</li>
+        <li>Username: {{ $username }}</li>
         <li>Password: {{$password}}</li>
         <li>
             Login URL: <a href="{{env('APP_FRONTEND_URL') . '/login'}}">{{env('APP_FRONTEND_URL') . '/login'}}</a>

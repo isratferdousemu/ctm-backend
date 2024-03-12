@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Notification;
 
+use Illuminate\Support\Facades\Http;
 use Infobip\Api\SmsApi;
 use Infobip\Configuration;
 use Infobip\ApiException;
@@ -14,7 +15,44 @@ class SMSservice
     // send limit 1000 sms per minute
     private $api;
 
+
+
+    public function sendSmsBulkBd($mobile, $message)
+    {
+        $url = "bulksmsbd.net/api/smsapi";
+
+        $data = [
+            'api_key' => "xp143oLW8GJtKk3ggwxW",
+            'type' => "text",
+            'message' => $message,
+            'number' => $mobile,
+            'senderid' => "8809617617434",
+        ];
+
+        $response = Http::contentType('application/json')
+            ->post($url, $data);
+
+        return $response->json();
+    }
+
+
+    //bulksmsbd, Infobip
     public function sendSms($mobile, $message)
+    {
+        $gateway = strtolower(env('SMS_GATEWAY', 'Infobip'));
+
+        if ($gateway == 'infobip') {
+            return $this->sendSmsInfobip($mobile, $message);
+        }
+
+        if ($gateway == 'bulksmsbd') {
+            return $this->sendSmsBulkBd($mobile, $message);
+        }
+    }
+
+
+
+    public function sendSmsInfobip($mobile, $message)
     {
 
         $configuration = new Configuration(
