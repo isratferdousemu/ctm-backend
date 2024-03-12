@@ -76,7 +76,7 @@ class ApplicationService
 
         try {
             $application = new Application;
-            // $application->application_id = Str::random(10);
+            $application->permanent_mobile = Str::random(10);
             $program_code = $request->program_id;
             $application->program_id = $request->program_id;
             $application->verification_type = $request->verification_type;
