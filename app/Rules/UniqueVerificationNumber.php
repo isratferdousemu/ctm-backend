@@ -42,7 +42,8 @@ class UniqueVerificationNumber implements Rule
         // Check for uniqueness in the database based on financial_year_id
         return !Application::where('verification_number', $value)
             ->where('financial_year_id', $this->financialYearId)
-            ->exists();
+             ->where('status', '=', 0)
+             ->exists();
     }
 
     /**

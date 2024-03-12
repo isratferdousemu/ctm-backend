@@ -45,9 +45,10 @@ class OfficeHeadService
 
         //Head office, ministry
         if ($user->office_type == 4 || $user->office_type == 5) {
-            $query->whereNotIn('office_type', [5, 4])
+//            $query->whereNotIn('office_type', [5, 4])
                 //Exclude super admin
-                ->whereNot('user_type', 1);
+                $query->whereNot('user_type', 1)
+            ;
         }
 
         //Exclude own id

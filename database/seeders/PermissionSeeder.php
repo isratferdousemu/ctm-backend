@@ -67,11 +67,19 @@ class PermissionSeeder extends Seeder
                     ["id" => 23, "name" => "ward-edit", "page_url" => "/system-configuration/ward/edit/:id", "parent_page" => 1],
                     ["id" => 24, "name" => "ward-delete", "page_url" => "/system-configuration/ward", "parent_page" => 1],
 
+                ]
+            ],
 
+            [
+                'module_name' => $this->modulePermissionSystemConfiguration,
+                'sub_module_name' => $this->systemDashboard,
+                'guard_name' => $this->guard,
+                'permissions' => [
                     ["id" => 195, "name" => "systemConfigurationDashboard-create", "page_url" => "/system-configuration/dashboard", "parent_page" => 1],
                     ["id" => 198, "name" => "systemConfigurationDashboard-view", "page_url" => "/system-configuration/dashboard", "parent_page" => 1]
                 ]
             ],
+
             [
                 'module_name' => $this->modulePermissionSystemConfiguration,
                 'sub_module_name' => $this->subAllowanceProgramManagement,

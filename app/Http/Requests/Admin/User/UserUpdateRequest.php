@@ -27,7 +27,7 @@ class UserUpdateRequest extends FormRequest
             'username'                  => 'required|string|unique:users,username,'. $this->id,
             'mobile'                    => 'required|numeric|regex:/^01[3-9]\d{8}$/',
             'email'                     => 'required|email|unique:users,email,'. $this->id,
-            'status'                    => 'sometimes|integer|in:0,1',
+//            'status'                    => 'sometimes|integer|in:0,1',
             'role_id'                   => 'sometimes|required|array|exists:roles,id',
             'committee_type'            => 'sometimes|required|integer|exists:lookups,id',
             'office_type'                 => ['sometimes', Rule::requiredIf($this->user_type == 1), 'exists:lookups,id'],

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Setting;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\ActivityResource;
 use App\Http\Traits\MessageTrait;
@@ -110,6 +111,15 @@ class ActivityLogController extends Controller
             //throw $th;
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+    public function getAnonymousActivityLog(Request $request)
+    {
+        $info = activity($request->info)
+            ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => ''])
+            ->log($request->info);
+
+        return $info;
     }
 
 }
