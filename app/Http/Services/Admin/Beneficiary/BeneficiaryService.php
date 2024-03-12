@@ -1201,6 +1201,7 @@ class BeneficiaryService
     {
         DB::beginTransaction();
         try {
+//            dump($request->input('beneficiaries'));
             if (!$request->has('beneficiaries')) {
                 DB::rollBack();
                 throw new \Exception('No beneficiaries was selected for shifting!');
