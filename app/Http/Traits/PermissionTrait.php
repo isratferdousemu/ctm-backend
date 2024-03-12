@@ -33,8 +33,12 @@ trait PermissionTrait
     // sub modules list
 
     // module 1 sub modules
+    private $systemConfiguration = "system-configuration";
+
     private $subDemographicInformationManagement = "demographic-information-Management";
     private $subAllowanceProgramManagement = "Allowance-Program-Management";
+
+    private $systemDashboard = "system-dashboard";
     private $subOfficeInformationManagement = "office-information-management";
     private $subFinancialInformationManagement = "financial-information-management";
     private $subUserManagement = "user-management";
