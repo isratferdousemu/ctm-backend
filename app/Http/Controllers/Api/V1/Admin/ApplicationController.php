@@ -342,6 +342,17 @@ class ApplicationController extends Controller
 
 
         $data = $this->applicationService->onlineApplicationRegistration($request, $allowanceAmount);
+        $programName = AllowanceProgram::where('id',$data->program_id)->first('name_en');
+        $programName = $programName->name_en;
+
+  
+        $message = " Dear $data->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
+
+
+   
+      
+
+        $this->SMSservice->sendSms($data->mobile, $message);
        
         return response()->json([
             'status' => true,
@@ -835,7 +846,7 @@ class ApplicationController extends Controller
         $query->when($program_id, function ($q) use ($filterArrayProgramId) {
             $q->where($filterArrayProgramId);
         });
-        $query->where('status', '!=', 9);
+        // $query->where('status', '!=', 9);
 
 
             if ($request->has('status')) {
