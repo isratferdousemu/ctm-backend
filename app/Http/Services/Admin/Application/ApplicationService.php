@@ -76,7 +76,17 @@ class ApplicationService
 
         try {
             $application = new Application;
-            $application->permanent_mobile = Str::random(10);
+            // $application->permanent_mobile = Str::random(10);
+            $uniquePermanentMobile = Str::random(10);
+
+// Check if the generated string already exists in the database
+            while (Application::where('permanent_mobile', $uniquePermanentMobile)->exists()) {
+    // If it exists, regenerate the random string
+             $uniquePermanentMobile = Str::random(10);
+                }
+
+// Assign the unique random string to the permanent_mobile attribute
+            $application->permanent_mobile = $uniquePermanentMobile;
             $program_code = $request->program_id;
             $application->program_id = $request->program_id;
             $application->verification_type = $request->verification_type;
@@ -465,8 +475,8 @@ class ApplicationService
 
             //Dist pouro
             if ($request->permanent_location_type == 1) {
-                $application->permanen_city_corp_id = null;
-                $application->permanen_thana_id = null;
+                $application->permanent_city_corp_id = null;
+                $application->permanent_thana_id = null;
                 $application->permanent_upazila_id = null;
                 $application->permanent_union_id = null;
                 $application->permanent_pourashava_id = null;
@@ -491,8 +501,8 @@ class ApplicationService
 
               //Upazila
               if ($request->permanent_location_type == 2) {
-                  $application->permanen_city_corp_id = null;
-                  $application->permanen_thana_id = null;
+                  $application->permanent_city_corp_id = null;
+                  $application->permanent_thana_id = null;
                   $application->permanent_district_pourashava_id = null;
                   $application->permanent_upazila_id = $request->permanent_thana_id;
                   //union
