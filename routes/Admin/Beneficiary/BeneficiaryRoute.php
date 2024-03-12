@@ -22,30 +22,32 @@ Route::middleware(['auth:sanctum', 'language'])->group(function () {
         Route::get('/deletedList', [BeneficiaryController::class, 'deletedList'])->middleware(['role_or_permission:super-admin|beneficiaryDeleteList-view']);
         Route::get('/restore/{id}', [BeneficiaryController::class, 'restore'])->middleware(['role_or_permission:super-admin|beneficiaryDeleteList-view']);
         Route::get('/restore-inactive/{id}', [BeneficiaryController::class, 'restoreInactive'])->middleware(['role_or_permission:super-admin|beneficiaryInfo-view']);
-        Route::get('/getListForReplace', [BeneficiaryController::class, 'getListForReplace'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-create']);
-        Route::post('/replace/{id}', [BeneficiaryController::class, 'replaceSave'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-create']);
-        Route::get('/replaceList', [BeneficiaryController::class, 'replaceList'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-view']);
-        Route::get('/restore-replace/{id}', [BeneficiaryController::class, 'restoreReplace'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-view']);
-        Route::post('/exit', [BeneficiaryController::class, 'exitSave'])->middleware(['role_or_permission:super-admin|beneficiary-exit-create']);
-        Route::get('/exitList', [BeneficiaryController::class, 'exitList'])->middleware(['role_or_permission:super-admin|beneficiary-exit-view']);
-        Route::get('/restore-exit/{id}', [BeneficiaryController::class, 'restoreExit'])->middleware(['role_or_permission:super-admin|beneficiary-exit-view']);
-        Route::post('/shift', [BeneficiaryController::class, 'shiftingSave'])->middleware(['role_or_permission:super-admin|beneficiary-shifting-create']);
-        Route::get('/shiftingList', [BeneficiaryController::class, 'shiftingList'])->middleware(['role_or_permission:super-admin|beneficiary-shifting-view']);
+        Route::get('/getListForReplace', [BeneficiaryController::class, 'getListForReplace'])->middleware(['role_or_permission:super-admin|beneficiaryReplacement-create']);
+        Route::post('/replace/{id}', [BeneficiaryController::class, 'replaceSave'])->middleware(['role_or_permission:super-admin|beneficiaryReplacement-create']);
+        Route::get('/replaceList', [BeneficiaryController::class, 'replaceList'])->middleware(['role_or_permission:super-admin|beneficiaryReplacement-view']);
+        Route::get('/restore-replace/{id}', [BeneficiaryController::class, 'restoreReplace'])->middleware(['role_or_permission:super-admin|beneficiaryReplacement-view']);
+        Route::post('/exit', [BeneficiaryController::class, 'exitSave'])->middleware(['role_or_permission:super-admin|beneficiaryExit-create']);
+        Route::get('/exitList', [BeneficiaryController::class, 'exitList'])->middleware(['role_or_permission:super-admin|beneficiaryExit-view']);
+        Route::get('/restore-exit/{id}', [BeneficiaryController::class, 'restoreExit'])->middleware(['role_or_permission:super-admin|beneficiaryExit-view']);
+        Route::post('/shift', [BeneficiaryController::class, 'shiftingSave'])->middleware(['role_or_permission:super-admin|beneficiaryShifting-create']);
+        Route::get('/shiftingList', [BeneficiaryController::class, 'shiftingList'])->middleware(['role_or_permission:super-admin|beneficiaryShifting-view']);
+        Route::post('/locationShiftingSave', [BeneficiaryController::class, 'locationShiftingSave'])->middleware(['role_or_permission:super-admin|beneficiaryShifting-create']);
+        Route::get('/locationShiftingList', [BeneficiaryController::class, 'locationShiftingList'])->middleware(['role_or_permission:super-admin|beneficiaryShifting-view']);
         // report
         Route::get('/getBeneficiaryListPdf', [BeneficiaryController::class, 'getBeneficiaryListPdf'])->middleware(['role_or_permission:super-admin|beneficiaryInfo-view']);
-        Route::get('/getBeneficiaryExitListPdf', [BeneficiaryController::class, 'getBeneficiaryExitListPdf'])->middleware(['role_or_permission:super-admin|beneficiary-exit-view']);
-        Route::get('/getBeneficiaryReplaceListPdf', [BeneficiaryController::class, 'getBeneficiaryReplaceListPdf'])->middleware(['role_or_permission:super-admin|beneficiary-replacement-view']);
-        Route::get('/getBeneficiaryShiftingListPdf', [BeneficiaryController::class, 'getBeneficiaryShiftingListPdf'])->middleware(['role_or_permission:super-admin|beneficiary-shifting-create']);
+        Route::get('/getBeneficiaryExitListPdf', [BeneficiaryController::class, 'getBeneficiaryExitListPdf'])->middleware(['role_or_permission:super-admin|beneficiaryExit-view']);
+        Route::get('/getBeneficiaryReplaceListPdf', [BeneficiaryController::class, 'getBeneficiaryReplaceListPdf'])->middleware(['role_or_permission:super-admin|beneficiaryReplacement-view']);
+        Route::get('/getBeneficiaryShiftingListPdf', [BeneficiaryController::class, 'getBeneficiaryShiftingListPdf'])->middleware(['role_or_permission:super-admin|beneficiaryShifting-view']);
     });
 
     Route::prefix('admin/beneficiary-dashboard')->group(function () {
-        Route::get('/getTotalBeneficiaries', [BeneficiaryDashboardController::class, 'getTotalBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
-        Route::get('/getLocationWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getLocationWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
-        Route::get('/getGenderWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getGenderWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
-        Route::get('/getYearWiseWaitingBeneficiaries', [BeneficiaryDashboardController::class, 'getYearWiseWaitingBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
-        Route::get('/getProgramWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getProgramWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
-        Route::get('/getAgeWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getAgeWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
-        Route::get('/getYearWiseProgramShifting', [BeneficiaryDashboardController::class, 'getYearWiseProgramShifting'])->middleware(['role_or_permission:super-admin|beneficiary-dashboard-view']);
+        Route::get('/getTotalBeneficiaries', [BeneficiaryDashboardController::class, 'getTotalBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
+        Route::get('/getLocationWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getLocationWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
+        Route::get('/getGenderWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getGenderWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
+        Route::get('/getYearWiseWaitingBeneficiaries', [BeneficiaryDashboardController::class, 'getYearWiseWaitingBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
+        Route::get('/getProgramWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getProgramWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
+        Route::get('/getAgeWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getAgeWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
+        Route::get('/getYearWiseProgramShifting', [BeneficiaryDashboardController::class, 'getYearWiseProgramShifting'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
     });
 
     Route::prefix('admin/committee')->group(function () {
