@@ -562,7 +562,7 @@ class ApplicationService
              $imagePath = $request->file('image')->store('public');
              $application->image = $imagePath;
             }
-            if ($request->hasFile('image')) {
+            if ($request->hasFile('signature')) {
             
               $signaturePath = $request->file('signature')->store('public');
              $application->signature=$signaturePath ;
