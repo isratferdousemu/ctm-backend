@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Log;
+use Mockery\Exception;
 
 /**
  *
@@ -664,6 +665,7 @@ class BeneficiaryService
      */
     public function getListForReplace(Request $request): \Illuminate\Contracts\Pagination\Paginator
     {
+        $exclude_beneficiary_id = $request->query('exclude_beneficiary_id');
         $program_id = $request->query('program_id');
         $division_id = $request->query('division_id');
         $district_id = $request->query('district_id');
@@ -686,6 +688,8 @@ class BeneficiaryService
         $orderByDirection = $request->query('orderBy', 'asc');
 
         $query = Beneficiary::query();
+        if ($exclude_beneficiary_id)
+            $query = $query->where('id', '!=', $exclude_beneficiary_id);
         if ($program_id)
             $query = $query->where('program_id', $program_id);
         if ($division_id)
@@ -753,6 +757,9 @@ class BeneficiaryService
     {
         DB::beginTransaction();
         try {
+            if ($id == $request->input('replace_with_ben_id')) {
+                throw new Exception("Can not replace same beneficiary");
+            }
             $beneficiary = Beneficiary::findOrFail($id);
             $beneficiary->status = 2; // Inactive
             $beneficiary->updated_at = now();
