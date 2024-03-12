@@ -13,3 +13,4 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/activity-log/destroy/{id}',[ActivityLogController::class, 'destroyActivityLog'])->middleware(['role_or_permission:super-admin|user-destroy']);
     });
 });
+Route::get('/activity-log/get-information',[ActivityLogController::class, 'getAnonymousActivityLog']);
