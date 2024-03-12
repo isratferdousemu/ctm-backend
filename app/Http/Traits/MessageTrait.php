@@ -107,7 +107,7 @@ trait MessageTrait
     //not found
     private $unverifiedUserErrorResponse = 'Please Verify Your Account to login';
     private $NonAllowedAdminErrorResponse = 'please try to login your application';
-    private $bannedUserErrorResponse = 'please contact administrator for re-active your account';
+    private $bannedUserErrorResponse = 'Please contact administrator to re-activate your account';
 
     private $defaultPasswordErrorResponse = 'please change your default password';
 

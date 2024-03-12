@@ -24,7 +24,7 @@ class UserService
             $user->username = $request->username;
             $user->mobile = $request->mobile;
             $user->email = $request->email;
-            $user->status = $request->status;
+//            $user->status = $request->status;
             // check request has division_id, district_id, thana_id, city_corpo_id
 
             if ($request->has('office_type')) {
@@ -140,7 +140,7 @@ class UserService
             $user->username = $request->username;
             $user->mobile = $request->mobile;
             $user->email = $request->email;
-            $user->status = $request->status;
+//            $user->status = $request->status;
             // check request has division_id, district_id, thana_id, city_corpo_id
 
             if($request->office_type) {

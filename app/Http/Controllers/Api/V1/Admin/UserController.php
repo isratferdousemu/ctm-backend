@@ -411,6 +411,30 @@ class UserController extends Controller
     }
 
 
+    public function banUser($id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->status != 2) {
+            $user->prev_status = $user->status;
+            $user->status = 2;
+        } else {
+            $user->status = $user->prev_status;
+        }
+
+        $user->save();
+
+        activity("User")
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->log('User ban');
+
+        $status = $user->status == 2 ? 'banned' : 'un-banned';
+
+        return $this->sendResponse($user, "User has been $status");
+    }
+
+
     public function sendSmsTest(Request $request)
     {
         $url = "bulksmsbd.net/api/smsapi";
