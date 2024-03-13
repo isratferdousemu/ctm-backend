@@ -53,6 +53,6 @@ class UniqueVerificationNumber implements Rule
      */
     public function message()
     {
-        return 'The NID/Birth Registration Number has been used.';
+        return 'Already applied.';
     }
 }
