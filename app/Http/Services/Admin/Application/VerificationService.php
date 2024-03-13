@@ -30,7 +30,7 @@ class VerificationService
             throw new AuthBasicErrorException(
                 HttpResponse::HTTP_UNPROCESSABLE_ENTITY,
                 'invalid_nid',
-                "NID or Date of birth is invalid",
+                "NID or Date of birth information doesn't match",
             );
         }
 

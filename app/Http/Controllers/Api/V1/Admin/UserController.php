@@ -25,6 +25,7 @@ use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
@@ -392,15 +393,11 @@ class UserController extends Controller
 
         Log::info('password-'. $user->id, [$message]);
 
-//        $user->mobile = "01687945606";
-//        $user->email = "tarikul5357@gmail.com";
-
-
         $this->SMSservice->sendSms($user->mobile, $message);
 
 //        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
 
-        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->full_name,$password));
+        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->username,$password, $user->full_name));
 
 
         activity("User")
@@ -411,6 +408,63 @@ class UserController extends Controller
         $status = $user->status ? 'approved' : 'deactivated';
 
         return $this->sendResponse($user, "User has been $status");
+    }
+
+
+    public function banUser($id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->status != 2) {
+            $user->prev_status = $user->status;
+            $user->status = 2;
+        } else {
+            $user->status = $user->prev_status;
+        }
+
+        $user->save();
+
+        activity("User")
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->log('User ban');
+
+        $status = $user->status == 2 ? 'banned' : 'un-banned';
+
+        return $this->sendResponse($user, "User has been $status");
+    }
+
+
+    public function sendSmsTest(Request $request)
+    {
+        $url = "bulksmsbd.net/api/smsapi";
+
+        $message = $request->message ?: "Your OTP is 12132";
+        $number = $request->number ?: "01747970935";
+
+
+        $data = [
+            'api_key' => "xp143oLW8GJtKk3ggwxW",
+            'type' => "text",
+            'message' => $message,
+            'number' => $number,
+            'senderid' => "8809617617434",
+        ];
+
+        $response = Http::contentType('application/json')
+            ->post($url, $data);
+
+        return $response->json();
+    }
+
+
+    public function sendMail(Request $request)
+    {
+        $user = User::find(1);
+        $user->email = $request->email ?: "tarikul5357@gmail.com";
+
+        $this->dispatch(new UserCreateJob($user->email,$user->username, '0000', 'Queue'));
+        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->username, '1234', $user->full_name));
     }
 
 

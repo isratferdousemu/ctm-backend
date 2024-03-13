@@ -6,6 +6,7 @@ use App\Http\Traits\SettingsTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Twilio\Rest\Client;
 
@@ -23,7 +24,25 @@ class SmsService
         return preg_replace('/(\W*)/', '', $phone);
     }
 
- 
+
+
+    public function sendSMSNew($to, $text){
+        $url = "bulksmsbd.net/api/smsapi";
+
+        $data = [
+            'api_key' => "xp143oLW8GJtKk3ggwxW",
+            'type' => "text",
+            'message' => $text,
+            'number' => $to,
+            'senderid' => "8809617617434",
+        ];
+
+        $response = Http::contentType('application/json')
+            ->post($url, $data);
+
+        return $response->json();
+
+    }
 
     public function sendSMS($to, $text){
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Admin\LocationController;
 use App\Http\Controllers\Api\V1\Admin\ReportController;
+use App\Http\Controllers\Api\V1\Admin\UserLocationController;
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -18,6 +19,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/destroy/{id}', [LocationController::class, 'destroyDivision'])->middleware(['role_or_permission:super-admin|division-delete']);
         Route::get('/generate-pdf', [ReportController::class, 'divisionReport']);
     });
+
+
+
+    Route::get('get-divisions', [UserLocationController::class, 'getDivisions']);
+    Route::get('get-districts/{divisionId}', [UserLocationController::class, 'getDistricts']);
+    Route::get('get-upazilas/{districtId}', [UserLocationController::class, 'getUpazilas']);
+    Route::get('get-cities-pouroshavas/{districtId}/{locationType}', [UserLocationController::class, 'getCityPouroshavaList']);
+    Route::any('get-offices', [UserLocationController::class, 'getOfficeList']);
+    Route::get('get-office-wards/{officeId}', [UserLocationController::class, 'getOfficeWardList']);
+
 
     /* -------------------------------------------------------------------------- */
     /*                               District Routes                              */

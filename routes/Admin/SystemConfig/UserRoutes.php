@@ -13,6 +13,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/office/by-location', [UserController::class, 'getOfficeByLocationAssignId'])->middleware(['role_or_permission:super-admin|user-create']);
         Route::delete('/destroy/{id}', [UserController::class, 'destroyUser'])->middleware(['role_or_permission:super-admin|user-destroy']);
         Route::any('/approve/{id}', [UserController::class, 'approve'])->middleware(['role_or_permission:super-admin|user-edit']);
+        Route::any('/ban/{id}', [UserController::class, 'banUser'])->middleware(['role_or_permission:super-admin|user-edit']);
 
 
         Route::get('get-roles', [UserController::class, 'getRoles']);

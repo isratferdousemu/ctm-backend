@@ -30,12 +30,27 @@ Route::prefix('global')->group(function () {
     Route::post('/online-application/registration',[ApplicationController::class, 'onlineApplicationRegistration']);
      Route::get('/applicants_copy',[ApplicationController::class, 'getApplicationCopyById']);
     Route::get('/online-application/check',[ApplicationController::class, 'onlineApplicationCheck']);
+
     // Application Tracking API
     Route::post('/applicants_tracking',[ApplicationController::class, 'applicationTracking']);
 
+    Route::get('application/get/{id}', [ApplicationController::class, 'getPreviewById']);
+    Route::post('/online-edited-application/registration',[ApplicationController::class, 'onlineApplicationEditedRegistration']);
+
+
 //    Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);
     Route::get('/pdf', [\App\Http\Controllers\Api\V1\Admin\ReportController::class, 'unionReport']);
+    Route::post('online-application/final-submit', [ApplicationController::class, 'getStatusyId']);
 
     Route::get('/class-list',[AdminController::class, 'getClassList'])/*->middleware(['role_or_permission:super-admin|demo-graphic-view'])*/;
 
+<<<<<<< HEAD
 });
+=======
+});
+
+
+Route::get('/send-sms',[\App\Http\Controllers\Api\V1\Admin\UserController::class, 'sendSms']);
+Route::get('/send-mail',[\App\Http\Controllers\Api\V1\Admin\UserController::class, 'sendMail']);
+
+>>>>>>> 64eaada7c243d0141808eecb391bcf78916202f0

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Beneficiary\BeneficiaryExitRequest;
+use App\Http\Requests\Admin\Beneficiary\BeneficiaryLocationShiftingRequest;
 use App\Http\Requests\Admin\Beneficiary\BeneficiaryShiftingRequest;
 use App\Http\Requests\Admin\Beneficiary\DeleteBeneficiaryRequest;
 use App\Http\Requests\Admin\Beneficiary\ReplaceBeneficiaryRequest;
@@ -11,6 +12,7 @@ use App\Http\Requests\Admin\Beneficiary\SearchBeneficiaryRequest;
 use App\Http\Requests\Admin\Beneficiary\UpdateBeneficiaryRequest;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryDropDownResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryExitResource;
+use App\Http\Resources\Admin\Beneficiary\BeneficiaryLocationShiftingResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryReplaceResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryShiftingResource;
@@ -449,6 +451,43 @@ class BeneficiaryController extends Controller
             $beneficiaryList = $this->beneficiaryService->shiftingList($request);
 //            return response()->json($beneficiaryList);
             return BeneficiaryShiftingResource::collection($beneficiaryList)->additional([
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     * @param BeneficiaryLocationShiftingRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function locationShiftingSave(BeneficiaryLocationShiftingRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        try {
+            $this->beneficiaryService->locationShiftingSave($request);
+            return response()->json([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     * @param SearchBeneficiaryRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function locationShiftingList(SearchBeneficiaryRequest $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        try {
+            $beneficiaryList = $this->beneficiaryService->locationShiftingList($request);
+//            return response()->json($beneficiaryList);
+            return BeneficiaryLocationShiftingResource::collection($beneficiaryList)->additional([
                 'success' => true,
                 'message' => $this->fetchSuccessMessage,
             ]);

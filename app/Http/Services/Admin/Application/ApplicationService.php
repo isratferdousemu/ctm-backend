@@ -76,7 +76,18 @@ class ApplicationService
 
         try {
             $application = new Application;
-            $application->application_id = Str::random(10);
+            // $application->permanent_mobile = Str::random(10);
+            $uniquePermanentMobile = Str::random(10);
+
+// Check if the generated string already exists in the database
+            while (Application::where('permanent_mobile', $uniquePermanentMobile)->exists()) {
+    // If it exists, regenerate the random string
+             $uniquePermanentMobile = Str::random(10);
+                }
+
+// Assign the unique random string to the permanent_mobile attribute
+            $application->permanent_mobile = $uniquePermanentMobile;
+            $program_code = $request->program_id;
             $application->program_id = $request->program_id;
             $application->verification_type = $request->verification_type;
             $application->verification_number = $request->verification_number;
@@ -208,6 +219,28 @@ class ApplicationService
 
 
               }
+            
+            // $district_geo_code = Application::permanentDivision($application->permanent_location_id);
+            // $district_geo_code = $district_geo_code->code;
+            // $incremental_value = DB::table('applications')->count() + 1; 
+            // $remaining_digits = 11 - strlen($program_code) - strlen($district_geo_code);
+            // $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
+            // $application_id = $program_code . $district_geo_code . $incremental_value_formatted;    
+            // $application->application_id = $application_id;
+            $district_geo_code = Application::permanentDivision($application->permanent_location_id);
+            $district_geo_code = $district_geo_code->code;
+            $remaining_digits = 11 - strlen($program_code) - strlen($district_geo_code);
+            $incremental_value = DB::table('applications')->count() + 1;
+            $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
+            $application_id = $program_code . $district_geo_code . $incremental_value_formatted;
+            $is_unique = DB::table('applications')->where('application_id', $application_id)->doesntExist();
+            while (!$is_unique) {
+                $incremental_value++;
+                $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
+                $application_id = $program_code . $district_geo_code . $incremental_value_formatted;
+                $is_unique = DB::table('applications')->where('application_id', $application_id)->doesntExist();
+            }
+            $application->application_id = $application_id;
 
             $application->permanent_post_code = $request->permanent_post_code;
             $application->permanent_address = $request->permanent_address;
@@ -323,6 +356,262 @@ class ApplicationService
         }
 
     }
+    public function onlineApplicationEdit(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $application = Application::find($request->id);;
+            $application->application_id = $request->application_id;
+            $application->program_id = $request->program_id;
+            $application->verification_type = $request->verification_type;
+            $application->verification_number = $request->verification_number;
+            $application->age = $request->age;
+            $application->date_of_birth = $request->date_of_birth;
+            $application->name_en = $request->name_en;
+            $application->name_bn = $request->name_bn;
+            $application->mother_name_en = $request->mother_name_en;
+            $application->mother_name_bn = $request->mother_name_bn;
+            $application->father_name_en = $request->father_name_en;
+            $application->father_name_bn = $request->father_name_bn;
+            $application->spouse_name_en = $request->spouse_name_en;
+            $application->spouse_name_bn = $request->spouse_name_bn;
+            $application->identification_mark = $request->identification_mark;
+  
+            $application->nationality = $request->nationality;
+            $application->gender_id = $request->gender_id;
+            $application->education_status = $request->education_status;
+            $application->profession = $request->profession;
+            $application->religion = $request->religion;
+            $application->account_type = $request->account_type;
+            $application->bank_name = $request->bank_name;
+            $application->branch_name = $request->branch_name;
+            //  $application->current_location_id =null;
+         
+              if($request->has('ward_id_city') && $request->ward_id_city!=null){
+                $application->current_location_id              = $request->ward_id_city;
+            }
+            if($request->has('ward_id_dist') && $request->ward_id_dist!=null){
+                $application->current_location_id              = $request->ward_id_dist;
+            }
+            if($request->has('ward_id_union') && $request->ward_id_union!=null){
+                $application->current_location_id              = $request->ward_id_union;
+            }
+             if($request->has('ward_id_pouro') && $request->ward_id_pouro!=null){
+                $application->current_location_id              = $request->ward_id_pouro;
+            }
+            $application->current_post_code = $request->post_code;
+            $application->current_address = $request->address;
+            $application->mobile = $request->mobile;
+            // $application->current_location_id =null;
+            if($request->has('permanent_ward_id_city') && $request->permanent_ward_id_city!==null){
+                $application->permanent_location_id              = $request->permanent_ward_id_city;
+            }
+            if($request->has('permanent_ward_id_dist') && ($request->permanent_ward_id_dist!==null) ){
+                $application->permanent_location_id              = $request->permanent_ward_id_dist;
+            }
+            if($request->has('permanent_ward_id_union') && ($request->permanent_ward_id_union!==null)){
+                $application->permanent_location_id              = $request->permanent_ward_id_union;
+            }
+              if($request->has('permanent_ward_id_pouro') && ($request->permanent_ward_id_pouro!==null)){
+                $application->permanent_location_id              = $request->permanent_ward_id_pouro;
+            }
+
+            $application->current_location_type_id = $request->location_type;
+            $application->current_division_id = $request->division_id;
+            $application->current_district_id = $request->district_id;
+
+            //Dist pouro
+            if ($request->location_type == 1) {
+                $application->current_city_corp_id = null;
+                $application->current_thana_id = null;
+                $application->current_union_id = null;
+                $application->current_pourashava_id = null;  
+                $application->current_upazila_id = null;
+                $application->current_district_pourashava_id = $request->district_pouro_id;
+                $application->current_ward_id = $request->ward_id_dist;
+              
+            }
+
+            //City corporation
+            if ($request->location_type == 3) {
+                $application->current_thana_id = null;
+                $application->current_union_id = null;
+                $application->current_pourashava_id = null;  
+                $application->current_upazila_id = null;
+                $application->current_district_pourashava_id = null;
+                $application->current_city_corp_id = $request->city_id;
+                $application->current_thana_id = $request->city_thana_id;
+                $application->current_ward_id = $request->ward_id_city;
+              
+            }
+
+            //Upazila
+            if ($request->location_type == 2) {
+                 $application->current_city_corp_id = null;
+                 $application->current_thana_id = null;
+                 $application->current_district_pourashava_id = null;
+                $application->current_upazila_id = $request->thana_id;
+              
+                //union
+                if ($request->sub_location_type == 2) {
+                    $application->current_union_id = $request->union_id;
+                    $application->current_ward_id = $request->ward_id_union;
+                } else {
+                    //pouro
+                    $application->current_pourashava_id = $request->pouro_id;
+                    $application->current_ward_id = $request->ward_id_pouro;
+                }
+                
+
+
+            }
+
+
+
+
+              $application->permanent_location_type_id = $request->permanent_location_type;
+              $application->permanent_division_id = $request->permanent_division_id;
+              $application->permanent_district_id = $request->permanent_district_id;
+
+            //Dist pouro
+            if ($request->permanent_location_type == 1) {
+                $application->permanent_city_corp_id = null;
+                $application->permanent_thana_id = null;
+                $application->permanent_upazila_id = null;
+                $application->permanent_union_id = null;
+                $application->permanent_pourashava_id = null;
+                $application->permanent_district_pourashava_id = $request->permanent_district_pouro_id;
+                $application->permanent_ward_id = $request->permanent_ward_id_dist;
+               
+            }
+
+
+
+            //City corporation
+            if ($request->permanent_location_type == 3) {
+                $application->permanent_upazila_id = null;
+                $application->permanent_union_id = null;
+                $application->permanent_pourashava_id = null;
+                $application->permanent_district_pourashava_id = null;
+                $application->permanent_city_corp_id = $request->permanent_city_id;
+                $application->permanent_thana_id = $request->permanent_city_thana_id;
+                $application->permanent_ward_id = $request->permanent_ward_id_city;
+            
+            }
+
+              //Upazila
+              if ($request->permanent_location_type == 2) {
+                  $application->permanent_city_corp_id = null;
+                  $application->permanent_thana_id = null;
+                  $application->permanent_district_pourashava_id = null;
+                  $application->permanent_upazila_id = $request->permanent_thana_id;
+                  //union
+                  if ($request->permanent_sub_location_type == 2) {
+                      $application->permanent_union_id = $request->permanent_union_id;
+                      $application->permanent_ward_id = $request->permanent_ward_id_union;
+                  } else {
+                      //pouro
+                      $application->permanent_pourashava_id = $request->permanent_pouro_id;
+                      $application->permanent_ward_id = $request->permanent_ward_id_pouro;
+                  }
+              
+
+              }
+
+            $application->permanent_post_code = $request->permanent_post_code;
+            $application->permanent_address = $request->permanent_address;
+            $application->permanent_mobile = $request->permanent_mobile;
+            $application->nominee_en = $request->nominee_en;
+            $application->nominee_bn = $request->nominee_bn;
+            $application->nominee_verification_number = $request->nominee_verification_number;
+            $application->nominee_address = $request->nominee_address;
+            $application->nominee_date_of_birth = $request->nominee_date_of_birth;
+         
+          
+            $application->nominee_relation_with_beneficiary = $request->nominee_relation_with_beneficiary;
+            $application->nominee_nationality = $request->nominee_nationality;
+            $application->account_name = $request->account_name;
+            $application->account_number = $request->account_number;
+            $application->account_owner = $request->account_owner;
+            $application->marital_status = $request->marital_status;
+            $application->email = $request->email;
+            $district1 = Application::permanentDistrict($application->permanent_location_id);
+
+            $division=Application::permanentDivision($application->permanent_location_id)  ;
+            // $division=$division->id  ;
+            $division_cut_off = DB::select("
+            SELECT poverty_score_cut_offs.*, financial_years.financial_year AS financial_year, financial_years.end_date
+            FROM poverty_score_cut_offs
+            JOIN financial_years ON financial_years.id = poverty_score_cut_offs.financial_year_id
+            WHERE poverty_score_cut_offs.location_id = ? AND poverty_score_cut_offs.type = 1
+            ORDER BY financial_years.end_date DESC LIMIT 1", [$division->id]);
+            $division_cut_off =$division_cut_off[0]->id;
+            $application->cut_off_id= $division_cut_off;
+            $financial_year_id=FinancialYear::Where('status',1)->first();
+
+
+             if( $financial_year_id){
+            $financial_year_id=$financial_year_id->id;
+            $application->financial_year_id= $financial_year_id;
+             }
+  
+
+           
+            if ($request->hasFile('image')) {
+            
+             $imagePath = $request->file('image')->store('public');
+             $application->image = $imagePath;
+            }
+            if ($request->hasFile('signature')) {
+            
+              $signaturePath = $request->file('signature')->store('public');
+             $application->signature=$signaturePath ;
+            }
+            if ($request->hasFile('nominee_image')) {
+            
+             $nominee_imagePath = $request->file('nominee_image')->store('public');
+            $application->nominee_image=$nominee_imagePath ;
+            }
+            if ($request->hasFile('nominee_signature')) {
+            
+             
+            $nominee_signaturePath = $request->file('nominee_signature')->store('public');
+            $application->nominee_signature=$nominee_signaturePath;
+            }
+            
+   
+            
+ 
+    
+           
+    
+            $application->save();
+
+
+            if($application){
+                $allowance_value=ApplicationAllowanceValues::where('application_id',$application->id)->delete();
+              
+                
+                $this->insertApplicationAllowanceValues($request, $application->id);
+                $poverty_value=ApplicationPovertyValues::where('application_id',$application->id)->delete();
+              
+                
+                $this->insertApplicationPMTValues(json_decode($request->application_pmt), $application->id);
+              
+            }
+
+            DB::commit();
+            $this->applicationPMTValuesTotal($application->id);
+            return $application;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+
+    }
+
+
+
 
     public function insertApplicationPMTValues($application_pmt, $application_id){
         DB::beginTransaction();
@@ -363,20 +652,36 @@ class ApplicationService
             $field_value = New ApplicationAllowanceValues;
             $field_value->application_id = $application_id;
             $field_value->allow_addi_fields_id = $value->allowance_program_additional_fields_id;
-            if(is_array($value->allowance_program_additional_field_values_id)){
+            // if(is_array($value->allowance_program_additional_field_values_id)){
 
-            foreach ($value->allowance_program_additional_field_values_id as $key => $add_field_value) {
-                $addFieldValue = new ApplicationAllowanceValues;
-                $addFieldValue->application_id = $application_id;
-                $addFieldValue->allow_addi_fields_id = $value->allowance_program_additional_fields_id;
-                $addFieldValue->allow_addi_field_values_id = $add_field_value;
-                $addFieldValue->value = NULL;
-                $addFieldValue->save();
-            }
-            }else{
-                $field_value->allow_addi_field_values_id = $value->allowance_program_additional_field_values_id=='null'?null:$value->allowance_program_additional_field_values_id;
-            }
+            // foreach ($value->allowance_program_additional_field_values_id as $key => $add_field_value) {
+            //     $addFieldValue = new ApplicationAllowanceValues;
+            //     $addFieldValue->application_id = $application_id;
+            //     $addFieldValue->allow_addi_fields_id = $value->allowance_program_additional_fields_id;
+            //     $addFieldValue->allow_addi_field_values_id = $add_field_value;
+            //     $addFieldValue->value = NULL;
+            //     $addFieldValue->save();
+            // }
+            // }else{
+            //     $field_value->allow_addi_field_values_id = $value->allowance_program_additional_field_values_id=='null'?null:$value->allowance_program_additional_field_values_id;
+            // }
             // check  $value->value type
+            if (isset($value->allowance_program_additional_field_values_id)) {
+                if (is_array($value->allowance_program_additional_field_values_id)) {
+                    foreach ($value->allowance_program_additional_field_values_id as $key => $add_field_value) {
+                        $addFieldValue = new ApplicationAllowanceValues;
+                        $addFieldValue->application_id = $application_id;
+                        $addFieldValue->allow_addi_fields_id = $value->allowance_program_additional_fields_id;
+                        $addFieldValue->allow_addi_field_values_id = $add_field_value;
+                        $addFieldValue->value = NULL;
+                        $addFieldValue->save();
+                    }
+                } else {
+                    // Handle the case where it's not an array
+                    $field_value->allow_addi_field_values_id = $value->allowance_program_additional_field_values_id == 'null' ? null : $value->allowance_program_additional_field_values_id;
+                }
+} 
+
             if(gettype($value->value)=='object'){
                 $field_value->value = $this->uploadBaseFile($value->file_value, 'application');
 

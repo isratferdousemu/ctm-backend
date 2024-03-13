@@ -102,12 +102,12 @@ trait MessageTrait
     private $updateSuccessMessage = 'Update Success';
     private $deleteSuccessMessage = 'Delete Success';
     //fetch success
-    private $fetchSuccessMessage = 'Fetch Success';
+    private $fetchSuccessMessage = 'NID information verified successfully';
     private $otpSendMessage = 'Otp Send Successfully';
     //not found
     private $unverifiedUserErrorResponse = 'Please Verify Your Account to login';
     private $NonAllowedAdminErrorResponse = 'please try to login your application';
-    private $bannedUserErrorResponse = 'please contact administrator for re-active your account';
+    private $bannedUserErrorResponse = 'Please contact administrator to re-activate your account';
 
     private $defaultPasswordErrorResponse = 'please change your default password';
 

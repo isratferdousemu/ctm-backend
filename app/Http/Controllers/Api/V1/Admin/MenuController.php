@@ -494,10 +494,15 @@ class MenuController extends Controller
                 $menu->label_name_bn = $request->label_name_bn;
                 $menu->order = $request->order;
 
-                $menu->page_link_id = $request->page_link_id;
-
                 $menu->link_type              = $request->link_type;
-                $menu->link                   = $request->link;
+
+                if ($request->link_type == 2) {
+                    $menu->page_link_id = null;
+                    $menu->link = $request->link;
+                } else {
+                    $menu->link = null;
+                    $menu->page_link_id = $request->page_link_id;
+                }
 
                 if ($request->parent_id == null)
                 {

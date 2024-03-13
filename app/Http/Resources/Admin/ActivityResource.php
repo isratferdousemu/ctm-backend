@@ -20,7 +20,25 @@ class ActivityResource extends JsonResource
             'log_name'            => $this->log_name,
             'subject'            => $this->subject,
             'causer'                  => CauserResource::make($this->whenLoaded('causer')),
+            'properties'            => $this->properties,
             'created_at'            => $this->created_at->diffForHumans(),
         ];
+    }
+
+    public function withResponse($request, $response)
+    {
+        // Add pagination metadata
+        $paginationData = [
+            'current_page' => $this->resource->currentPage(),
+            'per_page' => $this->resource->perPage(),
+            'total' => $this->resource->total(),
+            'last_page' => $this->resource->lastPage(),
+            // You can add more pagination metadata here if needed
+        ];
+
+        $response->setData(array_merge(
+            $response->getData(true),
+            ['meta' => $paginationData]
+        ));
     }
 }

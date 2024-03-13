@@ -8,6 +8,7 @@ use App\Http\Resources\Admin\Location\LocationResource;
 use App\Http\Resources\Admin\Lookup\LookupResource;
 use App\Models\Beneficiary;
 use App\Models\BeneficiaryExit;
+use App\Models\BeneficiaryLocationShifting;
 use App\Models\BeneficiaryReplace;
 use App\Models\BeneficiaryShifting;
 use App\Models\Lookup;
@@ -16,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Log;
+use Mockery\Exception;
 
 /**
  *
@@ -663,6 +665,7 @@ class BeneficiaryService
      */
     public function getListForReplace(Request $request): \Illuminate\Contracts\Pagination\Paginator
     {
+        $exclude_beneficiary_id = $request->query('exclude_beneficiary_id');
         $program_id = $request->query('program_id');
         $division_id = $request->query('division_id');
         $district_id = $request->query('district_id');
@@ -685,6 +688,8 @@ class BeneficiaryService
         $orderByDirection = $request->query('orderBy', 'asc');
 
         $query = Beneficiary::query();
+        if ($exclude_beneficiary_id)
+            $query = $query->where('id', '!=', $exclude_beneficiary_id);
         if ($program_id)
             $query = $query->where('program_id', $program_id);
         if ($division_id)
@@ -752,6 +757,9 @@ class BeneficiaryService
     {
         DB::beginTransaction();
         try {
+            if ($id == $request->input('replace_with_ben_id')) {
+                throw new Exception("Can not replace same beneficiary");
+            }
             $beneficiary = Beneficiary::findOrFail($id);
             $beneficiary->status = 2; // Inactive
             $beneficiary->updated_at = now();
@@ -1181,6 +1189,274 @@ class BeneficiaryService
                 'union.name_bn as union_bn',
                 'ward.name_en as ward_en',
                 'ward.name_bn as ward_bn')->orderBy("$sortByColumn", "$orderByDirection")->paginate($perPage);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
+     * @throws \Throwable
+     */
+    public function locationShiftingSave(Request $request): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
+    {
+        DB::beginTransaction();
+        try {
+//            dump($request->input('beneficiaries'));
+            if (!$request->has('beneficiaries')) {
+                DB::rollBack();
+                throw new \Exception('No beneficiaries was selected for shifting!');
+            }
+            $shiftingDataList = [];
+            foreach ($request->input('beneficiaries') as $beneficiary) {
+                $beneficiaryInstance = Beneficiary::findOrFail($beneficiary['beneficiary_id']);
+//                dump($beneficiaryInstance);
+                $shiftingDataList[] = [
+                    'beneficiary_id' => $beneficiary['beneficiary_id'],
+                    'from_division_id' => $beneficiaryInstance->permanent_division_id,
+                    'from_district_id' => $beneficiaryInstance->permanent_district_id,
+                    'from_city_corp_id' => $beneficiaryInstance->permanent_city_corp_id,
+                    'from_district_pourashava_id' => $beneficiaryInstance->permanent_district_pourashava_id,
+                    'from_upazila_id' => $beneficiaryInstance->permanent_upazila_id,
+                    'from_pourashava_id' => $beneficiaryInstance->permanent_pourashava_id,
+                    'from_thana_id' => $beneficiaryInstance->permanent_thana_id,
+                    'from_union_id' => $beneficiaryInstance->permanent_union_id,
+                    'from_ward_id' => $beneficiaryInstance->permanent_ward_id,
+                    'from_location_type_id' => $beneficiaryInstance->permanent_location_type_id,
+//                    'from_location_id' => $beneficiaryInstance->permanent_location_id,
+                    'to_division_id' => $request->input('to_division_id'),
+                    'to_district_id' => $request->input('to_district_id'),
+                    'to_city_corp_id' => $request->input('to_city_corp_id'),
+                    'to_district_pourashava_id' => $request->input('to_district_pourashava_id'),
+                    'to_upazila_id' => $request->input('to_upazila_id'),
+                    'to_pourashava_id' => $request->input('to_pourashava_id'),
+                    'to_thana_id' => $request->input('to_thana_id'),
+                    'to_union_id' => $request->input('to_union_id'),
+                    'to_ward_id' => $request->input('to_ward_id'),
+                    'to_location_type_id' => $request->input('to_location_type_id'),
+                    'to_location_id' => $request->input('to_location_id'),
+                    'shifting_cause' => $request->input('shifting_cause'),
+                    'effective_date' => $request->input('effective_date') ? Carbon::parse($request->input('effective_date')) : now(),
+                ];
+            }
+            BeneficiaryLocationShifting::insert($shiftingDataList);
+            foreach ($shiftingDataList as $shiftingData) {
+                Beneficiary::where('id', $shiftingData['beneficiary_id'])->update(
+                    [
+                        'permanent_division_id' => $shiftingData['to_division_id'],
+                        'permanent_district_id' => $shiftingData['to_district_id'],
+                        'permanent_city_corp_id' => $shiftingData['to_city_corp_id'],
+                        'permanent_district_pourashava_id' => $shiftingData['to_district_pourashava_id'],
+                        'permanent_upazila_id' => $shiftingData['to_upazila_id'],
+                        'permanent_pourashava_id' => $shiftingData['to_pourashava_id'],
+                        'permanent_thana_id' => $shiftingData['to_thana_id'],
+                        'permanent_union_id' => $shiftingData['to_union_id'],
+                        'permanent_ward_id' => $shiftingData['to_ward_id'],
+                        'permanent_location_type_id' => $shiftingData['to_location_type_id'],
+//                        'permanent_location_id' => $shiftingData['to_location_id'],
+                    ]
+                );
+            }
+            DB::commit();
+            return $shiftingDataList;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param $forPdf
+     * @return mixed
+     */
+    public function locationShiftingList(Request $request, $forPdf = false)
+    {
+        $from_division_id = $request->query('from_division_id');
+        $from_district_id = $request->query('from_district_id');
+        $from_city_corp_id = $request->query('from_city_corp_id');
+        $from_district_pourashava_id = $request->query('from_district_pourashava_id');
+        $from_upazila_id = $request->query('from_upazila_id');
+        $from_pourashava_id = $request->query('from_pourashava_id');
+        $from_thana_id = $request->query('from_thana_id');
+        $from_union_id = $request->query('from_union_id');
+        $from_ward_id = $request->query('from_ward_id');
+
+        $to_division_id = $request->query('to_division_id');
+        $to_district_id = $request->query('to_district_id');
+        $to_city_corp_id = $request->query('to_city_corp_id');
+        $to_district_pourashava_id = $request->query('to_district_pourashava_id');
+        $to_upazila_id = $request->query('to_upazila_id');
+        $to_pourashava_id = $request->query('to_pourashava_id');
+        $to_thana_id = $request->query('to_thana_id');
+        $to_union_id = $request->query('to_union_id');
+        $to_ward_id = $request->query('to_ward_id');
+
+        $perPage = $request->query('perPage', 10);
+        $sortByColumn = $request->query('sortBy', 'beneficiary_location_shiftings.created_at');
+        $orderByDirection = $request->query('orderBy', 'asc');
+
+        $query = DB::table('beneficiary_location_shiftings')
+            ->join('beneficiaries', 'beneficiaries.id', '=', 'beneficiary_location_shiftings.beneficiary_id')
+            ->join('allowance_programs AS program', 'program.id', '=', 'beneficiaries.program_id')
+            ->join('locations AS from_division', 'from_division.id', '=', 'beneficiary_location_shiftings.from_division_id', 'left')
+            ->join('locations AS from_district', 'from_district.id', '=', 'beneficiary_location_shiftings.from_district_id', 'left')
+            ->join('locations AS from_city_corporation', 'from_city_corporation.id', '=', 'beneficiary_location_shiftings.from_city_corp_id', 'left')
+            ->join('locations AS from_district_pourashava', 'from_district_pourashava.id', '=', 'beneficiary_location_shiftings.from_district_pourashava_id', 'left')
+            ->join('locations AS from_upazila', 'from_upazila.id', '=', 'beneficiary_location_shiftings.from_upazila_id', 'left')
+            ->join('locations AS from_pourashava', 'from_pourashava.id', '=', 'beneficiary_location_shiftings.from_pourashava_id', 'left')
+            ->join('locations AS from_thana', 'from_thana.id', '=', 'beneficiary_location_shiftings.from_thana_id', 'left')
+            ->join('locations AS from_union', 'from_union.id', '=', 'beneficiary_location_shiftings.from_union_id', 'left')
+            ->join('locations AS from_ward', 'from_ward.id', '=', 'beneficiary_location_shiftings.from_ward_id', 'left')
+            ->join('locations AS to_division', 'to_division.id', '=', 'beneficiary_location_shiftings.to_division_id', 'left')
+            ->join('locations AS to_district', 'to_district.id', '=', 'beneficiary_location_shiftings.to_district_id', 'left')
+            ->join('locations AS to_city_corporation', 'to_city_corporation.id', '=', 'beneficiary_location_shiftings.to_city_corp_id', 'left')
+            ->join('locations AS to_district_pourashava', 'to_district_pourashava.id', '=', 'beneficiary_location_shiftings.to_district_pourashava_id', 'left')
+            ->join('locations AS to_upazila', 'to_upazila.id', '=', 'beneficiary_location_shiftings.to_upazila_id', 'left')
+            ->join('locations AS to_pourashava', 'to_pourashava.id', '=', 'beneficiary_location_shiftings.to_pourashava_id', 'left')
+            ->join('locations AS to_thana', 'to_thana.id', '=', 'beneficiary_location_shiftings.to_thana_id', 'left')
+            ->join('locations AS to_union', 'to_union.id', '=', 'beneficiary_location_shiftings.to_union_id', 'left')
+            ->join('locations AS to_ward', 'to_ward.id', '=', 'beneficiary_location_shiftings.to_ward_id', 'left');
+
+        if ($from_division_id)
+            $query = $query->where('beneficiary_location_shiftings.from_division_id)', $from_division_id);
+        if ($from_district_id)
+            $query = $query->where('beneficiary_location_shiftings.from_district_id', $from_district_id);
+        if ($from_city_corp_id)
+            $query = $query->where('beneficiary_location_shiftings.from_city_corp_id', $from_city_corp_id);
+        if ($from_district_pourashava_id)
+            $query = $query->where('beneficiary_location_shiftings.from_district_pourashava_id', $from_district_pourashava_id);
+        if ($from_upazila_id)
+            $query = $query->where('beneficiary_location_shiftings.from_upazila_id', $from_upazila_id);
+        if ($from_pourashava_id)
+            $query = $query->where('beneficiary_location_shiftings.from_pourashava_id', $from_pourashava_id);
+        if ($from_thana_id)
+            $query = $query->where('beneficiary_location_shiftings.from_thana_id', $from_thana_id);
+        if ($from_union_id)
+            $query = $query->where('beneficiary_location_shiftings.from_union_id', $from_union_id);
+        if ($from_ward_id)
+            $query = $query->where('beneficiary_location_shiftings.from_ward_id', $from_ward_id);
+
+        if ($to_division_id)
+            $query = $query->where('beneficiary_location_shiftings.to_division_id)', $to_division_id);
+        if ($to_district_id)
+            $query = $query->where('beneficiary_location_shiftings.to_district_id', $to_district_id);
+        if ($to_city_corp_id)
+            $query = $query->where('beneficiary_location_shiftings.to_city_corp_id', $to_city_corp_id);
+        if ($to_district_pourashava_id)
+            $query = $query->where('beneficiary_location_shiftings.to_district_pourashava_id', $to_district_pourashava_id);
+        if ($to_upazila_id)
+            $query = $query->where('beneficiary_location_shiftings.to_upazila_id', $to_upazila_id);
+        if ($to_pourashava_id)
+            $query = $query->where('beneficiary_location_shiftings.to_pourashava_id', $to_pourashava_id);
+        if ($to_thana_id)
+            $query = $query->where('beneficiary_location_shiftings.to_thana_id', $to_thana_id);
+        if ($to_union_id)
+            $query = $query->where('beneficiary_location_shiftings.to_union_id', $to_union_id);
+        if ($to_ward_id)
+            $query = $query->where('beneficiary_location_shiftings.to_ward_id', $to_ward_id);
+
+        $query = $this->applyLocationFilter2($query, $request);
+
+        if ($forPdf)
+            return $query->select('beneficiary_location_shiftings.id',
+                'beneficiary_location_shiftings.shifting_cause',
+                'beneficiary_location_shiftings.effective_date',
+                'beneficiaries.id as beneficiary_id',
+                'beneficiaries.application_id',
+                'beneficiaries.name_en',
+                'beneficiaries.name_bn',
+                'beneficiaries.father_name_en',
+                'beneficiaries.father_name_bn',
+                'beneficiaries.mother_name_en',
+                'beneficiaries.mother_name_bn',
+                'program.name_en as program_name_en',
+                'program.name_bn as program_name_bn',
+                'from_division.name_en as from_division_name_en',
+                'from_division.name_bn as from_division_name_bn',
+                'from_district.name_en as from_district_name_en',
+                'from_district.name_bn as from_district_name_bn',
+                'from_city_corporation.name_en as from_city_corporation_name_en',
+                'from_city_corporation.name_bn as from_city_corporation_name_bn',
+                'from_district_pourashava.name_en as from_district_pourashava_name_en',
+                'from_district_pourashava.name_bn as from_district_pourashava_name_bn',
+                'from_upazila.name_en as from_upazila_name_en',
+                'from_upazila.name_bn as from_upazila_name_bn',
+                'from_pourashava.name_en as from_pourashava_name_en',
+                'from_pourashava.name_bn as from_pourashava_name_bn',
+                'from_thana.name_en as from_thana_en',
+                'from_thana.name_bn as from_thana_bn',
+                'from_union.name_en as from_union_en',
+                'from_union.name_bn as from_union_bn',
+                'from_ward.name_en as from_ward_en',
+                'from_ward.name_bn as from_ward_bn',
+                'to_division.name_en as to_division_name_en',
+                'to_division.name_bn as to_division_name_bn',
+                'to_district.name_en as to_district_name_en',
+                'to_district.name_bn as to_district_name_bn',
+                'to_city_corporation.name_en as to_city_corporation_name_en',
+                'to_city_corporation.name_bn as to_city_corporation_name_bn',
+                'to_district_pourashava.name_en as to_district_pourashava_name_en',
+                'to_district_pourashava.name_bn as to_district_pourashava_name_bn',
+                'to_upazila.name_en as to_upazila_name_en',
+                'to_upazila.name_bn as to_upazila_name_bn',
+                'to_pourashava.name_en as to_pourashava_name_en',
+                'to_pourashava.name_bn as to_pourashava_name_bn',
+                'to_thana.name_en as to_thana_en',
+                'to_thana.name_bn as to_thana_bn',
+                'to_union.name_en as to_union_en',
+                'to_union.name_bn as to_union_bn',
+                'to_ward.name_en as to_ward_en',
+                'to_ward.name_bn as to_ward_bn')->orderBy("$sortByColumn", "$orderByDirection")->get();
+        else
+            return $query->select('beneficiary_location_shiftings.id',
+                'beneficiary_location_shiftings.shifting_cause',
+                'beneficiary_location_shiftings.effective_date',
+                'beneficiaries.id as beneficiary_id',
+                'beneficiaries.application_id',
+                'beneficiaries.name_en',
+                'beneficiaries.name_bn',
+                'beneficiaries.father_name_en',
+                'beneficiaries.father_name_bn',
+                'beneficiaries.mother_name_en',
+                'beneficiaries.mother_name_bn',
+                'program.name_en as program_name_en',
+                'program.name_bn as program_name_bn',
+                'from_division.name_en as from_division_name_en',
+                'from_division.name_bn as from_division_name_bn',
+                'from_district.name_en as from_district_name_en',
+                'from_district.name_bn as from_district_name_bn',
+                'from_city_corporation.name_en as from_city_corporation_name_en',
+                'from_city_corporation.name_bn as from_city_corporation_name_bn',
+                'from_district_pourashava.name_en as from_district_pourashava_name_en',
+                'from_district_pourashava.name_bn as from_district_pourashava_name_bn',
+                'from_upazila.name_en as from_upazila_name_en',
+                'from_upazila.name_bn as from_upazila_name_bn',
+                'from_pourashava.name_en as from_pourashava_name_en',
+                'from_pourashava.name_bn as from_pourashava_name_bn',
+                'from_thana.name_en as from_thana_en',
+                'from_thana.name_bn as from_thana_bn',
+                'from_union.name_en as from_union_en',
+                'from_union.name_bn as from_union_bn',
+                'from_ward.name_en as from_ward_en',
+                'from_ward.name_bn as from_ward_bn',
+                'to_division.name_en as to_division_name_en',
+                'to_division.name_bn as to_division_name_bn',
+                'to_district.name_en as to_district_name_en',
+                'to_district.name_bn as to_district_name_bn',
+                'to_city_corporation.name_en as to_city_corporation_name_en',
+                'to_city_corporation.name_bn as to_city_corporation_name_bn',
+                'to_district_pourashava.name_en as to_district_pourashava_name_en',
+                'to_district_pourashava.name_bn as to_district_pourashava_name_bn',
+                'to_upazila.name_en as to_upazila_name_en',
+                'to_upazila.name_bn as to_upazila_name_bn',
+                'to_pourashava.name_en as to_pourashava_name_en',
+                'to_pourashava.name_bn as to_pourashava_name_bn',
+                'to_thana.name_en as to_thana_en',
+                'to_thana.name_bn as to_thana_bn',
+                'to_union.name_en as to_union_en',
+                'to_union.name_bn as to_union_bn',
+                'to_ward.name_en as to_ward_en',
+                'to_ward.name_bn as to_ward_bn')->orderBy("$sortByColumn", "$orderByDirection")->paginate($perPage);
     }
 
     /**
