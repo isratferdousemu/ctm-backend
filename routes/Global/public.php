@@ -44,13 +44,11 @@ Route::prefix('global')->group(function () {
 
     Route::get('/class-list',[AdminController::class, 'getClassList'])/*->middleware(['role_or_permission:super-admin|demo-graphic-view'])*/;
 
-<<<<<<< HEAD
+
 });
-=======
-});
+
+
 
 
 Route::get('/send-sms',[\App\Http\Controllers\Api\V1\Admin\UserController::class, 'sendSms']);
 Route::get('/send-mail',[\App\Http\Controllers\Api\V1\Admin\UserController::class, 'sendMail']);
-
->>>>>>> 64eaada7c243d0141808eecb391bcf78916202f0
