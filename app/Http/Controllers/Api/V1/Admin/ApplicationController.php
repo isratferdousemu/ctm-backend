@@ -1969,8 +1969,10 @@ class ApplicationController extends Controller
         $programName = AllowanceProgram::where('id',$application->program_id)->first('name_en');
         $program = $programName->name_en;
 
+  
+        //  $message = " Dear $application->name_en, "."\n We are thrilled to inform you that you have been selected as a recipient for the ". $program ."\n Sincerely,"."\nDepartment of Social Services";
+        $message = "Dear $application->name_en,"."\nWe are thrilled to inform you that you have been selected as a recipient for the $program.\n\nYour Beneficiary ID is $application->application_id.\n\nSincerely,"."\nDepartment of Social Services";
 
-         $message = " Dear $application->name_en, "."\n We are thrilled to inform you that you have been selected as a recipient for the ". $program ."\n Sincerely,"."\nDepartment of Social Services";
 
 
         $this->SMSservice->sendSms($application->mobile, $message);
