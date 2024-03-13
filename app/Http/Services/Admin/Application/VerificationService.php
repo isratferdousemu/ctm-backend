@@ -80,7 +80,7 @@ class VerificationService
         }
 
 
-        return Carbon::parse($data['dob'])->diff($finYear->end_date)->y;
+        return Carbon::parse($data['dob'])->diff($finYear->end_date)->format('%y.%m');
     }
 
 

@@ -30,6 +30,8 @@ Route::prefix('global')->group(function () {
     Route::post('/online-application/registration',[ApplicationController::class, 'onlineApplicationRegistration']);
      Route::get('/applicants_copy',[ApplicationController::class, 'getApplicationCopyById']);
     Route::get('/online-application/check',[ApplicationController::class, 'onlineApplicationCheck']);
+    // Application Tracking API
+    Route::post('/applicants_tracking',[ApplicationController::class, 'applicationTracking']);
 
 //    Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);
     Route::get('/pdf', [\App\Http\Controllers\Api\V1\Admin\ReportController::class, 'unionReport']);

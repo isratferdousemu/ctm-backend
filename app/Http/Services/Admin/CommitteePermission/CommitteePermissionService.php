@@ -24,6 +24,7 @@ class CommitteePermissionService
         $permission = new CommitteePermission();
         $permission->committee_type_id = $request->committee_type_id;
         $permission->approve = (bool)$request->approve;
+        $permission->recommendation = (bool)$request->recommendation;
         $permission->forward = (bool)$request->forward;
         $permission->reject = (bool)$request->reject;
         $permission->waiting = (bool)$request->waiting;
@@ -49,5 +50,3 @@ class CommitteePermissionService
 
 
 }
-
-

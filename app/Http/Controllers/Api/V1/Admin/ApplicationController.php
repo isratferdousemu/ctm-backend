@@ -156,7 +156,21 @@ class ApplicationController extends Controller
         ], 200);
     }
 
+ // application tracking function
+    public function applicationTracking(Request $request){
+        $application = Application::with('program')
+                      ->where('application_id', '=', $request->tracking_no)
+                      ->orWhere('date_of_birth', '=',$request->dob)
+                      ->first();
+                      
+        return response()->json([
+            'status' => true,
+            'data' => $application,
+            'message' => $this->fetchSuccessMessage,
+        ], 200);
 
+
+    }
 
 
     public function verifyAge($nidInfo)
@@ -1630,7 +1644,7 @@ class ApplicationController extends Controller
 
         $query->whereNot('status', ApplicationStatus::REJECTED)
             ->whereNot('status', ApplicationStatus::APPROVE);
-
+        
         DB::beginTransaction();
         try {
             $this->updateApplications($request, $user, $query->get());
@@ -1682,7 +1696,7 @@ class ApplicationController extends Controller
     public function changeCommitteeApplicationsStatus($request, $applications, $committeeId)
     {
         foreach ($applications as $application) {
-            $committeeApplication = $application->committeeApplication()->firstOrNew([
+            $committeeApplication = $application->committeeApplication()->Create([
                     'committee_id' => $committeeId
                 ]
             );
@@ -1690,6 +1704,7 @@ class ApplicationController extends Controller
             $committeeApplication->status = $request->status;
             $committeeApplication->remark = $request->remark;
             $committeeApplication->save();
+            
 
 
             if ($request->status == ApplicationStatus::APPROVE && !$application->approve_date) {
@@ -1918,6 +1933,7 @@ class ApplicationController extends Controller
         if ($user->user_type == 1) {
             return [
                 'approve' => false,
+                'recommendation' => false,
                 'forward' => false,
                 'reject' => false,
                 'waiting' => false,
@@ -1932,6 +1948,7 @@ class ApplicationController extends Controller
 
             return [
                 'approve' => false,
+                'recommendation' => false,
                 'forward' => $canForward,
                 'reject' => false,
                 'waiting' => false,
@@ -1942,6 +1959,7 @@ class ApplicationController extends Controller
 
         return [
             'approve' => (bool) $user->committeePermission?->approve,
+            'recommendation' => (bool) $user->committeePermission?->recommendation,
             'forward' => (bool) $user->committeePermission?->forward,
             'reject' => (bool) $user->committeePermission?->reject,
             'waiting' => (bool) $user->committeePermission?->waiting,
