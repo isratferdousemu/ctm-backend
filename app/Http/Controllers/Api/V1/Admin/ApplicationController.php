@@ -1704,9 +1704,6 @@ class ApplicationController extends Controller
             $committeeApplication->status = $request->status;
             $committeeApplication->remark = $request->remark;
             $committeeApplication->save();
-            activity("Application Status Change")
-                ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $committeeApplication])
-                ->log("Application Status Change");
 
 
             if ($request->status == ApplicationStatus::APPROVE && !$application->approve_date) {

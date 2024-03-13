@@ -49,8 +49,8 @@ class CommitteeApplicationService
 
     public function getDistrictApplications($user, $query)
     {
-        $divisionId = $user->assign_location_id;
-        $districtId = $user->assign_location?->parent?->id;
+        $districtId= $user->assign_location_id;
+        $divisionId = $user->assign_location?->parent?->id;
 
         return $this->applyLocationTypeFilter($query, $divisionId, $districtId);
     }
@@ -61,6 +61,7 @@ class CommitteeApplicationService
             $query->where('permanent_division_id', $divisionId);
 
             if ($districtId) {
+                // dd($districtId);
                 $query->where('permanent_district_id', $districtId);
 
                 if ($type = request('location_type_id')) {
