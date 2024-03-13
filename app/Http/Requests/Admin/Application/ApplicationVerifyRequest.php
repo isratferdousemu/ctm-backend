@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Requests\Admin\Application;
+use App\Rules\UniqueBeneficiaryNumber;
+use App\Rules\UniqueVerificationNumber;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -23,7 +25,13 @@ class ApplicationVerifyRequest extends FormRequest
     {
         return [
             'verification_type'         =>      'required|in:1,2',
-            'verification_number'         =>      'required',
+            // 'verification_number'         =>      'required',
+             'verification_number' => [
+            'required',
+            new UniqueBeneficiaryNumber(),
+            new UniqueVerificationNumber(),
+          
+        ],
             'date_of_birth'         =>      'required|date',
         ];
     }
