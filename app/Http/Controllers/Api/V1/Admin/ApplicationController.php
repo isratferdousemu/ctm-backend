@@ -361,15 +361,11 @@ class ApplicationController extends Controller
         $programName = AllowanceProgram::where('id',$data->program_id)->first('name_en');
         $programName = $programName->name_en;
 
-  
         $message = " Dear $data->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
-
-
-   
-      
-
         $this->SMSservice->sendSms($data->mobile, $message);
-       
+         activity("Online Application Submit")
+            ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $data])
+            ->log("Online Application Submit");
         return response()->json([
             'status' => true,
             'data' => $data,
@@ -382,8 +378,8 @@ class ApplicationController extends Controller
     public function  onlineApplicationEditedRegistration(ApplicationUpdateRequest $request){
         // return $request->all();
 
-       
-   
+
+
         $allowance = AllowanceProgram::find($request->program_id);
 
         // check is marital
@@ -436,7 +432,7 @@ class ApplicationController extends Controller
                     );
                 }
             }
-            
+
 
         }
          $data = [
@@ -447,14 +443,14 @@ class ApplicationController extends Controller
         $nidInfo = (new VerificationService())->callNomineeVerificationApi($data);
 
         // return gettype(json_decode($request->application_allowance_values)[19]->value);
-     
+
         $data = $this->applicationService->onlineApplicationEdit($request);
 
-        
-       
-        
 
-        
+
+
+
+
     //  $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
 
         // Log::info('password-'. $user->id, [$message]);
@@ -473,15 +469,15 @@ class ApplicationController extends Controller
   public function getStatusyId(Request  $request){
         $id=$request->id;
         $nid=$request->nid;
-       
-       
+
+
        $application = Application::where('id','=',$id)
        ->update(['status'=>0]);
        $delete = Application::where('verification_number', '=', $nid)
         ->where('status', '=', 9)
         ->delete();
         $application = Application::find($id);
-    
+
     if (!$application) {
         // Handle case where application with given id is not found
         return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
@@ -489,23 +485,23 @@ class ApplicationController extends Controller
         $programName = AllowanceProgram::where('id',$application->program_id)->first('name_en');
         $programName = $programName->name_en;
 
-  
+
         $message = " Dear $application->name_en. "."\n Congratulations! Your application has been submitted for the $programName successfully."."\n Your tracking ID is ".$application->application_id ."\n Save tracking ID for further tracking."."\n Sincerely,"."\nDepartment of Social Services";
 
 
-   
-      
+
+
 
         $this->SMSservice->sendSms($application->mobile, $message);
        return response()->json([
-    
+
         'application' => $application,
         'id' => $application->application_id,
-    
-     
+
+
     ], Response::HTTP_OK);
-   
-        
+
+
     }
 
 
@@ -1307,15 +1303,15 @@ class ApplicationController extends Controller
         return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
     }
 
-  
+
        $image = asset('storage/' . $application->image);
-  
+
        $signature = asset('storage/' . $application->signature);
-   
+
        $nominee_image = asset('storage/' . $application->nominee_image);
- 
+
        $nominee_signature = asset('storage/' . $application->nominee_signature);
-       
+
     $groupedAllowAddiFields = $application->allowAddiFields->groupBy('id')->values();
     $groupedAllowAddiFields = $application->allowAddiFields->groupBy('pivot.allow_addi_fields_id');
 
@@ -1332,7 +1328,7 @@ class ApplicationController extends Controller
         'signature' => $signature,
         'nominee_image' => $nominee_image,
         'nominee_signature' => $nominee_signature,
-     
+
     ], Response::HTTP_OK);
 }
 
@@ -1866,16 +1862,32 @@ class ApplicationController extends Controller
             $committeeApplication->remark = $request->remark;
             $committeeApplication->save();
 
+            activity("Application Status Change")
+                ->causedBy(auth()->user())
+                ->performedOn($committeeApplication)
+                ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $committeeApplication])
+                ->log("Application Status Change");
+
 
             if ($request->status == ApplicationStatus::APPROVE && !$application->approve_date) {
                 $application->approve_date = now();
                 $application->save();
+
+                activity("Application Status Change APPROVE")
+                    ->causedBy(auth()->user())
+                    ->performedOn($application)
+                    ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $application])
+                    ->log("Application Status Change");
             }
 
             if ($request->status == ApplicationStatus::APPROVE || $request->status == ApplicationStatus::WAITING) {
                 $status = ApplicationStatus::APPROVE == $request->status ? 1 : 3;
-
                 $this->createBeneficiary($application, $status);
+                activity("Application Status Change Approve/Waiting")
+                    ->causedBy(auth()->user())
+                    ->performedOn($application)
+                    ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $status])
+                    ->log("Application Status Change");
             }
         }
     }
@@ -1969,7 +1981,7 @@ class ApplicationController extends Controller
         $programName = AllowanceProgram::where('id',$application->program_id)->first('name_en');
         $program = $programName->name_en;
 
-  
+
         //  $message = " Dear $application->name_en, "."\n We are thrilled to inform you that you have been selected as a recipient for the ". $program ."\n Sincerely,"."\nDepartment of Social Services";
         $message = "Dear $application->name_en,"."\nWe are thrilled to inform you that you have been selected as a recipient for the $program.\n\nYour Beneficiary ID is $application->application_id.\n\nSincerely,"."\nDepartment of Social Services";
 
