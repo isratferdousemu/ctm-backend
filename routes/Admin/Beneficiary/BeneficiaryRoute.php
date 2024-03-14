@@ -56,7 +56,7 @@ Route::middleware(['auth:sanctum', 'language'])->group(function () {
         Route::get('/show/{id}', [CommitteeController::class, 'show'])->middleware(['role_or_permission:super-admin|committee-view']);
         Route::put('/update/{id}', [CommitteeController::class, 'update'])->middleware(['role_or_permission:super-admin|committee-edit']);
         Route::delete('/delete/{id}', [CommitteeController::class, 'delete'])->middleware(['role_or_permission:super-admin|committee-delete']);
-        Route::get('/{typeId}/{locationId}', [LocationController::class, 'getCommitteesByLocation'])->middleware(['role_or_permission:super-admin|demo-graphic-view']);
+        Route::get('/{typeId}/{locationId}', [LocationController::class, 'getCommitteesByLocation'])/*->middleware(['role_or_permission:super-admin|demo-graphic-view'])*/;
         // report
         Route::get('/getCommitteeListPdf', [CommitteeController::class, 'getCommitteeListPdf'])->middleware(['role_or_permission:super-admin|committee-view']);
     });

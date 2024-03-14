@@ -42,7 +42,7 @@ class UniqueVerificationNumber implements Rule
         // Check for uniqueness in the database based on financial_year_id
         return !Application::where('verification_number', $value)
             ->where('financial_year_id', $this->financialYearId)
-             ->where('status', '=', 0)
+            //  ->where('status', '=', 0)
              ->exists();
     }
 
@@ -53,6 +53,6 @@ class UniqueVerificationNumber implements Rule
      */
     public function message()
     {
-        return 'The NID/Birth Registration Number has been used.';
+        return 'Already applied.';
     }
 }

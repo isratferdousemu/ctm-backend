@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Events\RealTimeMessage;
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminAuthResource;
 use App\Http\Services\Auth\AuthService;
@@ -95,7 +96,9 @@ class AuthController extends Controller
          $data = $this->authService->AdminForgotPassword($request);
          $this->SMSservice->sendSms($request->phone, $data);
          activity("Forgot")
+         ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $data])
          ->log('Forgot Password OTP Send!!');
+
 
          return response()->json(['success' => true, 'message' => 'Verification OTP Sent!', 'data' => $data]);
 
@@ -176,6 +179,7 @@ class AuthController extends Controller
          $data = $this->authService->AdminForgotPasswordSubmit($request);
 
          activity("Forgot")
+         ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $data])
          ->log('Forgot Password Successfully!!');
 
          return response()->json(['success' => true, 'message' => 'Forgot Password Successfully!', 'data' => $data]);
@@ -262,6 +266,7 @@ class AuthController extends Controller
 
 
          activity("Reset")
+         ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $data])
          ->log('Reset Password Successfully!!');
 
          return response()->json(['success' => true, 'message' => 'Reset Password Successfully!', 'data' => $data]);
@@ -340,7 +345,8 @@ class AuthController extends Controller
          $data = $this->authService->AdminloginTest($request,1); // remove during
 
          activity("Login")
-         ->log('Login OTP Send!!');
+             ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $data])
+             ->log("Login OTP Send!!");
 
          return response()->json(
             ['success' => true,
@@ -365,7 +371,8 @@ class AuthController extends Controller
         $data = $this->authService->Adminlogin($request,1); //Keep in Live
 
         activity("Login")
-            ->log('Login OTP Send!!');
+            ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $data])
+            ->log("Login OTP Send!!");
 
         return response()->json(
             ['success' => true,
@@ -455,10 +462,11 @@ class AuthController extends Controller
 
          $permissions = $authData['user']->getAllPermissions();
 
-         activity("Login OTP")
-         ->causedBy(auth()->user())
-         ->performedOn($authData['user'])
-         ->log('Logged In!!');
+         activity("Login Information")
+             ->causedBy(auth()->user())
+             ->performedOn($authData['user'])
+             ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $authData])
+             ->log('Logged In!!');
 
          return AdminAuthResource::make($authData['user'])
              ->token($authData['token'])
@@ -481,9 +489,10 @@ class AuthController extends Controller
 
         $permissions = $authData['user']->getAllPermissions();
 
-        activity("Login OTP")
+        activity("Login Information")
             ->causedBy(auth()->user())
             ->performedOn($authData['user'])
+            ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $authData])
             ->log('Logged In!!');
 
         return AdminAuthResource::make($authData['user'])
@@ -621,7 +630,6 @@ class AuthController extends Controller
         ->whereStatus($this->userAccountBanned)
         ->latest()
         ->paginate($perPage, ['*'], 'page');
-
         return AdminAuthResource::collection($users)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
@@ -701,6 +709,7 @@ class AuthController extends Controller
                 activity("User")
                 ->causedBy(auth()->user())
                 ->performedOn($user)
+                ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $user])
                 ->log('User Unblocked');
          return $this->sendResponse($user, $this->updateSuccessMessage, Response::HTTP_OK);
 
