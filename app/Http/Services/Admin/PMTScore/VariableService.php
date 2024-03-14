@@ -56,17 +56,17 @@ class VariableService
 
         DB::beginTransaction();
         try {
-
+         
             $Variable                         = Variable::find($request->id);;
             $Variable->name_en                = $request->name_en;
             $Variable->name_bn                = $request->name_bn;
             $Variable->score                  = $request->score;
             $Variable->field_type             = $request->field_type;
 
-
-            $Variable->save();
+           $israt=Variable::where('parent_id',"=",$request->id)->forceDelete();
+           
             $sub_variable=$request->field_value;
-              $israt=Variable::where('parent_id',"=",$Variable->id)->forceDelete();
+       
             if($sub_variable){
                 $Variable->score                  = NULL;
               
@@ -79,6 +79,7 @@ class VariableService
                 $sub->save();
             }
             }
+             $Variable->save();
 
             DB::commit();
             return $Variable;
