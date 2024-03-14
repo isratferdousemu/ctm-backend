@@ -210,9 +210,9 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subOnlineApplicationManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 62, "name" => "application-entry-view", "page_url" => "/application-management/application", "parent_page" => 1],
-                    ["id" => 63, "name" => "application-entry-edit", "page_url" => "/application-management/application/edit/:id", "parent_page" => 1],
-                    ["id" => 64, "name" => "application-entry-delete", "page_url" => "/application-management/application", "parent_page" => 1],
+                    ["id" => 62, "name" => "application-entry-create", "page_url" => "/application-management/application", "parent_page" => 1],
+                    ["id" => 63, "name" => "application-entry-view", "page_url" => "/application-management/application/edit/:id", "parent_page" => 1],
+                    ["id" => 64, "name" => "application-entry-edit", "page_url" => "/application-management/application", "parent_page" => 1],
 
                     ["id" => 194, "name" => "applicationDashboard-create", "page_url" => "/application-management/dashboard", "parent_page" => 1],
                     ["id" => 197, "name" => "applicationDashboard-view", "page_url" => "/application-management/dashboard", "parent_page" => 1],
@@ -564,7 +564,7 @@ class PermissionSeeder extends Seeder
             ],
         ];
 
-        //last id 198
+        //last id 214
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
