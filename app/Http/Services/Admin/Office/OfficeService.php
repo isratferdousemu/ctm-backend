@@ -20,6 +20,8 @@ class OfficeService
 
     public function createOffice(Request $request)
     {
+         $selectedWardsDetails = json_decode($request->input('selectedWardsDetails'), true);
+        // return $selectedWardsDetails;
 
         //  print_r($request->ward_under_office);
         // return;
@@ -62,22 +64,27 @@ class OfficeService
             $office->status                 = $request->status;
             $office->save();
 
-            $data = $request->selectedWards;
+            $data = $request->x;
+            
 
 
 
 
 
             // if (is_array($data) && count($data) > 0) {
-           if ($data) {
-
-                foreach ($data as $item) {
-                    $ward_under_office = new OfficeHasWard;
-                    $ward_under_office->office_id = $office->id;
-                    $ward_under_office->ward_id = $item;
-                    $ward_under_office->save();
-                }
+           if ($selectedWardsDetails) {
+            foreach ($selectedWardsDetails as $wardDetails) {
+                $ward_under_office = new OfficeHasWard;
+                $ward_under_office->office_id = $office->id;
+                $ward_under_office->ward_id = $wardDetails['ward_id'];
+                // You may need to adjust this based on your data structure
+                $ward_under_office->division_id = $wardDetails['division_id'];
+                $ward_under_office->city_id = $wardDetails['city_id'];
+                $ward_under_office->district_id = $wardDetails['district_id'];
+                $ward_under_office->thana_id = $wardDetails['thana_id'];
+                $ward_under_office->save();
             }
+        }
 
             DB::commit();
             return $office;
@@ -89,7 +96,7 @@ class OfficeService
 
     public function updateOffice(Request $request)
     {
-
+         $selectedWardsDetails = json_decode($request->input('selectedWardsDetails'), true);
         DB::beginTransaction();
         try {
             $office                           = Office::find($request->id);
@@ -150,7 +157,7 @@ class OfficeService
             $office->version                = $office->version + 1;
             $office->save();
 
-            OfficeHasWard::where('office_id', $request->id)->delete();
+           
 
 
             // $data = $request->ward_under_office;
@@ -167,19 +174,28 @@ class OfficeService
              $data = $request->selectedWards;
 
 
-
+             OfficeHasWard::where('office_id', $request->id)->delete();
+        //      $model = OfficeHasWard::where('office_id', $request->id)->firstOrFail();
+        //      $delete=
+        //    dd( $model['office_id']);
 
 
             // if (is_array($data) && count($data) > 0) {
-           if ($data) {
-
-                foreach ($data as $item) {
-                    $ward_under_office = new OfficeHasWard;
-                    $ward_under_office->office_id = $office->id;
-                    $ward_under_office->ward_id = $item;
-                    $ward_under_office->save();
-                }
+                // dd($selectedWardsDetails);
+          if ($selectedWardsDetails) {
+            foreach ($selectedWardsDetails as $wardDetails) {
+                
+                $ward_under_office = new OfficeHasWard;
+                $ward_under_office->office_id = $office->id;
+                $ward_under_office->ward_id = $wardDetails['ward_id'];
+                // You may need to adjust this based on your data structure
+                $ward_under_office->division_id = $wardDetails['division_id'];
+                $ward_under_office->city_id = $wardDetails['city_id'];
+                $ward_under_office->district_id = $wardDetails['district_id'];
+                $ward_under_office->thana_id = $wardDetails['thana_id'];
+                $ward_under_office->save();
             }
+        }
 
             DB::commit();
             return $office;

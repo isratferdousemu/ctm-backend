@@ -368,14 +368,15 @@ class OfficeController extends Controller
      *     )
      *
      */
-    public function insertOffice(OfficeRequest $request)
+    public function insertOffice(Request $request)
     {
+        // dd($request->all());
         try {
             $office = $this->OfficeService->createOffice($request);
-            activity("Office")
-                ->causedBy(auth()->user())
-                ->performedOn($office)
-                ->log('Office Created !');
+            // activity("Office")
+            //     ->causedBy(auth()->user())
+            //     ->performedOn($office)
+            //     ->log('Office Created !');
             return OfficeResource::make($office)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -505,10 +506,10 @@ class OfficeController extends Controller
 
         try {
             $office = $this->OfficeService->updateOffice($request);
-            activity("Office")
-                ->causedBy(auth()->user())
-                ->performedOn($office)
-                ->log('Office Updated !');
+            // activity("Office")
+            //     ->causedBy(auth()->user())
+            //     ->performedOn($office)
+            //     ->log('Office Updated !');
             return OfficeResource::make($office)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
