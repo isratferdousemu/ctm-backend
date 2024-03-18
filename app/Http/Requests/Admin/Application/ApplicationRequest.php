@@ -30,7 +30,7 @@ class ApplicationRequest extends FormRequest
             // 'verification_number' => 'required|unique:applications,verification_number',
                 'verification_number' => [
             'required',
-            new UniqueBeneficiaryNumber()|
+            new UniqueBeneficiaryNumber(),
             new UniqueVerificationNumber(),
           
         ],
