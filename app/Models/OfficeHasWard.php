@@ -12,6 +12,8 @@ class OfficeHasWard extends Model
 
     protected $table = 'office_has_wards';
 
+    protected $guarded = ['id'];
+
     public function parent()
     {
         return $this->belongsTo(Location::class, 'ward_id');

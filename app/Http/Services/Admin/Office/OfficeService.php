@@ -21,7 +21,6 @@ class OfficeService
     public function createOffice(Request $request)
     {
          $selectedWardsDetails = json_decode($request->input('selectedWardsDetails'), true);
-        // return $selectedWardsDetails;
 
         //  print_r($request->ward_under_office);
         // return;
@@ -65,7 +64,7 @@ class OfficeService
             $office->save();
 
             $data = $request->x;
-            
+
 
 
 
@@ -74,15 +73,17 @@ class OfficeService
             // if (is_array($data) && count($data) > 0) {
            if ($selectedWardsDetails) {
             foreach ($selectedWardsDetails as $wardDetails) {
-                $ward_under_office = new OfficeHasWard;
-                $ward_under_office->office_id = $office->id;
-                $ward_under_office->ward_id = $wardDetails['ward_id'];
-                // You may need to adjust this based on your data structure
-                $ward_under_office->division_id = $wardDetails['division_id'];
-                $ward_under_office->city_id = $wardDetails['city_id'];
-                $ward_under_office->district_id = $wardDetails['district_id'];
-                $ward_under_office->thana_id = $wardDetails['thana_id'];
-                $ward_under_office->save();
+                if (is_array($wardDetails) && count($wardDetails)) {
+                    $ward_under_office = new OfficeHasWard;
+                    $ward_under_office->office_id = $office->id;
+                    $ward_under_office->ward_id = $wardDetails['ward_id'];
+                    // You may need to adjust this based on your data structure
+                    $ward_under_office->division_id = $wardDetails['division_id'];
+                    $ward_under_office->city_id = $wardDetails['city_id'];
+                    $ward_under_office->district_id = $wardDetails['district_id'];
+                    $ward_under_office->thana_id = $wardDetails['thana_id'];
+                    $ward_under_office->save();
+                }
             }
         }
 
@@ -157,7 +158,7 @@ class OfficeService
             $office->version                = $office->version + 1;
             $office->save();
 
-           
+
 
 
             // $data = $request->ward_under_office;
@@ -184,16 +185,17 @@ class OfficeService
                 // dd($selectedWardsDetails);
           if ($selectedWardsDetails) {
             foreach ($selectedWardsDetails as $wardDetails) {
-                
-                $ward_under_office = new OfficeHasWard;
-                $ward_under_office->office_id = $office->id;
-                $ward_under_office->ward_id = $wardDetails['ward_id'];
-                // You may need to adjust this based on your data structure
-                $ward_under_office->division_id = $wardDetails['division_id'];
-                $ward_under_office->city_id = $wardDetails['city_id'];
-                $ward_under_office->district_id = $wardDetails['district_id'];
-                $ward_under_office->thana_id = $wardDetails['thana_id'];
-                $ward_under_office->save();
+                if (is_array($wardDetails) && count($wardDetails)) {
+                    $ward_under_office = new OfficeHasWard;
+                    $ward_under_office->office_id = $office->id;
+                    $ward_under_office->ward_id = $wardDetails['ward_id'];
+                    // You may need to adjust this based on your data structure
+                    $ward_under_office->division_id = $wardDetails['division_id'];
+                    $ward_under_office->city_id = $wardDetails['city_id'];
+                    $ward_under_office->district_id = $wardDetails['district_id'];
+                    $ward_under_office->thana_id = $wardDetails['thana_id'];
+                    $ward_under_office->save();
+                }
             }
         }
 
