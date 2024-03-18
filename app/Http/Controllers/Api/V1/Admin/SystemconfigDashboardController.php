@@ -43,15 +43,15 @@ class SystemconfigDashboardController extends Controller
         ];
 
         $items = [
-            ['title' => 'Division', 'number' => $counts['permanent_division_count']],
-            ['title' => 'District', 'number' => $counts['permanent_district_count']],
-            ['title' => 'Upazila', 'number' => $counts['permanent_upazila_count']],
-            ['title' => 'City Cor.', 'number' => $counts['permanent_city_corp_count']],
-            ['title' => 'Dist/Pau', 'number' => $counts['permanent_district_pourashava_count']],
-            ['title' => 'Union', 'number' => $counts['permanent_union_count']],
-            ['title' => 'Thana', 'number' => $counts['permanent_thana_count']],
-            ['title' => 'Paurashava', 'number' => $counts['permanent_pourashava_count']],
-            ['title' => 'Ward', 'number' => $counts['permanent_ward_count']],
+            ['title_en' => 'Division', 'title_bn' => 'বিভাগ', 'number' => $counts['permanent_division_count'], 'link' => '/system-configuration/division'],
+            ['title_en' => 'District', 'title_bn' => 'জেলা', 'number' => $counts['permanent_district_count'], 'link' => '/system-configuration/district'],
+            ['title_en' => 'Upazila', 'title_bn' => 'উপজেলা', 'number' => $counts['permanent_upazila_count'], 'link' => '/system-configuration/city'],
+            ['title_en' => 'City Cor.', 'title_bn' => 'সিটি কর্পোরেশন', 'number' => $counts['permanent_city_corp_count'], 'link' => '/system-configuration/city'],
+            ['title_en' => 'Dist/Pau', 'title_bn' => 'জেলা/পৌরসভা', 'number' => $counts['permanent_district_pourashava_count'], 'link' => '/system-configuration/city'],
+            ['title_en' => 'Union', 'title_bn' => 'ইউনিয়ন', 'number' => $counts['permanent_union_count'], 'link' => '/system-configuration/union'],
+            ['title_en' => 'Thana', 'title_bn' => 'থানা', 'number' => $counts['permanent_thana_count'], 'link' => '/system-configuration/union'],
+            ['title_en' => 'Paurashava', 'title_bn' => 'পৌরসভা', 'number' => $counts['permanent_pourashava_count'], 'link' => '/system-configuration/union'],
+            ['title_en' => 'Ward', 'title_bn' => 'ওয়ার্ড', 'number' => $counts['permanent_ward_count'], 'link' => '/system-configuration/ward'],
         ];
         return response()->json([
             'data' => $items,
