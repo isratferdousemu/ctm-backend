@@ -23,7 +23,7 @@ class UniqueBeneficiaryNumber implements Rule
     }
       public function message()
     {
-        return 'You are already a beneficiary';
+        return 'You are already a beneficiary.Can not apply again';
     }
     
 }
