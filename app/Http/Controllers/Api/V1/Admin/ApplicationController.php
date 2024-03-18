@@ -463,7 +463,7 @@ class ApplicationController extends Controller
 
 
 
->>>>>>> 22abd56df2d33f80413168debad70727646036ea
+
 
 
     //  $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
@@ -519,7 +519,7 @@ class ApplicationController extends Controller
 
     }
 
->>>>>>> 22abd56df2d33f80413168debad70727646036ea
+
 
 
     public function getClassWiseAmount($allowance, $request)
