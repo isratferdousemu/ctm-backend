@@ -24,7 +24,7 @@ class AuthService
     use RoleTrait, AuthenticatesUsers, UserTrait, MessageTrait;
 
     protected $maxAttempts = 5;
-    protected $decayMinutes = 1;
+    protected $decayMinutes = 10;
     protected $warning = 3;
     protected function sendNonAllowedAdminResponse()
     {
