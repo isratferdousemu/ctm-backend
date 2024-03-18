@@ -467,7 +467,7 @@ class ApplicationController extends Controller
         $application = Application::find($id);
     
     if (!$application) {
-        // Handle case where application with given id is not found
+       
         return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
     }
         $programName = AllowanceProgram::where('id',$application->program_id)->first('name_en');
