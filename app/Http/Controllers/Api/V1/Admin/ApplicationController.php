@@ -158,7 +158,7 @@ class ApplicationController extends Controller
 
  // application tracking function
     public function applicationTracking(Request $request){
-        $application = Application::with('program')
+        $application = Application::with('program','committeeApplication')
                       ->where('application_id', '=', $request->tracking_no)
                       ->orWhere('date_of_birth', '=',$request->dob)
                       ->first();
