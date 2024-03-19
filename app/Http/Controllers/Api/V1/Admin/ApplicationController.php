@@ -1921,13 +1921,31 @@ class ApplicationController extends Controller
      */
     public function createBeneficiary($application, $status)
     {
-
-        $beneficiary = Beneficiary::firstOrNew(
+            $program_code = $application->program_id;
+            $district_geo_code = Application::permanentDivision($application->permanent_location_id);
+            $district_geo_code = $district_geo_code->code;
+            // $district_geo_code = 02;
+            $remaining_digits = 11 - strlen($program_code) - strlen($district_geo_code);
+            $incremental_value = DB::table('beneficiaries')->count() + 1;
+            $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
+            $beneficiary_id = $program_code . $district_geo_code . $incremental_value_formatted;
+            $is_unique = DB::table('beneficiaries')->where('beneficiary_id', $beneficiary_id)->doesntExist();
+            while (!$is_unique) {
+                $incremental_value++;
+                $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
+                $beneficiary_id = $program_code . $district_geo_code . $incremental_value_formatted;
+                $is_unique = DB::table('beneficiaries')->where('beneficiary_id', $beneficiary_id)->doesntExist();
+            }
+            // $application->application_id = $application_id;
+             $beneficiary = Beneficiary::firstOrNew(
             [
                 "application_table_id" => $application->id
-            ], [
+            ],
+             
+             [
                 "program_id" => $application->program_id,
                 "application_id" => $application->application_id,
+                "beneficiary_id" => $beneficiary_id,
                 "name_en" => $application->name_en,
                 "name_bn" => $application->name_bn,
                 "mother_name_en" => $application->mother_name_en,
@@ -2005,7 +2023,7 @@ class ApplicationController extends Controller
 
 
         //  $message = " Dear $application->name_en, "."\n We are thrilled to inform you that you have been selected as a recipient for the ". $program ."\n Sincerely,"."\nDepartment of Social Services";
-        $message = "Dear $application->name_en,"."\nWe are thrilled to inform you that you have been selected as a recipient for the $program.\n\nYour Beneficiary ID is $application->application_id.\n\nSincerely,"."\nDepartment of Social Services";
+        $message = "Dear $application->name_en,"."\nWe are thrilled to inform you that you have been selected as a recipient for the $program.\n\nYour Beneficiary ID is $beneficiary_id.\n\nSincerely,"."\nDepartment of Social Services";
 
 
          $message = " Dear $application->name_en, "."\n We are thrilled to inform you that you have been selected as a recipient for the ". $program ."\n Sincerely,"."\nDepartment of Social Services";

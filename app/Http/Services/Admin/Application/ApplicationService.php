@@ -77,16 +77,16 @@ class ApplicationService
         try {
             $application = new Application;
             // $application->permanent_mobile = Str::random(10);
-            $uniquePermanentMobile = Str::random(10);
+            $uniqueapplication_id = Str::random(10);
 
 // Check if the generated string already exists in the database
-            while (Application::where('permanent_mobile', $uniquePermanentMobile)->exists()) {
+            while (Application::where('application_id', $uniqueapplication_id)->exists()) {
     // If it exists, regenerate the random string
-             $uniquePermanentMobile = Str::random(10);
+             $uniqueapplication_id = Str::random(10);
                 }
 
 // Assign the unique random string to the permanent_mobile attribute
-            $application->permanent_mobile = $uniquePermanentMobile;
+            $application->application_id = $uniqueapplication_id;
             $program_code = $request->program_id;
             $application->program_id = $request->program_id;
             $application->verification_type = $request->verification_type;
@@ -220,27 +220,21 @@ class ApplicationService
 
               }
             
+        
             // $district_geo_code = Application::permanentDivision($application->permanent_location_id);
             // $district_geo_code = $district_geo_code->code;
-            // $incremental_value = DB::table('applications')->count() + 1; 
             // $remaining_digits = 11 - strlen($program_code) - strlen($district_geo_code);
+            // $incremental_value = DB::table('applications')->count() + 1;
             // $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
-            // $application_id = $program_code . $district_geo_code . $incremental_value_formatted;    
+            // $application_id = $program_code . $district_geo_code . $incremental_value_formatted;
+            // $is_unique = DB::table('applications')->where('application_id', $application_id)->doesntExist();
+            // while (!$is_unique) {
+            //     $incremental_value++;
+            //     $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
+            //     $application_id = $program_code . $district_geo_code . $incremental_value_formatted;
+            //     $is_unique = DB::table('applications')->where('application_id', $application_id)->doesntExist();
+            // }
             // $application->application_id = $application_id;
-            $district_geo_code = Application::permanentDivision($application->permanent_location_id);
-            $district_geo_code = $district_geo_code->code;
-            $remaining_digits = 11 - strlen($program_code) - strlen($district_geo_code);
-            $incremental_value = DB::table('applications')->count() + 1;
-            $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
-            $application_id = $program_code . $district_geo_code . $incremental_value_formatted;
-            $is_unique = DB::table('applications')->where('application_id', $application_id)->doesntExist();
-            while (!$is_unique) {
-                $incremental_value++;
-                $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
-                $application_id = $program_code . $district_geo_code . $incremental_value_formatted;
-                $is_unique = DB::table('applications')->where('application_id', $application_id)->doesntExist();
-            }
-            $application->application_id = $application_id;
 
             $application->permanent_post_code = $request->permanent_post_code;
             $application->permanent_address = $request->permanent_address;
