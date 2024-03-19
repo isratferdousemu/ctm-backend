@@ -227,7 +227,8 @@ class Application extends Model
 
     public function committeeApplication()
     {
-        return $this->hasOne(CommitteeApplication::class, 'application_id', 'id');
+        // return $this->hasOne(CommitteeApplication::class, 'application_id', 'id');
+        return $this->hasMany(CommitteeApplication::class, 'application_id', 'id');
     }
 
 
