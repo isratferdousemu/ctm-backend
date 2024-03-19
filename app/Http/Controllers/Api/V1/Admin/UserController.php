@@ -371,12 +371,11 @@ class UserController extends Controller
 
 
 
-    public function approve($id)
+    public function approveUser($user)
     {
         $password = Helper::GeneratePassword();
 
-        $user = User::findOrFail($id);
-        $user->status = !$user->status;
+        $user->status = 1;
         $user->password = bcrypt($user->salt . $password);
         $user->save();
 
@@ -404,10 +403,45 @@ class UserController extends Controller
             ->causedBy(auth()->user())
             ->performedOn($user)
             ->log('User approval ');
+    }
 
-        $status = $user->status ? 'approved' : 'deactivated';
 
-        return $this->sendResponse($user, "User has been $status");
+
+
+    public function changeStatus($id)
+    {
+        $user = User::findOrFail($id);
+
+        $user->status == 0 ? $this->approveUser($user)
+            : $this->updateStatus($user);
+
+        $status = $user->fresh()->status;
+
+        $status = $status == 1 ? 'active' :
+            ($status == 2 ? 'banned' :
+                ($status == $this->userAccountInactive ? 'inactive' : 'not changed'));
+
+        return $this->sendResponse($user, "User is $status");
+    }
+
+
+    //1 = active, 2 = banned, 5 = inactive
+    public function updateStatus($user)
+    {
+        $user->status = match($user->status) {
+            1 => 5,
+            2 => 1,
+            5 => 1,
+            default => $user->status
+        };
+
+        $user->save();
+
+        activity("User")
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->log('User status change');
+
     }
 
 

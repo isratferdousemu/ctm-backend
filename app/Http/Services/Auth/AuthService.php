@@ -24,7 +24,7 @@ class AuthService
     use RoleTrait, AuthenticatesUsers, UserTrait, MessageTrait;
 
     protected $maxAttempts = 5;
-    protected $decayMinutes = 10;
+    protected $decayMinutes = 2;
     protected $warning = 3;
     protected function sendNonAllowedAdminResponse()
     {
@@ -40,6 +40,15 @@ class AuthService
             Response::HTTP_UNPROCESSABLE_ENTITY,
             $this->bannedUserTextErrorCode,
             $this->bannedUserErrorResponse,
+        );
+    }
+
+    protected function sendInactiveLoginResponse()
+    {
+        throw new AuthBasicErrorException(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            $this->inactiveUserTextErrorCode,
+            $this->inactiveUserErrorResponse,
         );
     }
 
@@ -142,6 +151,7 @@ class AuthService
 
         if ($user->status == $this->userAccountDeactivate) return $this->authDeactivateUserErrorCode;
         if ($user->status == $this->userAccountBanned) return $this->authBannedUserErrorCode;
+        if ($user->status == $this->userAccountInactive) return $this->authInactiveUserErrorCode;
         if (!$user->email_verified_at) return $this->authUnverifiedUserErrorCode;
         if ($user->user_type) {
             if ($user->user_type == $this->superAdminUserType || $user->user_type == $this->staffType) {
@@ -167,12 +177,14 @@ class AuthService
     }
 
     protected function bannedUser($user){
-        $user->status= $this->userAccountBanned;
-        $user->save();
-        activity("Automation")
-         ->causedBy(auth()->user())
-         ->performedOn($user)
-         ->log('User Blocked For Attempt Many time!!');
+        if ($user->status != 0) {
+            $user->status= $this->userAccountBanned;
+            $user->save();
+            activity("Automation")
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log('User Blocked For Attempt Many time!!');
+        }
     }
 
     public function AdminForgotPassword(Request $request){
@@ -276,6 +288,8 @@ class AuthService
             if ($authCode == $this->nonAllowedUserErrorCode) return $this->sendNonAllowedAdminResponse();
 
             if ($authCode == $this->authBannedUserErrorCode) return $this->sendBannedLoginResponse();
+
+            if ($authCode == $this->authInactiveUserErrorCode) return $this->sendInactiveLoginResponse();
 
             if ($authCode == $this->authUnverifiedUserErrorCode) return $this->sendUnVerifiedLoginResponse($request);
             if ($authCode == $this->authDefaultPasswordErrorCode) return $this->sendDefaultPasswordResponse();
