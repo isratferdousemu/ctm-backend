@@ -56,6 +56,8 @@ class AdminAuthResource extends JsonResource
             'profile'                       => $this->profile,
             'location'         => new LocationResource($this->assign_location),
             'office'                        => $this->office,
+            'committee_type_id'                        => $this->committee_type_id,
+            'committee'                        => $this->committee,
             'roles'                         => RoleResource::collection($this->roles),
             'roleNames'                     => $this->getRoleNames(),
             'status'            => $this->status,
@@ -63,9 +65,9 @@ class AdminAuthResource extends JsonResource
             'user_type'            => $this->user_type,
             'created_at'                    => $this->created_at,
         ];
-            
 
-    
+
+
 
     }
 
