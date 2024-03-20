@@ -10,6 +10,7 @@ trait UserTrait
     private $userAccountBanned = 2;
     private $userAccountRejected = 3;
     private $userAccountPending = 4;
+    private $userAccountInactive = 5;
     //user online status
     private $userOnline = 1;
     private $userOffline = 0;

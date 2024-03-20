@@ -24,6 +24,10 @@ class CommitteeApplicationService
 
             $assignedApplicationsId = CommitteeApplication::whereCommitteeId($user->committee_id)->pluck('application_id');
 
+            if ($user->committee) {
+                $query->where('program_id', $user->committee->program_id);
+            }
+
             return match ($user->committee_type_id) {
                 12 => $this->getUnionApplications($user, $query, $assignedApplicationsId),
                 13 => $this->getWardApplications($user, $query, $assignedApplicationsId),
