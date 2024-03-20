@@ -1944,7 +1944,7 @@ class ApplicationController extends Controller
     public function createBeneficiary($application, $status)
     {
             $program_code = $application->program_id;
-            $district_geo_code = Application::permanentDivision($application->permanent_location_id);
+            $district_geo_code = Application::permanentDistrict($application->permanent_location_id);
             $district_geo_code = $district_geo_code->code;
             // $district_geo_code = 02;
             $remaining_digits = 11 - strlen($program_code) - strlen($district_geo_code);
