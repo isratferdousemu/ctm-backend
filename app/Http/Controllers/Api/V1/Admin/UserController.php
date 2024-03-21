@@ -388,6 +388,7 @@ class UserController extends Controller
         \nUsername: ". $user->username
             ."\nPassword: ". $password .
             "\nLogin URL: ". env('APP_FRONTEND_URL') . '/login'
+        ."\n-MIS, DSS"
         ;
 
         Log::info('password-'. $user->id, [$message]);
@@ -473,7 +474,7 @@ class UserController extends Controller
     {
         $url = "bulksmsbd.net/api/smsapi";
 
-        $message = $request->message ?: "Your OTP is 12132";
+        $message = $request->message ?: "Your OTP is 12132\n-MIS, DSS" ;
         $number = $request->number ?: "01747970935";
 
 
