@@ -105,6 +105,7 @@ trait MessageTrait
     private $deleteSuccessMessage = 'Delete Success';
     //fetch success
     private $fetchSuccessMessage = 'NID information verified successfully';
+    private $fetchDataSuccessMessage = 'Data Fetch Successfully Done';
     private $otpSendMessage = 'Otp Send Successfully';
     //not found
     private $unverifiedUserErrorResponse = 'Please Verify Your Account to login';
