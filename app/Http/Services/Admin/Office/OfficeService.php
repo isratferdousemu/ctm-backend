@@ -73,7 +73,8 @@ class OfficeService
             // if (is_array($data) && count($data) > 0) {
            if ($selectedWardsDetails) {
             foreach ($selectedWardsDetails as $wardDetails) {
-                if (is_array($wardDetails) && count($wardDetails)) {
+                if (is_array($wardDetails) && count($wardDetails)) {             
+                    // dd($isWardExists);
                     $ward_under_office = new OfficeHasWard;
                     $ward_under_office->office_id = $office->id;
                     $ward_under_office->ward_id = $wardDetails['ward_id'];
@@ -83,6 +84,7 @@ class OfficeService
                     $ward_under_office->district_id = $wardDetails['district_id'];
                     $ward_under_office->thana_id = $wardDetails['thana_id'];
                     $ward_under_office->save();
+                 
                 }
             }
         }

@@ -19,6 +19,7 @@ use App\Http\Requests\Admin\System\Office\OfficeUpdateRequest;
 use App\Http\Traits\PermissionTrait;
 use App\Models\OfficeHasWard;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 
 class OfficeController extends Controller
 {
@@ -370,9 +371,28 @@ class OfficeController extends Controller
      */
     public function insertOffice(Request $request)
     {
-        // dd($request->all());
+       
+        $validation = Validator::make($request->all(), [
+        'selectedWards.*' => [
+        'required',
+        Rule::unique('office_has_wards', 'ward_id'),
+        ],
+     ]);
+
+     if ($validation->fails()) {
+        return response()->json([
+        'success' => false,
+        'message' => 'Validation failed',
+        'errors' => 'This Ward Has Already Assigned',
+      ], 400);
+    }
+
+    
+        
+
         try {
             $office = $this->OfficeService->createOffice($request);
+          
             // activity("Office")
             //     ->causedBy(auth()->user())
             //     ->performedOn($office)
