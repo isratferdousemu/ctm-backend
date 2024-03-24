@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
-//            $table->string('budgetId', 100)->unique();
-//            $table->foreignId('program_id')->constrained("allowance_programs")->cascadeOnUpdate()->cascadeOnDelete();
-//            $table->foreignId('financial_year_id')->constrained("financial_years")->cascadeOnUpdate()->cascadeOnDelete();
-//            $table->foreignId('calculation_type')->constrained("lookups")->cascadeOnUpdate()->cascadeOnDelete();
-//            $table->double('previous_year_value');
-//            $table->double('calculation_value');
-//            $table->string('remarks')->nullable();
+            $table->string('budgetId', 100)->unique();
+            $table->foreignId('program_id')->constrained("allowance_programs")->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('financial_year_id')->constrained("financial_years")->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('calculation_type')->constrained("lookups")->cascadeOnUpdate()->cascadeOnDelete();
+            $table->double('previous_year_value');
+            $table->double('calculation_value');
+            $table->string('remarks')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
