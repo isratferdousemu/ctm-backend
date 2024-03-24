@@ -342,7 +342,7 @@ class ApplicationService
             }
 
             DB::commit();
-            $this->applicationPMTValuesTotal($application->id);
+            $this->applicationPMTValuesTotal($application->id,$request->per_room_score,$request->no_of_people_score);
             return $application;
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -715,9 +715,10 @@ class ApplicationService
     }
 
     // application PMTValues total calculation
-    public function applicationPMTValuesTotal($application_id){
+    public function applicationPMTValuesTotal($application_id,$per_room_score,$no_of_people_score){
         $applicationPMTValues = ApplicationPovertyValues::where('application_id', $application_id)->get();
         $total = 0;
+      
         foreach ($applicationPMTValues as $key => $value) {
             if($value->sub_variable_id!=null){
             Log::info('total sub-variable: '.$value->sub_variable->score);
@@ -734,9 +735,13 @@ class ApplicationService
         $districtFE = 0;
         // districtFE get by application permanent_location_id district
         $districtFE = $this->getDistrictFE($application_id);
-        $povertyScore = ($constant + $total + $districtFE)*100;
+        // $povertyScore = ($constant + $total + $districtFE)*100;
+        $povertyScore = ($constant + $total+ $per_room_score+$no_of_people_score+ $districtFE)*100;
         $application = Application::find($application_id);
         $application->score = $povertyScore;
+        // $application->identification_mark = $povertyScore+$per_room_score;
+        // $application->email = $povertyScore+$no_of_people_score;
+        
 
         $application->save();
     }
