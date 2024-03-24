@@ -28,7 +28,7 @@ class RoleService
             $role->name_en=$request->name_en;
             $role->name_bn=$request->name_bn;
             $role->code=$request->code;
-            $role->status=0;
+            $role->status= $request->status;
             $role->comment = $request->comment;
 
             $role->save();
