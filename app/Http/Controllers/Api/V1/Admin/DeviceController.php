@@ -100,8 +100,9 @@ class DeviceController extends Controller
      {
          $device->where(function($query) use ($searchValue) {
              $query->where('name', 'like', '%' . $searchValue . '%');
-             $query->orWhere('ip_address', 'like', '%' . $searchValue . '%');
-             $query->orWhere('device_type', 'like', '%' . $searchValue . '%');
+             $query->orWhere('device_name', 'like', '%' . $searchValue . '%');
+//             $query->orWhere('device_type', 'like', '%' . $searchValue . '%');
+             $query->orWhere('user_id', 'like', '%' . $searchValue . '%');
          });
 
          $itemsPerPage = 10;

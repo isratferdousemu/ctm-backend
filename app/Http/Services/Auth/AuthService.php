@@ -190,7 +190,7 @@ class AuthService
     public function AdminForgotPassword(Request $request){
         $user = User::whereUsername( $request->username)->first();
         $code = $this->generateOtpCode($user, 5);
-        $message = 'Your OTP is '. $code . '\n-MIS, DSS';
+        $message = 'Your OTP is '. $code . "\n-MIS, DSS";
 
         return $message;
     }
@@ -374,7 +374,7 @@ class AuthService
 
         $code = $this->generateOtpCode($user, $time);
 
-        $message = "Your OTP is ". $code;
+        $message = "Your OTP is ". $code . "\n-MIS, DSS";
 
         (new SMSservice())->sendSms($user->mobile, $message);
 

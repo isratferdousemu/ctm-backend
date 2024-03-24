@@ -85,7 +85,7 @@ class ActivityLogController extends Controller
             ->paginate($perPage, ['*'], 'page');
             return ActivityResource::collection($activityLog)->additional([
                 'success' => true,
-                'message' => $this->fetchSuccessMessage,
+                'message' => $this->fetchDataSuccessMessage,
                 'meta' => [
                     'current_page' => $activityLog->currentPage(),
                     'per_page' => $activityLog->perPage(),
@@ -94,6 +94,20 @@ class ActivityLogController extends Controller
                 ],
             ]);
             // return $this->sendResponse($activityLog, $this->fetchSuccessMessage, Response::HTTP_OK);
+    }
+
+    public function viewAnonymousActivityLog($id){
+        $activityLog = ActivityModel::query()
+            ->with('subject','causer')
+            ->where('id',$id)
+            ->first();
+
+        return (new ActivityResource($activityLog))->additional([
+            'success' => true,
+            'message' => $this->fetchDataSuccessMessage,
+        ]);
+
+        // return $this->sendResponse($activityLog, $this->fetchSuccessMessage, Response::HTTP_OK);
     }
 
     public function destroyActivityLog($id)

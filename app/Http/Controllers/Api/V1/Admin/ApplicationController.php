@@ -160,7 +160,8 @@ class ApplicationController extends Controller
     public function applicationTracking(Request $request){
         $application = Application::with('program','committeeApplication')
                       ->where('application_id', '=', $request->tracking_no)
-                      ->orWhere('date_of_birth', '=',$request->dob)
+                      ->orWhere('verification_number', '=',$request->nid)
+                      ->Where('date_of_birth', '=',  $request->date_of_birth)
                       ->first();
                       
         return response()->json([
@@ -1875,7 +1876,7 @@ class ApplicationController extends Controller
     public function changeCommitteeApplicationsStatus($request, $applications, $committeeId)
     {
         foreach ($applications as $application) {
-            $committeeApplication = $application->committeeApplication()->create([
+            $committeeApplication = $application->committeeApplication()->updateOrCreate([
                     'committee_id' => $committeeId
                 ]
             );
@@ -1922,7 +1923,7 @@ class ApplicationController extends Controller
     public function createBeneficiary($application, $status)
     {
             $program_code = $application->program_id;
-            $district_geo_code = Application::permanentDivision($application->permanent_location_id);
+            $district_geo_code = Application::permanentDistrict($application->permanent_location_id);
             $district_geo_code = $district_geo_code->code;
             // $district_geo_code = 02;
             $remaining_digits = 11 - strlen($program_code) - strlen($district_geo_code);

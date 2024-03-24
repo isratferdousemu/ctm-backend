@@ -25,20 +25,20 @@ class ActivityResource extends JsonResource
         ];
     }
 
-    public function withResponse($request, $response)
-    {
-        // Add pagination metadata
-        $paginationData = [
-            'current_page' => $this->resource->currentPage(),
-            'per_page' => $this->resource->perPage(),
-            'total' => $this->resource->total(),
-            'last_page' => $this->resource->lastPage(),
-            // You can add more pagination metadata here if needed
-        ];
-
-        $response->setData(array_merge(
-            $response->getData(true),
-            ['meta' => $paginationData]
-        ));
-    }
+//    public function withResponse($request, $response)
+//    {
+//        // Add pagination metadata
+//        $paginationData = [
+//            'current_page' => $this->resource->currentPage(),
+//            'per_page' => $this->resource->perPage(),
+//            'total' => $this->resource->total(),
+//            'last_page' => $this->resource->lastPage(),
+//            // You can add more pagination metadata here if needed
+//        ];
+//
+//        $response->setData(array_merge(
+//            $response->getData(true),
+//            ['meta' => $paginationData]
+//        ));
+//    }
 }

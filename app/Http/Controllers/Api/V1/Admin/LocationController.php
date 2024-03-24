@@ -1416,7 +1416,7 @@ class LocationController extends Controller
 
         $validator->validated();
 
-        $city = Location::whereId($id)->whereType($this->city)->first();
+        $city = Location::whereId($id)->first();
         if ($city->children->count() > 0) {
 
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);

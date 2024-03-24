@@ -10,7 +10,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin')->group(function () {
         Route::any('/activity-log/all/filtered',[ActivityLogController::class, 'getAllActivityLogsPaginated'])->middleware(['role_or_permission:super-admin|user-destroy']);
+        Route::get('/activity-log/view/{id}',[ActivityLogController::class, 'viewAnonymousActivityLog'])->middleware(['role_or_permission:super-admin|user-destroy']);
         Route::delete('/activity-log/destroy/{id}',[ActivityLogController::class, 'destroyActivityLog'])->middleware(['role_or_permission:super-admin|user-destroy']);
+
     });
 });
 Route::get('/activity-log/get-information',[ActivityLogController::class, 'getAnonymousActivityLog']);
