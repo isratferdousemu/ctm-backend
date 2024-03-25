@@ -10,8 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('committees', function (Blueprint $table) {
-            $table->string("name")->nullable()->change();
+        Schema::table('committee_members', function (Blueprint $table) {
+            $table->string("member_name")->nullable()->change();
         });
     }
 
@@ -20,7 +20,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('committees', function (Blueprint $table) {
+        Schema::table('committee_members', function (Blueprint $table) {
             //
         });
     }
