@@ -1489,7 +1489,7 @@ class BeneficiaryService
         $to_date = $request->query('to_date');
         $query = DB::table('beneficiaries')
             ->join('locations', 'beneficiaries.permanent_division_id', '=', 'locations.id', 'left')
-            ->select(DB::raw('locations.name_en AS division, count(*) as value'));
+            ->select(DB::raw('locations.name_en AS name_en, locations.name_bn AS name_bn, count(*) as value'));
         $query = $query->where('status', BeneficiaryStatus::ACTIVE);
         if ($program_id)
             $query = $query->where('program_id', $program_id);
@@ -1498,7 +1498,7 @@ class BeneficiaryService
         if ($to_date)
             $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
 
-        return $query->groupBy('locations.name_en')
+        return $query->groupBy('locations.name_en', 'locations.name_bn')
             ->get();
     }
 
@@ -1513,7 +1513,7 @@ class BeneficiaryService
         $to_date = $request->query('to_date');
         $query = DB::table('beneficiaries')
             ->join('lookups', 'beneficiaries.gender_id', '=', 'lookups.id', 'left')
-            ->select(DB::raw('lookups.value_en AS gender, count(*) as value'));
+            ->select(DB::raw('lookups.value_en AS name_en, lookups.value_bn AS name_bn, count(*) as value'));
         $query = $query->where('status', BeneficiaryStatus::ACTIVE);
         if ($program_id)
             $query = $query->where('program_id', $program_id);
@@ -1523,7 +1523,7 @@ class BeneficiaryService
             $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
 
 
-        return $query->groupBy('lookups.value_en')
+        return $query->groupBy('lookups.value_en', 'lookups.value_bn')
             ->get();
     }
 
