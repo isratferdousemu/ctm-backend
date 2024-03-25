@@ -1487,18 +1487,33 @@ class BeneficiaryService
         $program_id = $request->query('program_id');
         $from_date = $request->query('from_date');
         $to_date = $request->query('to_date');
-        $query = DB::table('beneficiaries')
-            ->join('locations', 'beneficiaries.permanent_division_id', '=', 'locations.id', 'left')
-            ->select(DB::raw('locations.name_en AS name_en, locations.name_bn AS name_bn, count(*) as value'));
-        $query = $query->where('status', BeneficiaryStatus::ACTIVE);
-        if ($program_id)
-            $query = $query->where('program_id', $program_id);
-        if ($from_date)
-            $query = $query->whereDate('approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'));
-        if ($to_date)
-            $query = $query->whereDate('approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'));
-
-        return $query->groupBy('locations.name_en', 'locations.name_bn')
+        $query = DB::table('locations as l')
+            ->join('beneficiaries as b', 'b.permanent_division_id', '=', 'l.id', 'left')
+            ->select(DB::raw('l.name_en, l.name_bn, count(b.id) as value'));
+        $query = $query->where("l.type", '=', "division");
+        $query = $query->where(function ($q) {
+            return $q->where('b.status', BeneficiaryStatus::ACTIVE)
+                ->orWhereNull('b.status');
+        });
+        if ($program_id) {
+            $query = $query->where(function ($q) use ($program_id) {
+                return $q->where('b.program_id', $program_id)
+                    ->orWhereNull('b.program_id');
+            });
+        }
+        if ($from_date) {
+            $query = $query->where(function ($q) use ($from_date) {
+                return $q->whereDate('b.approve_date', '>=', Carbon::parse($from_date)->format('Y-m-d'))
+                    ->orWhereNull('b.approve_date');
+            });
+        }
+        if ($to_date) {
+            $query = $query->where(function ($q) use ($to_date) {
+                return $q->whereDate('b.approve_date', '<=', Carbon::parse($to_date)->format('Y-m-d'))
+                    ->orWhereNull('b.approve_date');
+            });
+        }
+        return $query->groupBy('l.name_en', 'l.name_bn')->orderBy('l.name_en')
             ->get();
     }
 
