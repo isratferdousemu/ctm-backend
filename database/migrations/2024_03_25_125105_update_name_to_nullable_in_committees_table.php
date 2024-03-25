@@ -11,8 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('committees', function (Blueprint $table) {
-            $table->unsignedBigInteger('office_type')->nullable();
-            $table->foreign('office_type')->references('id')->on('lookups')->onDelete('cascade');
+            $table->string("name")->nullable()->change();
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('committees', function (Blueprint $table) {
-            $table->dropColumn("office_type");
+            //
         });
     }
 };

@@ -36,7 +36,7 @@ class UpdateCommitteeRequest extends FormRequest
             'paurashava_id' => 'sometimes|integer|exists:locations,id',
             'location_id' => 'sometimes|integer|exists:locations,id',
 
-            'members.*.member_name' => 'required|string|max:50',
+            'members.*.member_name' => 'nullable|string|max:80',
             'members.*.designation_id' => 'required|integer|exists:lookups,id',
             'members.*.email' => 'required|email|max:50',
             'members.*.address' => 'required|string|max:120',
