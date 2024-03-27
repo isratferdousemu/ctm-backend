@@ -70,9 +70,37 @@ class ActivityLogController extends Controller
      *
      *     )
      */
-    public function getAllActivityLogsPaginated(Request $request){
+//    public function getAllActivityLogsPaginated(Request $request){
+//        $perPage = $request->perPage;
+//        $filterArrayName = [];
+//        if ($request->filled('searchText')) {
+//            $filteredText = $request->searchText;
+//            $filterArrayName[] = ['description', 'LIKE', '%' . $filteredText . '%'];
+//        }
+//
+//        $activityLog = ActivityModel::query()
+//            ->where($filterArrayName)
+//            ->with('subject','causer')
+//            ->latest()
+//            ->paginate($perPage, ['*'], 'page');
+//            return ActivityResource::collection($activityLog)->additional([
+//                'success' => true,
+//                'message' => $this->fetchDataSuccessMessage,
+//                'meta' => [
+//                    'current_page' => $activityLog->currentPage(),
+//                    'per_page' => $activityLog->perPage(),
+//                    'total' => $activityLog->total(),
+//                    'last_page' => $activityLog->lastPage(),
+//                ],
+//            ]);
+//            // return $this->sendResponse($activityLog, $this->fetchSuccessMessage, Response::HTTP_OK);
+//    }
+
+    public function getAllActivityLogsPaginated(Request $request)
+    {
         $perPage = $request->perPage;
         $filterArrayName = [];
+
         if ($request->filled('searchText')) {
             $filteredText = $request->searchText;
             $filterArrayName[] = ['description', 'LIKE', '%' . $filteredText . '%'];
@@ -80,21 +108,30 @@ class ActivityLogController extends Controller
 
         $activityLog = ActivityModel::query()
             ->where($filterArrayName)
-            ->with('subject','causer')
-            ->latest()
-            ->paginate($perPage, ['*'], 'page');
-            return ActivityResource::collection($activityLog)->additional([
-                'success' => true,
-                'message' => $this->fetchDataSuccessMessage,
-                'meta' => [
-                    'current_page' => $activityLog->currentPage(),
-                    'per_page' => $activityLog->perPage(),
-                    'total' => $activityLog->total(),
-                    'last_page' => $activityLog->lastPage(),
-                ],
-            ]);
-            // return $this->sendResponse($activityLog, $this->fetchSuccessMessage, Response::HTTP_OK);
+            ->with('subject', 'causer')
+            ->latest();
+
+//        if ($request->filled('searchText')) {
+//            $causerEmail = $request->searchText;
+//            $activityLog->whereHas('causer', function ($query) use ($causerEmail) {
+//                $query->where('Email', 'LIKE', '%' . $causerEmail . '%');
+//            });
+//        }
+
+        $activityLog = $activityLog->paginate($perPage, ['*'], 'page');
+
+        return ActivityResource::collection($activityLog)->additional([
+            'success' => true,
+            'message' => $this->fetchDataSuccessMessage,
+            'meta' => [
+                'current_page' => $activityLog->currentPage(),
+                'per_page' => $activityLog->perPage(),
+                'total' => $activityLog->total(),
+                'last_page' => $activityLog->lastPage(),
+            ],
+        ]);
     }
+
 
     public function viewAnonymousActivityLog($id){
         $activityLog = ActivityModel::query()

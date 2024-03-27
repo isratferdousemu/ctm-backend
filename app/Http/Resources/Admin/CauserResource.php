@@ -15,12 +15,19 @@ class CauserResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'                    => $this->id,
-            'full_name'                 => $this->full_name,
-            'user_type'                  => $this->user_type,
-            'email'                  => $this->email,
-            'user_id'                  => $this->user_id,
-            'created_at'            => $this->created_at
+            'Id'                    => $this->id,
+            'User Name'                 => $this->user_name,
+            'Full Name'                 => $this->full_name,
+            'User Type'                  => $this->user_type,
+            'Email'                  => $this->email,
+            'Mobile'                  => $this->mobile,
+            'Office Id'                  => $this->office_id,
+            'User Id'                  => $this->user_id,
+            'Office Type'                  => $this->office_type,
+            'Assign Location Id'                  => $this->assign_location_id,
+            'Committee Id'                  => $this->committee_id,
+            'Committee Type Id'                  => $this->committee_type_id,
+            'Created At'            => $this->created_at
         ];
     }
 }
