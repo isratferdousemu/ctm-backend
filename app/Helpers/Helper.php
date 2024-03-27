@@ -86,35 +86,35 @@ class Helper{
 
         if($currentUserInfo == true){
             $data = [
-                'userAgent' => $agentinfo,
-                'browser' => $agent->browser(),
-                'platform' => $agent->platform(),
-                'deviceType' => $agent->deviceType(),
-                'ipAddress' => $ip,
-                'countryName' => $currentUserInfo->countryName ?? null,
-                'countryCode' => $currentUserInfo->countryCode ?? null,
-                'regionName' => $currentUserInfo->regionName ?? null,
-                'cityName' => $currentUserInfo->cityName ?? null,
-                'latitude' => $currentUserInfo->latitude ?? null,
-                'longitude' => $currentUserInfo->longitude ?? null,
-                'timezone' => $currentUserInfo->timezone ?? null,
+                'User Agent' => $agentinfo,
+                'Browser' => $agent->browser(),
+                'Platform' => $agent->platform(),
+                'Device Type' => $agent->deviceType(),
+                'Ip Address' => $ip,
+                'Country Name' => $currentUserInfo->countryName ?? null,
+                'Country Code' => $currentUserInfo->countryCode ?? null,
+                'Region Name' => $currentUserInfo->regionName ?? null,
+                'City Name' => $currentUserInfo->cityName ?? null,
+                'Latitude' => $currentUserInfo->latitude ?? null,
+                'Longitude' => $currentUserInfo->longitude ?? null,
+                'Timezone' => $currentUserInfo->timezone ?? null,
             ];
 //            $jsonString = json_encode($data);
         }
         else {
             $data = [
-                'userAgent' => $agentinfo,
-                'browser' => $agent->browser(),
-                'platform' => $agent->platform(),
-                'deviceType' => $agent->deviceType(),
-                'ipAddress' => $ip,
-                'countryName' => $currentUserInfo->countryName ?? null,
-                'countryCode' => $currentUserInfo->countryCode ?? null,
-                'regionName' => $currentUserInfo->regionName ?? null,
-                'cityName' => $currentUserInfo->cityName ?? null,
-                'latitude' => $currentUserInfo->latitude ?? null,
-                'longitude' => $currentUserInfo->longitude ?? null,
-                'timezone' => $currentUserInfo->timezone ?? null,
+                'User Agent' => $agentinfo,
+                'Browser' => $agent->browser(),
+                'Platform' => $agent->platform(),
+                'Device Type' => $agent->deviceType(),
+                'Ip Address' => $ip,
+                'Country Name' => $currentUserInfo->countryName ?? null,
+                'Country Code' => $currentUserInfo->countryCode ?? null,
+                'Region Name' => $currentUserInfo->regionName ?? null,
+                'City Name' => $currentUserInfo->cityName ?? null,
+                'Latitude' => $currentUserInfo->latitude ?? null,
+                'Longitude' => $currentUserInfo->longitude ?? null,
+                'Timezone' => $currentUserInfo->timezone ?? null,
             ];
 //            $jsonString = json_encode($data);
         }
