@@ -99,24 +99,33 @@ class ActivityLogController extends Controller
     public function getAllActivityLogsPaginated(Request $request)
     {
         $perPage = $request->perPage;
-        $filterArrayName = [];
-
-        if ($request->filled('searchText')) {
-            $filteredText = $request->searchText;
-            $filterArrayName[] = ['description', 'LIKE', '%' . $filteredText . '%'];
-        }
-
         $activityLog = ActivityModel::query()
-            ->where($filterArrayName)
             ->with('subject', 'causer')
             ->latest();
 
-//        if ($request->filled('searchText')) {
-//            $causerEmail = $request->searchText;
-//            $activityLog->whereHas('causer', function ($query) use ($causerEmail) {
-//                $query->where('Email', 'LIKE', '%' . $causerEmail . '%');
-//            });
-//        }
+        $startDate = $request->from_date;
+        $endDate = $request->to_date;
+        
+        if ($startDate && $endDate) {
+            $activityLog->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        if ($request->filled('searchText')) {
+            $searchText = $request->searchText;
+            $activityLog->where(function ($query) use ($searchText) {
+                $query->where('description', 'LIKE', '%' . $searchText . '%')
+                ->orWhere('log_name', 'LIKE', '%' . $searchText . '%')
+                    ->orWhereHas('causer', function ($query) use ($searchText) {
+                        $query->where('email', 'LIKE', '%' . $searchText . '%')
+                        ->orWhere('username', 'LIKE', '%' . $searchText . '%')
+                        ->orWhere('mobile', 'LIKE', '%' . $searchText . '%');
+                    })
+                    ->orWhereJsonContains('properties->userInfo->Browser', $searchText)
+                    ->orWhereJsonContains('properties->userInfo->Platform', $searchText)
+                    ->orWhereJsonContains('properties->userInfo->Device Type', $searchText)
+                    ->orWhereJsonContains('properties->userInfo->City Name', $searchText);
+            });
+        }
 
         $activityLog = $activityLog->paginate($perPage, ['*'], 'page');
 
