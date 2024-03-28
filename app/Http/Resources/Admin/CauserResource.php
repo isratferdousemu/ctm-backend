@@ -16,7 +16,7 @@ class CauserResource extends JsonResource
     {
         return [
             'Id'                    => $this->id,
-            'User Name'                 => $this->user_name,
+            'User Name'                 => $this->username,
             'Full Name'                 => $this->full_name,
             'User Type'                  => $this->user_type,
             'Email'                  => $this->email,
