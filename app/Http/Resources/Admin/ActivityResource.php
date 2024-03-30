@@ -19,9 +19,14 @@ class ActivityResource extends JsonResource
             'description'                 => $this->description,
             'log_name'            => $this->log_name,
             'subject'            => $this->subject,
+            'subject_type'            => $this->subject_type,
+            'event'            => $this->event,
+            'causer_type'            => $this->causer_type,
             'causer'                  => CauserResource::make($this->whenLoaded('causer')),
             'properties'            => $this->properties,
             'created_at'            => $this->created_at->diffForHumans(),
+            'database_created_at' => $this->created_at->format('d M Y, h:i:s A'),
+
         ];
     }
 

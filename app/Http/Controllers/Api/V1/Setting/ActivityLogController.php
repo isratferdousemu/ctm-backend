@@ -70,31 +70,77 @@ class ActivityLogController extends Controller
      *
      *     )
      */
-    public function getAllActivityLogsPaginated(Request $request){
+//    public function getAllActivityLogsPaginated(Request $request){
+//        $perPage = $request->perPage;
+//        $filterArrayName = [];
+//        if ($request->filled('searchText')) {
+//            $filteredText = $request->searchText;
+//            $filterArrayName[] = ['description', 'LIKE', '%' . $filteredText . '%'];
+//        }
+//
+//        $activityLog = ActivityModel::query()
+//            ->where($filterArrayName)
+//            ->with('subject','causer')
+//            ->latest()
+//            ->paginate($perPage, ['*'], 'page');
+//            return ActivityResource::collection($activityLog)->additional([
+//                'success' => true,
+//                'message' => $this->fetchDataSuccessMessage,
+//                'meta' => [
+//                    'current_page' => $activityLog->currentPage(),
+//                    'per_page' => $activityLog->perPage(),
+//                    'total' => $activityLog->total(),
+//                    'last_page' => $activityLog->lastPage(),
+//                ],
+//            ]);
+//            // return $this->sendResponse($activityLog, $this->fetchSuccessMessage, Response::HTTP_OK);
+//    }
+
+    public function getAllActivityLogsPaginated(Request $request)
+    {
         $perPage = $request->perPage;
-        $filterArrayName = [];
-        if ($request->filled('searchText')) {
-            $filteredText = $request->searchText;
-            $filterArrayName[] = ['description', 'LIKE', '%' . $filteredText . '%'];
+        $activityLog = ActivityModel::query()
+            ->with('subject', 'causer')
+            ->latest();
+
+        $startDate = $request->from_date;
+        $endDate = $request->to_date;
+        
+        if ($startDate && $endDate) {
+            $activityLog->whereBetween('created_at', [$startDate, $endDate]);
         }
 
-        $activityLog = ActivityModel::query()
-            ->where($filterArrayName)
-            ->with('subject','causer')
-            ->latest()
-            ->paginate($perPage, ['*'], 'page');
-            return ActivityResource::collection($activityLog)->additional([
-                'success' => true,
-                'message' => $this->fetchDataSuccessMessage,
-                'meta' => [
-                    'current_page' => $activityLog->currentPage(),
-                    'per_page' => $activityLog->perPage(),
-                    'total' => $activityLog->total(),
-                    'last_page' => $activityLog->lastPage(),
-                ],
-            ]);
-            // return $this->sendResponse($activityLog, $this->fetchSuccessMessage, Response::HTTP_OK);
+        if ($request->filled('searchText')) {
+            $searchText = $request->searchText;
+            $activityLog->where(function ($query) use ($searchText) {
+                $query->where('description', 'LIKE', '%' . $searchText . '%')
+                ->orWhere('log_name', 'LIKE', '%' . $searchText . '%')
+                    ->orWhereHas('causer', function ($query) use ($searchText) {
+                        $query->where('email', 'LIKE', '%' . $searchText . '%')
+                        ->orWhere('username', 'LIKE', '%' . $searchText . '%')
+                        ->orWhere('mobile', 'LIKE', '%' . $searchText . '%');
+                    })
+                    ->orWhereJsonContains('properties->userInfo->Browser', $searchText)
+                    ->orWhereJsonContains('properties->userInfo->Platform', $searchText)
+                    ->orWhereJsonContains('properties->userInfo->Device Type', $searchText)
+                    ->orWhereJsonContains('properties->userInfo->City Name', $searchText);
+            });
+        }
+
+        $activityLog = $activityLog->paginate($perPage, ['*'], 'page');
+
+        return ActivityResource::collection($activityLog)->additional([
+            'success' => true,
+            'message' => $this->fetchDataSuccessMessage,
+            'meta' => [
+                'current_page' => $activityLog->currentPage(),
+                'per_page' => $activityLog->perPage(),
+                'total' => $activityLog->total(),
+                'last_page' => $activityLog->lastPage(),
+            ],
+        ]);
     }
+
 
     public function viewAnonymousActivityLog($id){
         $activityLog = ActivityModel::query()
