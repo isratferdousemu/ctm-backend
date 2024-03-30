@@ -46,6 +46,12 @@ class Budget extends Model
     {
         return $this->belongsTo(FinancialYear::class, 'financial_year_id');
     }
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function budgetDetail()
+    {
+        return $this->hasMany(BudgetDetail::class);
+    }
 
 }
