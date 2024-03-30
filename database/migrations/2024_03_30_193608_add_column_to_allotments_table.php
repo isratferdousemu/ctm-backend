@@ -11,6 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('allotments', function (Blueprint $table) {
+            $table->dropForeign('allotments_location_id_foreign');
             $table->dropColumn('location_id');
             $table->foreignId('division_id')->constrained("locations")->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('district_id')->constrained("locations")->cascadeOnUpdate()->cascadeOnDelete();
