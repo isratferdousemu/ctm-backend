@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Allotment extends Model
 {
     use HasFactory, SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -33,8 +34,24 @@ class Allotment extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'location_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function financialYear()
     {
         return $this->belongsTo(FinancialYear::class, 'financial_year_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function allotmentDetails()
+    {
+        return $this->hasMany(AllotmentDetails::class);
     }
 }
