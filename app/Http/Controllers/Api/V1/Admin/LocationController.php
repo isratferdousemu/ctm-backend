@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Geographic\City\CityRequest;
 use App\Http\Requests\Admin\Geographic\City\CityUpdateRequest;
@@ -729,6 +730,7 @@ class LocationController extends Controller
             activity("District")
                 ->causedBy(auth()->user())
                 ->performedOn($district)
+                ->withProperties(['userInfo' => Helper::BrowserIpInfo()])
                 ->log('District Update !');
             return DistrictResource::make($district->load('parent'))->additional([
                 'success' => true,

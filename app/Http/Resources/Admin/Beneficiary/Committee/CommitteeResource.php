@@ -28,6 +28,7 @@ class CommitteeResource extends JsonResource
             'details' => $this->details,
             'program' => AllowanceResource::make($this->whenLoaded('program')),
             'committeeType' => LookupResource::make($this->whenLoaded('committeeType')),
+            'officeType' => LookupResource::make($this->whenLoaded('officeType')),
             'location' => $this->location,
             'members' => MemberResource::collection($this->whenLoaded('members'))
         ];

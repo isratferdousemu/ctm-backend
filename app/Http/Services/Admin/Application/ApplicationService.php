@@ -342,7 +342,7 @@ class ApplicationService
             }
 
             DB::commit();
-            $this->applicationPMTValuesTotal($application->id);
+            $this->applicationPMTValuesTotal($application->id,$request->per_room_score,$request->no_of_people_score);
             return $application;
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -715,28 +715,41 @@ class ApplicationService
     }
 
     // application PMTValues total calculation
-    public function applicationPMTValuesTotal($application_id){
-        $applicationPMTValues = ApplicationPovertyValues::where('application_id', $application_id)->get();
-        $total = 0;
-        foreach ($applicationPMTValues as $key => $value) {
-            if($value->sub_variable_id!=null){
-            Log::info('total sub-variable: '.$value->sub_variable->score);
+    public function applicationPMTValuesTotal($application_id,$per_room_score,$no_of_people_score){
+        // $applicationPMTValues = ApplicationPovertyValues::where('application_id', $application_id)->get();
+        // $total = 0;
+      
+        // foreach ($applicationPMTValues as $key => $value) {
+        //     if($value->sub_variable_id!=null){
+        //     Log::info('total sub-variable: '.$value->sub_variable->score);
 
-        }else{
-            Log::info('total variable: '.$value->variable->score);
-        }
-            $total += $value->sub_variable_id!=null?$value->sub_variable->score:$value->variable->score;
-        }
+        // }else{
+        //     Log::info('total variable: '.$value->variable->score);
+        // }
+        //     $total += $value->sub_variable_id!=null?$value->sub_variable->score:$value->variable->score;
+        // }
+        $total = ApplicationPovertyValues::join('variables', 'application_poverty_values.sub_variable_id', '=', 'variables.id')
+       ->where('application_id', $application_id)
+       ->sum('variables.score');
         Log::info('total score: '.$total);
+          
 
         // Poverty score = [(Constant + Sum of the coefficients of all applicable variables + District FE)*100]
         $constant = $this->povertyConstant;
         $districtFE = 0;
         // districtFE get by application permanent_location_id district
         $districtFE = $this->getDistrictFE($application_id);
-        $povertyScore = ($constant + $total + $districtFE)*100;
+        Log::info('DistrictfE: '.$districtFE);
+        // $povertyScore = ($constant + $total + $districtFE)*100;
+        // $povertyScore = ($constant + $total+ $per_room_score+$no_of_people_score+ $districtFE)*100;
+          // $povertyScore = ($constant + $total + $districtFE)*100;
+        $povertyScore = ($constant + $total+ $per_room_score+ $districtFE)*100;
+         Log::info('Poverty: '.$povertyScore);
         $application = Application::find($application_id);
         $application->score = $povertyScore;
+        // $application->identification_mark = $povertyScore+$per_room_score;
+        // $application->email = $povertyScore+$no_of_people_score;
+        
 
         $application->save();
     }

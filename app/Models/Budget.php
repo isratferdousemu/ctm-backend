@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Allotment extends Model
+class Budget extends Model
 {
     use HasFactory, SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,20 +22,4 @@ class Allotment extends Model
      * @var array
      */
     protected $guarded = ['id'];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function program()
-    {
-        return $this->belongsTo(AllowanceProgram::class, 'program_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function financialYear()
-    {
-        return $this->belongsTo(FinancialYear::class, 'financial_year_id');
-    }
 }
