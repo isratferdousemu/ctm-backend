@@ -76,6 +76,9 @@ trait PermissionTrait
     // module 5 sub modules
     private $subGrievanceSetting = "grievance-setting";
     private $subGrievanceList = "grievance-list";
+    private $subGrievanceDashboard = "grievance-dashboard";
+    private $subGrievanceType = "grievance-type";
+    private $subGrievanceSubject = "grievance-subject";
 
 
     // module 6 sub modules

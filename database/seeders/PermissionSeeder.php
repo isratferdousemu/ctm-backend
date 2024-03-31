@@ -466,6 +466,7 @@ class PermissionSeeder extends Seeder
             /* -------------------------------------------------------------------------- */
             /*                            Grievance Management                            */
             /* -------------------------------------------------------------------------- */
+           
             [
                 'module_name' => $this->modulePermissionGrievanceManagement,
                 'sub_module_name' => $this->subGrievanceSetting,
@@ -482,12 +483,44 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subGrievanceList,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 149, "name" => "grievance-list-create", "page_url" => "/grievance-management/grievance-list/create", "parent_page" => 1],
+                    ["id" => 149, "name" => "grievanceLlist-create", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
                     ["id" => 150, "name" => "grievance-list-view", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
                     ["id" => 151, "name" => "grievance-list-edit", "page_url" => "/grievance-management/grievance-list/edit/:id", "parent_page" => 1],
                     ["id" => 152, "name" => "grievance-list-delete", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1]
                 ]
             ],
+             [
+                'module_name' => $this->modulePermissionGrievanceManagement,
+                'sub_module_name' => $this->subGrievanceDashboard,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 215, "name" => "GrievanceManagementDashboard-create", "page_url" => "/system-configuration/dashboard", "parent_page" => 1],
+                    ["id" => 216, "name" => "GrievanceManagementDashboard-view", "page_url" => "/system-configuration/dashboard", "parent_page" => 1]
+                ]
+            ],
+             [
+                'module_name' => $this->modulePermissionGrievanceManagement,
+                'sub_module_name' => $this->subGrievanceType,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 217, "name" => "grievanceType-create", "page_url" => "/grievance-management/type", "parent_page" => 1],
+                    ["id" => 218, "name" => "grievanceType-view", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
+                    ["id" => 219, "name" => "grievanceType-edit", "page_url" => "/grievance-management/grievance-list/edit/:id", "parent_page" => 1],
+                    ["id" => 220, "name" => "grievanceType-delete", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1]
+                ]
+            ],
+             [
+                'module_name' => $this->modulePermissionGrievanceManagement,
+                'sub_module_name' => $this->subGrievanceSubject,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 221, "name" => "grievanceSubject-create", "page_url" => "/grievance-management/subject", "parent_page" => 1],
+                    ["id" => 222, "name" => "grievanceSubject-view", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
+                    ["id" => 223, "name" => "grievanceSubject-edit", "page_url" => "/grievance-management/grievance-list/edit/:id", "parent_page" => 1],
+                    ["id" => 224, "name" => "grievanceSubject-delete", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1]
+                ]
+            ],
+            
 
             /* -------------------------------------------------------------------------- */
             /*                              Reporting System                              */
@@ -564,7 +597,7 @@ class PermissionSeeder extends Seeder
             ],
         ];
 
-        //last id 214
+        //last id 224
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
