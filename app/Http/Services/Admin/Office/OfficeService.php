@@ -20,7 +20,7 @@ class OfficeService
 
     public function createOffice(Request $request)
     {
-         $selectedWardsDetails = json_decode($request->input('selectedWardsDetails'), true);
+        $selectedWardsDetails = json_decode($request->input('selectedWardsDetails'), true);
 
         //  print_r($request->ward_under_office);
         // return;
@@ -28,7 +28,7 @@ class OfficeService
         DB::beginTransaction();
         try {
 
-            $office                          = new Office;
+            $office = new Office;
             if ($request->has('office_type')) {
                 $office->office_type = $request->office_type;
                 if ($request->office_type != 4 || $request->office_type != 5) {
@@ -40,54 +40,49 @@ class OfficeService
                         if ($request->has('district_id')) {
                             $office->assign_location_id = $request->district_id;
                         }
-                    } elseif ($request->office_type == 8 || $request->office_type == 10 || $request->office_type == 11 ) {
+                    } elseif ($request->office_type == 8 || $request->office_type == 10 || $request->office_type == 11) {
                         if ($request->has('upazila_id')) {
                             $office->assign_location_id = $request->upazila_id;
                         }
-                    } elseif ( $request->office_type == 9) {
+                    } elseif ($request->office_type == 9) {
                         if ($request->has('city_id')) {
                             $office->assign_location_id = $request->city_id;
                         }
-                    }
-                    elseif ($request->office_type == 35 ) {
+                    } elseif ($request->office_type == 35) {
                         if ($request->has('dist_pouro_id')) {
                             $office->assign_location_id = $request->dist_pouro_id;
                         }
                     }
                 }
             }
-            $office->name_en                = $request->name_en;
-            $office->name_bn                = $request->name_bn;
-            $office->office_address         = $request->office_address;
-            $office->comment                = $request->comment;
-            $office->status                 = $request->status;
+            $office->name_en = $request->name_en;
+            $office->name_bn = $request->name_bn;
+            $office->office_address = $request->office_address;
+            $office->comment = $request->comment;
+            $office->status = $request->status;
             $office->save();
 
             $data = $request->x;
 
 
-
-
-
-
             // if (is_array($data) && count($data) > 0) {
-           if ($selectedWardsDetails) {
-            foreach ($selectedWardsDetails as $wardDetails) {
-                if (is_array($wardDetails) && count($wardDetails)) {             
-                    // dd($isWardExists);
-                    $ward_under_office = new OfficeHasWard;
-                    $ward_under_office->office_id = $office->id;
-                    $ward_under_office->ward_id = $wardDetails['ward_id'];
-                    // You may need to adjust this based on your data structure
-                    $ward_under_office->division_id = $wardDetails['division_id'];
-                    $ward_under_office->city_id = $wardDetails['city_id'];
-                    $ward_under_office->district_id = $wardDetails['district_id'];
-                    $ward_under_office->thana_id = $wardDetails['thana_id'];
-                    $ward_under_office->save();
-                 
+            if ($selectedWardsDetails) {
+                foreach ($selectedWardsDetails as $wardDetails) {
+                    if (is_array($wardDetails) && count($wardDetails)) {
+                        // dd($isWardExists);
+                        $ward_under_office = new OfficeHasWard;
+                        $ward_under_office->office_id = $office->id;
+                        $ward_under_office->ward_id = $wardDetails['ward_id'];
+                        // You may need to adjust this based on your data structure
+                        $ward_under_office->division_id = $wardDetails['division_id'];
+                        $ward_under_office->city_id = $wardDetails['city_id'];
+                        $ward_under_office->district_id = $wardDetails['district_id'];
+                        $ward_under_office->thana_id = $wardDetails['thana_id'];
+                        $ward_under_office->save();
+
+                    }
                 }
             }
-        }
 
             DB::commit();
             return $office;
@@ -99,10 +94,10 @@ class OfficeService
 
     public function updateOffice(Request $request)
     {
-         $selectedWardsDetails = json_decode($request->input('selectedWardsDetails'), true);
+        $selectedWardsDetails = json_decode($request->input('selectedWardsDetails'), true);
         DB::beginTransaction();
         try {
-            $office                           = Office::find($request->id);
+            $office = Office::find($request->id);
             // if ($request->has('office_type')) {
             //     $office->office_type = $request->office_type;
             //     if ($request->office_type != 4 || $request->office_type != 5) {
@@ -125,7 +120,7 @@ class OfficeService
             //         }
             //     }
             // }
-     if ($request->has('office_type')) {
+            if ($request->has('office_type')) {
                 $office->office_type = $request->office_type;
                 if ($request->office_type != 4 || $request->office_type != 5) {
                     if ($request->office_type == 6) {
@@ -140,27 +135,24 @@ class OfficeService
                         if ($request->has('upazila_id')) {
                             $office->assign_location_id = $request->upazila_id;
                         }
-                    } elseif ( $request->office_type == 9) {
+                    } elseif ($request->office_type == 9) {
                         if ($request->has('city_id')) {
                             $office->assign_location_id = $request->city_id;
                         }
-                    }
-                    elseif ($request->office_type == 35 ) {
+                    } elseif ($request->office_type == 35) {
                         if ($request->has('dist_pouro_id')) {
                             $office->assign_location_id = $request->dist_pouro_id;
                         }
                     }
                 }
             }
-            $office->name_en                = $request->name_en;
-            $office->name_bn                = $request->name_bn;
-            $office->office_address         = $request->office_address;
-            $office->comment                = $request->comment;
-            $office->status                 = $request->status;
-            $office->version                = $office->version + 1;
+            $office->name_en = $request->name_en;
+            $office->name_bn = $request->name_bn;
+            $office->office_address = $request->office_address;
+            $office->comment = $request->comment;
+            $office->status = $request->status;
+            $office->version = $office->version + 1;
             $office->save();
-
-
 
 
             // $data = $request->ward_under_office;
@@ -174,32 +166,32 @@ class OfficeService
             //         $ward_under_office->save();
             //     }
             // }
-             $data = $request->selectedWards;
+            $data = $request->selectedWards;
 
 
-             OfficeHasWard::where('office_id', $request->id)->delete();
-        //      $model = OfficeHasWard::where('office_id', $request->id)->firstOrFail();
-        //      $delete=
-        //    dd( $model['office_id']);
+            OfficeHasWard::where('office_id', $request->id)->delete();
+            //      $model = OfficeHasWard::where('office_id', $request->id)->firstOrFail();
+            //      $delete=
+            //    dd( $model['office_id']);
 
 
             // if (is_array($data) && count($data) > 0) {
-                // dd($selectedWardsDetails);
-          if ($selectedWardsDetails) {
-            foreach ($selectedWardsDetails as $wardDetails) {
-                if (is_array($wardDetails) && count($wardDetails)) {
-                    $ward_under_office = new OfficeHasWard;
-                    $ward_under_office->office_id = $office->id;
-                    $ward_under_office->ward_id = $wardDetails['ward_id'];
-                    // You may need to adjust this based on your data structure
-                    $ward_under_office->division_id = $wardDetails['division_id'];
-                    $ward_under_office->city_id = $wardDetails['city_id'];
-                    $ward_under_office->district_id = $wardDetails['district_id'];
-                    $ward_under_office->thana_id = $wardDetails['thana_id'];
-                    $ward_under_office->save();
+            // dd($selectedWardsDetails);
+            if ($selectedWardsDetails) {
+                foreach ($selectedWardsDetails as $wardDetails) {
+                    if (is_array($wardDetails) && count($wardDetails)) {
+                        $ward_under_office = new OfficeHasWard;
+                        $ward_under_office->office_id = $office->id;
+                        $ward_under_office->ward_id = $wardDetails['ward_id'];
+                        // You may need to adjust this based on your data structure
+                        $ward_under_office->division_id = $wardDetails['division_id'];
+                        $ward_under_office->city_id = $wardDetails['city_id'];
+                        $ward_under_office->district_id = $wardDetails['district_id'];
+                        $ward_under_office->thana_id = $wardDetails['thana_id'];
+                        $ward_under_office->save();
+                    }
                 }
             }
-        }
 
             DB::commit();
             return $office;
@@ -208,4 +200,19 @@ class OfficeService
             throw $th;
         }
     }
+
+    public function getAllOfficeList($location_id = null)
+    {
+        $query = Office::query();
+        if ($location_id)
+            $query = $query->where('assign_location_id', $location_id);
+
+        return $query->with('officeType',
+            'assignLocation')
+            ->orderBy("office_type")
+            ->orderBy("name_en")
+            ->get();
+    }
+
+
 }
