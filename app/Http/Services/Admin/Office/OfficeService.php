@@ -201,15 +201,18 @@ class OfficeService
         }
     }
 
-    public function getAllOfficeList($location_id = null)
+    public function getAllOfficeList(Request $request)
     {
+        $location_id = $request->query('location_id');
+        $office_type = $request->query('office_type');
         $query = Office::query();
+        $query->select('id', 'name_en', 'name_bn');
         if ($location_id)
             $query = $query->where('assign_location_id', $location_id);
+        if ($office_type)
+            $query = $query->where('office_type', $office_type);
 
-        return $query->with('officeType',
-            'assignLocation')
-            ->orderBy("office_type")
+        return $query->select('id', 'name_en', 'name_bn')->orderBy("office_type")
             ->orderBy("name_en")
             ->get();
     }

@@ -54,6 +54,14 @@ class Committee extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    public function office()
+    {
+        return $this->belongsTo(Office::class, 'office_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function committeeType()
     {
         return $this->belongsTo(Lookup::class, 'committee_type');

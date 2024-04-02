@@ -43,7 +43,7 @@ Route::prefix('global')->group(function () {
     Route::post('online-application/final-submit', [ApplicationController::class, 'getStatusyId']);
 
     Route::get('/class-list',[AdminController::class, 'getClassList'])/*->middleware(['role_or_permission:super-admin|demo-graphic-view'])*/;
-    Route::get('/office-list/{location_id?}',[\App\Http\Controllers\Api\V1\Admin\OfficeController::class, 'getAllOfficeList']);
+    Route::get('/office-list',[\App\Http\Controllers\Api\V1\Admin\OfficeController::class, 'getAllOfficeList']);
 
 });
 

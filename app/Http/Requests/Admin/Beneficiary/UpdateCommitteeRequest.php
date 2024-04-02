@@ -35,7 +35,7 @@ class UpdateCommitteeRequest extends FormRequest
             'ward_id' => 'sometimes|integer|exists:locations,id',
             'paurashava_id' => 'sometimes|integer|exists:locations,id',
             'location_id' => 'sometimes|integer|exists:locations,id',
-
+            'office_id' => 'sometimes|integer|exists:offices,id',
             'members.*.member_name' => 'nullable|string|max:80',
             'members.*.designation_id' => 'required|integer|exists:lookups,id',
             'members.*.email' => 'required|email|max:50',

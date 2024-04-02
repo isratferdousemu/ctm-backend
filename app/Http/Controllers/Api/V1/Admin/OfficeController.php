@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Helpers\Helper;
+use App\Http\Resources\Admin\Office\OfficeDropDownResource;
 use App\Http\Services\Admin\Office\OfficeListService;
 use App\Models\Location;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
@@ -723,14 +724,14 @@ class OfficeController extends Controller
      * @param $location_id
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getAllOfficeList($location_id = null): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function getAllOfficeList(Request $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         try {
-            $officeList = $this->OfficeService->getAllOfficeList($location_id);
+            $officeList = $this->OfficeService->getAllOfficeList($request);
 //            return response()->json($beneficiaryList);
-            return OfficeResource::collection($officeList)->additional([
+            return OfficeDropDownResource::collection($officeList)->additional([
                 'success' => true,
-                'message' => $this->fetchSuccessMessage,
+                'message' => $this->fetchDataSuccessMessage,
             ]);
         } catch (\Throwable $th) {
             return $this->sendError($th->getMessage(), [], 500);
