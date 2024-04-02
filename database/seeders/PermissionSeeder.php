@@ -466,7 +466,7 @@ class PermissionSeeder extends Seeder
             /* -------------------------------------------------------------------------- */
             /*                            Grievance Management                            */
             /* -------------------------------------------------------------------------- */
-           
+
             [
                 'module_name' => $this->modulePermissionGrievanceManagement,
                 'sub_module_name' => $this->subGrievanceSetting,
@@ -520,7 +520,7 @@ class PermissionSeeder extends Seeder
                     ["id" => 224, "name" => "grievanceSubject-delete", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1]
                 ]
             ],
-            
+
 
             /* -------------------------------------------------------------------------- */
             /*                              Reporting System                              */
@@ -560,20 +560,20 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->modulePermissionAPIManager,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 215, "name" => "url-create", "page_url" => "/api-manager/url-generate/create", "parent_page" => 1],
-                    ["id" => 216, "name" => "url-view", "page_url" => "/api-manager/url-generate", "parent_page" => 1],
-                    ["id" => 217, "name" => "url-edit", "page_url" => "/api-manager/url-generate/edit/:id", "parent_page" => 1],
-                    ["id" => 218, "name" => "url-delete", "page_url" => "/api-manager/url-generate/delete", "parent_page" => 1],
+                    ["id" => 225, "name" => "url-create", "page_url" => "/api-manager/url-generate/create", "parent_page" => 1],
+                    ["id" => 226, "name" => "url-view", "page_url" => "/api-manager/url-generate", "parent_page" => 1],
+                    ["id" => 227, "name" => "url-edit", "page_url" => "/api-manager/url-generate/edit/:id", "parent_page" => 1],
+                    ["id" => 228, "name" => "url-delete", "page_url" => "/api-manager/url-generate/delete", "parent_page" => 1],
 
-                    ["id" => 219, "name" => "api-create", "page_url" => "/api-manager/api-generate/create", "parent_page" => 1],
-                    ["id" => 220, "name" => "api-view", "page_url" => "/api-manager/api-generate", "parent_page" => 1],
-                    ["id" => 221, "name" => "api-edit", "page_url" => "/api-manager/api-generate/edit/:id", "parent_page" => 1],
-                    ["id" => 222, "name" => "api-delete", "page_url" => "/api-manager/api-generate/delete", "parent_page" => 1],
+                    ["id" => 229, "name" => "api-create", "page_url" => "/api-manager/api-generate/create", "parent_page" => 1],
+                    ["id" => 230, "name" => "api-view", "page_url" => "/api-manager/api-generate", "parent_page" => 1],
+                    ["id" => 231, "name" => "api-edit", "page_url" => "/api-manager/api-generate/edit/:id", "parent_page" => 1],
+                    ["id" => 232, "name" => "api-delete", "page_url" => "/api-manager/api-generate/delete", "parent_page" => 1],
 
-                    ["id" => 223, "name" => "apiDataReceive-create", "page_url" => "/api-manager/url-generate/create", "parent_page" => 1],
-                    ["id" => 224, "name" => "apiDataReceive-view", "page_url" => "/api-manager/url-generate", "parent_page" => 1],
-                    ["id" => 225, "name" => "apiDataReceive-edit", "page_url" => "/api-manager/url-generate/edit/:id", "parent_page" => 1],
-                    ["id" => 226, "name" => "apiDataReceive-delete", "page_url" => "/api-manager/url-generate/delete", "parent_page" => 1],
+                    ["id" => 233, "name" => "apiDataReceive-create", "page_url" => "/api-manager/url-generate/create", "parent_page" => 1],
+                    ["id" => 234, "name" => "apiDataReceive-view", "page_url" => "/api-manager/url-generate", "parent_page" => 1],
+                    ["id" => 235, "name" => "apiDataReceive-edit", "page_url" => "/api-manager/url-generate/edit/:id", "parent_page" => 1],
+                    ["id" => 236, "name" => "apiDataReceive-delete", "page_url" => "/api-manager/url-generate/delete", "parent_page" => 1],
                 ]
             ],
 
@@ -622,7 +622,7 @@ class PermissionSeeder extends Seeder
             ],
         ];
 
-        //last id 224
+        //last id 236
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
