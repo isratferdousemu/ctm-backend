@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Budget;
+namespace App\Http\Requests\Admin\Allotment;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreBudgetRequest extends FormRequest
+class UpdateAllotmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
