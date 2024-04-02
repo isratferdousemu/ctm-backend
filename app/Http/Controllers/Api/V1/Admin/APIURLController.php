@@ -63,11 +63,25 @@ class APIURLController extends Controller
         $apiUrl->method = $request->method;
         $apiUrl->url = $request->url;
         $apiUrl->table = $request->table;
-        $apiUrl->status = $request->status ?: $apiUrl->status;
+        $apiUrl->status = $request->status ?? $apiUrl->status;
         $apiUrl->save();
 
         return $this->sendResponse($apiUrl, 'URL updated successfully');
     }
+     public function updateURL(UpdateRequest $request, APIUrl $apiUrl)
+
+    {
+        $apiUrl=APIUrl::find( $request->id);
+        $apiUrl->name = $request->name;
+        $apiUrl->method = $request->method;
+        $apiUrl->url = $request->url;
+        $apiUrl->table = $request->table;
+        // $apiUrl->status = $request->status ?: $apiUrl->status;
+        $apiUrl->save();
+
+        return $this->sendResponse($apiUrl, 'URL updated successfully');
+    }
+
 
     /**
      * Remove the specified resource from storage.

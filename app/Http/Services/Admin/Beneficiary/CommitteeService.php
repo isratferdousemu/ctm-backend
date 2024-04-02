@@ -33,7 +33,7 @@ class CommitteeService
             $code = mt_rand(100000, 999999);
             $name = $this->committeeName($request->committee_type, $request->program_id, $request->location_id);
             $location_id = $this->getLocation($request);
-            $validatedCommitteeData = $request->safe()->merge(['code' => $code, 'name' => $name, 'location_id' => $location_id])->only(['code', 'name', 'details', 'program_id', 'committee_type', 'office_type', 'location_id']);
+            $validatedCommitteeData = $request->safe()->merge(['code' => $code, 'name' => $name, 'location_id' => $location_id])->only(['code', 'name', 'details', 'program_id', 'committee_type', 'office_type', 'location_id', 'office_id']);
             $committee = Committee::create($validatedCommitteeData);
 
             $validatedMemberData = $request->validated('members');
@@ -71,11 +71,11 @@ class CommitteeService
             });
         }
         if ($forPdf)
-            return $query->with('program', 'members', 'committeeType', 'officeType', 'location.parent.parent.parent')
+            return $query->with('program', 'members', 'committeeType', 'officeType', 'location.parent.parent.parent', 'office')
                 ->orderBy("$sortByColumn", "$orderByDirection")
                 ->get();
         else
-            return $query->with('program', 'members', 'committeeType', 'officeType', 'location.parent.parent.parent')
+            return $query->with('program', 'members', 'committeeType', 'officeType', 'location.parent.parent.parent', 'office')
                 ->orderBy("$sortByColumn", "$orderByDirection")
                 ->paginate($perPage);
     }
@@ -86,7 +86,7 @@ class CommitteeService
      */
     public function detail($id)
     {
-        return Committee::with('program', 'members', 'committeeType', 'officeType',  'location.parent.parent.parent')->findOrFail($id);
+        return Committee::with('program', 'members', 'committeeType', 'officeType',  'location.parent.parent.parent', 'office')->findOrFail($id);
     }
 
     /**
@@ -101,7 +101,7 @@ class CommitteeService
             $committee = Committee::findOrFail($id);
             $name = $this->committeeName($request->committee_type, $request->program_id, $request->location_id);
             $location_id = $this->getLocation($request);
-            $validatedCommitteeData = $request->safe()->merge(['name' => $name, 'location_id' => $location_id])->only(['name', 'details', 'program_id', 'committee_type', 'office_type', 'location_id']);
+            $validatedCommitteeData = $request->safe()->merge(['name' => $name, 'location_id' => $location_id])->only(['name', 'details', 'program_id', 'committee_type', 'office_type', 'location_id', 'office_id']);
 
             $committee->name = $validatedCommitteeData['name'];
             $committee->details = $validatedCommitteeData['details'];
@@ -109,6 +109,7 @@ class CommitteeService
             $committee->committee_type = $validatedCommitteeData['committee_type'];
             $committee->office_type = $validatedCommitteeData['office_type'];
             $committee->location_id = $validatedCommitteeData['location_id'];
+            $committee->office_id = $validatedCommitteeData['office_id'];
 
             $committee->save();
 

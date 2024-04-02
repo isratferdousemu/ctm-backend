@@ -1291,6 +1291,12 @@ class BeneficiaryService
         $to_union_id = $request->query('to_union_id');
         $to_ward_id = $request->query('to_ward_id');
 
+        $beneficiary_id = $request->query('beneficiary_id');
+        $nominee_name = $request->query('nominee_name');
+        $account_number = $request->query('account_number');
+        $verification_number = $request->query('nid');
+        $status = $request->query('status');
+
         $perPage = $request->query('perPage', 10);
         $sortByColumn = $request->query('sortBy', 'beneficiary_location_shiftings.created_at');
         $orderByDirection = $request->query('orderBy', 'asc');
@@ -1354,6 +1360,18 @@ class BeneficiaryService
             $query = $query->where('beneficiary_location_shiftings.to_union_id', $to_union_id);
         if ($to_ward_id)
             $query = $query->where('beneficiary_location_shiftings.to_ward_id', $to_ward_id);
+
+        // advance search
+        if ($beneficiary_id)
+            $query = $query->where('beneficiaries.application_id', $beneficiary_id);
+        if ($nominee_name)
+            $query = $query->whereRaw('UPPER(beneficiaries.nominee_en) LIKE "%' . strtoupper($nominee_name) . '%"');
+        if ($account_number)
+            $query = $query->where('beneficiaries.account_number', $account_number);
+        if ($verification_number)
+            $query = $query->where('beneficiaries.verification_number', $verification_number);
+        if ($status)
+            $query = $query->where('beneficiaries.status', $status);
 
         $query = $this->applyLocationFilter2($query, $request);
 

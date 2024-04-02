@@ -25,6 +25,7 @@ trait PermissionTrait
     private $modulePermissionEmergencyManagement = "EmergencyManagement";
     private $modulePermissionGrievanceManagement = "GrievanceManagement";
     private $modulePermissionReportingSystem = "ReportingSystem";
+    private $modulePermissionAPIManager = "APIManager";
     private $modulePermissionTrainingManagement = "TrainingManagement";
     private $modulePermissionBudgetManagement = "BudgetManagement";
     private $modulePermissionAllotmentManagement = "AllotmentManagement";

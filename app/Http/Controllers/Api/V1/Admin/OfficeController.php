@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Helpers\Helper;
+use App\Http\Resources\Admin\Office\OfficeDropDownResource;
 use App\Http\Services\Admin\Office\OfficeListService;
 use App\Models\Location;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
@@ -24,6 +25,7 @@ use Illuminate\Validation\Rule;
 class OfficeController extends Controller
 {
     use MessageTrait, PermissionTrait;
+
     private $OfficeService;
     private $office_location_id;
 
@@ -31,6 +33,7 @@ class OfficeController extends Controller
     {
         $this->OfficeService = $OfficeService;
     }
+
     /**
      * @OA\Get(
      *     path="/admin/office/get",
@@ -123,18 +126,17 @@ class OfficeController extends Controller
                     ->orWhere($filterArrayAddress);
             });
 
-            // ->latest()
-            // ->paginate($perPage, ['*'], 'page');
-            // ->when($this->office_location_id, function ($query, $office_location_id) {
-            //     return $query->where('assign_location_id', $office_location_id);
-            // })
+        // ->latest()
+        // ->paginate($perPage, ['*'], 'page');
+        // ->when($this->office_location_id, function ($query, $office_location_id) {
+        //     return $query->where('assign_location_id', $office_location_id);
+        // })
 
 
         $this->filterByLocation($query);
 
-            $query->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
-            ->orderBy($sortBy, $orderBy)
-            ;
+        $query->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
+            ->orderBy($sortBy, $orderBy);
 
         return $query->paginate($perPage);
         return OfficeResource::collection($office)->additional([
@@ -142,7 +144,6 @@ class OfficeController extends Controller
             'message' => $this->fetchSuccessMessage,
         ]);
     }
-
 
 
     public function filterByLocation($query)
@@ -371,28 +372,26 @@ class OfficeController extends Controller
      */
     public function insertOffice(Request $request)
     {
-       
+
         $validation = Validator::make($request->all(), [
-        'selectedWards.*' => [
-        'required',
-        Rule::unique('office_has_wards', 'ward_id'),
-        ],
-     ]);
+            'selectedWards.*' => [
+                'required',
+                Rule::unique('office_has_wards', 'ward_id'),
+            ],
+        ]);
 
-     if ($validation->fails()) {
-        return response()->json([
-        'success' => false,
-        'message' => 'Validation failed',
-        'errors' => 'This Ward Has Already Assigned',
-      ], 400);
-    }
+        if ($validation->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => 'This Ward Has Already Assigned',
+            ], 400);
+        }
 
-    
-        
 
         try {
             $office = $this->OfficeService->createOffice($request);
-          
+
             // activity("Office")
             //     ->causedBy(auth()->user())
             //     ->performedOn($office)
@@ -406,6 +405,7 @@ class OfficeController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
     /**
      *
      * @OA\Post(
@@ -720,6 +720,23 @@ class OfficeController extends Controller
         return $this->sendResponse($office, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
+    /**
+     * @param $location_id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getAllOfficeList(Request $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        try {
+            $officeList = $this->OfficeService->getAllOfficeList($request);
+//            return response()->json($beneficiaryList);
+            return OfficeDropDownResource::collection($officeList)->additional([
+                'success' => true,
+                'message' => $this->fetchDataSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
 
     public function generatePdf(Request $request)
     {
@@ -749,15 +766,14 @@ class OfficeController extends Controller
             });
 
         $query->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
-            ->orderBy($sortBy, $orderBy)
-        ;
+            ->orderBy($sortBy, $orderBy);
 
-        $fullData =  $query->get();
+        $fullData = $query->get();
 
         $OBJ = $fullData->toArray();
-        $CustomInfo = array_map(function($i, $index) use($request) {
+        $CustomInfo = array_map(function ($i, $index) use ($request) {
             return [
-                 $request->language == "bn" ? Helper::englishToBangla($index + 1) : $index + 1,
+                $request->language == "bn" ? Helper::englishToBangla($index + 1) : $index + 1,
                 $request->language == "bn" ? Helper::englishToBangla($i['assign_location']['id']) : $i['assign_location']['id'],
                 $request->language == "bn" ? Helper::englishToBangla($i['office_type']['value_bn']) : $i['office_type']['value_en'],
                 $request->language == "bn" ? $i['name_bn'] : $i['name_en'],
@@ -766,7 +782,7 @@ class OfficeController extends Controller
             ];
         }, $OBJ, array_keys($OBJ));
 
-        $data = ['headerInfo' => $request->header,'dataInfo'=>$CustomInfo,'fileName' => $request->fileName];
+        $data = ['headerInfo' => $request->header, 'dataInfo' => $CustomInfo, 'fileName' => $request->fileName];
 
         ini_set("pcre.backtrack_limit", "5000000");
         $pdf = LaravelMpdf::loadView('reports.dynamic', $data, [],

@@ -520,6 +520,31 @@ class PermissionSeeder extends Seeder
             ],
 
             /* -------------------------------------------------------------------------- */
+            /*                              API MANAGER                              */
+            /* -------------------------------------------------------------------------- */
+            [
+                'module_name' => $this->modulePermissionAPIManager,
+                'sub_module_name' => $this->modulePermissionAPIManager,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 215, "name" => "url-create", "page_url" => "/api-manager/url-generate/create", "parent_page" => 1],
+                    ["id" => 216, "name" => "url-view", "page_url" => "/api-manager/url-generate", "parent_page" => 1],
+                    ["id" => 217, "name" => "url-edit", "page_url" => "/api-manager/url-generate/edit/:id", "parent_page" => 1],
+                    ["id" => 218, "name" => "url-delete", "page_url" => "/api-manager/url-generate/delete", "parent_page" => 1],
+
+                    ["id" => 219, "name" => "api-create", "page_url" => "/api-manager/api-generate/create", "parent_page" => 1],
+                    ["id" => 220, "name" => "api-view", "page_url" => "/api-manager/api-generate", "parent_page" => 1],
+                    ["id" => 221, "name" => "api-edit", "page_url" => "/api-manager/api-generate/edit/:id", "parent_page" => 1],
+                    ["id" => 222, "name" => "api-delete", "page_url" => "/api-manager/api-generate/delete", "parent_page" => 1],
+
+                    ["id" => 223, "name" => "apiDataReceive-create", "page_url" => "/api-manager/url-generate/create", "parent_page" => 1],
+                    ["id" => 224, "name" => "apiDataReceive-view", "page_url" => "/api-manager/url-generate", "parent_page" => 1],
+                    ["id" => 225, "name" => "apiDataReceive-edit", "page_url" => "/api-manager/url-generate/edit/:id", "parent_page" => 1],
+                    ["id" => 226, "name" => "apiDataReceive-delete", "page_url" => "/api-manager/url-generate/delete", "parent_page" => 1],
+                ]
+            ],
+
+            /* -------------------------------------------------------------------------- */
             /*                             Training Management                            */
             /* -------------------------------------------------------------------------- */
             [

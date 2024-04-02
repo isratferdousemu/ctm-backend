@@ -22,4 +22,36 @@ class Budget extends Model
      * @var array
      */
     protected $guarded = ['id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function program()
+    {
+        return $this->belongsTo(AllowanceProgram::class, 'program_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function calculationType()
+    {
+        return $this->belongsTo(Lookup::class, 'calculation_type');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function financialYear()
+    {
+        return $this->belongsTo(FinancialYear::class, 'financial_year_id');
+    }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function budgetDetail()
+    {
+        return $this->hasMany(BudgetDetail::class);
+    }
+
 }
