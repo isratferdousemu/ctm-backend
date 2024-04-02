@@ -22,9 +22,7 @@ Route::prefix('v1')->group(function () {
     include "Admin/GlobalSetting/GlobalSettingRoute.php";
     include "Admin/ReportRoute.php";
     include "Admin/ActivityLogRoute.php";
+    include "Admin/greivanceManagementRoute/greivanceManagementRoute.php";
     include "Admin/APIManager/APIManagerRoute.php";
 
 });
-
-
-
