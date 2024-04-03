@@ -23,10 +23,20 @@ class GrievanceTypeController extends Controller
      */
     public function getAllTypePaginated(Request $request)
     {
+       
         // Retrieve the query parameters
     $searchText = $request->query('searchText');
     $perPage = $request->query('perPage');
     $page = $request->query('page');
+    $status=$request->query('status');
+    if( $status=='active'){
+        $grievanceType = GrievanceType::where('status',1)->get();  
+    return GrievanceTypeResource::collection($grievanceType)->additional([
+    'success' => true,
+    'message' => $this->fetchDataSuccessMessage,
+]);
+ 
+    }
 
     $filterArrayNameEn=[];
     $filterArrayNameBn=[];
@@ -52,15 +62,7 @@ class GrievanceTypeController extends Controller
         'message' => $this->fetchDataSuccessMessage,
     ]);
         
-        // try {
-        //   $grievanceType =$this->grievanceType->getAll();
-        //   return GrievanceTypeResource::collection($grievanceType)->additional([
-        //         'success' => true,
-        //         'message' => $this->fetchDataSuccessMessage,
-        //     ]);
-        // } catch (\Throwable $th) {
-        //      return $this->sendError($th->getMessage(), [], 500);
-        // }
+       
     }
 
     /**
