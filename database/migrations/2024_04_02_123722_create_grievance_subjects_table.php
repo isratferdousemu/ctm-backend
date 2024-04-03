@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grievance_types', function (Blueprint $table) {
+        Schema::create('grievance_subjects', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('grievance_type_id')->unsigned()->index();
             $table->string('title_en');
             $table->string('title_bn');
             $table->enum('status', array('1', '0'))->default('0')->nullable();
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('grievance_types');
+        Schema::dropIfExists('grievance_subjects');
     }
 };

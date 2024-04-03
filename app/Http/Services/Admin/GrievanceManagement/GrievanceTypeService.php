@@ -19,12 +19,17 @@ Class GrievanceTypeService{
 //     }
 
     public function store($request){
+        // dd($request->status);
        DB::beginTransaction();
        try {
        $grievanceType = new GrievanceType();
        $grievanceType->title_en = $request->title_en;
        $grievanceType->title_bn = $request->title_bn;
-       $grievanceType->status =$request->status;
+       if($request->status==null){
+         $grievanceType->status='0';
+       }else{
+        $grievanceType->status = $request->status;
+       }
        $grievanceType->save();
        DB::commit();
        return $grievanceType;
@@ -48,7 +53,12 @@ Class GrievanceTypeService{
        $grievanceType = GrievanceType::where('id',$request->id)->first();
        $grievanceType->title_en = $request->title_en;
        $grievanceType->title_bn = $request->title_bn;
-       $grievanceType->status =$request->status;
+        if ($request->status == null) {
+       $grievanceType->status = '0';
+       } else {
+       $grievanceType->status = $request->status;
+       }
+
        $grievanceType->update();
        DB::commit();
        return $grievanceType;
