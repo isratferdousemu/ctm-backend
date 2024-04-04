@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\API;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRequest extends FormRequest
+class ApiListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'api_url_id' => 'required|exists:api_urls,id',
-            'api_name' => 'required|string|max:255',
+            'table' => 'required',
+            'name' => 'required|string|max:255',
             'selected_columns' => 'required|array',
         ];
     }
