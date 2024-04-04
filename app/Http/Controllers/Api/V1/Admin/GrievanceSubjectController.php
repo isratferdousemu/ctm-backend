@@ -41,12 +41,6 @@ class GrievanceSubjectController extends Controller
         }
         $grievanceSubject = GrievanceSubject::query()
            ->with('grievanceType')
-        //     ->with(['grievanceType' => function ($query) use ($searchText) {
-        // // Filter the 'grievanceType' relationship
-        //   if ($searchText) {
-        //     $query->where('title_en', 'LIKE', '%' . $searchText . '%');
-        //    }
-        //   }])
             ->where(function ($query) use ($filterArrayTitleEn, $filterArrayTitileBn, $filterArrayKeyStatus) {
                 $query->where($filterArrayTitleEn)
                     ->orWhere($filterArrayTitileBn)
