@@ -578,6 +578,27 @@ class PermissionSeeder extends Seeder
             ],
 
             /* -------------------------------------------------------------------------- */
+            /*                              SYSTEM AUDIT                              */
+            /* -------------------------------------------------------------------------- */
+            [
+                'module_name' => $this->modulePermissionSystemAudit,
+                'sub_module_name' => $this->modulePermissionSystemAudit,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 237, "name" => "tracking-create", "page_url" => "/system-audit/information-tracking", "parent_page" => 1],
+                    ["id" => 238, "name" => "tracking-view", "page_url" => "/system-audit/information-tracking", "parent_page" => 1],
+                    ["id" => 239, "name" => "tracking-edit", "page_url" => "/system-audit/information-tracking/edit/:id", "parent_page" => 1],
+                    ["id" => 240, "name" => "tracking-delete", "page_url" => "/system-audit/information-tracking/delete", "parent_page" => 1],
+
+                    ["id" => 237, "name" => "activityLog-create", "page_url" => "/system-audit/activity-log", "parent_page" => 1],
+                    ["id" => 238, "name" => "activityLog-view", "page_url" => "/system-audit/activity-log", "parent_page" => 1],
+                    ["id" => 239, "name" => "activityLog-edit", "page_url" => "/system-audit/activity-log/edit/:id", "parent_page" => 1],
+                    ["id" => 240, "name" => "activityLog-delete", "page_url" => "/system-audit/activity-log/delete", "parent_page" => 1],
+
+                ]
+            ],
+
+            /* -------------------------------------------------------------------------- */
             /*                             Training Management                            */
             /* -------------------------------------------------------------------------- */
             [
