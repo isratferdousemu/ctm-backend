@@ -22,9 +22,8 @@ class GrievacneType extends FormRequest
     public function rules(): array
     {
         return [
-                  'title_en' => 'required|string|max:50',
-                  'title_bn' => 'required|string|max:50',
-                  'status'   => 'required',
+                  'title_en' => 'required|string',
+                  'title_bn' => 'required|string',
              ];
 
     }
