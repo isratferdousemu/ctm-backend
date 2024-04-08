@@ -120,4 +120,52 @@ class Helper{
         }
         return $data;
     }
+
+    public static function activityLogInsert($newData,$beforeUpdateData,$logName,$logDescription){
+
+        $changesWithPreviousValues = [
+            'previous' => null,
+            'new' => $newData,
+        ];
+
+        activity($logName)
+            ->causedBy(auth()->user())
+            ->performedOn($newData)
+            ->withProperties([ 'changes' => $changesWithPreviousValues, 'userInfo' => Helper::BrowserIpInfo()])
+            ->log($logDescription);
+    }
+    public static function activityLogUpdate($newData,$beforeUpdateData,$logName,$logDescription){
+
+        $changes = $newData->getChanges();
+        $previousValues = [];
+        $newValues = [];
+        foreach ($changes as $attribute => $newValue) {
+            $previousValues[$attribute] = $beforeUpdateData->$attribute ?? null;
+            $newValues[$attribute] = $newValue;
+        }
+        $changesWithPreviousValues = [
+            'previous' => $previousValues,
+            'new' => $newValues,
+        ];
+
+        activity($logName)
+            ->causedBy(auth()->user())
+            ->performedOn($newData)
+            ->withProperties([ 'changes' => $changesWithPreviousValues, 'userInfo' => Helper::BrowserIpInfo()])
+            ->log($logDescription);
+    }
+
+    public static function activityLogDelete($newData,$beforeUpdateData,$logName,$logDescription){
+
+        $changesWithPreviousValues = [
+            'previous' => null,
+            'new' => $newData,
+        ];
+
+        activity($logName)
+            ->causedBy(auth()->user())
+            ->withProperties([ 'changes' => $changesWithPreviousValues, 'userInfo' => Helper::BrowserIpInfo()])
+            ->log($logDescription);
+    }
+
 }

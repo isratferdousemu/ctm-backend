@@ -462,10 +462,15 @@ class AuthController extends Controller
 
          $permissions = $authData['user']->getAllPermissions();
 
+         $changesWithPreviousValues = [
+             'previous' => null,
+             'new' => $authData['user'],
+         ];
+
          activity("Login Information")
              ->causedBy(auth()->user())
              ->performedOn($authData['user'])
-             ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $authData])
+             ->withProperties(['changes' => $changesWithPreviousValues, 'userInfo' => Helper::BrowserIpInfo(),'data' => $authData])
              ->log('Logged In!!');
 
          return AdminAuthResource::make($authData['user'])
@@ -489,10 +494,15 @@ class AuthController extends Controller
 
         $permissions = $authData['user']->getAllPermissions();
 
+        $changesWithPreviousValues = [
+            'previous' => null,
+            'new' => $authData['user'],
+        ];
+
         activity("Login Information")
             ->causedBy(auth()->user())
             ->performedOn($authData['user'])
-            ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $authData])
+            ->withProperties(['changes' => $changesWithPreviousValues, 'userInfo' => Helper::BrowserIpInfo(),'data' => $authData])
             ->log('Logged In!!');
 
         return AdminAuthResource::make($authData['user'])
@@ -706,10 +716,15 @@ class AuthController extends Controller
                 $user->save();
                 DB::commit();
 
+            $changesWithPreviousValues = [
+                'previous' => null,
+                'new' => $user,
+            ];
+
                 activity("User")
                 ->causedBy(auth()->user())
                 ->performedOn($user)
-                ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $user])
+                ->withProperties(['changes' => $changesWithPreviousValues,'userInfo' => Helper::BrowserIpInfo(),'data' => $user])
                 ->log('User Unblocked');
          return $this->sendResponse($user, $this->updateSuccessMessage, Response::HTTP_OK);
 

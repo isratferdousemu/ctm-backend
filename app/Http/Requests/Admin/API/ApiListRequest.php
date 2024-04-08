@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Admin\API;
 
+use App\Models\ApiPurpose;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreRequest extends FormRequest
+class ApiListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +24,12 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'api_url_id' => 'required|exists:api_urls,id',
-            'api_name' => 'required|string|max:255',
+            'api_purpose_id' => 'required|exists:api_purposes,id',
+            'api_unique_id' => ['required',
+                Rule::exists(ApiPurpose::class)
+                    ->where('id', $this->api_purpose_id)
+            ],
+            'name' => 'required',
             'selected_columns' => 'required|array',
         ];
     }
