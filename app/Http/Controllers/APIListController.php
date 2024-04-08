@@ -22,7 +22,6 @@ class APIListController extends Controller
 
         $query->when(request('search'), function ($q, $v) {
             $q->where('name', 'like', "%$v%")
-                ->orWhere('table', 'like', "%$v%")
             ;
         });
 
