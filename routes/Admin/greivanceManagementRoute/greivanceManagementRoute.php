@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Api\V1\Admin\GrievanceSettingController;
 use App\Http\Controllers\Api\V1\Admin\GrievanceSubjectController;
 use App\Http\Controllers\Api\V1\Admin\GrievanceTypeController;
 
@@ -30,5 +31,18 @@ Route::prefix('admin/grievanceSubject')->group(function () {
 /* -----------------------------------End Grienvace Subject--------------------------------------- */
 
 });
+
+/* -----------------------------------Start Grienvace Settings--------------------------------------- */
+Route::prefix('admin/grievanceSetting')->group(function () {
+    Route::get('/get', [GrievanceSettingController::class, 'getAll'])->middleware(['role_or_permission:super-admin|grievance-setting-create']);
+    Route::post('/store', [GrievanceSettingController::class, 'store'])->middleware(['role_or_permission:super-admin|grievance-setting-create']);
+    Route::get('/edit/{id}', [GrievanceSettingController::class, 'edit'])->middleware(['role_or_permission:super-admin|grievance-setting-edit']);
+    Route::post('/update', [GrievanceSettingController::class, 'update'])->middleware(['role_or_permission:super-admin|grievance-setting-edit']);
+    Route::delete('/destroy/{id}', [GrievanceSettingController::class, 'destroy'])->middleware(['role_or_permission:super-admin|grievance-setting-delete']);
+
+/* -----------------------------------End Grienvace Settings--------------------------------------- */
+
+});
+
 
 });

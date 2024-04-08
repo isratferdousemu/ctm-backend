@@ -3,20 +3,23 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\GrievanceManagement\GrievanceSettingResource;
 use App\Http\Resources\Admin\GrievanceManagement\GrievanceSubjectResource;
+use App\Http\Services\Admin\GrievanceManagement\GrievanceSettingService;
 use App\Http\Services\Admin\GrievanceManagement\GrievanceSubjectService;
 use App\Http\Traits\MessageTrait;
+use App\Models\GrievanceSetting;
 use App\Models\GrievanceSubject;
 use App\Models\GrievanceType;
 use Illuminate\Http\Request;
 
-class GrievanceSubjectController extends Controller
+class GrievanceSettingController extends Controller
 {
     use MessageTrait;
-    private $grievanceSubject;
-    public function __construct(GrievanceSubjectService $GrievanceSubjectService)
+    private $grievanceSetting;
+    public function __construct(GrievanceSettingService $GrievanceSettingService)
     {
-        $this->grievanceSubject = $GrievanceSubjectService;
+        $this->grievanceSetting = $GrievanceSettingService;
 
     }
     /**
@@ -30,15 +33,6 @@ class GrievanceSubjectController extends Controller
         $page = $request->query('page');
         $status = $request->query('status');
 
-        if ($status == 'active') {
-            $grievanceType = GrievanceSubject::where('status', 1)->get();
-            return GrievanceSubjectResource::collection($grievanceType)->additional([
-                'success' => true,
-                'message' => $this->fetchDataSuccessMessage,
-            ]);
-
-        }
-
         $filterArrayTitleEn = [];
         $filterArrayTitileBn = [];
         $filterArrayKeyStatus = [];
@@ -49,19 +43,19 @@ class GrievanceSubjectController extends Controller
             $filterArrayKeyStatus[] = ['status', 'LIKE', '%' . $searchText . '%'];
             // $filterArrayKeyWord[] = ['grievanceType', 'LIKE', '%' . $searchText . '%'];
         }
-        $grievanceSubject = GrievanceSubject::query()
-            ->with('grievanceType')
-            ->where(function ($query) use ($filterArrayTitleEn, $filterArrayTitileBn, $filterArrayKeyStatus) {
-                $query->where($filterArrayTitleEn)
-                    ->orWhere($filterArrayTitileBn)
-                    ->orWhere($filterArrayKeyStatus);
-            })
-            ->orderBy('title_en', 'asc')
+        $grievanceSetting = GrievanceSetting::query()
+            ->with(['grievanceType','grievanceSubject'])
+            // ->where(function ($query) use ($filterArrayTitleEn, $filterArrayTitileBn, $filterArrayKeyStatus) {
+            //     $query->where($filterArrayTitleEn)
+            //         ->orWhere($filterArrayTitileBn)
+            //         ->orWhere($filterArrayKeyStatus);
+            // })
+            ->orderBy('id', 'asc')
             ->latest()
             ->paginate($perPage, ['*'], 'page');
         //    dd($grievanceSubject);
 
-        return GrievanceSubjectResource::collection($grievanceSubject)->additional([
+        return GrievanceSettingResource::collection($grievanceSetting)->additional([
             'success' => true,
             'message' => $this->fetchDataSuccessMessage,
         ]);
@@ -83,8 +77,8 @@ class GrievanceSubjectController extends Controller
     {
 
         try {
-            $grievanceSubject = $this->grievanceSubject->store($request);
-            return GrievanceSubjectResource::make($grievanceSubject)->additional([
+            $grievanceSetting = $this->grievanceSetting->store($request);
+            return GrievanceSettingResource::make($grievanceSetting)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
             ]);
@@ -107,8 +101,8 @@ class GrievanceSubjectController extends Controller
     public function edit($id)
     {
         try {
-            $grievanceSubject = $this->grievanceSubject->edit($id);
-            return GrievanceSubjectResource::make($grievanceSubject)->additional([
+            $grievanceSetting = $this->grievanceSetting->edit($id);
+            return GrievanceSettingResource::make($grievanceSetting)->additional([
                 'sucess' => true,
                 'message' => $this->fetchDataSuccessMessage,
             ]);
@@ -123,8 +117,8 @@ class GrievanceSubjectController extends Controller
     public function update(Request $request)
     {
         try {
-            $grievanceSubject = $this->grievanceSubject->update($request);
-            return GrievanceSubjectResource::make($grievanceSubject)->additional([
+            $grievanceSetting = $this->grievanceSetting->update($request);
+            return GrievanceSettingResource::make($grievanceSetting)->additional([
                 'sucess' => true,
                 'message' => $this->fetchDataSuccessMessage,
             ]);
@@ -139,8 +133,8 @@ class GrievanceSubjectController extends Controller
     public function destroy($id)
     {
         try {
-            $grievanceSubject = $this->grievanceSubject->destroy($id);
-            return GrievanceSubjectResource::make($grievanceSubject)->additional([
+            $grievanceSetting = $this->grievanceSetting->destroy($id);
+            return GrievanceSettingResource::make($grievanceSetting)->additional([
                 'success' => true,
                 'message' => $this->deleteSuccessMessage,
             ]);
