@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin\API;
 
+use App\Models\ApiPurpose;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ApiListRequest extends FormRequest
 {
@@ -22,8 +24,12 @@ class ApiListRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'table' => 'required',
-            'name' => 'required|string|max:255',
+            'api_purpose_id' => 'required|exists:api_purposes,id',
+            'api_unique_id' => ['required',
+                Rule::exists(ApiPurpose::class)
+                    ->where('id', $this->api_purpose_id)
+            ],
+            'name' => 'required',
             'selected_columns' => 'required|array',
         ];
     }

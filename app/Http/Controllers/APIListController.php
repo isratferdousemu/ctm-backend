@@ -6,6 +6,7 @@ use App\Http\Requests\Admin\API\ApiListRequest;
 use App\Http\Requests\Admin\API\StoreRequest;
 use App\Models\API;
 use App\Models\ApiList;
+use App\Models\ApiModule;
 use App\Models\APIUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -31,6 +32,15 @@ class APIListController extends Controller
     }
 
 
+    public function getModules()
+    {
+        $data = ApiModule::with('purposes')->get();
+
+        return $this->sendResponse($data);
+
+    }
+
+
     public function getTableList()
     {
         $data = [];
@@ -52,8 +62,9 @@ class APIListController extends Controller
      */
     public function store(ApiListRequest $request, ApiList $apiList)
     {
+        $apiList->api_purpose_id = $request->api_purpose_id;
+        $apiList->api_unique_id = $request->api_unique_id;
         $apiList->name = $request->name;
-        $apiList->table = $request->table;
         $apiList->selected_columns = $request->selected_columns;
         $apiList->save();
 
@@ -73,8 +84,9 @@ class APIListController extends Controller
      */
     public function update(ApiListRequest $request, ApiList $apiList)
     {
+        $apiList->api_purpose_id = $request->api_purpose_id;
+        $apiList->api_unique_id = $request->api_unique_id;
         $apiList->name = $request->name;
-        $apiList->table = $request->table;
         $apiList->selected_columns = $request->selected_columns;
         $apiList->save();
 

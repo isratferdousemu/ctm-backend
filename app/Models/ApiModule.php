@@ -5,12 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ApiList extends Model
+class ApiModule extends Model
 {
     use HasFactory;
 
 
-    protected $casts = [
-        'selected_columns' => 'array'
-    ];
+
+    public function purposes()
+    {
+        return $this->hasMany(ApiPurpose::class);
+    }
+
 }

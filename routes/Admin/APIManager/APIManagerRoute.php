@@ -12,6 +12,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('api-list', APIListController::class);
 
         Route::get('table-list', [APIListController::class, 'getTableList']);
+        Route::get('get-modules', [APIListController::class, 'getModules']);
     });
 
 

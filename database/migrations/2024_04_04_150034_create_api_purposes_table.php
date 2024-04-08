@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('api_lists', function (Blueprint $table) {
+        Schema::create('api_purposes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('table');
-            $table->json('selected_columns');
+            $table->foreignId('api_module_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('api_unique_id');
+            $table->string('purpose');
+            $table->string('table_name')->nullable();
+            $table->string('url')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('api_lists');
+        Schema::dropIfExists('api_purposes');
     }
 };
