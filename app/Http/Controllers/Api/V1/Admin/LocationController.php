@@ -300,11 +300,10 @@ class LocationController extends Controller
     {
 
         try {
+
+            $BeforeUpdate = Location::find($request->id);
             $division = $this->locationService->updateDivision($request);
-            activity("Division")
-                ->causedBy(auth()->user())
-                ->performedOn($division)
-                ->log('Division Update !');
+            Helper::activityLogUpdate($division,$BeforeUpdate,"Division","Division Update !");
             return DivisionResource::make($division)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -632,10 +631,7 @@ class LocationController extends Controller
 
         try {
             $District = $this->locationService->createDistrict($request);
-            activity("District")
-                ->causedBy(auth()->user())
-                ->performedOn($District)
-                ->log('District Created !');
+            Helper::activityLogInsert($District,'','District','District Created !');
             return DivisionResource::make($District)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -726,12 +722,9 @@ class LocationController extends Controller
     {
 
         try {
+            $BeforeUpdate = Location::find($request->id);
             $district = $this->locationService->updateDistrict($request);
-            activity("District")
-                ->causedBy(auth()->user())
-                ->performedOn($district)
-                ->withProperties(['userInfo' => Helper::BrowserIpInfo()])
-                ->log('District Update !');
+            Helper::activityLogUpdate($district,$BeforeUpdate,"District","District Update !");
             return DistrictResource::make($district->load('parent'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -854,6 +847,7 @@ class LocationController extends Controller
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);
         } else {
             // echo 'else';
+            $district = Location::where('id',$id)->first();
             Location::where('id', $id)->delete();
         }
 
@@ -861,10 +855,10 @@ class LocationController extends Controller
         // if ($district) {
         //     $district->delete();
         // }
-
-        activity("District")
-            ->causedBy(auth()->user())
-            ->log('District Deleted!!');
+        Helper::activityLogDelete($district,'','District','District Deleted!!');
+//        activity("District")
+//            ->causedBy(auth()->user())
+//            ->log('District Deleted!!');
         return $this->sendResponse($district, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
