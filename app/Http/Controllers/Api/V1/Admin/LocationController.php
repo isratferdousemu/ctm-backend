@@ -211,10 +211,13 @@ class LocationController extends Controller
 
         try {
             $division = $this->locationService->createDivision($request);
-            activity("Division")
-                ->causedBy(auth()->user())
-                ->performedOn($division)
-                ->log('Division Created !');
+
+            Helper::activityLogInsert($division,'','Division','Division Created !');
+
+//            activity("Division")
+//                ->causedBy(auth()->user())
+//                ->performedOn($division)
+//                ->log('Division Created !');
             return DivisionResource::make($division)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -375,10 +378,10 @@ class LocationController extends Controller
         if ($division) {
             $division->delete();
         }
-
-        activity("Division")
-            ->causedBy(auth()->user())
-            ->log('Division Deleted!!');
+        Helper::activityLogDelete($division,'','Division','Division Deleted!!');
+//        activity("Division")
+//            ->causedBy(auth()->user())
+//            ->log('Division Deleted!!');
         return $this->sendResponse($division, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
@@ -1249,9 +1252,14 @@ class LocationController extends Controller
         try {
             $city = $this->locationService->createCity($request);
             // activity($request->location_type==3?$this->city:$this->districtPouroshava)
+            $changesWithPreviousValues = [
+                'previous' => null,
+                'new' => $city,
+            ];
             activity($this->city)
                 ->causedBy(auth()->user())
                 ->performedOn($city)
+                ->withProperties([ 'changes' => $changesWithPreviousValues, 'userInfo' => Helper::BrowserIpInfo()])
                 ->log($request->location_type == 3 ? $this->city : $this->districtPouroshava . ' Created !');
             return CityResource::make($city->load('parent.parent'))->additional([
                 'success' => true,
@@ -1348,11 +1356,13 @@ class LocationController extends Controller
     {
 
         try {
+            $BeforeUpdate = Location::find($request->id);
             $city = $this->locationService->updateCity($request);
-            activity("City")
-                ->causedBy(auth()->user())
-                ->performedOn($city)
-                ->log('City Update !');
+            Helper::activityLogUpdate($city,$BeforeUpdate,"City","City Update !");
+//            activity("City")
+//                ->causedBy(auth()->user())
+//                ->performedOn($city)
+//                ->log('City Update !');
             return CityResource::make($city->load('parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -1420,9 +1430,10 @@ class LocationController extends Controller
         if ($city) {
             $city->delete();
         }
-        activity("City")
-            ->causedBy(auth()->user())
-            ->log('City Deleted!!');
+        Helper::activityLogDelete($city,'','City','City Deleted!!');
+//        activity("City")
+//            ->causedBy(auth()->user())
+//            ->log('City Deleted!!');
         return $this->sendResponse($city, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
@@ -1713,10 +1724,11 @@ class LocationController extends Controller
 
         try {
             $thana = $this->locationService->createThana($request);
-            activity("Thana")
-                ->causedBy(auth()->user())
-                ->performedOn($thana)
-                ->log('Thana Created !');
+            Helper::activityLogInsert($thana,'','Thana','Thana Created !');
+//            activity("Thana")
+//                ->causedBy(auth()->user())
+//                ->performedOn($thana)
+//                ->log('Thana Created !');
             return CityResource::make($thana->load('parent.parent', 'locationType'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -1817,11 +1829,13 @@ class LocationController extends Controller
     {
 
         try {
+            $BeforeUpdate = Location::find($request->id);
             $thana = $this->locationService->updateThana($request);
-            activity("Thana")
-                ->causedBy(auth()->user())
-                ->performedOn($thana)
-                ->log('Thana Update !');
+            Helper::activityLogUpdate($thana,$BeforeUpdate,"Thana","Thana Update !");
+//            activity("Thana")
+//                ->causedBy(auth()->user())
+//                ->performedOn($thana)
+//                ->log('Thana Update !');
             return CityResource::make($thana->load('parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -1888,9 +1902,10 @@ class LocationController extends Controller
         if ($thana) {
             $thana->delete();
         }
-        activity("Thana")
-            ->causedBy(auth()->user())
-            ->log('Thana Deleted!!');
+        Helper::activityLogDelete($thana,'','Thana','Thana Deleted!!');
+//        activity("Thana")
+//            ->causedBy(auth()->user())
+//            ->log('Thana Deleted!!');
         return $this->sendResponse($thana, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
@@ -2388,10 +2403,11 @@ class LocationController extends Controller
 
         try {
             $union = $this->locationService->createUnion($request);
-            activity("Union")
-                ->causedBy(auth()->user())
-                ->performedOn($union)
-                ->log('Union Created !');
+            Helper::activityLogInsert($union,'','Union','Union Created !');
+//            activity("Union")
+//                ->causedBy(auth()->user())
+//                ->performedOn($union)
+//                ->log('Union Created !');
             return UnionResource::make($union->load('parent.parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -2492,11 +2508,14 @@ class LocationController extends Controller
     {
 
         try {
+            $BeforeUpdate = Location::find($request->id);
             $union = $this->locationService->updateUnion($request);
-            activity("Union")
-                ->causedBy(auth()->user())
-                ->performedOn($union)
-                ->log('Union Update !');
+            Helper::activityLogUpdate($union,$BeforeUpdate,"Union","Union Update !");
+
+//            activity("Union")
+//                ->causedBy(auth()->user())
+//                ->performedOn($union)
+//                ->log('Union Update !');
             return UnionResource::make($union->load('parent.parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -2563,9 +2582,10 @@ class LocationController extends Controller
         if ($union) {
             $union->delete();
         }
-        activity("Union")
-            ->causedBy(auth()->user())
-            ->log('Union Deleted!!');
+        Helper::activityLogDelete($union,'','Union','Union Deleted!!');
+//        activity("Union")
+//            ->causedBy(auth()->user())
+//            ->log('Union Deleted!!');
         return $this->sendResponse($union, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
@@ -3304,10 +3324,11 @@ class LocationController extends Controller
 
         try {
             $ward = $this->locationService->createWard($request);
-            activity("Ward")
-                ->causedBy(auth()->user())
-                ->performedOn($ward)
-                ->log('Ward Created !');
+            Helper::activityLogInsert($ward,'','Ward','Ward Created !');
+//            activity("Ward")
+//                ->causedBy(auth()->user())
+//                ->performedOn($ward)
+//                ->log('Ward Created !');
             return WardResource::make($ward->load('parent.parent.parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -3413,11 +3434,13 @@ class LocationController extends Controller
     {
 
         try {
+            $BeforeUpdate = Location::find($request->id);
             $ward = $this->locationService->updateWard($request);
-            activity("Ward")
-                ->causedBy(auth()->user())
-                ->performedOn($ward)
-                ->log('Ward Update !');
+            Helper::activityLogUpdate($ward,$BeforeUpdate,"Ward","Ward Update !");
+//            activity("Ward")
+//                ->causedBy(auth()->user())
+//                ->performedOn($ward)
+//                ->log('Ward Update !');
             return WardResource::make($ward->load('parent.parent.parent.parent'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
