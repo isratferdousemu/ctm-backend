@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\API\ApiListRequest;
-use App\Http\Requests\Admin\API\StoreRequest;
-use App\Models\API;
 use App\Models\ApiList;
 use App\Models\ApiModule;
-use App\Models\APIUrl;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
 class APIListController extends Controller
@@ -75,6 +72,7 @@ class APIListController extends Controller
      */
     public function show(ApiList $apiList)
     {
+        $apiList->load('purpose');
         return $this->sendResponse($apiList);
     }
 
