@@ -180,7 +180,7 @@ class AuthController extends Controller
 
          activity("Forgot")
          ->withProperties(['userInfo' => Helper::BrowserIpInfo(),'data' => $data])
-         ->log('Forgot Password Successfully!!');
+         ->log('Forgot Password Submit Successfully!!');
 
          return response()->json(['success' => true, 'message' => 'Forgot Password Successfully!', 'data' => $data]);
 

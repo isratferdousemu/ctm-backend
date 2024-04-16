@@ -228,10 +228,9 @@ class DeviceController extends Controller
         // }
         try {
             $device = $this->DeviceService->createDevice($request);
-            activity("Device")
-            ->causedBy(auth()->user())
-            ->performedOn($device)
-            ->log('Device Created !');
+
+            Helper::activityLogInsert($device, '','Device','Device Created !');
+
             return DeviceResource::make($device)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -346,11 +345,12 @@ class DeviceController extends Controller
     public function deviceUpdate(DeviceUpdateRequest $request){
 
         try {
+            $beforeUpdate                       = Device::find($request->id);
+
             $device = $this->DeviceService->editDevice($request);
-            activity("Device")
-            ->causedBy(auth()->user())
-            ->performedOn($device)
-            ->log('Device Update !');
+
+            Helper::activityLogUpdate($device, $beforeUpdate,'Device','Device Updated !');
+
             return DeviceResource::make($device)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -415,9 +415,9 @@ class DeviceController extends Controller
         if($device){
             $device->delete();
         }
-        activity("Device")
-        ->causedBy(auth()->user())
-        ->log('Device Deleted!!');
+
+        Helper::activityLogDelete($device, '','Device','Device Deleted !');
+
          return $this->sendResponse($device, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
@@ -485,31 +485,18 @@ class DeviceController extends Controller
      */
     public function deviceStatusUpdate($id)
     {
-
+        $beforeUpdate = Device::findOrFail($id);
         $device = Device::findOrFail($id);
 
-        if($device->status == 0)
-        {
-            Device::where('id', $id)->update(['status'=> 1]);
-            activity('Device')
-            ->causedBy(auth()->user())
-            ->performedOn($device)
-            ->log('Device Status Updated!!');
+        $device->status = !$device->status;
+        $device->save();
 
-            return response()->json([
-                'message' => 'Device Activate Successful'
-            ],Response::HTTP_OK);
-        }else{
-            Device::where('id', $id)->update(['status'=> 0]);
-            activity('Device')
-            ->causedBy(auth()->user())
-            ->performedOn($device)
-            ->log('Device Status Updated!!');
+        Helper::activityLogUpdate($device, $beforeUpdate,'Device','Device Updated !');
 
-            return response()->json([
-                'message' => 'Device Inactive Successful'
-            ],Response::HTTP_OK);
-        }
+        return response()->json([
+            'message' => 'Device Status Updated Successful'
+        ],Response::HTTP_OK);
+
     }
 
     public function deviceReportExcel(Request $request){

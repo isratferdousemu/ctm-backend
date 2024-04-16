@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Role\PermissionRequest;
 use App\Http\Requests\Admin\Role\RoleRequest;
@@ -301,10 +302,13 @@ class RoleController extends Controller
         try {
             //code...
             $role = $this->RoleService->createRole($request);
-            activity("Role")
-            ->causedBy(auth()->user())
-            ->performedOn($role)
-            ->log('Role Created !');
+
+            Helper::activityLogInsert($role,'','Role','Role Created !');
+
+//            activity("Role")
+//            ->causedBy(auth()->user())
+//            ->performedOn($role)
+//            ->log('Role Created !');
             return RoleResource::make($role->load('permissions'))->additional([
                 'success' => true,
                 'message' => 'Operation successful',
@@ -455,12 +459,15 @@ class RoleController extends Controller
      */
     public function updateRole(RoleUpdateRequest $request){
         try {
-            //code...
+            $beofreUpdate = Role::find($request->id);
+
         $role = $this->RoleService->updateRole($request);
-            activity("Role")
-            ->causedBy(auth()->user())
-            ->performedOn($role)
-            ->log('Role Updated !');
+            Helper::activityLogUpdate($role, $beofreUpdate,'Role','Role Updated !');
+
+//            activity("Role")
+//            ->causedBy(auth()->user())
+//            ->performedOn($role)
+//            ->log('Role Updated !');
             return RoleResource::make($role->load('permissions'))->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -518,9 +525,13 @@ class RoleController extends Controller
         if($role){
             $role->delete();
         }
-        activity("Role")
-        ->causedBy(auth()->user())
-        ->log('Role Deleted!!');
+
+        Helper::activityLogDelete($role, '','Role','Role Deleted !');
+
+
+//        activity("Role")
+//        ->causedBy(auth()->user())
+//        ->log('Role Deleted!!');
          return $this->sendResponse($role, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
@@ -661,11 +672,12 @@ class RoleController extends Controller
         try {
             //code...
             $role = $this->RoleService->AssignPermissionToRole($request);
-            activity("Permission")
-            ->causedBy(auth()->user())
-            ->performedOn($role)
-            ->log('Permission Assign successfully !');
-            return RoleResource::make($role->load('permissions'))->additional([
+
+            $role->load('permissions');
+
+            Helper::activityLogInsert($role, '','Role','Assign Permission To Role !');
+
+            return RoleResource::make($role)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
             ]);

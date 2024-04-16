@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\API\ApiListRequest;
 use App\Models\ApiList;
@@ -64,6 +65,9 @@ class APIListController extends Controller
         $apiList->selected_columns = $request->selected_columns;
         $apiList->save();
 
+        Helper::activityLogInsert($apiList, '','Api List','Api List Created !');
+
+
         return $this->sendResponse($apiList, 'API created successfully');
     }
 
@@ -81,11 +85,15 @@ class APIListController extends Controller
      */
     public function update(ApiListRequest $request, ApiList $apiList)
     {
+        $beforeUpdate = $apiList;
         $apiList->api_purpose_id = $request->api_purpose_id;
         $apiList->api_unique_id = $request->api_unique_id;
         $apiList->name = $request->name;
         $apiList->selected_columns = $request->selected_columns;
         $apiList->save();
+
+        Helper::activityLogInsert($apiList, $beforeUpdate,'Api List','Api List Updated !');
+
 
         return $this->sendResponse($apiList, 'API updated successfully');
     }
@@ -96,6 +104,8 @@ class APIListController extends Controller
     public function destroy(ApiList $apiList)
     {
         $apiList->delete();
+
+        Helper::activityLogDelete($apiList, '','Api List','Api List Deleted !');
 
         return $this->sendResponse($apiList, 'API deleted successfully');
     }
