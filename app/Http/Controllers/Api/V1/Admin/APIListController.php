@@ -76,7 +76,7 @@ class APIListController extends Controller
      */
     public function show(ApiList $apiList)
     {
-        $apiList->load('purpose');
+        $apiList->load('purpose.module');
         return $this->sendResponse($apiList);
     }
 
