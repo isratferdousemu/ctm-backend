@@ -675,7 +675,7 @@ class RoleController extends Controller
 
             $role->load('permissions');
 
-            Helper::activityLogInsert($role, '','Role','Assign Permission To Role !');
+//            Helper::activityLogInsert($role, '','Role','Assign Permission To Role !');
 
             return RoleResource::make($role)->additional([
                 'success' => true,
