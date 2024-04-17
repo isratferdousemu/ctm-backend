@@ -19,6 +19,7 @@ class ActivityResource extends JsonResource
             'description'                 => $this->description,
             'log_name'            => $this->log_name,
             'subject'            => $this->subject,
+            'subject_id'            => $this->subject_id,
             'subject_type'            => $this->subject_type,
             'event'            => $this->event,
             'causer_type'            => $this->causer_type,
