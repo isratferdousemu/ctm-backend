@@ -30,7 +30,7 @@ class ApiListRequest extends FormRequest
                     ->where('id', $this->api_purpose_id)
             ],
             'name' => 'required',
-            'selected_columns' => 'required|array',
+            'selected_columns' => 'nullable|array',
         ];
     }
 }

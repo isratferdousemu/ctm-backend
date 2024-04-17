@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\API\ApiDataReceiveRequest;
+use App\Mail\ApiDataReceiveMail;
+use App\Mail\UserCreateMail;
 use App\Models\ApiDataReceive;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ApiDataReceiveController extends Controller
 {
@@ -14,7 +18,22 @@ class ApiDataReceiveController extends Controller
      */
     public function index()
     {
-        //
+        $query = ApiDataReceive::query();
+
+        $query->when(request('search'), function ($q, $v) {
+            $q->where('name', 'like', "%$v%")
+                ->orWhere('organization_name', 'like', "%$v%")
+                ->orWhere('organization_phone', 'like', "%$v%")
+                ->orWhere('organization_email', 'like', "%$v%")
+                ->orWhere('responsible_person_email', 'like', "%$v%")
+                ->orWhere('responsible_person_nid', 'like', "%$v%")
+                ->orWhere('username', 'like', "%$v%")
+            ;
+        });
+
+        return $this->sendResponse($query->paginate(
+            request('perPage')
+        ));
     }
 
     /**
@@ -22,8 +41,16 @@ class ApiDataReceiveController extends Controller
      */
     public function store(ApiDataReceiveRequest $request, ApiDataReceive $apiDataReceive)
     {
+        $apiDataReceive->api_key = bin2hex(random_bytes(16));
 
-        return $request;
+        $apiDataReceive = $this->saveApiDataReceive($apiDataReceive, $request);
+
+        Helper::activityLogInsert($apiDataReceive, '','Api Data Receive','Api Data Receive Created !');
+
+        Mail::to($apiDataReceive->responsible_person_email)->send(new ApiDataReceiveMail($apiDataReceive));
+
+        return $this->sendResponse($apiDataReceive, 'API data receive created successfully');
+
     }
 
 
@@ -40,19 +67,22 @@ class ApiDataReceiveController extends Controller
         $apiDataReceive->end_date = $request->end_date;
         $apiDataReceive->save();
 
-        $this->saveApiList($apiDataReceive, $request);
+        $apiDataReceive->apiList()->sync($request->api_list);
 
+        return $apiDataReceive;
     }
 
 
     /**
      * @param ApiDataReceive $apiDataReceive
      * @param $request
-     * @return void
+     * @return ApiDataReceive
      */
     public function saveApiList($apiDataReceive, $request)
     {
         $apiDataReceive->apiList()->sync($request->api_list);
+
+        return $apiDataReceive;
     }
 
     /**
@@ -60,22 +90,35 @@ class ApiDataReceiveController extends Controller
      */
     public function show(ApiDataReceive $apiDataReceive)
     {
-        //
+        $apiDataReceive->load('apiList.purpose.module');
+
+        return $this->sendResponse($apiDataReceive);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ApiDataReceiveRequest $request, ApiDataReceive $apiDataReceive)
     {
-        //
+        $beforeUpdate = $apiDataReceive;
+
+        $apiDataReceive = $this->saveApiDataReceive($apiDataReceive, $request);
+
+        Helper::activityLogUpdate($apiDataReceive, $beforeUpdate,'Api Data Receive','Api Data Receive Updated !');
+
+        return $this->sendResponse($apiDataReceive, 'API data receive updated successfully');
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(ApiDataReceive $apiDataReceive)
     {
-        //
+        $apiDataReceive->delete();
+
+        Helper::activityLogDelete($apiDataReceive, '','Api Data Receive','Api Data Receive Updated !');
+
+        return $this->sendResponse($apiDataReceive, 'API data receive deleted successfully');
     }
 }

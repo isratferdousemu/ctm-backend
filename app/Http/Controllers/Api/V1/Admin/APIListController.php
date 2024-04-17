@@ -38,6 +38,14 @@ class APIListController extends Controller
     }
 
 
+    public function getApiList()
+    {
+        $data = ApiList::get();
+
+        return $this->sendResponse($data);
+    }
+
+
     public function getTableList()
     {
         $data = [];
