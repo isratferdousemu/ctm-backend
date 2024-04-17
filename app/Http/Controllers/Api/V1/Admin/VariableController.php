@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\PMTScore\VariableRequest;
-use App\Http\Resources\Admin\PMTScore\VariableResource;
-use App\Http\Services\Admin\PMTScore\VariableService;
-use App\Http\Traits\MessageTrait;
+use Validator;
+use App\Helpers\Helper;
 use App\Models\Variable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Validator;
+use App\Http\Traits\MessageTrait;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\PMTScore\VariableRequest;
+use App\Http\Services\Admin\PMTScore\VariableService;
+use App\Http\Resources\Admin\PMTScore\VariableResource;
 
 class VariableController extends Controller
 {
@@ -588,11 +589,11 @@ class VariableController extends Controller
        
 
         try {
+           
+            $BeforeUpdate = Variable::find($request->id);
             $Variable = $this->VariableService->updateVariable($request);
-            activity("Variable")
-                ->causedBy(auth()->user())
-                ->performedOn($Variable)
-                ->log('Variable Created !');
+            Helper::activityLogUpdate($Variable,$BeforeUpdate,"Variable","Variable Update !");
+         
             return VariableResource::make($Variable)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -674,10 +675,8 @@ class VariableController extends Controller
 
         try {
             $Variable = $this->VariableService->createVariable($request);
-            activity("Variable")
-                ->causedBy(auth()->user())
-                ->performedOn($Variable)
-                ->log('Variable Created !');
+             Helper::activityLogInsert($Variable,'','Variable','Variable Created !');
+            
             return VariableResource::make($Variable)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -848,11 +847,11 @@ class VariableController extends Controller
     {
 
         try {
+            $BeforeUpdate = Variable::find($request->id);
             $Variable = $this->VariableService->updateSubVariable($request);
-            activity("Variable")
-                ->causedBy(auth()->user())
-                ->performedOn($Variable)
-                ->log('Variable Created !');
+            Helper::activityLogUpdate($Variable,$BeforeUpdate,"Variable","Variable Update !");
+         
+          
             return VariableResource::make($Variable)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -977,9 +976,7 @@ public function destroyVariable(Request $request)
             $variable->delete();
         }
 
-        activity("Variable")
-            ->causedBy(auth()->user())
-            ->log('Variable Deleted!!');
+       Helper::activityLogDelete($variable,'','Variable','Variable Deleted!!');
         return response()->json([
                         'success' => true,
                         'message' => 'Delete Success',

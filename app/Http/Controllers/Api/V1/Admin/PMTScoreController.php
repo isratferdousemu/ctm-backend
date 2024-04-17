@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use Validator;
 use App\Models\Lookup;
+use App\Helpers\Helper;
 use App\Models\Location;
 use App\Models\PMTScore;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
+use Illuminate\Http\Response;
 use App\Http\Traits\UserTrait;
 use App\Http\Traits\LookupTrait;
 use App\Http\Traits\MessageTrait;
@@ -532,9 +533,11 @@ class PMTScoreController extends Controller
                         $pmt->default    	       = 0;
                         
                         $pmt->save();
+                           Helper::activityLogInsert($pmt,'','PMT Score','PMT Score Created !');
 
                     }
-                   $all2 = Location::where('type', 'district')->get();
+                 
+                    $all2 = Location::where('type', 'district')->get();
                     foreach($all2 as $item) {
                         $pmt                      = new PMTScore;
                 
@@ -549,8 +552,10 @@ class PMTScoreController extends Controller
                         $pmt->default    	       = 1;
                         
                         $pmt->save();
+                         Helper::activityLogInsert($pmt,'',' PMT Score','PMT Score Created !');
 
                             }
+                   
 
 
             }
@@ -585,9 +590,10 @@ class PMTScoreController extends Controller
                  $pmt->type    	           = $item['type'];
                 
                  $pmt->save();
-               
+               Helper::activityLogInsert($pmt,'',' PMT Score','PMT Score  Created !');
 
              }
+            
                 
             }
             
@@ -675,7 +681,9 @@ class PMTScoreController extends Controller
     ]);
         $validator->validated();
 
-
+        $before = PMTScore::where("financial_year_id",'=',$request->financial_year_id)
+        ->where("type",'=',$request->type)
+        ->get();
         $cutoff = PMTScore::where("financial_year_id",'=',$request->financial_year_id)
         ->where("type",'=',$request->type)
         ->delete();
@@ -686,9 +694,7 @@ class PMTScoreController extends Controller
       
 
       
-        activity("Cutoff")
-            ->causedBy(auth()->user())
-            ->log('Cutoff Deleted!!');
+        Helper::activityLogDelete($before,'','PMT SCore','PMT SCore Deleted!!');
         return $this->sendResponse($cutoff, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
@@ -1105,11 +1111,12 @@ class PMTScoreController extends Controller
         $validator->validated();
         if($input){
             
-       $cutoff = PMTScore::where("financial_year_id",'=',$input[0]['financialYearId'])
+      
+        $cutoff = PMTScore::where("financial_year_id",'=',$input[0]['financialYearId'])
      
         ->where("type",'=',$input[0]['type'])
         ->delete();
-       
+   
             
         
           foreach($input as $item) {
@@ -1128,6 +1135,9 @@ class PMTScoreController extends Controller
                
 
              }
+             
+           
+          
 
         }
 
