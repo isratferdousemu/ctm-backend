@@ -134,6 +134,20 @@ class Helper{
             ->withProperties([ 'changes' => $changesWithPreviousValues, 'userInfo' => Helper::BrowserIpInfo()])
             ->log($logDescription);
     }
+
+    public static function activityLogInsertCustomPerforme($newData,$beforeUpdateData,$performedOn,$logName,$logDescription){
+
+        $changesWithPreviousValues = [
+            'previous' => null,
+            'new' => $newData,
+        ];
+
+        activity($logName)
+            ->causedBy(auth()->user())
+            ->performedOn($performedOn)
+            ->withProperties([ 'changes' => $changesWithPreviousValues, 'userInfo' => Helper::BrowserIpInfo()])
+            ->log($logDescription);
+    }
     public static function activityLogUpdate($newData,$beforeUpdateData,$logName,$logDescription){
 
         $changes = $newData->getChanges();
@@ -151,6 +165,25 @@ class Helper{
         activity($logName)
             ->causedBy(auth()->user())
             ->performedOn($newData)
+            ->withProperties([ 'changes' => $changesWithPreviousValues, 'userInfo' => Helper::BrowserIpInfo()])
+            ->log($logDescription);
+    }
+    public static function activityLogSpecificColumnUpdate($newData,$beforeUpdateData,$performedOn,$logName,$logDescription){
+
+        $previousValues = [];
+        $newValues = [];
+        foreach ($newData as $attribute => $newValue) {
+            $previousValues[$attribute] = $beforeUpdateData;
+            $newValues[$attribute] = $newValue;
+        }
+        $changesWithPreviousValues = [
+            'previous' => $previousValues,
+            'new' => $newValues,
+        ];
+
+        activity($logName)
+            ->causedBy(auth()->user())
+            ->performedOn($performedOn)
             ->withProperties([ 'changes' => $changesWithPreviousValues, 'userInfo' => Helper::BrowserIpInfo()])
             ->log($logDescription);
     }
