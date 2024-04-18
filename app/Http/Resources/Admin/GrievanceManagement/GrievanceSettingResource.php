@@ -22,6 +22,15 @@ class GrievanceSettingResource extends JsonResource
     'grievance_subject_id' => $this->grievance_subject_id,
     'grievanceSubjectEn' => $this->grievanceSubject->title_en,
     'grievanceSubjectBn' => $this->grievanceSubject->title_bn,
+    'first_tire_officer' => $this->firstOfficer->name ?? null,
+    'first_tire_officer_id' => $this->first_tire_officer,
+    'first_tire_solution_time' => $this->first_tire_solution_time,
+    'secound_tire_officer' => $this->secoundOfficer->name ?? null,
+    'secound_tire_officer_id' => $this->secound_tire_officer,
+    'secound_tire_solution_time' => $this->secound_tire_solution_time,
+    'third_tire_officer' => $this->thirdOfficer->name ?? null,
+    'third_tire_officer_id' => $this->third_tire_officer,
+    'third_tire_solution_time' => $this->third_tire_solution_time,
 
 ];
 

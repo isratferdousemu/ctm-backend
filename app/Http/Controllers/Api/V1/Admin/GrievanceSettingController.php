@@ -44,7 +44,7 @@ class GrievanceSettingController extends Controller
             // $filterArrayKeyWord[] = ['grievanceType', 'LIKE', '%' . $searchText . '%'];
         }
         $grievanceSetting = GrievanceSetting::query()
-            ->with(['grievanceType','grievanceSubject'])
+            ->with(['grievanceType','grievanceSubject','firstOfficer','secoundOfficer','thirdOfficer'])
             // ->where(function ($query) use ($filterArrayTitleEn, $filterArrayTitileBn, $filterArrayKeyStatus) {
             //     $query->where($filterArrayTitleEn)
             //         ->orWhere($filterArrayTitileBn)
@@ -53,7 +53,10 @@ class GrievanceSettingController extends Controller
             ->orderBy('id', 'asc')
             ->latest()
             ->paginate($perPage, ['*'], 'page');
-        //    dd($grievanceSubject);
+            // return $grievanceSetting;
+        //    dd($grievanceSetting);
+
+        
 
         return GrievanceSettingResource::collection($grievanceSetting)->additional([
             'success' => true,
@@ -75,7 +78,8 @@ class GrievanceSettingController extends Controller
      */
     public function store(Request $request)
     {
-
+    //    $grievanceSetting = $this->grievanceSetting->store($request);
+    //    return $grievanceSetting;
         try {
             $grievanceSetting = $this->grievanceSetting->store($request);
             return GrievanceSettingResource::make($grievanceSetting)->additional([
@@ -116,12 +120,14 @@ class GrievanceSettingController extends Controller
      */
     public function update(Request $request)
     {
+        // return  $request->id;
         try {
             $grievanceSetting = $this->grievanceSetting->update($request);
-            return GrievanceSettingResource::make($grievanceSetting)->additional([
-                'sucess' => true,
-                'message' => $this->fetchDataSuccessMessage,
-            ]);
+            return $grievanceSetting;
+            // return GrievanceSettingResource::make($grievanceSetting)->additional([
+            //     'sucess' => true,
+            //     'message' => $this->fetchDataSuccessMessage,
+            // ]);
         } catch (\Throwable $th) {
             throw $th;
         }
