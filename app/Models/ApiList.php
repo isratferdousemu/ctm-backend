@@ -13,4 +13,11 @@ class ApiList extends Model
     protected $casts = [
         'selected_columns' => 'array'
     ];
+
+
+    public function purpose()
+    {
+        return $this->belongsTo(ApiPurpose::class, 'api_purpose_id', 'id');
+    }
+
 }

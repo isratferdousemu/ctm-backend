@@ -1,8 +1,9 @@
 <?php
 
 
+use App\Http\Controllers\Api\V1\Admin\ApiDataReceiveController;
+use App\Http\Controllers\Api\V1\Admin\APIListController;
 use App\Http\Controllers\Api\V1\Admin\APIURLController;
-use App\Http\Controllers\APIListController;
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -13,6 +14,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('table-list', [APIListController::class, 'getTableList']);
         Route::get('get-modules', [APIListController::class, 'getModules']);
+        Route::get('get-api-list', [APIListController::class, 'getApiList']);
+
+
+        Route::apiResource('api-data-receive', ApiDataReceiveController::class);
     });
 
 

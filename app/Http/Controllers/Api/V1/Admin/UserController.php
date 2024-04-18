@@ -322,10 +322,12 @@ class UserController extends Controller
 
         $user = $this->UserService->createUser($request,$password);
 
-            activity("User")
-            ->causedBy(auth()->user())
-            ->performedOn($user)
-            ->log('User Created !');
+        Helper::activityLogInsert($user, '','User','User Created !');
+
+//            activity("User")
+//            ->causedBy(auth()->user())
+//            ->performedOn($user)
+//            ->log('User Created !');
 
             return UserResource::make($user)->additional([
                 'success' => true,
@@ -348,13 +350,13 @@ class UserController extends Controller
                 }
             }
 
+
+            $beforeUpdate            = User::findOrFail($id);
+
             $user = $this->UserService->upddateUser($request, $id);
 
+            Helper::activityLogUpdate($user, $beforeUpdate,'User','User Updated !');
 
-            activity("User")
-                ->causedBy(auth()->user())
-                ->performedOn($user)
-                ->log('User updated !');
             return UserResource::make($user)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -400,10 +402,6 @@ class UserController extends Controller
         Mail::to($user->email)->send(new UserCreateMail($user->email,$user->username,$password, $user->full_name));
 
 
-        activity("User")
-            ->causedBy(auth()->user())
-            ->performedOn($user)
-            ->log('User approval ');
     }
 
 
@@ -412,11 +410,14 @@ class UserController extends Controller
     public function changeStatus($id)
     {
         $user = User::findOrFail($id);
+        $beforeUpdate = User::findOrFail($id);
 
         $user->status == 0 ? $this->approveUser($user)
             : $this->updateStatus($user);
 
         $status = $user->fresh()->status;
+
+        Helper::activityLogUpdate($user, $beforeUpdate,'User','User Change Status !');
 
         $status = $status == 1 ? 'active' :
             ($status == 2 ? 'banned' :
@@ -438,11 +439,6 @@ class UserController extends Controller
 
         $user->save();
 
-        activity("User")
-            ->causedBy(auth()->user())
-            ->performedOn($user)
-            ->log('User status change');
-
     }
 
 
@@ -459,10 +455,6 @@ class UserController extends Controller
 
         $user->save();
 
-        activity("User")
-            ->causedBy(auth()->user())
-            ->performedOn($user)
-            ->log('User ban');
 
         $status = $user->status == 2 ? 'banned' : 'un-banned';
 
@@ -643,10 +635,9 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($id);
             $user->delete();
-            activity("User")
-                ->causedBy(auth()->user())
-                ->performedOn($user)
-                ->log('User Deleted !');
+
+            Helper::activityLogDelete($user, '','User','User Deleted !');
+
             return UserResource::make($user)->additional([
                 'success' => true,
                 'message' => $this->deleteSuccessMessage,

@@ -105,7 +105,7 @@ class ActivityLogController extends Controller
 
         $startDate = $request->from_date;
         $endDate = $request->to_date;
-        
+
         if ($startDate && $endDate) {
             $activityLog->whereBetween('created_at', [$startDate, $endDate]);
         }
@@ -161,10 +161,11 @@ class ActivityLogController extends Controller
         try {
             $activity_log = ActivityModel::findOrFail($id);
             $activity_log->delete();
-            activity("Activity Log")
-                ->causedBy(auth()->user())
-                ->performedOn($activity_log)
-                ->log('Activity Log Deleted !');
+            Helper::activityLogDelete($activity_log,'','Activity Log','Activity Log Deleted !');
+//            activity("Activity Log")
+//                ->causedBy(auth()->user())
+//                ->performedOn($activity_log)
+//                ->log('Activity Log Deleted !');
             return $this->sendResponse($activity_log, $this->deleteSuccessMessage, Response::HTTP_OK);
 
         } catch (\Throwable $th) {

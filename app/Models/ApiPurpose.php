@@ -14,11 +14,39 @@ class ApiPurpose extends Model
 
     protected $appends = ['columns'];
 
+    protected $casts = [
+        'parameters' => 'array'
+    ];
+
 
     public function columns(): Attribute
     {
         return  new Attribute(
-            get: fn() => Schema::getColumnListing($this->table_name),
+//            get: fn() => Schema::getColumnListing($this->table_name),
+            get: fn() => $this->getColumns(),
         );
     }
+
+
+    public function getColumns()
+    {
+        $keys = [];
+
+        foreach ((array)$this->parameters as $item) {
+            foreach ($item as $k => $v) {
+                $keys[] = $k;
+            }
+        }
+
+        return $keys;
+    }
+
+
+
+
+    public function module()
+    {
+        return $this->belongsTo(ApiModule::class, 'api_module_id', 'id');
+    }
+
 }

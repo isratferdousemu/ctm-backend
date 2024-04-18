@@ -590,10 +590,10 @@ class PermissionSeeder extends Seeder
                     ["id" => 239, "name" => "tracking-edit", "page_url" => "/system-audit/information-tracking/edit/:id", "parent_page" => 1],
                     ["id" => 240, "name" => "tracking-delete", "page_url" => "/system-audit/information-tracking/delete", "parent_page" => 1],
 
-                    ["id" => 237, "name" => "activityLog-create", "page_url" => "/system-audit/activity-log", "parent_page" => 1],
-                    ["id" => 238, "name" => "activityLog-view", "page_url" => "/system-audit/activity-log", "parent_page" => 1],
-                    ["id" => 239, "name" => "activityLog-edit", "page_url" => "/system-audit/activity-log/edit/:id", "parent_page" => 1],
-                    ["id" => 240, "name" => "activityLog-delete", "page_url" => "/system-audit/activity-log/delete", "parent_page" => 1],
+                    ["id" => 241, "name" => "activityLog-create", "page_url" => "/system-audit/activity-logs", "parent_page" => 1],
+                    ["id" => 242, "name" => "activityLog-view", "page_url" => "/system-audit/activity-logs", "parent_page" => 1],
+                    ["id" => 243, "name" => "activityLog-edit", "page_url" => "/system-audit/activity-logs/edit/:id", "parent_page" => 1],
+                    ["id" => 244, "name" => "activityLog-delete", "page_url" => "/system-audit/activity-logs/delete", "parent_page" => 1],
 
                 ]
             ],

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Menu\MenuRequest;
 use App\Http\Requests\Admin\Menu\MenuUpdateRequest;
@@ -270,10 +271,11 @@ class MenuController extends Controller
 
         try {
             $menu = $this->MenuService->createMenu($request);
-            activity("Menu")
-                ->causedBy(auth()->user())
-                ->performedOn($menu)
-                ->log('Menu Created !');
+            Helper::activityLogInsert($menu,'','Menu','Menu Created !');
+//            activity("Menu")
+//                ->causedBy(auth()->user())
+//                ->performedOn($menu)
+//                ->log('Menu Created !');
             return MenuResource::make($menu)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -488,6 +490,8 @@ class MenuController extends Controller
 
             try {
 
+                $BeforeUpdate = Menu::find($id);
+
                 $menu = Menu::findOrFail($id);
 
                 $menu->label_name_en = $request->label_name_en;
@@ -516,11 +520,11 @@ class MenuController extends Controller
                         $menu->save();
                     }
                 }
-
-                 activity("Menu")
-                 ->causedBy(auth()->user())
-                 ->performedOn($menu)
-                 ->log('Menu Updated !');
+                Helper::activityLogUpdate($menu,$BeforeUpdate,"Menu","Menu Updated !");
+//                 activity("Menu")
+//                 ->causedBy(auth()->user())
+//                 ->performedOn($menu)
+//                 ->log('Menu Updated !');
 
                 DB::commit();
 
@@ -578,7 +582,7 @@ class MenuController extends Controller
     {
         $menu = Menu::findOrFail($id);
         $menu->delete();
-
+        Helper::activityLogDelete($menu,'','Menu','Menu Deleted!!');
         return \response()->json([
             'message' => 'Menu destroy successful'
         ],Response::HTTP_OK);

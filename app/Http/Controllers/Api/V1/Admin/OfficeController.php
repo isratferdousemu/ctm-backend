@@ -392,6 +392,9 @@ class OfficeController extends Controller
         try {
             $office = $this->OfficeService->createOffice($request);
 
+            Helper::activityLogInsert($office,'','Office','Office Created !');
+
+
             // activity("Office")
             //     ->causedBy(auth()->user())
             //     ->performedOn($office)
@@ -525,7 +528,10 @@ class OfficeController extends Controller
     {
 
         try {
+            $beforeUpdate = Office::find($request->id);
             $office = $this->OfficeService->updateOffice($request);
+            Helper::activityLogUpdate($office,$beforeUpdate,'Office','Office Updated !');
+
             // activity("Office")
             //     ->causedBy(auth()->user())
             //     ->performedOn($office)
@@ -647,9 +653,11 @@ class OfficeController extends Controller
         if ($office) {
             $office->delete();
         }
-        activity("Office")
-            ->causedBy(auth()->user())
-            ->log('Office Deleted!!');
+        Helper::activityLogDelete($office,'','Office','Office Deleted !');
+
+//        activity("Office")
+//            ->causedBy(auth()->user())
+//            ->log('Office Deleted!!');
         return $this->sendResponse($office, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
@@ -713,9 +721,6 @@ class OfficeController extends Controller
 
         $office = OfficeHasWard::where('id', $id)->delete();
 
-        activity("Office")
-            ->causedBy(auth()->user())
-            ->log('Office Deleted!!');
 
         return $this->sendResponse($office, $this->deleteSuccessMessage, Response::HTTP_OK);
     }

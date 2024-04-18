@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\Helper;
 use Validator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -557,11 +558,7 @@ class SystemconfigController extends Controller
 
                 \DB::commit();
 
-
-                activity("Allowance")
-                    ->causedBy(auth()->user())
-                    ->performedOn($allowance_program)
-                    ->log('Allowance Created !');
+                Helper::activityLogInsert($allowance_program, '','Allowance','Allowance Created !');
 
                 return \response()->json([
                     'success' => true,
@@ -944,6 +941,7 @@ class SystemconfigController extends Controller
             try {
 
                 $allowance_program = AllowanceProgram::findOrFail($id);
+                $beforeUpdate = $allowance_program;
 
                 $allowance_program->name_en = $request->name_en;
                 $allowance_program->name_bn = $request->name_bn;
@@ -1121,10 +1119,8 @@ class SystemconfigController extends Controller
 
                 \DB::commit();
 
-                activity("Allowance")
-                    ->causedBy(auth()->user())
-                    ->performedOn($allowance_program)
-                    ->log('Allowance Updated !');
+
+                Helper::activityLogUpdate($allowance_program, $beforeUpdate,'Allowance','Allowance Updated !');
 
                 return \response()->json([
                     'success' => true,
@@ -1200,9 +1196,10 @@ class SystemconfigController extends Controller
         if($allowance){
             $allowance->delete();
         }
-        activity("Allowance")
-        ->causedBy(auth()->user())
-        ->log('Allowance Deleted!!');
+
+        Helper::activityLogDelete($allowance, '','Allowance','Allowance Deleted !');
+
+
          return $this->sendResponse($allowance, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 
@@ -1287,12 +1284,9 @@ class SystemconfigController extends Controller
         $allowance=AllowanceAdditionalField::where('id', $id)->delete();
 
 
+        Helper::activityLogDelete($allowance, '','Allowance Field','Allowance Field Deleted !');
 
 
-
-        activity("Allowance")
-        ->causedBy(auth()->user())
-        ->log('Allowance Deleted!!');
          return $this->sendResponse($allowance, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
     /**
@@ -1362,15 +1356,15 @@ class SystemconfigController extends Controller
 
 
         $device = AllowanceProgram::findOrFail($id);
+        $beforeUpdate = AllowanceProgram::findOrFail($id);
 
         if($device->system_status == 0)
         {
             AllowanceProgram::where('id', $id)->update(['system_status'=> 1]);
             AllowanceProgram::where('id', $id)->update(['is_active'=> 1]);
-            activity('Allowance')
-            ->causedBy(auth()->user())
-            ->performedOn($device)
-            ->log('Allowance Status Updated!!');
+
+            Helper::activityLogUpdate($device->fresh(), $beforeUpdate,'Allowance','Allowance Updated !');
+
 
             return response()->json([
                 'message' => 'AllowanceProgram Activate Successful'
@@ -1378,10 +1372,8 @@ class SystemconfigController extends Controller
         }else{
             AllowanceProgram::where('id', $id)->update(['system_status'=> 0]);
                AllowanceProgram::where('id', $id)->update(['is_active'=> 0]);
-            activity('Allowance')
-            ->causedBy(auth()->user())
-            ->performedOn($device)
-            ->log('Allowance Status Updated!!');
+
+            Helper::activityLogUpdate($device->fresh(), $beforeUpdate,'Allowance','Allowance Updated !');
 
             return response()->json([
                 'message' => 'AllowanceProgram Inactive Successful'
