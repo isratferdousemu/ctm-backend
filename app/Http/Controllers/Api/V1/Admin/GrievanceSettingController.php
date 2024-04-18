@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\GrievanceManagement\GrievanceSettingResource;
-use App\Http\Resources\Admin\GrievanceManagement\GrievanceSubjectResource;
 use App\Http\Services\Admin\GrievanceManagement\GrievanceSettingService;
-use App\Http\Services\Admin\GrievanceManagement\GrievanceSubjectService;
 use App\Http\Traits\MessageTrait;
 use App\Models\GrievanceSetting;
-use App\Models\GrievanceSubject;
 use App\Models\GrievanceType;
 use Illuminate\Http\Request;
 
@@ -33,30 +30,32 @@ class GrievanceSettingController extends Controller
         $page = $request->query('page');
         $status = $request->query('status');
 
-        $filterArrayTitleEn = [];
-        $filterArrayTitileBn = [];
-        $filterArrayKeyStatus = [];
-
-        if ($searchText) {
-            $filterArrayTitleEn[] = ['title_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayTitileBn[] = ['title_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayKeyStatus[] = ['status', 'LIKE', '%' . $searchText . '%'];
-            // $filterArrayKeyWord[] = ['grievanceType', 'LIKE', '%' . $searchText . '%'];
-        }
         $grievanceSetting = GrievanceSetting::query()
-            ->with(['grievanceType','grievanceSubject','firstOfficer','secoundOfficer','thirdOfficer'])
-            // ->where(function ($query) use ($filterArrayTitleEn, $filterArrayTitileBn, $filterArrayKeyStatus) {
-            //     $query->where($filterArrayTitleEn)
-            //         ->orWhere($filterArrayTitileBn)
-            //         ->orWhere($filterArrayKeyStatus);
+            ->with(['grievanceType', 'grievanceSubject', 'firstOfficer', 'secoundOfficer', 'thirdOfficer'])
+            ->where(function ($query) use ($searchText) {
+                $query->where('first_tire_solution_time', 'LIKE', '%' . $searchText . '%')
+                    ->orWhere('secound_tire_solution_time', 'LIKE', '%' . $searchText . '%')
+                    ->orWhere('third_tire_solution_time', 'LIKE', '%' . $searchText . '%');
+            })
+            ->orWhereHas('grievanceType', function ($query) use ($searchText) {
+                $query->where('title_en', 'LIKE', '%' . $searchText . '%');
+            })
+            ->orWhereHas('grievanceSubject', function ($query) use ($searchText) {
+                $query->where('title_en', 'LIKE', '%' . $searchText . '%');
+            })  
+             ->orWhereHas('firstOfficer', function ($query) use ($searchText) {
+                $query->where('name', 'LIKE', '%' . $searchText . '%');
+            })
+            // ->orWhereHas('secoundOfficer', function ($query) use ($searchText) {
+            //     $query->where('name', 'LIKE', '%' . $searchText . '%');
+            // }) 
+            // ->orWhereHas('thirdOfficer', function ($query) use ($searchText) {
+            //     $query->where('name', 'LIKE', '%' . $searchText . '%');
             // })
+            
             ->orderBy('id', 'asc')
             ->latest()
             ->paginate($perPage, ['*'], 'page');
-            // return $grievanceSetting;
-        //    dd($grievanceSetting);
-
-        
 
         return GrievanceSettingResource::collection($grievanceSetting)->additional([
             'success' => true,
@@ -78,8 +77,8 @@ class GrievanceSettingController extends Controller
      */
     public function store(Request $request)
     {
-    //    $grievanceSetting = $this->grievanceSetting->store($request);
-    //    return $grievanceSetting;
+        //    $grievanceSetting = $this->grievanceSetting->store($request);
+        //    return $grievanceSetting;
         try {
             $grievanceSetting = $this->grievanceSetting->store($request);
             return GrievanceSettingResource::make($grievanceSetting)->additional([

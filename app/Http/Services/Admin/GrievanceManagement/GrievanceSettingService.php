@@ -62,11 +62,19 @@ class GrievanceSettingService
             if (isset($request['OfficerForm'][1])) {
                 $grievanceSetting->secound_tire_officer = $request['OfficerForm'][1]['first_tire_officer'];
                 $grievanceSetting->secound_tire_solution_time = $request['OfficerForm'][1]['first_tire_solution_time'];
+            }else{
+               $grievanceSetting->secound_tire_officer = null;
+               $grievanceSetting->secound_tire_solution_time = null;
+ 
             }
 
             if (isset($request['OfficerForm'][2])) {
                 $grievanceSetting->third_tire_officer = $request['OfficerForm'][2]['first_tire_officer'];
                 $grievanceSetting->third_tire_solution_time = $request['OfficerForm'][2]['first_tire_solution_time'];
+            }else{
+              $grievanceSetting->third_tire_officer =null;
+              $grievanceSetting->third_tire_solution_time = null;
+  
             }
 
             $grievanceSetting->save(); // Use save() to update the record
