@@ -30,7 +30,7 @@ class ApplicationController extends Controller
         $program_id = $request->query('program_id');
         $location_type_id = $request->query('location_type_id');
         $perPage = in_array('perPage', $columns) ? $request->query('perPage') : 15;
-        $page = in_array('page', $columns) ? $request->query('page') : 15;
+        $page = in_array('page', $columns) ? $request->query('page') : 1;
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
