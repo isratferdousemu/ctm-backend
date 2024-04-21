@@ -26,3 +26,9 @@ Route::prefix('v1')->group(function () {
     include "Admin/APIManager/APIManagerRoute.php";
 
 });
+
+
+Route::prefix('v1')->group(function () {
+    include "Client/clientRoute.php";
+});
+
