@@ -28,6 +28,16 @@ class GrievanceSubjectController extends Controller
         $searchText = $request->query('searchText');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
+        $status = $request->query('status');
+
+        if ($status == 'active') {
+            $grievanceType = GrievanceSubject::where('status', 1)->get();
+            return GrievanceSubjectResource::collection($grievanceType)->additional([
+                'success' => true,
+                'message' => $this->fetchDataSuccessMessage,
+            ]);
+
+        }
 
         $filterArrayTitleEn = [];
         $filterArrayTitileBn = [];
@@ -40,7 +50,7 @@ class GrievanceSubjectController extends Controller
             // $filterArrayKeyWord[] = ['grievanceType', 'LIKE', '%' . $searchText . '%'];
         }
         $grievanceSubject = GrievanceSubject::query()
-           ->with('grievanceType')
+            ->with('grievanceType')
             ->where(function ($query) use ($filterArrayTitleEn, $filterArrayTitileBn, $filterArrayKeyStatus) {
                 $query->where($filterArrayTitleEn)
                     ->orWhere($filterArrayTitileBn)
@@ -50,7 +60,7 @@ class GrievanceSubjectController extends Controller
             ->latest()
             ->paginate($perPage, ['*'], 'page');
         //    dd($grievanceSubject);
-        
+
         return GrievanceSubjectResource::collection($grievanceSubject)->additional([
             'success' => true,
             'message' => $this->fetchDataSuccessMessage,
@@ -71,7 +81,7 @@ class GrievanceSubjectController extends Controller
      */
     public function store(Request $request)
     {
-       
+
         try {
             $grievanceSubject = $this->grievanceSubject->store($request);
             return GrievanceSubjectResource::make($grievanceSubject)->additional([

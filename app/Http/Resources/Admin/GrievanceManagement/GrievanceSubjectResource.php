@@ -21,8 +21,8 @@ class GrievanceSubjectResource extends JsonResource
        'title_bn' => $this->title_bn,
        'status' => $this->status,
        'grievance_type_id' => $this->grievance_type_id,
-       'grievanceTypeEn'=>$this->grievanceType->title_en,
-       'grievanceTypeBn'=>$this->grievanceType->title_bn,
+       'grievanceTypeEn'=>$this->grievanceType->title_en ?? '',
+       'grievanceTypeBn'=>$this->grievanceType->title_bn ?? '',
 
 ];
 

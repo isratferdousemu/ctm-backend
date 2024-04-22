@@ -12,7 +12,8 @@ class ApiDataReceive extends Model
 
     public function apiList()
     {
-        return $this->belongsToMany(ApiList::class, 'api_selects', 'api_data_receive_id', 'api_list_id');
+        return $this->belongsToMany(ApiList::class, 'api_selects', 'api_data_receive_id', 'api_list_id')
+            ->orderByDesc('created_at');
     }
 
 }
