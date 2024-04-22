@@ -6,7 +6,7 @@ use Log;
 use Response;
 use App\Models\Location;
 use App\Models\PMTScore;
-use App\Models\Application;
+use App\Models\Grievance;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\FinancialYear;
@@ -71,16 +71,16 @@ class GrievanceService
         }
     }
 
-    public function onlineApplicationRegistration(Request $request, $allowanceAmount){
+    public function onlineGrievanceEntry(Request $request){
         DB::beginTransaction();
 
         try {
-            $application = new Application;
+            $application = new Grievance;
             // $application->permanent_mobile = Str::random(10);
             $uniqueapplication_id = Str::random(10);
 
 // Check if the generated string already exists in the database
-            while (Application::where('application_id', $uniqueapplication_id)->exists()) {
+            while (Grievance::where('beneficiary_id', $uniqueapplication_id)->exists()) {
     // If it exists, regenerate the random string
              $uniqueapplication_id = Str::random(10);
                 }
@@ -102,8 +102,6 @@ class GrievanceService
             $application->spouse_name_en = $request->spouse_name_en;
             $application->spouse_name_bn = $request->spouse_name_bn;
             $application->identification_mark = $request->identification_mark;
-            $application->allowance_amount = $allowanceAmount;
-
             $application->nationality = $request->nationality;
             $application->gender_id = $request->gender_id;
             $application->education_status = $request->education_status;
@@ -112,16 +110,8 @@ class GrievanceService
             $application->account_type = $request->account_type;
             $application->bank_name = $request->bank_name;
             $application->branch_name = $request->branch_name;
-            // if($request->has('city_thana_id') && $request->city_thana_id!=null){
-            //     $application->current_location_id              = $request->city_thana_id;
-            // }
-            // if($request->has('district_pouro_id') && $request->district_pouro_id!=null){
-            //     $application->current_location_id              = $request->district_pouro_id;
-            // }
-            // if($request->has('union_id') && $request->union_id!=null){
-            //     $application->current_location_id              = $request->union_id;
-            // }
-              if($request->has('ward_id_city') && $request->ward_id_city!=null){
+  
+           if($request->has('ward_id_city') && $request->ward_id_city!=null){
                 $application->current_location_id              = $request->ward_id_city;
             }
             if($request->has('ward_id_dist') && $request->ward_id_dist!=null){
@@ -220,21 +210,6 @@ class GrievanceService
 
               }
             
-        
-            // $district_geo_code = Application::permanentDivision($application->permanent_location_id);
-            // $district_geo_code = $district_geo_code->code;
-            // $remaining_digits = 11 - strlen($program_code) - strlen($district_geo_code);
-            // $incremental_value = DB::table('applications')->count() + 1;
-            // $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
-            // $application_id = $program_code . $district_geo_code . $incremental_value_formatted;
-            // $is_unique = DB::table('applications')->where('application_id', $application_id)->doesntExist();
-            // while (!$is_unique) {
-            //     $incremental_value++;
-            //     $incremental_value_formatted = str_pad($incremental_value, $remaining_digits, '0', STR_PAD_LEFT);
-            //     $application_id = $program_code . $district_geo_code . $incremental_value_formatted;
-            //     $is_unique = DB::table('applications')->where('application_id', $application_id)->doesntExist();
-            // }
-            // $application->application_id = $application_id;
 
             $application->permanent_post_code = $request->permanent_post_code;
             $application->permanent_address = $request->permanent_address;
@@ -244,13 +219,6 @@ class GrievanceService
             $application->nominee_verification_number = $request->nominee_verification_number;
             $application->nominee_address = $request->nominee_address;
             $application->nominee_date_of_birth = $request->nominee_date_of_birth;
-
-            // if($request->hasFile('nominee_image') && $request->nominee_image!=null){
-            //     $application->nominee_image = $this->uploadFile($request->nominee_image, 'application');
-            // }
-            // if($request->hasFile('nominee_signature') && $request->nominee_signature!=null){
-            //     $application->nominee_signature = $this->uploadFile($request->nominee_signature, 'application');
-            // }
             $application->nominee_relation_with_beneficiary = $request->nominee_relation_with_beneficiary;
             $application->nominee_nationality = $request->nominee_nationality;
             $application->account_name = $request->account_name;
@@ -258,92 +226,17 @@ class GrievanceService
             $application->account_owner = $request->account_owner;
             $application->marital_status = $request->marital_status;
             $application->email = $request->email;
-            $district1 = Application::permanentDistrict($application->permanent_location_id);
-
-            $division=Application::permanentDivision($application->permanent_location_id)  ;
-            // $division=$division->id  ;
-            $division_cut_off = DB::select("
-            SELECT poverty_score_cut_offs.*, financial_years.financial_year AS financial_year, financial_years.end_date
-            FROM poverty_score_cut_offs
-            JOIN financial_years ON financial_years.id = poverty_score_cut_offs.financial_year_id
-            WHERE poverty_score_cut_offs.location_id = ? AND poverty_score_cut_offs.type = 1
-            ORDER BY financial_years.end_date DESC LIMIT 1", [$division->id]);
-            $division_cut_off =$division_cut_off[0]->id;
-            $application->cut_off_id= $division_cut_off;
-            $financial_year_id=FinancialYear::Where('status',1)->first();
-
-
-             if( $financial_year_id){
-            $financial_year_id=$financial_year_id->id;
-            $application->financial_year_id= $financial_year_id;
-             }
-
-
-// if ($request->hasFile('image') && $request->image != null) {
-//     $image = $request->file('image');
-//     $imageName = time() . '.' . $image->getClientOriginalExtension();
-//     $image->move(public_path('uploads/application'), $imageName);
-//     $application->image = $imageName;
-// }
-
-// if ($request->hasFile('signature') && $request->signature != null) {
-//     $signature = $request->file('signature');
-//     $signatureName = time() . '.' . $signature->getClientOriginalExtension();
-//     $signature->move(public_path('uploads/application'), $signatureName);
-//     $application->signature = $signatureName;
-// }
-
-// if ($request->hasFile('nominee_image') && $request->nominee_image != null) {
-//     $nomineeImage = $request->file('nominee_image');
-//     $nomineeImageName = time() . '.' . $nomineeImage->getClientOriginalExtension();
-//     $nomineeImage->move(public_path('uploads/application'), $nomineeImageName);
-//     $application->nominee_image = $nomineeImageName;
-// }
-
-// if ($request->hasFile('nominee_signature') && $request->nominee_signature != null) {
-//     $nomineeSignature = $request->file('nominee_signature');
-//     $nomineeSignatureName = time() . '.' . $nomineeSignature->getClientOriginalExtension();
-//     $nomineeSignature->move(public_path('uploads/application'), $nomineeSignatureName);
-//     $application->nominee_signature = $nomineeSignatureName;
-// }
-// $path= $request->file('image')->store('public/application');
-// $application->image = 'application/' . $path;
-// $path_1= $request->file('signature')->store('public/application');
-// $application->image = 'application/' . $path_1;
-// $path_2= $request->file('nominee_image')->store('public/application');
-// $application->image = 'application/' . $path_2;
-// $path_3= $request->file('nominee_signature')->store('public/application');
-// $application->image = 'application/' . $path_3;
 
     // $application->image = $request->file('image')->store('public');
     $imagePath = $request->file('image')->store('public');
     $application->image=$imagePath;
-    $signaturePath = $request->file('signature')->store('public');
-    $application->signature=$signaturePath ;
+
     // $application->signature = $request->file('signature')->store('public');
 
+      $application->save();
+      DB::commit();
 
-    // $application->nominee_image = $request->file('nominee_image')->store('public');
-    $nominee_imagePath = $request->file('nominee_image')->store('public');
-    $application->nominee_image=$nominee_imagePath ;
-
-    // $application->nominee_signature = $request->file('nominee_signature')->store('public');
-    $nominee_signaturePath = $request->file('nominee_signature')->store('public');
-    $application->nominee_signature=$nominee_signaturePath;
-
-            $application->save();
-
-
-            if($application){
-                // insert PMT score values
-                $this->insertApplicationPMTValues(json_decode($request->application_pmt), $application->id);
-                // insert application allowance values
-                $this->insertApplicationAllowanceValues($request, $application->id);
-            }
-
-            DB::commit();
-            $this->applicationPMTValuesTotal($application->id,$request->per_room_score,$request->no_of_people_score);
-            return $application;
+       return $application;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;

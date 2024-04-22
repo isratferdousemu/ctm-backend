@@ -6,7 +6,7 @@ use App\Constants\ApplicationStatus;
 use App\Exceptions\AuthBasicErrorException;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Application\ApplicationRequest;
+use App\Http\Requests\Admin\GrievanceManagement\GrievanceRequest;
 use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
 use App\Http\Requests\Admin\Application\MobileOperatorRequest;
 use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
@@ -44,12 +44,12 @@ use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 class GrievanceController extends Controller
 {
     use MessageTrait, BeneficiaryTrait, LocationTrait, LocationTrait, RoleTrait;
-    private $applicationService;
+    private $grievanceService;
 
-    public function __construct(GrievanceService $applicationService, MobileOperatorService $mobileoperatorService, public SMSservice $SMSservice)
+    public function __construct(GrievanceService $grievanceService)
     {
-        $this->applicationService = $applicationService;
-        $this->mobileoperatorService = $mobileoperatorService;
+        $this->grievanceService = $grievanceService;
+
     }
 
     public function getBeneficiaryByLocation()
@@ -58,75 +58,9 @@ class GrievanceController extends Controller
         $applications = $this->applications();
     }
 
-    /* -------------------------------------------------------------------------- */
-    /*                         online application Methods                         */
-    /* -------------------------------------------------------------------------- */
 
-    /**
-     *
-     * @OA\Post(
-     *      path="/global/online-application/card-verification",
-     *      operationId="onlineApplicationVerifyCard",
-     *      tags={"GLOBAL"},
-     *      summary="Check Application Card",
-     *      description="Check Application Card",
-     *
-     *       @OA\RequestBody(
-     *          required=true,
-     *          description="enter inputs",
-     *
-     *            @OA\MediaType(
-     *              mediaType="multipart/form-data",
-     *           @OA\Schema(
-     *                   @OA\Property(
-     *                      property="verification_type",
-     *                      description="verification type",
-     *                      type="text",
-     *
-     *                   ),
-     *                   @OA\Property(
-     *                      property="verification_number",
-     *                      description="verification card number",
-     *                      type="text",
-     *                   ),
-     *                   @OA\Property(
-     *                      property="date_of_birth",
-     *                      description="birth date",
-     *                      type="text",
-     *                   ),
-     *
-     *                 ),
-     *             ),
-     *
-     *         ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful Insert operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *
-     *          )
-     *        )
-     *     )
-     *
-     */
+
+   
     public function onlineApplicationVerifyCard(ApplicationVerifyRequest $request)
     {
         $data = [
@@ -229,60 +163,7 @@ class GrievanceController extends Controller
             'message' => $this->fetchSuccessMessage,
         ], 200);
     }
-    /**
-     *
-     * @OA\Post(
-     *      path="/global/online-application/dis-card-verification",
-     *      operationId="onlineApplicationVerifyDISCard",
-     *      tags={"GLOBAL"},
-     *      summary="Check Application Card",
-     *      description="Check Application Card",
-     *
-     *       @OA\RequestBody(
-     *          required=true,
-     *          description="enter inputs",
-     *
-     *            @OA\MediaType(
-     *              mediaType="multipart/form-data",
-     *           @OA\Schema(
-     *                   @OA\Property(
-     *                      property="dis_no",
-     *                      description="DIS number",
-     *                      type="text",
-     *                   ),
-     *
-     *                 ),
-     *             ),
-     *
-     *         ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful Insert operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *
-     *          )
-     *        )
-     *     )
-     *
-     */
+  
     public function onlineApplicationVerifyDISCard(Request $request)
     {
         $data = $this->applicationService->onlineApplicationVerifyCardDIS($request);
@@ -294,83 +175,13 @@ class GrievanceController extends Controller
         ], 200);
     }
 
-    public function onlineApplicationRegistration(ApplicationRequest $request)
+    public function grievanceEntry(GrievanceRequest $request)
     {
-        $allowanceAmount = 0;
-        $allowance = AllowanceProgram::find($request->program_id);
 
-        // check is marital
-        if ($allowance) {
-            if ($allowance->is_age_limit == 1) {
-                // error code => applicant_marital_status
-                if (!in_array($request->gender_id, $allowance->ages->pluck('gender_id')->toArray())) {
-                    throw new AuthBasicErrorException(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        $this->applicantGenderTypeTextErrorCode,
-                        $this->applicationGenderTypeMessage
-                    );
-                } else {
-                    $data = [
-                        'nid' => $request->verification_number,
-                        'dob' => $request->date_of_birth,
-                    ];
-
-                    $nidInfo = (new VerificationService())->callVerificationApi($data);
-
-                    $genderAge = $allowance->ages->where('gender_id', $request->gender_id)->first();
-                    $minAge = $genderAge->min_age;
-                    $maxAge = $genderAge->max_age;
-                    $age = $nidInfo['age'];
-
-                    // get current age form date_of_birth field
-                    // return $genderAge;
-                    // 60 -90 => age is 73
-                    // age range is minAge to maxAge
-                    if ($age < $minAge || $age > $maxAge) {
-                        throw new AuthBasicErrorException(
-                            Response::HTTP_UNPROCESSABLE_ENTITY,
-                            $this->applicantAgeLimitTextErrorCode,
-                            $this->applicantAgeLimitMessage
-                        );
-                    }
-
-                    $allowanceAmount = $genderAge->amount;
-                }
-            }
-
-            if ($allowance->is_marital == 1) {
-                // error code =>
-                if ($allowance->marital_status != $request->marital_status) {
-                    throw new AuthBasicErrorException(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        $this->applicantMaritalStatusTextErrorCode,
-                        $this->applicantMaritalStatusMessage
-                    );
-                }
-            }
-
-            if ($allowance->is_disable_class) {
-                $allowanceAmount += $this->getClassWiseAmount($allowance, $request);
-            }
-
-        }
-
-        $data = [
-            'nid' => $request->nominee_verification_number,
-            'dob' => $request->nominee_date_of_birth,
-        ];
-
-        $nidInfo = (new VerificationService())->callNomineeVerificationApi($data);
-
-        $data = $this->applicationService->onlineApplicationRegistration($request, $allowanceAmount);
-        $programName = AllowanceProgram::where('id', $data->program_id)->first('name_en');
-        $programName = $programName->name_en;
-
-        $message = " Dear $data->name_en. " . "\n Congratulations! Your application has been submitted for the $programName successfully." . "\n Your tracking ID is " . $data->application_id . "\n Save tracking ID for further tracking." . "\n Sincerely," . "\nDepartment of Social Services";
-        $this->SMSservice->sendSms($data->mobile, $message);
-        activity("Online Application Submit")
+        $data = $this->grievanceService->onlineGrievanceEntry($request);
+        activity("Online Grievance Submit")
             ->withProperties(['userInfo' => Helper::BrowserIpInfo(), 'data' => $data])
-            ->log("Online Application Submit");
+            ->log("Online Grievance Submit");
         return response()->json([
             'status' => true,
             'data' => $data,
