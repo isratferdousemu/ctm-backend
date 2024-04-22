@@ -4,200 +4,148 @@ namespace App\Http\Controllers\Client;
 
 use App\Constants\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
 use App\Http\Services\Client\ApiService;
+use App\Http\Traits\MessageTrait;
 use App\Models\ApiDataReceive;
 use App\Models\Application;
+use App\Models\Beneficiary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class BeneficiaryController extends Controller
 {
+    use MessageTrait;
 
     public function __construct(public ApiService $apiService)
     {
     }
 
-    public function getAllApplicationPaginated(Request $request)
+
+
+    public function getBeneficiariesList(Request $request)
     {
-        $columns = $this->apiService->hasPermission($request, ApiKey::APPLICATION_LIST);
+        $columns = $this->apiService->hasPermission($request, ApiKey::BENEFICIARIES_LIST);
 
-        $searchText = $request->query('searchText');
-        $application_id = $request->query('application_id');
-        $nominee_name = $request->query('nominee_name');
-        $account_no = $request->query('account_no');
-        $nid_no = $request->query('nid_no');
-        $list_type_id = $request->query('list_type_id');
+        $beneficiaryList = $this->getList($request, $columns);
+
+        return BeneficiaryResource::collection($beneficiaryList)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
+
+
+    public function getList(Request $request, $columns)
+    {
         $program_id = $request->query('program_id');
-        $location_type_id = $request->query('location_type_id');
+
+        $beneficiary_id = $request->query('beneficiary_id');
+        $nominee_name = $request->query('nominee_name');
+        $account_number = $request->query('account_number');
+        $verification_number = $request->query('nid');
+        $status = $request->query('status');
+
         $perPage = in_array('perPage', $columns) ? $request->query('perPage') : 15;
-        $page = in_array('page', $columns) ? $request->query('page') : 15;
+        $page = in_array('page', $columns) ? $request->query('page') : 1;
 
-        $filterArrayNameEn = [];
-        $filterArrayNameBn = [];
-        $filterArrayFatherNameEn = [];
-        $filterArrayFatherNameBn = [];
-        $filterArrayMotherNameEn = [];
-        $filterArrayMotherNameBn = [];
-        $filterArrayApplicationId = [];
-        $filterArrayNomineeNameEn = [];
-        $filterArrayNomineeNameBn = [];
-        $filterArrayAccountNo = [];
-        $filterArrayNidNo = [];
-        $filterArrayListTypeId = [];
-        $filterArrayProgramId = [];
+        $sortByColumn = $request->query('sortBy', 'created_at');
+        $orderByDirection = $request->query('orderBy', 'asc');
 
-        if($searchText && in_array('searchText', $columns)){
-            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayMotherNameEn[] = ['mother_name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayMotherNameBn[] = ['mother_name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayFatherNameEn[] = ['father_name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayFatherNameBn[] = ['father_name_bn', 'LIKE', '%' . $searchText . '%'];
-            $page = 1;
+        $query = Beneficiary::query();
+        if ($program_id && in_array('program_id', $columns))
+            $query = $query->where('program_id', $program_id);
 
-        }
+        $query = $this->applyLocationFilter($query, $request, $columns);
 
-        if($application_id && in_array('application_id', $columns)){
-            $filterArrayApplicationId[] = ['application_id', 'LIKE', '%' . $application_id . '%'];
-            $page = 1;
-
-        }
-
-        if($nominee_name && in_array('nominee_name', $columns)){
-            $filterArrayNomineeNameEn[] = ['nominee_en', 'LIKE', '%' . $nominee_name . '%'];
-            $filterArrayNomineeNameBn[] = ['nominee_bn', 'LIKE', '%' . $nominee_name . '%'];
-            $page = 1;
-
-        }
-
-        if($account_no && in_array('account_no', $columns)){
-            $filterArrayAccountNo[] = ['account_number', 'LIKE', '%' . $account_no . '%'];
-            $page = 1;
-
-        }
-
-        if($nid_no && in_array('nid_no', $columns)){
-            $filterArrayNidNo[] = ['verification_number', 'LIKE', '%' . $nid_no . '%'];
-            $page = 1;
-
-        }
-
-        if($program_id && in_array('program_id', $columns)){
-            $filterArrayProgramId[] = ['program_id', '=', $program_id];
-            $page = 1;
-
-        }
+        // advance search
+        if ($beneficiary_id && in_array('application_id', $columns))
+            $query = $query->where('application_id', $beneficiary_id);
+        if ($nominee_name && in_array('nominee_name', $columns))
+            $query = $query->whereRaw('UPPER(nominee_en) LIKE "%' . strtoupper($nominee_name) . '%"');
+        if ($account_number && in_array('account_number', $columns))
+            $query = $query->where('account_number', $account_number);
+        if ($verification_number && in_array('verification_number', $columns))
+            $query = $query->where('verification_number', $verification_number);
+        if ($status && in_array('status', $columns))
+            $query = $query->where('status', $status);
 
 
+        return $query->with('program',
+            'permanentDivision',
+            'permanentDistrict',
+            'permanentCityCorporation',
+            'permanentDistrictPourashava',
+            'permanentUpazila',
+            'permanentPourashava',
+            'permanentThana',
+            'permanentUnion',
+            'permanentWard')->orderBy("$sortByColumn", "$orderByDirection")
+            ->paginate($perPage, ['*'], 'page', $page);
 
-
-        $query = Application::query();
-
-        $query->when($searchText, function ($q) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn) {
-            $q->where($filterArrayNameEn)
-                ->orWhere($filterArrayNameBn)
-                ->orWhere($filterArrayMotherNameEn)
-                ->orWhere($filterArrayMotherNameBn)
-                ->orWhere($filterArrayFatherNameEn)
-                ->orWhere($filterArrayFatherNameBn)
-            ;
-        });
-
-
-        $query->when($nominee_name, function ($q) use ($filterArrayNomineeNameBn, $filterArrayNomineeNameEn) {
-            $q->where($filterArrayNomineeNameEn)
-                ->orWhere($filterArrayNomineeNameBn)
-            ;
-        });
-
-        $query->when($application_id, function ($q) use ($filterArrayApplicationId) {
-            $q->where($filterArrayApplicationId);
-        });
-
-
-        $query->when($nid_no, function ($q) use ($filterArrayNidNo) {
-            $q->where($filterArrayNidNo);
-        });
-
-
-        $query->when($nid_no, function ($q) use ($filterArrayNidNo) {
-            $q->where($filterArrayNidNo);
-        });
-
-
-        $query->when($program_id, function ($q) use ($filterArrayProgramId) {
-            $q->where($filterArrayProgramId);
-        });
-
-        $query->when($account_no, function ($q) use ($filterArrayAccountNo) {
-            $q->where($filterArrayAccountNo);
-        });
-
-
-
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
-
-
-        $query->with('current_location', 'permanent_location.parent.parent.parent.parent', 'program',
-            'gender', 'pmtScore'
-        )
-            ->orderBy('score')
-        ;
-
-
-        return $query->paginate($perPage, ['*'], 'page',$page);
     }
 
 
 
-
-    public function getApplicationById($id)
+    private function applyLocationFilter($query, $request, $columns): mixed
     {
-        $columns = $this->apiService->hasPermission(request(), ApiKey::APPLICATION_BY_ID);
+        $division_id = $request->query('division_id');
+        $district_id = $request->query('district_id');
+        $city_corp_id = $request->query('city_corp_id');
+        $district_pourashava_id = $request->query('district_pourashava_id');
+        $upazila_id = $request->query('upazila_id');
+        $pourashava_id = $request->query('pourashava_id');
+        $thana_id = $request->query('thana_id');
+        $union_id = $request->query('union_id');
+        $ward_id = $request->query('ward_id');
 
-        $application = Application::where('application_id', '=', $id)
-            ->with([
-                'current_location.parent.parent.parent.parent',
-                'permanent_location.parent.parent.parent.parent',
-                'program',
-                'allowAddiFields',
-                'allowAddiFieldValue.allowAddiField',
-                'variable',
-                'subvariable'
-            ])->first();
 
-        if (!$application) {
-            return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
+        if ($division_id && in_array('division_id', $columns))
+            $query = $query->where('permanent_division_id', $division_id);
+        if ($district_id && in_array('district_id', $columns))
+            $query = $query->where('permanent_district_id', $district_id);
+        if ($city_corp_id && in_array('city_corp_id', $columns))
+            $query = $query->where('permanent_city_corp_id', $city_corp_id);
+        if ($district_pourashava_id && in_array('district_pourashava_id', $columns))
+            $query = $query->where('permanent_district_pourashava_id', $district_pourashava_id);
+        if ($upazila_id && in_array('upazila_id', $columns))
+            $query = $query->where('permanent_upazila_id', $upazila_id);
+        if ($pourashava_id && in_array('pourashava_id', $columns))
+            $query = $query->where('permanent_pourashava_id', $pourashava_id);
+        if ($thana_id && in_array('thana_id', $columns))
+            $query = $query->where('union_id', $thana_id);
+        if ($union_id && in_array('application_id', $columns))
+            $query = $query->where('permanent_union_id', $union_id);
+        if ($ward_id && in_array('ward_id', $columns))
+            $query = $query->where('permanent_ward_id', $ward_id);
+
+        return $query;
+    }
+
+
+    public function getBeneficiaryById($beneficiary_id)
+    {
+        $columns = $this->apiService->hasPermission(request(), ApiKey::BENEFICIARY_BY_APPLICATION_ID);
+
+        $beneficiary = Beneficiary::with('program')
+            ->where('application_id', $beneficiary_id)
+            ->first();
+
+        if ($beneficiary) {
+            return BeneficiaryResource::make($beneficiary)->additional([
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ]);
         }
-
-        $image = asset('storage/' . $application->image);
-
-        $signature = asset('storage/' . $application->signature);
-
-        $nominee_image = asset('storage/' . $application->nominee_image);
-
-
-        $nominee_signature = asset('storage/' . $application->nominee_signature);
-        $groupedAllowAddiFields = $application->allowAddiFields->groupBy('id')->values();
-        $groupedAllowAddiFields = $application->allowAddiFields->groupBy('pivot.allow_addi_fields_id');
-
-        // Get the first item from each group (assuming it's the same for each 'allow_addi_fields_id')
-        $distinctAllowAddiFields = $groupedAllowAddiFields->map(function ($group) {
-            return $group->first();
-        });
 
         return response()->json([
-            'application' => $application,
-            'unique_additional_fields' => $distinctAllowAddiFields,
-            'image' => $image,
-            'signature' => $signature,
-            'nominee_image' => $nominee_image,
-            'nominee_signature' => $nominee_signature,
+            'success' => false,
+            'message' => $this->notFoundMessage,
+        ], 404);
 
-        ], Response::HTTP_OK);
     }
+
+
 
 
 
