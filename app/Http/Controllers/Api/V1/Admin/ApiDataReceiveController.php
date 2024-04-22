@@ -21,8 +21,7 @@ class ApiDataReceiveController extends Controller
         $query = ApiDataReceive::query();
 
         $query->when(request('search'), function ($q, $v) {
-            $q->where('name', 'like', "%$v%")
-                ->orWhere('organization_name', 'like', "%$v%")
+            $q->where('organization_name', 'like', "%$v%")
                 ->orWhere('organization_phone', 'like', "%$v%")
                 ->orWhere('organization_email', 'like', "%$v%")
                 ->orWhere('responsible_person_email', 'like', "%$v%")
