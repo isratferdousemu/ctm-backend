@@ -31,6 +31,8 @@ class ApiDataReceiveController extends Controller
             ;
         });
 
+        $query->with('apiList');
+
         return $this->sendResponse($query->paginate(
             request('perPage')
         ));
