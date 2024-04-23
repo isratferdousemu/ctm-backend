@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Beneficiary\StoreCommitteeRequest;
 use App\Http\Requests\Admin\Beneficiary\UpdateCommitteeRequest;
@@ -60,10 +61,11 @@ class CommitteeController extends Controller
     {
         try {
             $committee = $this->committeeService->save($request);
-            activity("Committee")
-                ->causedBy(auth()->user())
-                ->performedOn($committee)
-                ->log('Committee Created !');
+            Helper::activityLogInsert($committee, '', 'Committee', 'Committee Created!');
+//            activity("Committee")
+//                ->causedBy(auth()->user())
+//                ->performedOn($committee)
+//                ->log('Committee Created !');
             return CommitteeResource::make($committee)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -116,11 +118,13 @@ class CommitteeController extends Controller
     public function update(UpdateCommitteeRequest $request, $id): \Illuminate\Http\JsonResponse|CommitteeResource
     {
         try {
+            $beforeUpdate = Committee::findOrFail($id);
             $committee = $this->committeeService->update($request, $id);
-            activity("Committee")
-                ->causedBy(auth()->user())
-                ->performedOn($committee)
-                ->log('Committee Updated !');
+            Helper::activityLogUpdate($committee, $beforeUpdate, "Committee", "Committee Updated!");
+//            activity("Committee")
+//                ->causedBy(auth()->user())
+//                ->performedOn($committee)
+//                ->log('Committee Updated !');
             return CommitteeResource::make($committee)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -138,10 +142,12 @@ class CommitteeController extends Controller
     public function delete($id): \Illuminate\Http\JsonResponse
     {
         try {
+            $committee = Committee::findOrFail($id);
             $this->committeeService->delete($id);
-            activity("Committee")
-                ->causedBy(auth()->user())
-                ->log('Committee Deleted!!');
+            Helper::activityLogDelete($committee, '', 'Committee', 'Committee Deleted!!');
+//            activity("Committee")
+//                ->causedBy(auth()->user())
+//                ->log('Committee Deleted!!');
             return response()->json([
                 'success' => true,
                 'message' => $this->deleteSuccessMessage,
