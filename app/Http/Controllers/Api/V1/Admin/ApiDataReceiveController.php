@@ -61,7 +61,7 @@ class ApiDataReceiveController extends Controller
         $apiDataReceive->organization_phone = $request->organization_phone;
         $apiDataReceive->organization_email = $request->organization_email;
         $apiDataReceive->responsible_person_email = $request->responsible_person_email;
-        $apiDataReceive->responsible_person_nid = $request->responsible_person_nidphone;
+        $apiDataReceive->responsible_person_nid = $request->responsible_person_nid;
         $apiDataReceive->username = $request->username;
         $apiDataReceive->whitelist_ip = $request->whitelist_ip;
         $apiDataReceive->start_date = $request->start_date;
