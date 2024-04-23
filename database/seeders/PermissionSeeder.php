@@ -570,10 +570,10 @@ class PermissionSeeder extends Seeder
                     ["id" => 231, "name" => "api-edit", "page_url" => "/api-manager/api-generate/edit/:id", "parent_page" => 1],
                     ["id" => 232, "name" => "api-delete", "page_url" => "/api-manager/api-generate/delete", "parent_page" => 1],
 
-                    ["id" => 233, "name" => "apiDataReceive-create", "page_url" => "/api-manager/url-generate/create", "parent_page" => 1],
-                    ["id" => 234, "name" => "apiDataReceive-view", "page_url" => "/api-manager/url-generate", "parent_page" => 1],
-                    ["id" => 235, "name" => "apiDataReceive-edit", "page_url" => "/api-manager/url-generate/edit/:id", "parent_page" => 1],
-                    ["id" => 236, "name" => "apiDataReceive-delete", "page_url" => "/api-manager/url-generate/delete", "parent_page" => 1],
+                    ["id" => 233, "name" => "apiDataReceive-create", "page_url" => "/api-manager/data-receiver/create", "parent_page" => 1],
+                    ["id" => 234, "name" => "apiDataReceive-view", "page_url" => "/api-manager/data-receiver", "parent_page" => 1],
+                    ["id" => 235, "name" => "apiDataReceive-edit", "page_url" => "/api-manager/data-receiver/edit/:id", "parent_page" => 1],
+                    ["id" => 236, "name" => "apiDataReceive-delete", "page_url" => "/api-manager/data-receiver/delete", "parent_page" => 1],
                 ]
             ],
 
