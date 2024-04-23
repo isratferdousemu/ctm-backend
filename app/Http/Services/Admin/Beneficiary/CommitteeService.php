@@ -102,14 +102,14 @@ class CommitteeService
             $name = $this->committeeName($request->committee_type, $request->program_id, $request->location_id);
             $location_id = $this->getLocation($request);
             $validatedCommitteeData = $request->safe()->merge(['name' => $name, 'location_id' => $location_id])->only(['name', 'details', 'program_id', 'committee_type', 'office_type', 'location_id', 'office_id']);
-
-            $committee->name = $validatedCommitteeData['name'];
-            $committee->details = $validatedCommitteeData['details'];
-            $committee->program_id = $validatedCommitteeData['program_id'];
-            $committee->committee_type = $validatedCommitteeData['committee_type'];
-            $committee->office_type = $validatedCommitteeData['office_type'];
-            $committee->location_id = $validatedCommitteeData['location_id'];
-            $committee->office_id = $validatedCommitteeData['office_id'];
+            $committee->fill($validatedCommitteeData);
+//            $committee->name = $validatedCommitteeData['name'];
+//            $committee->details = $validatedCommitteeData['details'];
+//            $committee->program_id = $validatedCommitteeData['program_id'];
+//            $committee->committee_type = $validatedCommitteeData['committee_type'];
+//            $committee->office_type = $validatedCommitteeData['office_type'];
+//            $committee->location_id = $validatedCommitteeData['location_id'];
+//            $committee->office_id = $validatedCommitteeData['office_id'];
 
             $committee->save();
 

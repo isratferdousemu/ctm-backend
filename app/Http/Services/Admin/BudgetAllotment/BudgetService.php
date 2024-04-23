@@ -7,13 +7,15 @@ use App\Http\Requests\Admin\Budget\StoreBudgetRequest;
 use App\Http\Requests\Admin\Budget\UpdateBudgetRequest;
 use App\Models\Budget;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 class BudgetService
 {
     public function save(StoreBudgetRequest $request): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|bool|\Illuminate\Database\Eloquent\Builder|array|null
     {
-        $validated = $request->validated();
+        $budget_id = mt_rand(100000, 999999);
+        $validated = $request->safe()->merge(['budget_id' => $budget_id])->only(['budget_id', 'program_id', 'financial_year_id', 'calculation_type', 'previous_year_value', 'calculation_value', 'remarks']);
         return Budget::create($validated);
     }
 
@@ -57,13 +59,23 @@ class BudgetService
         $budget = Budget::findOrFail($id);
         $validated = $request->validated();
         $budget->fill($validated);
-        return $budget->save();
+        $budget->save();
+        return $budget;
     }
 
     public function delete($id)
     {
-        $budget = Budget::findOrFail($id);
-        return $budget->delete();
+        DB::beginTransaction();
+        try {
+            $budget = Budget::findOrFail($id);
+            $budget->budgetDetail()->delete();
+            $budget->delete();
+            DB::commit();
+            return true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     public function getProjection(Request $request)
