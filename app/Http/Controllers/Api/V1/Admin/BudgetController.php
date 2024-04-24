@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Budget\StoreBudgetRequest;
 use App\Http\Requests\Admin\Budget\UpdateBudgetRequest;
 use App\Http\Resources\Admin\Budget\BudgetResouce;
 use App\Http\Services\Admin\BudgetAllotment\BudgetService;
 use App\Http\Traits\MessageTrait;
+use App\Models\Budget;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
@@ -22,6 +24,14 @@ class BudgetController extends Controller
      * @var BudgetService
      */
     private BudgetService $budgetService;
+
+    /**
+     * @param BudgetService $budgetService
+     */
+    public function __construct(BudgetService $budgetService)
+    {
+        $this->budgetService = $budgetService;
+    }
 
     /**
      * @param Request $request
@@ -49,10 +59,7 @@ class BudgetController extends Controller
     {
         try {
             $data = $this->budgetService->save($request);
-            activity("Budget")
-                ->causedBy(auth()->user())
-                ->performedOn($data)
-                ->log('Budget Created!');
+            Helper::activityLogInsert($data, '', 'Budget', 'Budget Created!');
             return BudgetResouce::make($data)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -94,11 +101,10 @@ class BudgetController extends Controller
     public function update(UpdateBudgetRequest $request, $id): \Illuminate\Http\JsonResponse|BudgetResouce
     {
         try {
-            $data = $this->budgetService->update($request);
-            activity("Budget")
-                ->causedBy(auth()->user())
-                ->performedOn($data)
-                ->log('Budget Updated!');
+            $beforeUpdate = Budget::findOrFail($id);
+            $data = $this->budgetService->update($request, $id);
+//            $afterUpdate = Budget::findOrFail($id);
+            Helper::activityLogUpdate($data, $beforeUpdate, "Budget", "Budget Updated!");
             return BudgetResouce::make($data)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -115,10 +121,9 @@ class BudgetController extends Controller
     public function delete($id): \Illuminate\Http\JsonResponse
     {
         try {
+            $budget = Budget::findOrFail($id);
             $this->budgetService->delete($id);
-            activity("Budget")
-                ->causedBy(auth()->user())
-                ->log('Budget Deleted!!');
+            Helper::activityLogDelete($budget, '', 'Budget', 'Budget Deleted!!');
             return response()->json([
                 'success' => true,
                 'message' => $this->deleteSuccessMessage,

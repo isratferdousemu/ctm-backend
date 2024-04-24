@@ -21,13 +21,24 @@ class ApiDataReceiveController extends Controller
         $query = ApiDataReceive::query();
 
         $query->when(request('search'), function ($q, $v) {
-            $q->where('organization_name', 'like', "%$v%")
-                ->orWhere('organization_phone', 'like', "%$v%")
+            $q->where('organization_phone', 'like', "%$v%")
                 ->orWhere('organization_email', 'like', "%$v%")
                 ->orWhere('responsible_person_email', 'like', "%$v%")
                 ->orWhere('responsible_person_nid', 'like', "%$v%")
                 ->orWhere('username', 'like', "%$v%")
             ;
+        });
+
+        $query->when(\request('module_id'), function ($q) {
+            $q->whereHas('apiList', function ($q) {
+                $q->whereHas('purpose', function ($q) {
+                    $q->where('api_module_id', \request('module_id'));
+                });
+            });
+        });
+
+        $query->when(\request('org_name'), function ($q, $v) {
+            $q->where('organization_name', 'like', "%$v%");
         });
 
         $query->with('apiList');
@@ -61,7 +72,7 @@ class ApiDataReceiveController extends Controller
         $apiDataReceive->organization_phone = $request->organization_phone;
         $apiDataReceive->organization_email = $request->organization_email;
         $apiDataReceive->responsible_person_email = $request->responsible_person_email;
-        $apiDataReceive->responsible_person_nid = $request->responsible_person_nidphone;
+        $apiDataReceive->responsible_person_nid = $request->responsible_person_nid;
         $apiDataReceive->username = $request->username;
         $apiDataReceive->whitelist_ip = $request->whitelist_ip;
         $apiDataReceive->start_date = $request->start_date;
