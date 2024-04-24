@@ -217,7 +217,7 @@ class ActivityLogController extends Controller
 
     public function viewAnonymousActivityLog($id){
         $activityLog = ActivityModel::query()
-            ->with('subject','causer')
+            ->with('subject','causer','causer.office')
             ->where('id',$id)
             ->first();
 
