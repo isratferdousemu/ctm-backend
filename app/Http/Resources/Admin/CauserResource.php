@@ -21,6 +21,8 @@ class CauserResource extends JsonResource
             'User Type'                  => $this->user_type,
             'Email'                  => $this->email,
             'Mobile'                  => $this->mobile,
+            'Office Name'            => $this->office->name_en ?? '',
+            'Office Address'            => $this->office->office_address ?? '',
             'Office Id'                  => $this->office_id,
             'User Id'                  => $this->user_id,
             'Office Type'                  => $this->office_type,
