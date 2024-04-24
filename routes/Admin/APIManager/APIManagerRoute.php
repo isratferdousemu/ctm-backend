@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\Api\V1\Admin\ApiDashboardController;
 use App\Http\Controllers\Api\V1\Admin\ApiDataReceiveController;
 use App\Http\Controllers\Api\V1\Admin\APIListController;
 use App\Http\Controllers\Api\V1\Admin\APIURLController;
@@ -18,6 +19,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
         Route::apiResource('api-data-receive', ApiDataReceiveController::class);
+
+        Route::prefix('api-manager')->group(function () {
+            Route::get('dashboard/get-all-api-count', [ApiDashboardController::class, 'getAllApiCount']);
+            Route::get('dashboard/organization-wise-count', [ApiDashboardController::class, 'organizationWiseCount']);
+            Route::get('dashboard/date-wise-count', [ApiDashboardController::class, 'dateWiseCount']);
+        });
+
+
     });
 
 

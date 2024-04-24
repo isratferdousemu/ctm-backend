@@ -574,6 +574,11 @@ class PermissionSeeder extends Seeder
                     ["id" => 234, "name" => "apiDataReceive-view", "page_url" => "/api-manager/url-generate", "parent_page" => 1],
                     ["id" => 235, "name" => "apiDataReceive-edit", "page_url" => "/api-manager/url-generate/edit/:id", "parent_page" => 1],
                     ["id" => 236, "name" => "apiDataReceive-delete", "page_url" => "/api-manager/url-generate/delete", "parent_page" => 1],
+
+                    ["id" => 245, "name" => "apiDashboard-create", "page_url" => "/api-manager/dashboard", "parent_page" => 1],
+                    ["id" => 246, "name" => "apiDashboard-view", "page_url" => "/api-manager/dashboard", "parent_page" => 1],
+                    ["id" => 247, "name" => "apiDashboard-edit", "page_url" => "/api-manager/dashboard", "parent_page" => 1],
+                    ["id" => 248, "name" => "apiDashboard-delete", "page_url" => "/api-manager/dashboard", "parent_page" => 1],
                 ]
             ],
 

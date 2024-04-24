@@ -16,4 +16,11 @@ class ApiDataReceive extends Model
             ->orderByDesc('created_at');
     }
 
+
+    public function apiLogs()
+    {
+        return $this->hasMany(ApiLog::class, 'api_data_receive_id', 'id');
+    }
+
+
 }
