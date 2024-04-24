@@ -462,9 +462,17 @@ class AuthController extends Controller
 
          $permissions = $authData['user']->getAllPermissions();
 
+         $userInfo = [
+             'User Name' => $authData['user']->username ?? '',
+             'Full Name' => $authData['user']->full_name ?? '',
+             'Email' => $authData['user']->email ?? '',
+             'Mobile' => $authData['user']->mobile ?? '',
+             'Roles' => $authData['user']->roles[0]->name ?? '',
+         ];
+
          $changesWithPreviousValues = [
              'previous' => null,
-             'new' => $authData['user'],
+             'new' => $userInfo,
          ];
 
          activity("Login Information")
@@ -494,9 +502,17 @@ class AuthController extends Controller
 
         $permissions = $authData['user']->getAllPermissions();
 
+        $userInfo = [
+            'User Name' => $authData['user']->username ?? '',
+            'Full Name' => $authData['user']->full_name ?? '',
+            'Email' => $authData['user']->email ?? '',
+            'Mobile' => $authData['user']->mobile ?? '',
+            'Roles' => $authData['user']->roles[0]->name ?? '',
+        ];
+
         $changesWithPreviousValues = [
             'previous' => null,
-            'new' => $authData['user'],
+            'new' => $userInfo,
         ];
 
         activity("Login Information")

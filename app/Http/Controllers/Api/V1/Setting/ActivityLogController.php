@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\ActivityResource;
 use App\Http\Traits\MessageTrait;
 use App\Models\ActivityModel;
+use App\Models\Beneficiary;
 use App\Models\Location;
 use App\Models\Office;
 use App\Models\User;
@@ -119,6 +120,14 @@ class ActivityLogController extends Controller
             $activityLog->whereHas('causer', function ($query) use ($officeId) {
                 $query->where('office_id', $officeId);
             });
+        }
+
+        if ($request->filled('beneficiary_id')) {
+            $beneficiaryId = $request->beneficiary_id;
+            $beneficiary = Beneficiary::where('application_id',$beneficiaryId)->first('id');
+            if ($beneficiary) {
+                $activityLog->where('subject_id', $beneficiary->id)->where('log_name', 'Beneficiary');
+            }
         }
 
         if ($request->filled('division_id') && $request->filled('district_id')) {
