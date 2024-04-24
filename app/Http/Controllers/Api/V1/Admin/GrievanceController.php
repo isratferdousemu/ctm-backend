@@ -6,18 +6,17 @@ use App\Constants\ApplicationStatus;
 use App\Exceptions\AuthBasicErrorException;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\GrievanceManagement\GrievanceRequest;
-use App\Http\Requests\Admin\Application\ApplicationVerifyRequest;
 use App\Http\Requests\Admin\Application\MobileOperatorRequest;
 use App\Http\Requests\Admin\Application\MobileOperatorUpdateRequest;
 use App\Http\Requests\Admin\Application\UpdateStatusRequest;
 use App\Http\Resources\Admin\Application\MobileOperatorResource;
-use App\Http\Services\Admin\GrievanceManagement\GrievanceService;
+use App\Http\Resources\Admin\GrievanceManagement\GrievanceResource;
 use App\Http\Services\Admin\Application\CommitteeApplicationService;
 use App\Http\Services\Admin\Application\CommitteeListService;
 use App\Http\Services\Admin\Application\MobileOperatorService;
 use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Services\Admin\Application\VerificationService;
+use App\Http\Services\Admin\GrievanceManagement\GrievanceService;
 use App\Http\Services\Notification\SMSservice;
 use App\Http\Traits\BeneficiaryTrait;
 use App\Http\Traits\LocationTrait;
@@ -25,12 +24,10 @@ use App\Http\Traits\MessageTrait;
 use App\Http\Traits\RoleTrait;
 use App\Jobs\SendEmail;
 use App\Models\AllowanceProgram;
-use App\Models\Application;
 use App\Models\Beneficiary;
 use App\Models\Committee;
 use App\Models\CommitteePermission;
-use App\Models\Location;
-use App\Models\Lookup;
+use App\Models\Grievance;
 use App\Models\MobileOperator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -58,35 +55,47 @@ class GrievanceController extends Controller
         $applications = $this->applications();
     }
 
-
-
-   
-    public function onlineApplicationVerifyCard(ApplicationVerifyRequest $request)
+    // public function onlineGrievanceVerifyCard(GrievanceVerifyRequest $request)
+    public function onlineGrievanceVerifyCard(Request $request)
     {
-        $data = [
-            'nid' => $request->verification_number,
-            'dob' => $request->date_of_birth,
-        ];
+        // return $request->all();
+        if ($request->is_existing_beneficiary == 1) {
+            $data = Application::where('application_id', $request->verification_number)
+                ->where('date_of_birth', $request->date_of_birth)
+                ->where('status', '=', 9)
+                ->first();
+            //    return  $data;
+            if ($data != null) {
+                return response()->json([
+                    'status' => true,
+                    'data' => $data,
+                    'message' => 'Beneficiary ID Verify Successfully',
+                ], 201);
 
-        $data = (new VerificationService)->callVerificationApi($data);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'data' => $data,
+                    'message' => 'Existing Beneficiary ID Not Found',
+                ], 300);
 
-        $gender_id = '';
-        $Lookup = Lookup::where('value_bn', 'পুরুষ')->orWhere('value_en', 'male')->first();
-        if ($data['gender'] == 'পুরুষ') {
-            $gender_id = $Lookup['id'];
+            }
+
         } else {
-            $gender_id = $Lookup['id'];
+            $data = [
+                'nid' => $request->verification_number,
+                'dob' => $request->date_of_birth,
+            ];
+
+            $data = (new VerificationService)->callVerificationApi($data);
+            return response()->json([
+                'status' => true,
+                'data' => $data,
+                'message' => $this->fetchSuccessMessage,
+            ], 200);
+
         }
 
-        if (request('program_id') && $gender_id) {
-            $this->verifyAge($data);
-        }
-
-        return response()->json([
-            'status' => true,
-            'data' => $data,
-            'message' => $this->fetchSuccessMessage,
-        ], 200);
     }
 
     // application tracking function
@@ -106,78 +115,10 @@ class GrievanceController extends Controller
 
     }
 
-    public function verifyAge($nidInfo)
-    {
-        $gender_id = '';
-        $Lookup = Lookup::where('value_bn', 'পুরুষ')->orWhere('value_en', 'male')->first();
-        if ($nidInfo['gender'] == 'পুরুষ') {
-            $gender_id = $Lookup['id'];
-        } else {
-            $gender_id = $Lookup['id'];
-        }
-        $allowance = AllowanceProgram::find(request('program_id'));
-
-        if ($allowance->is_age_limit == 1) {
-            // error code => applicant_marital_status
-            if (!in_array($gender_id, $allowance->ages->pluck('gender_id')->toArray())) {
-                throw new AuthBasicErrorException(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    $this->applicantGenderTypeTextErrorCode,
-                    $this->applicationGenderTypeMessage
-                );
-            } else {
-                $genderAge = $allowance->ages->where('gender_id', $gender_id)->first();
-                $minAge = $genderAge->min_age;
-                $maxAge = $genderAge->max_age;
-                $age = $nidInfo['age'];
-
-                if ($age < $minAge || $age > $maxAge) {
-                    throw new AuthBasicErrorException(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        $this->applicantAgeLimitTextErrorCode,
-                        $this->applicantAgeLimitMessage
-                    );
-                }
-            }
-        }
-
-    }
-
-    public function nomineeVerifyNID(Request $request)
-    {
-        $request->validate([
-            'verification_number' => 'required',
-            'date_of_birth' => 'required|date',
-        ]);
-
-        $data = [
-            'nid' => $request->verification_number,
-            'dob' => $request->date_of_birth,
-        ];
-
-        $data = (new VerificationService)->callNomineeVerificationApi($data);
-
-        return response()->json([
-            'status' => true,
-            'data' => $data,
-            'message' => $this->fetchSuccessMessage,
-        ], 200);
-    }
-  
-    public function onlineApplicationVerifyDISCard(Request $request)
-    {
-        $data = $this->applicationService->onlineApplicationVerifyCardDIS($request);
-
-        return response()->json([
-            'status' => true,
-            'data' => $data,
-            'message' => $this->fetchSuccessMessage,
-        ], 200);
-    }
-
-    public function grievanceEntry(GrievanceRequest $request)
+    public function grievanceEntry(Request $request)
     {
 
+        //  return $request->all();
         $data = $this->grievanceService->onlineGrievanceEntry($request);
         activity("Online Grievance Submit")
             ->withProperties(['userInfo' => Helper::BrowserIpInfo(), 'data' => $data])
@@ -185,8 +126,6 @@ class GrievanceController extends Controller
         return response()->json([
             'status' => true,
             'data' => $data,
-            'id' => $data->application_id,
-            'application_id' => $data->id,
             'message' => $this->insertSuccessMessage,
         ], 200);
 
@@ -325,277 +264,49 @@ class GrievanceController extends Controller
     }
 
     /* -------------------------------------------------------------------------- */
-    /*                        Application Selection Methods                       */
+    /*                        Grievance list Methods                       */
     /* -------------------------------------------------------------------------- */
 
-    /**
-     * @OA\Get(
-     *     path="/admin/application/get",
-     *      operationId="getAllApplicationPaginated",
-     *       tags={"APPLICATION-SELECTION"},
-     *      summary="get paginated Applications with advance search",
-     *      description="get paginated applications with advance search",
-     *      security={{"bearer_token":{}}},
-     *     @OA\Parameter(
-     *         name="searchText",
-     *         in="query",
-     *         description="search by name",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="application_id",
-     *         in="query",
-     *         description="search by application id",
-     *         @OA\Schema(type="text")
-     *     ),
-     *     @OA\Parameter(
-     *         name="nominee_name",
-     *         in="query",
-     *         description="search by nominee name",
-     *         @OA\Schema(type="text")
-     *     ),
-     *     @OA\Parameter(
-     *         name="account_no",
-     *         in="query",
-     *         description="search by account number",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="nid_no",
-     *         in="query",
-     *         description="search by nid number",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="list_type_id",
-     *         in="query",
-     *         description="search by list type name",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="program_id",
-     *         in="query",
-     *         description="search by program name",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="division_id",
-     *         in="query",
-     *         description="search by division name",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="district_id",
-     *         in="query",
-     *         description="search by district name",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="location_type_id",
-     *         in="query",
-     *         description="search by location type name",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="thana_id",
-     *         in="query",
-     *         description="search by thana name",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="union_id",
-     *         in="query",
-     *         description="search by union name",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="city_id",
-     *         in="query",
-     *         description="search by city name",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="city_thana_id",
-     *         in="query",
-     *         description="search by city thana name",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="district_pouro_id",
-     *         in="query",
-     *         description="search by district pouro name",
-     *         @OA\Schema(type="number")
-     *     ),
-     *     @OA\Parameter(
-     *         name="perPage",
-     *         in="query",
-     *         description="number of committee per page",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="page",
-     *         in="query",
-     *         description="page number",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful Insert operation",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *
-     *          )
-     * )
-     */
-    public function getAllApplicationPaginated(Request $request)
+    public function getAllGrievancePaginated(Request $request)
     {
 
+        // Retrieve the query parameters
         $searchText = $request->query('searchText');
-        $application_id = $request->query('application_id');
-        $nominee_name = $request->query('nominee_name');
-        $account_no = $request->query('account_no');
-        $nid_no = $request->query('nid_no');
-        $list_type_id = $request->query('list_type_id');
-        $program_id = $request->query('program_id');
-        $location_type_id = $request->query('location_type_id');
         $perPage = $request->query('perPage');
         $page = $request->query('page');
+        $status = $request->query('status');
 
-        $filterArrayNameEn = [];
-        $filterArrayNameBn = [];
-        $filterArrayFatherNameEn = [];
-        $filterArrayFatherNameBn = [];
-        $filterArrayMotherNameEn = [];
-        $filterArrayMotherNameBn = [];
-        $filterArrayApplicationId = [];
-        $filterArrayNomineeNameEn = [];
-        $filterArrayNomineeNameBn = [];
-        $filterArrayAccountNo = [];
-        $filterArrayNidNo = [];
-        $filterArrayListTypeId = [];
-        $filterArrayProgramId = [];
+        $grievanceSetting = Grievance::query()
+            ->with(['grievanceType', 'grievanceSubject','program','gender','district', 'districtPouroshova', 'cityCorporation',
+                'upazila', 'thana', 'union', 'pourashava', 'ward'])
+            ->where(function ($query) use ($searchText) {
+                // $query->where('first_tire_solution_time', 'LIKE', '%' . $searchText . '%')
+                //     ->orWhere('secound_tire_solution_time', 'LIKE', '%' . $searchText . '%')
+                //     ->orWhere('third_tire_solution_time', 'LIKE', '%' . $searchText . '%');
+            })
+            ->orWhereHas('grievanceType', function ($query) use ($searchText) {
+                $query->where('title_en', 'LIKE', '%' . $searchText . '%');
+            })
+            ->orWhereHas('grievanceSubject', function ($query) use ($searchText) {
+                $query->where('title_en', 'LIKE', '%' . $searchText . '%');
+            })
+ 
 
-        if ($searchText) {
-            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayMotherNameEn[] = ['mother_name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayMotherNameBn[] = ['mother_name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayFatherNameEn[] = ['father_name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayFatherNameBn[] = ['father_name_bn', 'LIKE', '%' . $searchText . '%'];
-            $page = 1;
+            ->orderBy('id', 'asc')
+            ->latest()
+            ->paginate($perPage, ['*'], 'page');
 
-        }
+        return GrievanceResource::collection($grievanceSetting)->additional([
+            'success' => true,
+            'message' => $this->fetchDataSuccessMessage,
+        ]);
 
-        if ($application_id) {
-            $filterArrayApplicationId[] = ['application_id', 'LIKE', '%' . $application_id . '%'];
-            $page = 1;
-
-        }
-
-        if ($nominee_name) {
-            $filterArrayNomineeNameEn[] = ['nominee_en', 'LIKE', '%' . $nominee_name . '%'];
-            $filterArrayNomineeNameBn[] = ['nominee_bn', 'LIKE', '%' . $nominee_name . '%'];
-            $page = 1;
-
-        }
-
-        if ($account_no) {
-            $filterArrayAccountNo[] = ['account_number', 'LIKE', '%' . $account_no . '%'];
-            $page = 1;
-
-        }
-
-        if ($nid_no) {
-            $filterArrayNidNo[] = ['verification_number', 'LIKE', '%' . $nid_no . '%'];
-            $page = 1;
-
-        }
-
-        if ($list_type_id) {
-            $filterArrayListTypeId[] = ['forward_committee_id', '=', $list_type_id];
-            $page = 1;
-
-        }
-
-        if ($program_id) {
-            $filterArrayProgramId[] = ['program_id', '=', $program_id];
-            $page = 1;
-
-        }
-
-        $query = Application::query();
-
-        $this->applyUserWiseFiltering($query);
-
-        $query->when($searchText, function ($q) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn) {
-            $q->where($filterArrayNameEn)
-                ->orWhere($filterArrayNameBn)
-                ->orWhere($filterArrayMotherNameEn)
-                ->orWhere($filterArrayMotherNameBn)
-                ->orWhere($filterArrayFatherNameEn)
-                ->orWhere($filterArrayFatherNameBn)
-            ;
-        });
-
-        $query->when($nominee_name, function ($q) use ($filterArrayNomineeNameBn, $filterArrayNomineeNameEn) {
-            $q->where($filterArrayNomineeNameEn)
-                ->orWhere($filterArrayNomineeNameBn)
-            ;
-        });
-
-        $query->when($application_id, function ($q) use ($filterArrayApplicationId) {
-            $q->where($filterArrayApplicationId);
-        });
-
-        $query->when($nid_no, function ($q) use ($filterArrayNidNo) {
-            $q->where($filterArrayNidNo);
-        });
-
-        $query->when($nid_no, function ($q) use ($filterArrayNidNo) {
-            $q->where($filterArrayNidNo);
-        });
-
-        $query->when($program_id, function ($q) use ($filterArrayProgramId) {
-            $q->where($filterArrayProgramId);
-        });
-
-        $query->when($account_no, function ($q) use ($filterArrayAccountNo) {
-            $q->where($filterArrayAccountNo);
-        });
-
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $query->with('current_location', 'permanent_location.parent.parent.parent.parent', 'program',
-            'gender', 'pmtScore'
-        )
-            ->orderBy('score')
-        ;
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getColumnValue($column, $application)
     {
         return match ($column) {
-            'name_en' => $application->name_bn,
+            'name' => $application->name,
             'program.name_en' => $application->program?->name_bn,
             'application_id' => $application->application_id,
             'status' => $application->getStatus(),

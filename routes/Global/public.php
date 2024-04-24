@@ -40,6 +40,7 @@ Route::prefix('global')->group(function () {
 
     // grievance Entry
     Route::post('/grievance-entry',[GrievanceController::class, 'grievanceEntry']);
+    Route::post('/online-grievance/card-verification',[GrievanceController::class, 'onlineGrievanceVerifyCard']);
 //    Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);
     Route::get('/pdf', [\App\Http\Controllers\Api\V1\Admin\ReportController::class, 'unionReport']);
     Route::post('online-application/final-submit', [ApplicationController::class, 'getStatusyId']);

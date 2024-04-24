@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Api\V1\Admin\GrievanceController;
 use App\Http\Controllers\Api\V1\Admin\GrievanceSettingController;
 use App\Http\Controllers\Api\V1\Admin\GrievanceSubjectController;
 use App\Http\Controllers\Api\V1\Admin\GrievanceTypeController;
@@ -39,6 +40,19 @@ Route::prefix('admin/grievanceSetting')->group(function () {
     Route::get('/edit/{id}', [GrievanceSettingController::class, 'edit'])->middleware(['role_or_permission:super-admin|grievance-setting-edit']);
     Route::post('/update', [GrievanceSettingController::class, 'update'])->middleware(['role_or_permission:super-admin|grievance-setting-edit']);
     Route::delete('/destroy/{id}', [GrievanceSettingController::class, 'destroy'])->middleware(['role_or_permission:super-admin|grievance-setting-delete']);
+
+/* -----------------------------------End Grienvace Settings--------------------------------------- */
+
+});
+/* -----------------------------------Start Grienvace Settings--------------------------------------- */
+Route::prefix('admin/grievance')->group(function () {
+   Route::get('/get', [GrievanceController::class, 'getAllGrievancePaginated'])->middleware(['role_or_permission:super-admin|application-entry-view']);
+   Route::get('get/{id}', [GrievanceController::class, 'getApplicationById'])->middleware(['role_or_permission:super-admin|application-entry-view']);
+   Route::get('/permissions', [GrievanceController::class, 'getApplicationPermission']);
+   Route::get('/committee-list', [GrievanceController::class, 'getCommitteeList']);
+   Route::post('/update-status', [GrievanceController::class, 'changeApplicationsStatus'])->middleware(['role_or_permission:super-admin|application-entry-edit']);
+   Route::get('/generate-pdf', [GrievanceController::class, 'getPdf']);
+
 
 /* -----------------------------------End Grienvace Settings--------------------------------------- */
 

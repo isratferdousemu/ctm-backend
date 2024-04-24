@@ -16,26 +16,22 @@ return new class extends Migration
             $table->string('tracking_no', 50);
             // entry
             $table->tinyInteger('is_existing_beneficiary');
-            $table->bigInteger('beneficiary_id')->unsigned()->index()->nullable();
-            $table->foreign('beneficiary_id')->references('application_id')->on('applications')->onDelete('cascade');
+            $table->bigInteger('beneficiary_id')->unsigned()->index();
             $table->date('date_of_birth');
             $table->tinyInteger('verification_type'); 
             $table->string('verification_number', 16);
             // information
             $table->string('name');
             $table->bigInteger('gender_id')->unsigned()->index();
-            $table->foreign('gender_id')->references('id')->on('lookups')->onDelete('cascade');
             $table->bigInteger('program_id')->unsigned()->index();
             $table->foreign('program_id')->references('id')->on('allowance_programs')->onDelete('cascade');
-            $table->string('email');
-            $table->string('mobile');
+            $table->string('email')->nullable();
+            $table->string('mobile')->nullable();
             // complaint details
-            $table->bigInteger('grievance_type_id ')->unsigned()->index();
-            $table->foreign('grievance_type_id ')->references('id')->on('grievance_types')->onDelete('cascade');
-            $table->bigInteger('grievance_subject_id ')->unsigned()->index();
-            $table->foreign('grievance_subject_id ')->references('id')->on('grievance_subjects')->onDelete('cascade');
+            $table->bigInteger('grievance_type_id')->unsigned()->index();
+            $table->bigInteger('grievance_subject_id')->unsigned()->index();
             $table->string('details');
-            $table->string('documents');
+            $table->string('documents')->nullable();
             // area
             $table->integer('division_id')->nullable();
             $table->integer('district_id')->nullable();
