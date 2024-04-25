@@ -60,12 +60,12 @@ class ApiDataReceiveController extends Controller
 
         Helper::activityLogInsert($apiDataReceive, '','Api Data Receive','Api Data Receive Created !');
         $apiDataReceive->load('apiList.purpose.module');
-   
+
         Mail::to($apiDataReceive->responsible_person_email)->send(new ApiDataReceiveMail($apiDataReceive));
 
         return $this->sendResponse($apiDataReceive, 'API data receive created successfully');
- 
-       
+
+
 
     }
 
@@ -137,15 +137,15 @@ class ApiDataReceiveController extends Controller
 
         return $this->sendResponse($apiDataReceive, 'API data receive deleted successfully');
     }
-    public function generatePDF(){
-        $apiDataReceive=ApiDataReceive::find(1);
-        $apiData=$apiDataReceive->load('apiList.purpose.module');
-          $data = ['testDATA' => $apiData,
-        'api_list'=> $apiData->ApiList];
-        
 
-      
-        $pdf = LaravelMpdf::loadView('reports.documentation', $data, [],
+
+
+    public function sendEmail(ApiDataReceive $apiDataReceive)
+    {
+        $apiDataReceive->load('apiList.purpose.module');
+
+
+        $pdf = LaravelMpdf::loadView('reports.api_documentation', compact('apiDataReceive'), [],
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-P',
@@ -160,18 +160,13 @@ class ApiDataReceiveController extends Controller
                 'margin_footer' => 10,
             ]);
 
+        $password = Helper::GeneratePassword();
 
+        $pdf->getMpdf()->SetProtection(array(), $password, $password);
 
+        Mail::to($apiDataReceive->responsible_person_email)
+            ->send(new ApiDataReceiveMail($password, $pdf->output()));
 
-         return \Illuminate\Support\Facades\Response::stream(
-            function () use ($pdf) {
-                echo $pdf->output();
-            },
-            200,
-            [
-                'Content-Type' => 'application/pdf;charset=utf-8',
-                'Content-Disposition' => 'inline; filename="preview.pdf"',
-            ]);
-
+        return $this->sendResponse('Email sent successfully');
     }
 }

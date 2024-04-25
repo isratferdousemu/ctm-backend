@@ -24,7 +24,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('dashboard/get-all-api-count', [ApiDashboardController::class, 'getAllApiCount']);
             Route::get('dashboard/organization-wise-count', [ApiDashboardController::class, 'organizationWiseCount']);
             Route::get('dashboard/date-wise-count', [ApiDashboardController::class, 'dateWiseCount']);
+
+            Route::get('send-email/{apiDataReceive}', [ApiDataReceiveController::class, 'sendEmail']);
+
         });
+
+
 
 
     });

@@ -16,7 +16,7 @@ class ApiDataReceiveMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public $apiDataReceive)
+    public function __construct(public $password, public $pdfContent)
     {
     }
 
@@ -26,19 +26,19 @@ class ApiDataReceiveMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'API Credentials',
+            subject: 'API Documentation for CTM',
         );
     }
 
     /**
      * Get the message content definition.
      */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'mail.apiDataReceiveMail',
-        );
-    }
+//    public function content(): Content
+//    {
+//        return new Content(
+//            view: 'mail.apiDataReceiveMail',
+//        );
+//    }
 
     /**
      * Get the attachments for the message.
@@ -48,5 +48,14 @@ class ApiDataReceiveMail extends Mailable
     public function attachments(): array
     {
         return [];
+    }
+
+
+    public function build()
+    {
+        return $this->view('mail.apiDataReceiveMail', ['password' => $this->password])
+            ->attachData($this->pdfContent, 'document.pdf', [
+                'mime' => 'application/pdf',
+            ]);
     }
 }
