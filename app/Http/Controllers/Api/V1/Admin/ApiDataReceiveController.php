@@ -167,6 +167,9 @@ class ApiDataReceiveController extends Controller
         Mail::to($apiDataReceive->responsible_person_email)
             ->send(new ApiDataReceiveMail($password, $pdf->output()));
 
+        Mail::to($apiDataReceive->organization_email)
+            ->send(new ApiDataReceiveMail($password, $pdf->output()));
+
         return $this->sendResponse('Email sent successfully');
     }
 }
