@@ -72,7 +72,7 @@ class GrievanceService
         DB::beginTransaction();
 
         try {
-            $application = new Grievance;
+            $grievance = new Grievance;
             // $application->permanent_mobile = Str::random(10);
             $uniqueaGrievance_id = Str::random(10);
 
@@ -83,50 +83,50 @@ class GrievanceService
             }
 
 // Assign the unique random string to the permanent_mobile attribute
-            $application->is_existing_beneficiary = $request->is_existing_beneficiary;
-            $application->verification_number = $request->verification_number;
-            $application->tracking_no = $uniqueaGrievance_id;
-            $application->date_of_birth = $request->date_of_birth;
-            $application->verification_type = $request->verification_type;
+            $grievance->is_existing_beneficiary = $request->is_existing_beneficiary;
+            $grievance->verification_number = $request->verification_number;
+            $grievance->tracking_no = $uniqueaGrievance_id;
+            $grievance->date_of_birth = $request->date_of_birth;
+            $grievance->verification_type = $request->verification_type;
 
-            $application->program_id = $request->program_id;
+            $grievance->program_id = $request->program_id;
 
-            $application->name = $request->name;
-            $application->gender_id = $request->gender_id;
-            $program_code = $request->program_id;
-            $application->email = $request->email;
-            $application->mobile = $request->mobile;
-            $application->grievance_type_id = $request->grievance_type_id;
-            $application->grievance_subject_id = $request->grievance_subject_id;
-            $application->details = $request->details;
+            $grievance->name = $request->name;
+            $grievance->gender_id = $request->gender_id;
+            $grievance->email = $request->email;
+            $grievance->mobile = $request->mobile;
+            $grievance->grievance_type_id = $request->grievance_type_id;
+            $grievance->grievance_subject_id = $request->grievance_subject_id;
+            $grievance->details = $request->details;
 
-            $application->division_id = $request->division_id;
-            $application->district_id = $request->district_id;
-            $application->location_type = $request->location_type;
-            $application->thana_id = $request->thana_id;
-            $application->sub_location_type = $request->sub_location_type;
-            $application->union_id = $request->union_id;
-            $application->pouro_id = $request->pouro_id;
-            $application->city_id = $request->city_id;
-            $application->city_thana_id = $request->city_thana_id;
-            $application->district_pouro_id = $request->district_pouro_id;
-            $application->ward_id_city = $request->ward_id_city;
-            $application->ward_id_union = $request->ward_id_union;
-            $application->ward_id_pouro = $request->ward_id_pouro;
-            $application->ward_id_dist = $request->ward_id_dist;
-            $application->post_code = $request->post_code;
-            $application->address = $request->address;
-
+            $grievance->division_id = $request->division_id;
+            $grievance->district_id = $request->district_id;
+            $grievance->location_type = $request->location_type;
+            $grievance->thana_id = $request->thana_id;
+            $grievance->sub_location_type = $request->sub_location_type;
+            $grievance->union_id = $request->union_id;
+            $grievance->pouro_id = $request->pouro_id;
+            $grievance->city_id = $request->city_id;
+            $grievance->city_thana_id = $request->city_thana_id;
+            $grievance->district_pouro_id = $request->district_pouro_id;
+            $grievance->ward_id_city = $request->ward_id_city;
+            $grievance->ward_id_union = $request->ward_id_union;
+            $grievance->ward_id_pouro = $request->ward_id_pouro;
+            $grievance->ward_id_dist = $request->ward_id_dist;
+            $grievance->post_code = $request->post_code;
+            $grievance->address = $request->address;
+            //  return $request->all();
             // $application->documents = $request->file('documents')->store('public');
-            $imagePath = $request->file('documents')->store('public');
-            $application->documents = $imagePath;
+            if($request->file('documents')){
+                $filePath = $request->file('documents')->store('public');
+                $grievance->documents = $filePath;
 
-            // $application->signature = $request->file('signature')->store('public');
-
-            $application->save();
+            }
+          
+            $grievance->save();
             DB::commit();
 
-            return $application;
+            return $grievance;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
