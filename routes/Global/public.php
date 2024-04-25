@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Admin\AdminController;
-use App\Http\Controllers\Api\V1\Admin\ApplicationController;
-use App\Http\Controllers\Api\V1\Admin\LocationController;
 use App\Http\Controllers\Api\V1\GlobalController;
+use App\Http\Controllers\Api\V1\Admin\AdminController;
+use App\Http\Controllers\Api\V1\Admin\LocationController;
+use App\Http\Controllers\Api\V1\Admin\ApplicationController;
+use App\Http\Controllers\Api\V1\Admin\ApiDataReceiveController;
 
 Route::prefix('global')->group(function () {
     Route::get('/program',[GlobalController::class, 'getAllProgram']);
@@ -28,8 +29,8 @@ Route::prefix('global')->group(function () {
     Route::post('/online-application/nominee-card-verification',[ApplicationController::class, 'nomineeVerifyNID']);
     Route::post('/online-application/dis-card-verification',[ApplicationController::class, 'onlineApplicationVerifyDISCard']);
     Route::post('/online-application/registration',[ApplicationController::class, 'onlineApplicationRegistration']);
-     Route::get('/applicants_copy',[ApplicationController::class, 'getApplicationCopyById']);
-    Route::get('/online-application/check',[ApplicationController::class, 'onlineApplicationCheck']);
+    Route::get('/applicants_copy',[ApplicationController::class, 'getApplicationCopyById']);
+    Route::get('/generatePDF',[ApiDataReceiveController::class, 'generatePDF']);
 
     // Application Tracking API
     Route::post('/applicants_tracking',[ApplicationController::class, 'applicationTracking']);
@@ -44,6 +45,8 @@ Route::prefix('global')->group(function () {
 
     Route::get('/class-list',[AdminController::class, 'getClassList'])/*->middleware(['role_or_permission:super-admin|demo-graphic-view'])*/;
     Route::get('/office-list',[\App\Http\Controllers\Api\V1\Admin\OfficeController::class, 'getAllOfficeList']);
+
+    
 
 });
 
