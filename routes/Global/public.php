@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Admin\AdminController;
 use App\Http\Controllers\Api\V1\Admin\ApplicationController;
+use App\Http\Controllers\Api\V1\Admin\GrievanceController;
 use App\Http\Controllers\Api\V1\Admin\LocationController;
 use App\Http\Controllers\Api\V1\GlobalController;
 
@@ -37,7 +38,9 @@ Route::prefix('global')->group(function () {
     Route::get('application/get/{id}', [ApplicationController::class, 'getPreviewById']);
     Route::post('/online-edited-application/registration',[ApplicationController::class, 'onlineApplicationEditedRegistration']);
 
-
+    // grievance Entry
+    Route::post('/grievance-entry',[GrievanceController::class, 'grievanceEntry']);
+    Route::post('/online-grievance/card-verification',[GrievanceController::class, 'onlineGrievanceVerifyCard']);
 //    Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);
     Route::get('/pdf', [\App\Http\Controllers\Api\V1\Admin\ReportController::class, 'unionReport']);
     Route::post('online-application/final-submit', [ApplicationController::class, 'getStatusyId']);

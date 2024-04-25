@@ -25,6 +25,7 @@ class ApplicationService
     use ApplicationTrait;
     public function onlineApplicationVerifyCard(Request $request)
     {
+        return $request->all();
         $fakeNID = '12345678';
         $fakeDOB = '87654321';
         if ($request->verification_type == $this->verificationTypeNID) {
