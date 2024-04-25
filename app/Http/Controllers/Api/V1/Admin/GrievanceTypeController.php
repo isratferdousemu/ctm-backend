@@ -9,6 +9,8 @@ use App\Models\GrievanceType;
 use Illuminate\Http\Request;
 use App\Http\Traits\MessageTrait;
 use App\Http\Controllers\Controller;
+use App\Helpers\Helper;
+
 
 class GrievanceTypeController extends Controller
 {
@@ -80,6 +82,7 @@ class GrievanceTypeController extends Controller
     {
         try {
             $grievanceType = $this->grievanceType->store($request);
+            Helper::activityLogInsert($grievanceType, '', 'Grievance Type', 'Grievance Type Created !');
             return GrievanceTypeResource::make($grievanceType)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage, 
@@ -119,7 +122,10 @@ class GrievanceTypeController extends Controller
     public function update(GrievacneType $request)
     {
         try {
+           $beforeUpdate = $request;
            $grievanceType = $this->grievanceType->update($request);
+           Helper::activityLogInsert($grievanceType, $beforeUpdate, 'Grievance Type', 'Grievance Type Updated !');
+
            return GrievanceTypeResource::make($grievanceType)->additional([
                'sucess'=>true,
                'message'=>$this->fetchDataSuccessMessage,
@@ -136,6 +142,7 @@ class GrievanceTypeController extends Controller
     {
        try {
            $grievanceType = $this->grievanceType->destroy($id);
+           Helper::activityLogDelete($grievanceType, '', 'Grievance Type', 'Grievance Type Deleted !');
            return GrievanceTypeResource::make($grievanceType)->additional([
                'success'=>true,
                'message'=>$this->deleteSuccessMessage,

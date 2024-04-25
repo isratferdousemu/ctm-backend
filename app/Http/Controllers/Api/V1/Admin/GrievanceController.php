@@ -60,9 +60,9 @@ class GrievanceController extends Controller
     {
         // return $request->all();
         if ($request->is_existing_beneficiary == 1) {
-            $data = Application::where('application_id', $request->verification_number)
+            $data = Beneficiary::where('beneficiary_id', $request->verification_number)
                 ->where('date_of_birth', $request->date_of_birth)
-                ->where('status', '=', 9)
+                ->where('status', '=', 1)
                 ->first();
             //    return  $data;
             if ($data != null) {
@@ -120,9 +120,7 @@ class GrievanceController extends Controller
 
         //  return $request->all();
         $data = $this->grievanceService->onlineGrievanceEntry($request);
-        activity("Online Grievance Submit")
-            ->withProperties(['userInfo' => Helper::BrowserIpInfo(), 'data' => $data])
-            ->log("Online Grievance Submit");
+        Helper::activityLogInsert($data, '', 'Grievance entry', 'Grievance Created !');
         return response()->json([
             'status' => true,
             'data' => $data,
