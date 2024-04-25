@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\V1\Admin\AdminController;
 use App\Http\Controllers\Api\V1\Admin\ApplicationController;
 use App\Http\Controllers\Api\V1\Admin\GrievanceController;
+use App\Http\Controllers\Api\V1\Admin\GrievanceSubjectController;
+use App\Http\Controllers\Api\V1\Admin\GrievanceTypeController;
 use App\Http\Controllers\Api\V1\Admin\LocationController;
 use App\Http\Controllers\Api\V1\GlobalController;
 
@@ -41,6 +43,10 @@ Route::prefix('global')->group(function () {
     // grievance Entry
     Route::post('/grievance-entry',[GrievanceController::class, 'grievanceEntry']);
     Route::post('/online-grievance/card-verification',[GrievanceController::class, 'onlineGrievanceVerifyCard']);
+    Route::get('/grievanceType/get', [GrievanceTypeController::class, 'getAllTypePaginated']);
+    Route::get('/grievanceSubject/get', [GrievanceSubjectController::class, 'getAll']);
+
+
 //    Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);
     Route::get('/pdf', [\App\Http\Controllers\Api\V1\Admin\ReportController::class, 'unionReport']);
     Route::post('online-application/final-submit', [ApplicationController::class, 'getStatusyId']);
