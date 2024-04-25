@@ -61,7 +61,7 @@ class ApiDataReceiveController extends Controller
         Helper::activityLogInsert($apiDataReceive, '','Api Data Receive','Api Data Receive Created !');
         $apiDataReceive->load('apiList.purpose.module');
 
-        Mail::to($apiDataReceive->responsible_person_email)->send(new ApiDataReceiveMail($apiDataReceive));
+        $this->sendEmail($apiDataReceive);
 
         return $this->sendResponse($apiDataReceive, 'API data receive created successfully');
 
@@ -164,11 +164,14 @@ class ApiDataReceiveController extends Controller
 
         $pdf->getMpdf()->SetProtection(array(), $password, $password);
 
-        Mail::to($apiDataReceive->responsible_person_email)
+        $recipientEmails = [
+            $apiDataReceive->responsible_person_email,
+            $apiDataReceive->organization_email
+        ];
+
+        Mail::to($recipientEmails)
             ->send(new ApiDataReceiveMail($password, $pdf->output()));
 
-        Mail::to($apiDataReceive->organization_email)
-            ->send(new ApiDataReceiveMail($password, $pdf->output()));
 
         return $this->sendResponse('Email sent successfully');
     }

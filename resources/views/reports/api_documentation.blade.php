@@ -321,8 +321,7 @@
 
 <htmlpagefooter name="page-footer">
     <div class="footer">
-    Copyright @, " . date("Y ") . ", DSS"
-
+        {{"Copyright @, " . date("Y ") . ", DSS"}}
 </div>
 </htmlpagefooter>
 

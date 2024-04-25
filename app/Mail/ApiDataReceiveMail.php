@@ -54,7 +54,7 @@ class ApiDataReceiveMail extends Mailable
     public function build()
     {
         return $this->view('mail.apiDataReceiveMail', ['password' => $this->password])
-            ->attachData($this->pdfContent, 'document.pdf', [
+            ->attachData($this->pdfContent, 'API documentation.pdf', [
                 'mime' => 'application/pdf',
             ]);
     }
