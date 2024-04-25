@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Helpers\Helper;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\API\ApiDataReceiveRequest;
-use App\Mail\ApiDataReceiveMail;
 use App\Mail\UserCreateMail;
-use App\Models\ApiDataReceive;
 use Illuminate\Http\Request;
+use App\Models\ApiDataReceive;
+use App\Mail\ApiDataReceiveMail;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
+use App\Http\Requests\Admin\API\ApiDataReceiveRequest;
 
 class ApiDataReceiveController extends Controller
 {
@@ -58,10 +59,13 @@ class ApiDataReceiveController extends Controller
         $apiDataReceive = $this->saveApiDataReceive($apiDataReceive, $request);
 
         Helper::activityLogInsert($apiDataReceive, '','Api Data Receive','Api Data Receive Created !');
-
+        $apiDataReceive->load('apiList.purpose.module');
+   
         Mail::to($apiDataReceive->responsible_person_email)->send(new ApiDataReceiveMail($apiDataReceive));
 
         return $this->sendResponse($apiDataReceive, 'API data receive created successfully');
+ 
+       
 
     }
 
@@ -132,5 +136,42 @@ class ApiDataReceiveController extends Controller
         Helper::activityLogDelete($apiDataReceive, '','Api Data Receive','Api Data Receive Updated !');
 
         return $this->sendResponse($apiDataReceive, 'API data receive deleted successfully');
+    }
+    public function generatePDF(){
+        $apiDataReceive=ApiDataReceive::find(1);
+        $apiData=$apiDataReceive->load('apiList.purpose.module');
+          $data = ['testDATA' => $apiData,
+        'api_list'=> $apiData->ApiList];
+        
+
+      
+        $pdf = LaravelMpdf::loadView('reports.documentation', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-P',
+                'title' => 'Emu',
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+
+
+
+         return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf;charset=utf-8',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
+            ]);
+
     }
 }
