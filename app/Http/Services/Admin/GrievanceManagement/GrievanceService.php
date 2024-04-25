@@ -115,7 +115,7 @@ class GrievanceService
             $grievance->ward_id_dist = $request->ward_id_dist;
             $grievance->post_code = $request->post_code;
             $grievance->address = $request->address;
-
+            //  return $request->all();
             // $application->documents = $request->file('documents')->store('public');
             if($request->file('documents')){
                 $filePath = $request->file('documents')->store('public');
@@ -123,9 +123,6 @@ class GrievanceService
 
             }
           
-
-            // $application->signature = $request->file('signature')->store('public');
-
             $grievance->save();
             DB::commit();
 
