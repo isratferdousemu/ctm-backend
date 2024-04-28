@@ -46,7 +46,7 @@ Route::prefix('admin/grievanceSetting')->group(function () {
 });
 /* -----------------------------------Start Grienvace Settings--------------------------------------- */
 Route::prefix('admin/grievance')->group(function () {
-   Route::get('/get', [GrievanceController::class, 'getAllApplicationPaginated'])->middleware(['role_or_permission:super-admin|application-entry-view']);
+   Route::get('/get', [GrievanceController::class, 'getAllGrievancePaginated'])->middleware(['role_or_permission:super-admin|application-entry-view']);
    Route::get('get/{id}', [GrievanceController::class, 'getApplicationById'])->middleware(['role_or_permission:super-admin|application-entry-view']);
    Route::get('/permissions', [GrievanceController::class, 'getApplicationPermission']);
    Route::get('/committee-list', [GrievanceController::class, 'getCommitteeList']);
