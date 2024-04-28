@@ -149,7 +149,7 @@ class ApiDataReceiveController extends Controller
             [
                 'mode' => 'utf-8',
                 'format' => 'A4-P',
-                'title' => 'Emu',
+                'title' => 'API Documentation',
                 'orientation' => 'L',
                 'default_font_size' => 10,
                 'margin_left' => 10,

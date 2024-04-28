@@ -19,10 +19,16 @@ class ApiPurpose extends Model
     ];
 
 
+    public function url(): Attribute
+    {
+        return new Attribute(
+            get: fn($value) => url('api/v1' . $value)
+        );
+    }
+
     public function columns(): Attribute
     {
         return  new Attribute(
-//            get: fn() => Schema::getColumnListing($this->table_name),
             get: fn() => $this->getColumns(),
         );
     }
