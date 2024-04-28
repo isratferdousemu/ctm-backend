@@ -124,7 +124,7 @@ class ActivityLogController extends Controller
 
         if ($request->filled('beneficiary_id')) {
             $beneficiaryId = $request->beneficiary_id;
-            $beneficiary = Beneficiary::where('application_id',$beneficiaryId)->first('id');
+            $beneficiary = Beneficiary::where('beneficiary_id',$beneficiaryId)->first('id');
             if ($beneficiary) {
                 $activityLog->where('subject_id', $beneficiary->id)->where('log_name', 'Beneficiary');
             }
@@ -270,5 +270,4 @@ class ActivityLogController extends Controller
         $office = Office::where('assign_location_id',$id)->get(['id','name_en','name_bn']);
         return $this->sendResponse($office, "Office Lists", Response::HTTP_OK);
     }
-
 }
