@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>API Data Receive Credentials</title>
+    <title>API Documentation for CTM</title>
 </head>
 <body>
-    <h1>Hello,</h1>
 
-    Welcome to the CTM application.
+    <p>Hello,</p>
 
-    <p>Your API credentials are following:</p>
+    <p>Please find the attached PDF document.
+        For security purposes, the document is password-protected. </p>
 
-    <ul>
-        <li>Username: {{ $apiDataReceive->username }}</li>
-        <li>API Key: {{$apiDataReceive->api_key}}</li>
-    </ul>
+    <p>Password: <b>{{$password}}</b></p>
 
+    <p>Best regards,<br>CTM</p>
 
-    <p>Thank you.</p>
 </body>
 </html>
