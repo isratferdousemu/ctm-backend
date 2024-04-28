@@ -8,7 +8,7 @@
         "php": "^8.0.2",
         "beyondcode/laravel-websockets": "^1.14",
         "carlos-meneses/laravel-mpdf": "^2.1",
-        "darkaonline/l5-swagger": "^8.0",
+        "dedoc/scramble": "^0.8.6",
         "guzzlehttp/guzzle": "^7.2",
         "infobip/infobip-api-php-client": "5.0.0",
         "jenssegers/agent": "^2.6",
