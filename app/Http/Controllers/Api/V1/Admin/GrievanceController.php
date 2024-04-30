@@ -193,8 +193,7 @@ class GrievanceController extends Controller
         $status = $request->query('status');
 
         $grievance = Grievance::query();
-        // dd($grievance);
-         $this->applyUserWiseGrievacne($grievance);
+        $this->applyUserWiseGrievacne($grievance);
         // dd($data->get());
 
         //  $grievance->with(['grievanceType', 'grievanceSubject', 'program', 'gender', 'district', 'districtPouroshova', 'cityCorporation',
@@ -206,6 +205,10 @@ class GrievanceController extends Controller
         //         $query->where('title_en', 'LIKE', '%' . $searchText . '%');
         //     })
         //     ->orderBy('id', 'asc');
+         $grievance->with('grievanceType', 'grievanceSubject', 'program', 'gender', 'district', 'districtPouroshova', 'cityCorporation')
+          ->orderBy('id')
+;
+
 
             return $grievance->paginate($perPage, ['*'], 'page', $page);
 

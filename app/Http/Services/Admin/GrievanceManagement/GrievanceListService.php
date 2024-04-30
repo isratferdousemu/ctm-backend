@@ -74,7 +74,7 @@ class GrievanceListService
                     if ($type == 1) {
 
                         if ($disPouroId = request('district_pouro_id')) {
-                            $query->where('district_pourashava_id', $disPouroId);
+                            $query->where('district_pouro_id', $disPouroId);
 
                             return $this->applyWardIdFilter($query);
 
@@ -141,14 +141,14 @@ class GrievanceListService
             //pourashava
             if ($subType == 1) {
                 $query->when(request('pouro_id'), function ($q, $v) {
-                    $q->where('pourashava_id', $v);
+                    $q->where('pouro_id', $v);
                 });
             }
 
             //union
             if ($subType == 2) {
                 $query->when(request('union_id'), function ($q, $v) {
-                    $q->where('permanent_union_id', $v);
+                    $q->where('union_id', $v);
                 });
             }
 
@@ -191,12 +191,12 @@ class GrievanceListService
         $districtId = $user->assign_location?->parent?->id;
         $divisionId = $user->assign_location?->parent?->parent_id;
 
-        $query->where('permanent_division_id', $divisionId)
-            ->where('permanent_district_id', $districtId)
-            ->where('permanent_upazila_id', $upazilaId)
+        $query->where('division_id', $divisionId)
+            ->where('district_id', $districtId)
+            ->where('upazila_id', $upazilaId)
         ;
 
-        $query->whereIn('permanent_ward_id', $user->userWards()->pluck('id'));
+        $query->whereIn('ward_id', $user->userWards()->pluck('id'));
 
         return $this->applySubLocationFilter($query);
 
