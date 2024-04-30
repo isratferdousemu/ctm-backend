@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Grievance extends Model
 {
     use HasFactory;
+    
 
  public function grievanceType()
     {
