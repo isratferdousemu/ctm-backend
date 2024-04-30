@@ -18,7 +18,7 @@ return new class extends Migration
             $table->tinyInteger('is_existing_beneficiary');
             $table->bigInteger('beneficiary_id')->unsigned()->index();
             $table->date('date_of_birth');
-            $table->tinyInteger('verification_type'); 
+            $table->tinyInteger('verification_type')->nullable(); 
             $table->string('verification_number', 16);
             // information
             $table->string('name');
