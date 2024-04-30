@@ -6,6 +6,7 @@ use App\Constants\ApiKey;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\Beneficiary\AccountRequest;
+use App\Http\Requests\Client\Beneficiary\GetListRequest;
 use App\Http\Requests\Client\Beneficiary\NomineeRequest;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
 use App\Http\Services\Client\ApiService;
@@ -27,9 +28,11 @@ class BeneficiaryController extends Controller
 
 
 
-    public function getBeneficiariesList(Request $request)
+    public function getBeneficiariesList(GetListRequest $request)
     {
         $columns = $this->apiService->hasPermission($request, ApiKey::BENEFICIARIES_LIST);
+
+        $this->apiService->validateColumnSearch($request, $columns);
 
         $beneficiaryList = $this->beneficiaryService->getList($request, $columns);
 

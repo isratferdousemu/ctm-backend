@@ -5,6 +5,8 @@ namespace App\Http\Services\Client;
 use App\Helpers\Helper;
 use App\Models\ApiDataReceive;
 use App\Models\ApiLog;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ApiService
 {
@@ -14,8 +16,8 @@ class ApiService
 
         try {
             $apiDataReceive = ApiDataReceive::where([
-                'username' => $request->header('username'),
-                'api_key' => $request->header('api_key')
+                'username' => $request->auth_key,
+                'api_key' => $request->auth_secret
             ])->first();
 
             abort_if(!$apiDataReceive,403, 'Unauthorized action');
@@ -24,9 +26,9 @@ class ApiService
 
             $apiLog->update(['api_data_receive_id' => $apiDataReceive->id]);
 
-            if ($apiDataReceive->whitelist_ip) {
-                abort_if($apiDataReceive->whitelist_ip != Helper::clientIp(), 403, 'Access denied');
-            }
+//            if ($apiDataReceive->whitelist_ip) {
+//                abort_if($apiDataReceive->whitelist_ip != Helper::clientIp(), 403, 'Access denied');
+//            }
 
             abort_if(now()->lt($apiDataReceive->start_date), 422, 'Access denied! Endpoint is not active yet.');
 
@@ -45,6 +47,27 @@ class ApiService
             $apiLog->update(['status' => 0]);
 
             throw $throwable;
+        }
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $columns
+     * @return void
+     */
+    public function validateColumnSearch($request, $columns)
+    {
+        $errors = [];
+
+        foreach ($request->except('auth_key', 'auth_secret') as $key => $i) {
+            if (!in_array($key, $columns)){
+                $errors[$key] = "You are not authorized to search by $key column.";
+            }
+        }
+
+        if ($errors) {
+            throw ValidationException::withMessages($errors);
         }
     }
 

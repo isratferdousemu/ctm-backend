@@ -118,7 +118,7 @@ class BeneficiaryService
         $beneficiary_id = $request->query('beneficiary_id');
         $nominee_name = $request->query('nominee_name');
         $account_number = $request->query('account_number');
-        $verification_number = $request->query('nid');
+        $nid = $request->query('nid');
         $status = $request->query('status');
 
         $perPage = in_array('perPage', $columns) ? $request->query('perPage') : 15;
@@ -140,8 +140,8 @@ class BeneficiaryService
             $query = $query->whereRaw('UPPER(nominee_en) LIKE "%' . strtoupper($nominee_name) . '%"');
         if ($account_number && in_array('account_number', $columns))
             $query = $query->where('account_number', $account_number);
-        if ($verification_number && in_array('verification_number', $columns))
-            $query = $query->where('verification_number', $verification_number);
+        if ($nid && in_array('nid', $columns))
+            $query = $query->where('verification_number', $nid);
         if ($status && in_array('status', $columns))
             $query = $query->where('status', $status);
 
