@@ -483,7 +483,7 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subGrievanceList,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 149, "name" => "grievanceLlist-create", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
+                    ["id" => 149, "name" => "grievance-list-create", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
                     ["id" => 150, "name" => "grievance-list-view", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
                     ["id" => 151, "name" => "grievance-list-edit", "page_url" => "/grievance-management/grievance-list/edit/:id", "parent_page" => 1],
                     ["id" => 152, "name" => "grievance-list-delete", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1]

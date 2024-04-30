@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Constants\ApplicationStatus;
-use App\Exceptions\AuthBasicErrorException;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Application\MobileOperatorRequest;
@@ -17,6 +16,7 @@ use App\Http\Services\Admin\Application\MobileOperatorService;
 use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Services\Admin\Application\VerificationService;
 use App\Http\Services\Admin\GrievanceManagement\GrievanceService;
+use App\Http\Services\Admin\GrievanceManagement\GrievanceListService;
 use App\Http\Services\Notification\SMSservice;
 use App\Http\Traits\BeneficiaryTrait;
 use App\Http\Traits\LocationTrait;
@@ -128,88 +128,6 @@ class GrievanceController extends Controller
         ], 200);
 
     }
-    public function onlineApplicationEditedRegistration(ApplicationUpdateRequest $request)
-    {
-        // return $request->all();
-
-        $allowance = AllowanceProgram::find($request->program_id);
-
-        // check is marital
-        if ($allowance) {
-            if ($allowance->is_age_limit == 1) {
-                // error code => applicant_marital_status
-                if (!in_array($request->gender_id, $allowance->ages->pluck('gender_id')->toArray())) {
-                    throw new AuthBasicErrorException(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        $this->applicantGenderTypeTextErrorCode,
-                        $this->applicationGenderTypeMessage
-                    );
-                } else {
-                    $data = [
-                        'nid' => $request->verification_number,
-                        'dob' => $request->date_of_birth,
-                    ];
-
-                    $nidInfo = (new VerificationService())->callVerificationApi($data);
-                    $genderAge = $allowance->ages->where('gender_id', $request->gender_id)->first();
-                    $minAge = $genderAge->min_age;
-                    $maxAge = $genderAge->max_age;
-                    // get current age form date_of_birth field
-                    $birthDate = $request->date_of_birth;
-                    $birthDate = explode("-", $birthDate);
-                    $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[1], $birthDate[2], $birthDate[0]))) > date("md")
-                        ? ((date("Y") - $birthDate[0]) - 1)
-                        : (date("Y") - $birthDate[0]));
-                    // return $genderAge;
-                    // 60 -90 => age is 73
-                    // age range is minAge to maxAge
-                    if ($age < $minAge || $age > $maxAge) {
-                        throw new AuthBasicErrorException(
-                            Response::HTTP_UNPROCESSABLE_ENTITY,
-                            $this->applicantAgeLimitTextErrorCode,
-                            $this->applicantAgeLimitMessage
-                        );
-                    }
-
-                }
-
-            }
-            if ($allowance->is_marital == 1) {
-                // error code =>
-                if ($allowance->marital_status != $request->marital_status) {
-                    throw new AuthBasicErrorException(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        $this->applicantMaritalStatusTextErrorCode,
-                        $this->applicantMaritalStatusMessage
-                    );
-                }
-            }
-
-        }
-        $data = [
-            'nid' => $request->nominee_verification_number,
-            'dob' => $request->nominee_date_of_birth,
-        ];
-
-        $nidInfo = (new VerificationService())->callNomineeVerificationApi($data);
-
-        // return gettype(json_decode($request->application_allowance_values)[19]->value);
-
-        $data = $this->applicationService->onlineApplicationEdit($request);
-
-        //  $message = "Congratulations! Your application has been submitted successfully. "."\n Your tracking ID is ".$data->application_id ."\n Save tracking ID for further tracking.";
-
-        // Log::info('password-'. $user->id, [$message]);
-
-        $this->SMSservice->sendSms($data->mobile, $message);
-        return response()->json([
-            'status' => true,
-            'data' => $data,
-            'id' => $data->application_id,
-            'message' => $this->insertSuccessMessage,
-        ], 200);
-
-    }
 
     public function getStatusyId(Request $request)
     {
@@ -274,30 +192,60 @@ class GrievanceController extends Controller
         $page = $request->query('page');
         $status = $request->query('status');
 
-        $grievanceSetting = Grievance::query()
-            ->with(['grievanceType', 'grievanceSubject','program','gender','district', 'districtPouroshova', 'cityCorporation',
-                'upazila', 'thana', 'union', 'pourashava', 'ward'])
-            ->where(function ($query) use ($searchText) {
-                // $query->where('first_tire_solution_time', 'LIKE', '%' . $searchText . '%')
-                //     ->orWhere('secound_tire_solution_time', 'LIKE', '%' . $searchText . '%')
-                //     ->orWhere('third_tire_solution_time', 'LIKE', '%' . $searchText . '%');
-            })
-            ->orWhereHas('grievanceType', function ($query) use ($searchText) {
-                $query->where('title_en', 'LIKE', '%' . $searchText . '%');
-            })
-            ->orWhereHas('grievanceSubject', function ($query) use ($searchText) {
-                $query->where('title_en', 'LIKE', '%' . $searchText . '%');
-            })
- 
+        $grievance = Grievance::query();
+        // dd($grievance);
+         $this->applyUserWiseGrievacne($grievance);
+        // dd($data->get());
 
-            ->orderBy('id', 'asc')
-            ->latest()
-            ->paginate($perPage, ['*'], 'page');
+        //  $grievance->with(['grievanceType', 'grievanceSubject', 'program', 'gender', 'district', 'districtPouroshova', 'cityCorporation',
+        //     'upazila', 'thana', 'union', 'pourashava', 'ward'])
+        //     ->orWhereHas('grievanceType', function ($query) use ($searchText) {
+        //         $query->where('title_en', 'LIKE', '%' . $searchText . '%');
+        //     })
+        //     ->orWhereHas('grievanceSubject', function ($query) use ($searchText) {
+        //         $query->where('title_en', 'LIKE', '%' . $searchText . '%');
+        //     })
+        //     ->orderBy('id', 'asc');
 
-        return GrievanceResource::collection($grievanceSetting)->additional([
-            'success' => true,
-            'message' => $this->fetchDataSuccessMessage,
-        ]);
+            return $grievance->paginate($perPage, ['*'], 'page', $page);
+
+            // ->orderBy('id', 'asc')
+            // ->latest()
+            // ->paginate($perPage, ['*'], 'page');
+            // dd($grievance);
+            // return $grievance;
+            // dd($grievance);
+
+        // return GrievanceResource::collection($grievance)->additional([
+        //     'success' => true,
+        //     'message' => $this->fetchDataSuccessMessage,
+        // ]);
+
+    }
+
+    public function applyUserWiseGrievacne($query)
+    {
+
+        // dd($query);
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+        // dd($user);
+
+        if ($user->hasRole($this->officeHead) && $user->office_type) {
+            // dd('ok');
+            return (new GrievanceListService())->getGrievance($query, $user);
+        }
+
+        if ($user->hasRole($this->committee) && $user->committee_type_id) {
+            return (new CommitteeApplicationService())->getApplications($query, $user);
+        }
+
+        if ($user->hasRole($this->superAdmin)) {
+            return (new OfficeApplicationService())->applyLocationTypeFilter(
+                query: $query,
+                divisionId: request('division_id'),
+                districtId: request('district_id')
+            );
+        }
 
     }
 
