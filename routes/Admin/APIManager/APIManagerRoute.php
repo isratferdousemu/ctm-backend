@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('dashboard/date-wise-count', [ApiDashboardController::class, 'dateWiseCount']);
 
             Route::get('send-email/{apiDataReceive}', [ApiDataReceiveController::class, 'sendEmail']);
+            Route::get('organization-list', [ApiDataReceiveController::class, 'getOrganizationList']);
 
         });
 

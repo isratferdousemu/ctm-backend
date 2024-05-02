@@ -139,6 +139,14 @@ class ApiDataReceiveController extends Controller
     }
 
 
+    public function getOrganizationList()
+    {
+        return $this->sendResponse(
+            ApiDataReceive::get(['id', 'organization_name'])
+        );
+    }
+
+
 
     public function sendEmail(ApiDataReceive $apiDataReceive)
     {
