@@ -12,7 +12,7 @@ Route::middleware('auth:sanctum')->group(function () {
 /* -----------------------------------Start Grienvace Type--------------------------------------- */
     Route::prefix('admin/grievanceType')->group(function () {
 
-        Route::get('/get',[GrievanceTypeController::class, 'getAllTypePaginated'])->middleware(['role_or_permission:super-admin|grievanceType-create']);
+        Route::get('/get',[GrievanceTypeController::class, 'getAllTypePaginated'])->middleware(['role_or_permission:super-admin|grievanceType-view']);
         Route::post('/store', [GrievanceTypeController::class, 'store'])->middleware(['role_or_permission:super-admin|grievanceType-create']);
         Route::get('/edit/{id}', [GrievanceTypeController::class, 'edit'])->middleware(['role_or_permission:super-admin|grievanceType-edit']);
         Route::post('/update', [GrievanceTypeController::class, 'update'])->middleware(['role_or_permission:super-admin|grievanceType-edit']);
@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 /* -----------------------------------Start Grienvace Subject--------------------------------------- */
 Route::prefix('admin/grievanceSubject')->group(function () {
-    Route::get('/get', [GrievanceSubjectController::class, 'getAll'])->middleware(['role_or_permission:super-admin|grievanceSubject-create']);
+    Route::get('/get', [GrievanceSubjectController::class, 'getAll'])->middleware(['role_or_permission:super-admin|grievanceSubject-view']);
     Route::post('/store', [GrievanceSubjectController::class, 'store'])->middleware(['role_or_permission:super-admin|grievanceSubject-create']);
     Route::get('/edit/{id}', [GrievanceSubjectController::class, 'edit'])->middleware(['role_or_permission:super-admin|grievanceSubject-edit']);
     Route::post('/update', [GrievanceSubjectController::class, 'update'])->middleware(['role_or_permission:super-admin|grievanceSubject-edit']);
@@ -35,7 +35,7 @@ Route::prefix('admin/grievanceSubject')->group(function () {
 
 /* -----------------------------------Start Grienvace Settings--------------------------------------- */
 Route::prefix('admin/grievanceSetting')->group(function () {
-    Route::get('/get', [GrievanceSettingController::class, 'getAll'])->middleware(['role_or_permission:super-admin|grievance-setting-create']);
+    Route::get('/get', [GrievanceSettingController::class, 'getAll'])->middleware(['role_or_permission:super-admin|grievanceSetting-view']);
     Route::post('/store', [GrievanceSettingController::class, 'store'])->middleware(['role_or_permission:super-admin|grievance-setting-create']);
     Route::get('/edit/{id}', [GrievanceSettingController::class, 'edit'])->middleware(['role_or_permission:super-admin|grievance-setting-edit']);
     Route::post('/update', [GrievanceSettingController::class, 'update'])->middleware(['role_or_permission:super-admin|grievance-setting-edit']);
@@ -46,8 +46,9 @@ Route::prefix('admin/grievanceSetting')->group(function () {
 });
 /* -----------------------------------Start Grienvace Settings--------------------------------------- */
 Route::prefix('admin/grievance')->group(function () {
-   Route::get('/get', [GrievanceController::class, 'getAllGrievancePaginated'])->middleware(['role_or_permission:super-admin|application-entry-view']);
-   Route::get('get/{id}', [GrievanceController::class, 'getApplicationById'])->middleware(['role_or_permission:super-admin|application-entry-view']);
+   Route::get('/get', [GrievanceController::class, 'getAllGrievancePaginated'])->middleware(['role_or_permission:super-admin|grievanceList-view']);
+//    Route::get('/get', [GrievanceController::class, 'getAllGrievancePaginated']);
+   Route::get('get/{id}', [GrievanceController::class, 'getApplicationById'])->middleware(['role_or_permission:super-admin|grievance-list-view']);
    Route::get('/permissions', [GrievanceController::class, 'getApplicationPermission']);
    Route::get('/committee-list', [GrievanceController::class, 'getCommitteeList']);
    Route::post('/update-status', [GrievanceController::class, 'changeApplicationsStatus'])->middleware(['role_or_permission:super-admin|application-entry-edit']);

@@ -472,10 +472,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subGrievanceSetting,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 145, "name" => "grievance-setting-create", "page_url" => "/grievance-management/settings", "parent_page" => 1],
-                    ["id" => 146, "name" => "grievance-setting-view", "page_url" => "/grievance-management/grievance-setting", "parent_page" => 1],
-                    ["id" => 147, "name" => "grievance-setting-edit", "page_url" => "/grievance-management/grievance-setting/edit/:id", "parent_page" => 1],
-                    ["id" => 148, "name" => "grievance-setting-delete", "page_url" => "/grievance-management/grievance-setting", "parent_page" => 1]
+                    ["id" => 145, "name" => "grievanceSetting-view", "page_url" => "/grievance-management/settings", "parent_page" => 1],
+                    ["id" => 146, "name" => "grievanceSetting-create", "page_url" => "/grievance-management/grievance-setting", "parent_page" => 1],
+                    ["id" => 147, "name" => "grievanceSetting-edit", "page_url" => "/grievance-management/grievance-setting/edit/:id", "parent_page" => 1],
+                    ["id" => 148, "name" => "grievanceSetting-delete", "page_url" => "/grievance-management/grievance-setting", "parent_page" => 1]
                 ]
             ],
             [
@@ -483,10 +483,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subGrievanceList,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 149, "name" => "grievanceLlist-create", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
-                    ["id" => 150, "name" => "grievance-list-view", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
-                    ["id" => 151, "name" => "grievance-list-edit", "page_url" => "/grievance-management/grievance-list/edit/:id", "parent_page" => 1],
-                    ["id" => 152, "name" => "grievance-list-delete", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1]
+                    ["id" => 149, "name" => "grievanceList-create", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
+                    ["id" => 150, "name" => "grievanceList-view", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
+                    ["id" => 151, "name" => "grievanceList-edit", "page_url" => "/grievance-management/list/edit/:id", "parent_page" => 1],
+                    ["id" => 152, "name" => "grievanceList-delete", "page_url" => "/grievance-management/list", "parent_page" => 1]
                 ]
             ],
              [
@@ -500,13 +500,13 @@ class PermissionSeeder extends Seeder
             ],
              [
                 'module_name' => $this->modulePermissionGrievanceManagement,
-                'sub_module_name' => $this->subGrievanceType,
+                'sub_module_name' => $this->modulePermissionGrievanceManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 217, "name" => "grievanceType-create", "page_url" => "/grievance-management/type", "parent_page" => 1],
-                    ["id" => 218, "name" => "grievanceType-view", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
-                    ["id" => 219, "name" => "grievanceType-edit", "page_url" => "/grievance-management/grievance-list/edit/:id", "parent_page" => 1],
-                    ["id" => 220, "name" => "grievanceType-delete", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1]
+                    ["id" => 217, "name" => "grievanceType-view", "page_url" => "/grievance-management/grievance-types", "parent_page" => 1],
+                    ["id" => 218, "name" => "grievanceType-create", "page_url" => "/grievance-management/type-view", "parent_page" => 1],
+                    ["id" => 219, "name" => "grievanceType-edit", "page_url" => "/grievance-management/type/edit/:id", "parent_page" => 1],
+                    ["id" => 220, "name" => "grievanceType-delete", "page_url" => "/grievance-management/type-delete", "parent_page" => 1]
                 ]
             ],
              [
@@ -514,10 +514,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subGrievanceSubject,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 221, "name" => "grievanceSubject-create", "page_url" => "/grievance-management/subject", "parent_page" => 1],
-                    ["id" => 222, "name" => "grievanceSubject-view", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1],
-                    ["id" => 223, "name" => "grievanceSubject-edit", "page_url" => "/grievance-management/grievance-list/edit/:id", "parent_page" => 1],
-                    ["id" => 224, "name" => "grievanceSubject-delete", "page_url" => "/grievance-management/grievance-list", "parent_page" => 1]
+                    ["id" => 221, "name" => "grievanceSubject-view", "page_url" => "/grievance-management/subject", "parent_page" => 1],
+                    ["id" => 222, "name" => "grievanceSubject-create", "page_url" => "/grievance-management/subject-view", "parent_page" => 1],
+                    ["id" => 223, "name" => "grievanceSubject-edit", "page_url" => "/grievance-management/subject/edit/:id", "parent_page" => 1],
+                    ["id" => 224, "name" => "grievanceSubject-delete", "page_url" => "/grievance-management/subject-delete", "parent_page" => 1]
                 ]
             ],
 
