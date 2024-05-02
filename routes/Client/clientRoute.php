@@ -20,12 +20,13 @@ Route::prefix('client')->group(function () {
     Route::get('/program',[GlobalController::class, 'getAllProgram']);
     Route::get('/division/get',[GlobalController::class, 'getAllDivision']);
     Route::get('/district/get/{division_id}',[GlobalController::class, 'getAllDistrictByDivisionId']);
-    Route::get('/union/get/{thana_id}',[GlobalController::class, 'getAllUnionByThanaId']);
-    Route::get('/union/pouro/get/{upazila_id}',[GlobalController::class, 'getAllPouroByThanaId']);
-    Route::get('/thana/get/{district_id}',[GlobalController::class, 'getAllThanaByDistrictId']);
-    Route::get('/city/get/{district_id}/{location_type}',[GlobalController::class, 'getAllCityByDistrictId']);
+    Route::get('/city/get/{district_id}',[GlobalController::class, 'getAllCityByDistrictId']);
+    Route::get('/upazila/get/{district_id}',[GlobalController::class, 'getAllThanaByDistrictId']);
+    Route::get('/district-pourashava/get/{district_id}',[GlobalController::class, 'getAllDistrictPourashavaByDistrictId']);
     Route::get('/thana/get/city/{city_id}',[GlobalController::class, 'getAllThanaByCityId']);
-    Route::get('/ward/get/thana/{thana_id}',[GlobalController::class, 'getAllWardByThanaId']);
+    Route::get('/union/get/{upazila_id}',[GlobalController::class, 'getAllUnionByThanaId']);
+    Route::get('/union/pouro/get/{upazila_id}',[GlobalController::class, 'getAllPouroByThanaId']);
+    Route::get('/ward/get/{location_id}',[GlobalController::class, 'getAllWardByUnionId']);
 
 });
 

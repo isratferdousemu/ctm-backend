@@ -22,15 +22,14 @@ class NomineeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //Authentication key
+            //Auth Key
             'auth_key' => 'required|string',
+            //Auth Secret
             'auth_secret' => 'required|string',
             'nominee_en' => 'nullable|string',
             'nominee_bn' => 'nullable|string',
             'nominee_verification_number' => 'nullable',
             'nominee_address' => 'nullable|string',
-//            'nominee_image' => 'nullable|mimes:jpeg,jpg,png|max:2048',
-//            'nominee_signature' => 'nullable|mimes:jpeg,jpg,png|max:2048',
             'nominee_relation_with_beneficiary' => 'nullable|string',
             'nominee_nationality' => 'nullable|string',
         ];

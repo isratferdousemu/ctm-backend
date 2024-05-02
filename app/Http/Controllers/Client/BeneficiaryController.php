@@ -15,7 +15,9 @@ use App\Http\Traits\MessageTrait;
 use App\Models\ApiDataReceive;
 use App\Models\Application;
 use App\Models\Beneficiary;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 class BeneficiaryController extends Controller
@@ -27,7 +29,14 @@ class BeneficiaryController extends Controller
     }
 
 
-
+    /**
+     * Get beneficiaries list
+     *
+     * Retrieves list of beneficiaries based on the provided request parameters.
+     * @param GetListRequest $request
+     * @return AnonymousResourceCollection
+     * @throws \Throwable
+     */
     public function getBeneficiariesList(GetListRequest $request)
     {
         $columns = $this->apiService->hasPermission($request, ApiKey::BENEFICIARIES_LIST);
@@ -43,12 +52,25 @@ class BeneficiaryController extends Controller
     }
 
 
-
-
-
-    public function getBeneficiaryById($beneficiary_id)
+    /**
+     * Get beneficiary by tracking id
+     *
+     * Fetch beneficiary details by beneficiary tracking id
+     * @param Request $request
+     * @param $beneficiary_id
+     * @return BeneficiaryResource|JsonResponse
+     * @throws \Throwable
+     */
+    public function getBeneficiaryById(Request $request, $beneficiary_id)
     {
-        $columns = $this->apiService->hasPermission(request(), ApiKey::BENEFICIARY_BY_BENEFICIARY_ID);
+        $request->validate([
+            //Auth key
+            'auth_key' => 'required',
+            //Secret key
+            'auth_secret' => 'required',
+        ]);
+
+        $columns = $this->apiService->hasPermission($request, ApiKey::BENEFICIARY_BY_BENEFICIARY_ID);
 
         $beneficiary = Beneficiary::with('program')
             ->where('beneficiary_id', $beneficiary_id)
@@ -69,9 +91,15 @@ class BeneficiaryController extends Controller
     }
 
 
-
-
-
+    /**
+     * Update beneficiary nominee information
+     *
+     * Update beneficiary nominee information
+     * @param NomineeRequest $request
+     * @param $beneficiary_id
+     * @return BeneficiaryResource|JsonResponse
+     * @throws \Throwable
+     */
     public function updateNomineeInfo(NomineeRequest $request, $beneficiary_id)
     {
         $columns = $this->apiService->hasPermission($request, ApiKey::BENEFICIARY_NOMINEE_UPDATE);
@@ -101,8 +129,15 @@ class BeneficiaryController extends Controller
     }
 
 
-
-
+    /**
+     * Update beneficiary account information
+     *
+     * Update beneficiary account information
+     * @param AccountRequest $request
+     * @param $beneficiary_id
+     * @return BeneficiaryResource|JsonResponse
+     * @throws \Throwable
+     */
     public function updateAccountInfo(AccountRequest $request, $beneficiary_id)
     {
         $columns = $this->apiService->hasPermission($request, ApiKey::BENEFICIARY_ACCOUNT_UPDATE);

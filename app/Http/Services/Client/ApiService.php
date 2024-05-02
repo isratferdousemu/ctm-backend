@@ -26,19 +26,19 @@ class ApiService
 
             $apiLog->update(['api_data_receive_id' => $apiDataReceive->id]);
 
-//            if ($apiDataReceive->whitelist_ip) {
-//                abort_if($apiDataReceive->whitelist_ip != Helper::clientIp(), 403, 'Access denied');
-//            }
+            if ($apiDataReceive->whitelist_ip) {
+                abort_if($apiDataReceive->whitelist_ip != Helper::clientIp(), 403, 'Access denied');
+            }
 
             abort_if(now()->lt($apiDataReceive->start_date), 422, 'Access denied! Endpoint is not active yet.');
 
             if ($apiDataReceive->end_date) {
-                abort_if(now()->gt($apiDataReceive->end_date), 422, 'Access denied! Endpoint is no longer active.');
+                abort_if(now()->subDay()->gt($apiDataReceive->end_date), 422, 'Access denied! Endpoint is no longer active.');
             }
 
             $apiList = $apiDataReceive->apiList()->where('api_unique_id', $apiName)->first();
 
-            abort_if(!$apiList,403, 'Unauthorized action');
+            abort_if(!$apiList,403, 'You are no authorized to access this endpoint!');
 
             $apiLog->update(['api_list_id' => $apiList->id]);
 
@@ -62,7 +62,7 @@ class ApiService
 
         foreach ($request->except('auth_key', 'auth_secret') as $key => $i) {
             if (!in_array($key, $columns)){
-                $errors[$key] = "You are not authorized to search by $key column.";
+                $errors[$key] = "You are not authorized to access $key column.";
             }
         }
 
