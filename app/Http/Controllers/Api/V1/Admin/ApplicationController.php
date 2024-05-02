@@ -138,7 +138,7 @@ class ApplicationController extends Controller
         $data = (new VerificationService)->callVerificationApi($data);
 
         $gender_id='';
-        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first(); 
+        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first();
         if($data['gender']=='পুরুষ'){
             $gender_id= $Lookup['id'];
         }else{
@@ -163,7 +163,7 @@ class ApplicationController extends Controller
                       ->orWhere('verification_number', '=',$request->nid)
                       ->Where('date_of_birth', '=',  $request->date_of_birth)
                       ->first();
-                      
+
         return response()->json([
             'status' => true,
             'data' => $application,
@@ -177,7 +177,7 @@ class ApplicationController extends Controller
     public function verifyAge($nidInfo)
     {
         $gender_id='';
-        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first(); 
+        $Lookup=Lookup::where('value_bn','পুরুষ')->orWhere('value_en','male')->first();
         if($nidInfo['gender']=='পুরুষ'){
             $gender_id= $Lookup['id'];
         }else{
@@ -495,7 +495,7 @@ class ApplicationController extends Controller
         $application = Application::find($id);
 
     if (!$application) {
-       
+
         return response()->json(['error' => 'Application not found'], Response::HTTP_NOT_FOUND);
     }
         $programName = AllowanceProgram::where('id',$application->program_id)->first('name_en');
@@ -759,14 +759,9 @@ class ApplicationController extends Controller
 
         }
 
-
-
-
         $query = Application::query();
 
         $this->applyUserWiseFiltering($query);
-
-
 
         $query->when($searchText, function ($q) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayMotherNameEn, $filterArrayMotherNameBn, $filterArrayFatherNameEn, $filterArrayFatherNameBn) {
             $q->where($filterArrayNameEn)
@@ -808,19 +803,30 @@ class ApplicationController extends Controller
             $q->where($filterArrayAccountNo);
         });
 
-
-
             if ($request->has('status')) {
                 $query->where('status', $request->status);
             }
 
+        if ($request->has('gender_id')) {
+            $query->where('gender_id', $request->gender_id);
+        }
+        if ($request->has('account_type')) {
+            $query->where('account_type', $request->account_type);
+        }
+
+        if ($request->has('age_range')) {
+            $ageRange = $request->age_range;
+            if (count($ageRange) === 2) {
+                $query->whereBetween('age', $ageRange);
+            } elseif (count($ageRange) === 1) {
+                $query->where('age', $ageRange[0]);
+            }
+        }
 
         $query->with('current_location', 'permanent_location.parent.parent.parent.parent', 'program',
             'gender', 'pmtScore'
         )
-         ->orderBy('score')
-        ;
-
+         ->orderBy('score');
 
         return $query->paginate($perPage, ['*'], 'page',$page);
     }
@@ -1824,7 +1830,7 @@ class ApplicationController extends Controller
 
         $query->whereNot('status', ApplicationStatus::REJECTED)
             ->whereNot('status', ApplicationStatus::APPROVE);
-        
+
         DB::beginTransaction();
         try {
             $this->updateApplications($request, $user, $query->get());
@@ -1942,7 +1948,7 @@ class ApplicationController extends Controller
             [
                 "application_table_id" => $application->id
             ],
-             
+
              [
                 "program_id" => $application->program_id,
                 "application_id" => $application->application_id,
