@@ -22,6 +22,7 @@ class BeneficiaryResource extends JsonResource
             "id" => $this->id,
             "program_id" => $this->program_id,
             'program' => AllowanceResource::make($this->whenLoaded('program')),
+            "beneficiary_id" => $this->beneficiary_id,
             "application_id" => $this->application_id,
             "name_en" => $this->name_en,
             "name_bn" => $this->name_bn,

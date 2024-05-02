@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Client;
 
 use App\Constants\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Client\Application\GetListRequest;
 use App\Http\Services\Client\ApiService;
 use App\Models\ApiDataReceive;
 use App\Models\Application;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use LaravelIdea\Helper\App\Models\_IH_Application_C;
 
 class ApplicationController extends Controller
 {
@@ -17,9 +21,17 @@ class ApplicationController extends Controller
     {
     }
 
-    public function getAllApplicationPaginated(Request $request)
+    /**
+     * Get application list
+     *
+     * @param GetListRequest $request
+     * @return Application[]|LengthAwarePaginator|\Illuminate\Pagination\LengthAwarePaginator|_IH_Application_C
+     * @throws \Throwable
+     */
+    public function getAllApplicationPaginated(GetListRequest $request)
     {
         $columns = $this->apiService->hasPermission($request, ApiKey::APPLICATION_LIST);
+        $this->apiService->validateColumnSearch($request, $columns);
 
         $searchText = $request->query('searchText');
         $application_id = $request->query('application_id');
@@ -151,10 +163,23 @@ class ApplicationController extends Controller
     }
 
 
-
-
-    public function getApplicationById($id)
+    /**
+     * Find application by application id
+     *
+     * Find application by application id
+     * @param $id
+     * @return JsonResponse
+     * @throws \Throwable
+     */
+    public function getApplicationById(Request $request, $id)
     {
+        $request->validate([
+            //Auth key
+            'auth_key' => 'required',
+            //Secret key
+            'auth_secret' => 'required',
+        ]);
+
         $columns = $this->apiService->hasPermission(request(), ApiKey::APPLICATION_BY_ID);
 
         $application = Application::where('application_id', '=', $id)

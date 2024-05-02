@@ -186,7 +186,7 @@ return [
          * Package Service Providers...
          */
         App\Providers\TelescopeServiceProvider::class,
-        L5Swagger\L5SwaggerServiceProvider::class,
+//        L5Swagger\L5SwaggerServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Mccarlosen\LaravelMpdf\LaravelMpdfServiceProvider::class,

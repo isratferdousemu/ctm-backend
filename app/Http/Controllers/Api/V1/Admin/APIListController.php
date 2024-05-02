@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\API\ApiListRequest;
 use App\Models\ApiList;
 use App\Models\ApiModule;
+use App\Models\ApiSelect;
 use Illuminate\Support\Facades\Schema;
 
 class APIListController extends Controller
@@ -100,7 +101,7 @@ class APIListController extends Controller
         $apiList->selected_columns = $request->selected_columns;
         $apiList->save();
 
-        Helper::activityLogInsert($apiList, $beforeUpdate,'Api List','Api List Updated !');
+        Helper::activityLogUpdate($apiList, $beforeUpdate,'Api List','Api List Updated !');
 
 
         return $this->sendResponse($apiList, 'API updated successfully');
@@ -111,6 +112,8 @@ class APIListController extends Controller
      */
     public function destroy(ApiList $apiList)
     {
+        ApiSelect::where('api_list_id', $apiList->id)->delete();
+
         $apiList->delete();
 
         Helper::activityLogDelete($apiList, '','Api List','Api List Deleted !');

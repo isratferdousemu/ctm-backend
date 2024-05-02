@@ -5,6 +5,8 @@ namespace App\Http\Services\Client;
 use App\Helpers\Helper;
 use App\Models\ApiDataReceive;
 use App\Models\ApiLog;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ApiService
 {
@@ -14,8 +16,8 @@ class ApiService
 
         try {
             $apiDataReceive = ApiDataReceive::where([
-                'username' => $request->header('username'),
-                'api_key' => $request->header('api_key')
+                'username' => $request->auth_key,
+                'api_key' => $request->auth_secret
             ])->first();
 
             abort_if(!$apiDataReceive,403, 'Unauthorized action');
@@ -31,12 +33,12 @@ class ApiService
             abort_if(now()->lt($apiDataReceive->start_date), 422, 'Access denied! Endpoint is not active yet.');
 
             if ($apiDataReceive->end_date) {
-                abort_if(now()->gt($apiDataReceive->end_date), 422, 'Access denied! Endpoint is no longer active.');
+                abort_if(now()->subDay()->gt($apiDataReceive->end_date), 422, 'Access denied! Endpoint is no longer active.');
             }
 
             $apiList = $apiDataReceive->apiList()->where('api_unique_id', $apiName)->first();
 
-            abort_if(!$apiList,403, 'Unauthorized action');
+            abort_if(!$apiList,403, 'You are no authorized to access this endpoint!');
 
             $apiLog->update(['api_list_id' => $apiList->id]);
 
@@ -45,6 +47,27 @@ class ApiService
             $apiLog->update(['status' => 0]);
 
             throw $throwable;
+        }
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $columns
+     * @return void
+     */
+    public function validateColumnSearch($request, $columns)
+    {
+        $errors = [];
+
+        foreach ($request->except('auth_key', 'auth_secret') as $key => $i) {
+            if (!in_array($key, $columns)){
+                $errors[$key] = "You are not authorized to access $key column.";
+            }
+        }
+
+        if ($errors) {
+            throw ValidationException::withMessages($errors);
         }
     }
 
