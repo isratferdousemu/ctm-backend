@@ -15,8 +15,10 @@ use App\Http\Services\Admin\Application\CommitteeListService;
 use App\Http\Services\Admin\Application\MobileOperatorService;
 use App\Http\Services\Admin\Application\OfficeApplicationService;
 use App\Http\Services\Admin\Application\VerificationService;
+use App\Http\Services\Admin\GrievanceManagement\GrievanceComitteeService;
 use App\Http\Services\Admin\GrievanceManagement\GrievanceService;
 use App\Http\Services\Admin\GrievanceManagement\GrievanceListService;
+use App\Http\Services\Admin\GrievanceManagement\OfficeGrievanceService;
 use App\Http\Services\Notification\SMSservice;
 use App\Http\Traits\BeneficiaryTrait;
 use App\Http\Traits\LocationTrait;
@@ -76,7 +78,7 @@ class GrievanceController extends Controller
                 return response()->json([
                     'status' => false,
                     'data' => $data,
-                    'message' => 'Beneficiary ID datch Not Match !!',
+                    'message' => "Beneficiary ID Doesn't Match !!",
                 ], 300);
 
             }
@@ -229,7 +231,7 @@ class GrievanceController extends Controller
     public function applyUserWiseGrievacne($query)
     {
 
-        // dd($query);
+        // dd($query->get());
         $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
         // dd($user);
 
@@ -239,11 +241,11 @@ class GrievanceController extends Controller
         }
 
         if ($user->hasRole($this->committee) && $user->committee_type_id) {
-            return (new CommitteeApplicationService())->getApplications($query, $user);
+            return (new GrievanceComitteeService())->getGrievance($query, $user);
         }
 
         if ($user->hasRole($this->superAdmin)) {
-            return (new OfficeApplicationService())->applyLocationTypeFilter(
+            return (new OfficeGrievanceService())->applyLocationTypeFilter(
                 query: $query,
                 divisionId: request('division_id'),
                 districtId: request('district_id')
