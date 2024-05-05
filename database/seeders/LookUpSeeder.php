@@ -79,6 +79,10 @@ class LookUpSeeder extends Seeder
             ['id' => 49, 'type' => 23, 'value_en' => 'By Poverty Score', 'value_bn' => 'দারিদ্র্য সূচক অনুসারে', 'keyword' => 'BY_POVERTY_SCORE', 'default' => 1],
             ['id' => 50, 'type' => 23, 'value_en' => 'By Population', 'value_bn' => 'জনসংখ্যা অনুসারে', 'keyword' => 'BY_POPULATION', 'default' => 1],
 
+            //Trainer Designation
+            ['id' => 51, 'type' => 24, 'value_en' => 'Senior trainer', 'value_bn' => 'ঊর্ধ্বতন প্রশিক্ষক', 'default' => 1],
+            ['id' => 52, 'type' => 24, 'value_en' => 'Trainer', 'value_bn' => 'প্রশিক্ষক', 'default' => 1],
+
         ];
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

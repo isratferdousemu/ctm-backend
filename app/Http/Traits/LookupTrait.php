@@ -46,6 +46,7 @@ trait LookupTrait
             ['id' => 18, 'name' => 'Organization'],
             ['id' => 19, 'name' => 'Designation'],
             ['id' => 20, 'name' => 'Class'],
+            ['id' => 24, 'name' => 'Trainer Designation'],
         ];
 
         return collect($types);
