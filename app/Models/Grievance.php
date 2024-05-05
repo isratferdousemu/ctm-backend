@@ -23,6 +23,10 @@ class Grievance extends Model
         return $this->belongsTo(AllowanceProgram::class,'program_id','id');
     }  
     
+   public function division()
+    {
+        return $this->belongsTo(Location::class, 'division_id', 'id');
+    }
     public function district()
     {
         return $this->belongsTo(Location::class, 'district_id', 'id');

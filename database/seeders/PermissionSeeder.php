@@ -503,7 +503,7 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->modulePermissionGrievanceManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 217, "name" => "grievanceType-view", "page_url" => "/grievance-management/grievance-types", "parent_page" => 1],
+                    ["id" => 217, "name" => "grievanceType-view", "page_url" => "/grievance-management/type", "parent_page" => 1],
                     ["id" => 218, "name" => "grievanceType-create", "page_url" => "/grievance-management/type-view", "parent_page" => 1],
                     ["id" => 219, "name" => "grievanceType-edit", "page_url" => "/grievance-management/type/edit/:id", "parent_page" => 1],
                     ["id" => 220, "name" => "grievanceType-delete", "page_url" => "/grievance-management/type-delete", "parent_page" => 1]
