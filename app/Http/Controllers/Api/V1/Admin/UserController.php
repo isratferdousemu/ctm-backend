@@ -118,6 +118,134 @@ class UserController extends Controller
     $perPage = $request->query('perPage');
     $page = $request->query('page');
 
+    $userType = $request->query('user_type');
+    $officeType = $request->query('office_type');
+    $committeeType = $request->query('committee_type');
+    $divisionId = $request->query('division_id');
+    $districtId = $request->query('district_id');
+    $upazilaId = $request->query('upazila_id');
+    $thanaId = $request->query('thana_id');
+    $office_id = $request->query('office_id');
+    $committeeId = $request->query('committee_id');
+    $cityCorpoId = $request->query('city_corpo_id');
+    $paurashavaId = $request->query('paurashava_id');
+    $startDate = $request->from_date;
+    $endDate = $request->to_date;
+
+
+    $data = User::query()
+        ->with(['office','assign_location.parent.parent.parent.parent','officeTypeInfo','roles', 'committee', 'userWards', 'assign_location'])
+        ->orderByDesc('id');
+
+        if ($startDate && $endDate) {
+            $data->whereBetween('created_at', [$startDate, $endDate])
+                ->orWhere('created_at',$startDate);
+
+        }
+
+    if ($request->filled('user_type')) {
+        if($userType == 1){
+            $data->where('user_type', 2)->whereNull('committee_type_id')->whereNotNull('office_type');
+        }
+        if($userType == 2){
+            $data->where('user_type', 2)->whereNotNull('committee_type_id')->whereNull('office_type');
+        }
+        if($userType == 3){
+            $data->where('user_type', 1)->whereNull('committee_type_id')->whereNull('office_type');
+        }
+    }
+    if ($request->filled('office_type')) {
+        $data->where('office_type',$officeType);
+
+    }
+    if ($request->filled('committee_type')) {
+        $data->where('committee_type_id',$committeeType);
+    }
+    if ($request->filled('division_id')) {
+
+        if($userType == 1){
+            $data->where('user_type', 2)->whereNull('committee_type_id')->whereNotNull('office_type')
+                ->where('office_type',$officeType)
+                ->whereHas('assign_location', function ($query) use ($divisionId) {
+                    $query->where('id',$divisionId)
+                        ->orWhere('parent_id',$divisionId)
+                        ->orWhereHas('parent', function ($query) use ($divisionId) {
+                            $query->where('id', $divisionId)
+                                ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                    $query->where('id', $divisionId)
+                                        ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                            $query->where('id', $divisionId);
+                                        });
+                                });
+                        });
+                })
+
+            ;
+        }
+        if($userType == 2){
+            $data->where('user_type', 2)->whereNotNull('committee_type_id')->whereNull('office_type')
+                ->where('committee_type_id',$committeeType)
+                ->whereHas('assign_location', function ($query) use ($divisionId) {
+                    $query->where('id',$divisionId)
+                        ->orWhere('parent_id',$divisionId)
+                        ->orWhereHas('parent', function ($query) use ($divisionId) {
+                            $query->where('id', $divisionId)
+                                ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                    $query->where('id', $divisionId)
+                                        ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                            $query->where('id', $divisionId);
+                                        });
+                                });
+                        });
+                });
+
+        }
+    }
+
+        if ($request->filled('district_id')) {
+            $data->whereHas('assign_location', function ($query) use ($districtId) {
+                $query->where('id',$districtId)
+                ->orWhere('parent_id',$districtId);
+            });
+        }
+
+        if ($request->filled('upazila_id')) {
+            $data->whereHas('assign_location', function ($query) use ($upazilaId) {
+                $query->where('id',$upazilaId)
+                    ->orWhere('parent_id',$upazilaId);
+            });
+        }
+
+        if ($request->filled('thana_id')) {
+            $data->whereHas('assign_location', function ($query) use ($thanaId) {
+                $query->where('id',$thanaId)
+                    ->orWhere('parent_id',$thanaId);
+            });
+        }
+
+        if ($request->filled('city_corpo_id')) {
+            $data->whereHas('assign_location', function ($query) use ($cityCorpoId) {
+                $query->where('id',$cityCorpoId)
+                    ->orWhere('parent_id',$cityCorpoId);
+            });
+        }
+
+        if ($request->filled('paurashava_id')) {
+            $data->whereHas('assign_location', function ($query) use ($paurashavaId) {
+                $query->where('id',$paurashavaId)
+                    ->orWhere('parent_id',$paurashavaId);
+            });
+        }
+
+
+        if ($request->filled('office_id')) {
+            $data->where('office_id',$office_id);
+        }
+        if ($request->filled('committee_id')) {
+            $data->where('committee_id',$committeeId);
+        }
+
+
     $filterArrayName=[];
     $filterArrayUserName=[];
     $filterArrayUserId=[];
@@ -136,7 +264,7 @@ class UserController extends Controller
 
 
         // check this user is super-admin or not if not then check this user is office head or not if yes then get users under this office
-    $users = User::where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
+        $data->where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
         $query->where($filterArrayName)
               ->orWhere($filterArrayUserName)
 //              ->orWhere($filterArrayUserId)
@@ -145,10 +273,10 @@ class UserController extends Controller
               ->orWhere($filterArrayPhone)
         ;
     })
-        ->whereIn('id', $this->officeHeadService->getUsersUnderOffice())
-    ->with('office','assign_location.parent.parent.parent.parent','officeTypeInfo','roles', 'committee', 'userWards')
-    ->orderByDesc('id')
-    ->paginate($perPage, ['*'], 'page');
+        ->whereIn('id', $this->officeHeadService->getUsersUnderOffice());
+
+
+    $users = $data->paginate($perPage, ['*'], 'page');
 // }
     return $users;
     return UserResource::collection($users)->additional([
