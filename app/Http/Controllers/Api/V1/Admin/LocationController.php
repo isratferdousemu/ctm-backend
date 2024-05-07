@@ -2125,7 +2125,9 @@ class LocationController extends Controller
             ->select(
                 'locations.*',
             )
-
+            ->when(str_contains($searchText, '%'), function ($q) {
+                $q->whereNull('locations.id');
+            })
             //searching
             ->where(function ($query) use (
                 $filterArrayNameEn,
@@ -2882,6 +2884,10 @@ class LocationController extends Controller
                 // 'parent.location_type as parent_location_type'
                 // 'district.name_en AS district_name'
             )
+
+            ->when(str_contains($searchText, '%'), function ($q) {
+                $q->whereNull('locations.id');
+            })
 
             //searching
 
