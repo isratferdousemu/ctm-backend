@@ -106,6 +106,7 @@ class LocationController extends Controller
         $sortBy = $request->query('sortBy') ?? 'name_en';
         $orderBy = $request->query('orderBy') ?? 'asc';
 
+
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
         $filterArrayCode = [];
@@ -121,12 +122,16 @@ class LocationController extends Controller
             }
         }
         $division = Location::query()
+            ->when(str_contains($searchText, '%'), function ($q) {
+                $q->whereId(null);
+            })
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
                 $query->where($filterArrayNameEn)
                     ->orWhere($filterArrayNameBn)
                     ->orWhere($filterArrayCode);
             })
             ->whereParentId(null)
+            ->withCount('children')
             // ->latest()
             ->orderBy($sortBy, $orderBy)
             ->paginate($perPage, ['*'], 'page', $page);
@@ -522,6 +527,9 @@ class LocationController extends Controller
             ->select(
                 'locations.*',
             )
+            ->when(str_contains($searchText, '%'), function ($q) {
+                $q->whereNull('parent1.id');
+            })
             ->where(function ($query) use (
                 $parent1filterArrayNameEn,
                 $parent1filterArrayNameBn,
@@ -547,6 +555,7 @@ class LocationController extends Controller
             ->where('locations.type', '=', $this->district)
             ->orderBy($sortBy, $orderBy)
             ->with('parent')
+            ->withCount('children')
             ->paginate($perPage, ['*'], 'page', $page);
 
         return $district;
@@ -1037,6 +1046,9 @@ class LocationController extends Controller
             ->select(
                 'locations.*',
             )
+            ->when(str_contains($searchText, '%'), function ($q) {
+                $q->whereNull('locations.id');
+            })
             // Searching
             ->where(function ($query) use (
                 $filterArrayNameEn,
@@ -1512,6 +1524,9 @@ class LocationController extends Controller
             $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
         }
         $thana = Location::query()
+            ->when(str_contains($searchText, '%'), function ($q) {
+                $q->whereNull('locations.id');
+            })
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
                 $query->where($filterArrayNameEn)
                     ->orWhere($filterArrayNameBn)
