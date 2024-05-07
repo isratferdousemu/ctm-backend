@@ -5,7 +5,11 @@ namespace App\Http\Services\Admin\BudgetAllotment;
 
 use App\Http\Requests\Admin\Budget\StoreBudgetRequest;
 use App\Http\Requests\Admin\Budget\UpdateBudgetRequest;
+use App\Models\AllowanceProgram;
+use App\Models\Beneficiary;
 use App\Models\Budget;
+use App\Models\FinancialYear;
+use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -78,9 +82,51 @@ class BudgetService
         }
     }
 
-    public function getProjection(Request $request)
+    public function getProjection(Request $request, $program_id, $financial_year_id): array
     {
-        return null;
+        $location_id = $request->query('location_id');
+        $location = $location_id ? Location::findOrFail($location_id) : null;
+        $program = AllowanceProgram::findOrFail($program_id);
+        $query = Beneficiary::query()->where('program_id', $program_id)->where('financial_year_id', $financial_year_id);
+//        if ($location_id)
+//            $query = $query->where('program_id', $program_id);
+        $coming_year_total_ben = $query->count();
+        $coming_year_total_amount = 100;
+
+        $previous_financial_year = FinancialYear::whereRaw(
+            "start_date < (
+                SELECT
+                    fy2.start_date
+                from
+                    financial_years fy2
+                WHERE
+                    fy2.id = $financial_year_id)")
+            ->orderBy('start_date', 'desc')
+            ->first();
+        $query2 = Beneficiary::query()->where('program_id', $program_id)->where('financial_year_id', $previous_financial_year?->id);
+//        if ($location_id)
+//            $query = $query->where('program_id', $program_id);
+        $previous_year_total_ben = $query2->count();
+        $previous_year_total_amount = 90;
+        return [
+            'location' => $location,
+            'program' => $program,
+            'previous_year_total_ben' => $previous_year_total_ben,
+            'previous_year_total_amount' => $previous_year_total_amount,
+            'coming_year_total_ben' => $coming_year_total_ben,
+            'coming_year_total_amount' => $coming_year_total_amount
+        ];
     }
 
+    public function getProjection2(Request $request, $program_id, $financial_year_id): array
+    {
+        return [
+            'location' => $financial_year_id,
+            'program' => $program_id,
+            'previous_year_total_ben' => 10,
+            'previous_year_total_amount' => 20,
+            'coming_year_total_ben' => 30,
+            'coming_year_total_amount' => 60
+        ];
+    }
 }

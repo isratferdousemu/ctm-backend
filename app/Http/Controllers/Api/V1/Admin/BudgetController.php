@@ -133,10 +133,10 @@ class BudgetController extends Controller
         }
     }
 
-    public function getProjection(Request $request): \Illuminate\Http\JsonResponse
+    public function getProjection(Request $request, $program_id, $financial_year_id): \Illuminate\Http\JsonResponse
     {
         try {
-            $data = $this->budgetService->getProjection($request);
+            $data = $this->budgetService->getProjection($request, $program_id, $financial_year_id);
             return response()->json([
                 'data' => $data,
                 'success' => true,
