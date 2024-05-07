@@ -56,7 +56,6 @@ class OfficeGrievanceService
 
     public function applyLocationTypeFilter($query, $divisionId, $districtId)
     {
-
         if ($divisionId) {
             $query->where('division_id', $divisionId);
 
