@@ -11,8 +11,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('budget_details', function (Blueprint $table) {
-            $table->dropColumn('office_id');
             $table->dropForeign('budget_details_office_id_foreign');
+            $table->dropColumn('office_id');
             $table->dropColumn('previous_beneficiaries');
             $table->dropColumn('previous_amount');
             $table->renameColumn('current_beneficiaries', 'total_beneficiaries');

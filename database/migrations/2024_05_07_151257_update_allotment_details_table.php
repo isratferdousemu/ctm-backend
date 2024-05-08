@@ -14,10 +14,8 @@ return new class extends Migration {
             $table->dropForeign('allotment_details_allotment_id_foreign');
             $table->renameColumn('allotment_id', 'budget_id');
             $table->foreign('budget_id')->references('id')->on('budgets')->onUpdate('cascade')->onDelete('cascade');
+            $table->dropForeign('allotment_details_office_id_foreign');
             $table->dropColumn('office_id');
-            $table->dropForeign('budget_details_office_id_foreign');
-            $table->dropColumn('previous_beneficiaries');
-            $table->dropColumn('previous_amount');
             $table->renameColumn('beneficiary_regular', 'regular_beneficiaries');
             $table->renameColumn('beneficiary_total', 'total_beneficiaries');
             $table->renameColumn('allocated_money', 'total_amount');

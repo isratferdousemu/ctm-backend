@@ -11,6 +11,7 @@ use App\Http\Services\Admin\BudgetAllotment\BudgetService;
 use App\Http\Traits\MessageTrait;
 use App\Models\Budget;
 use Illuminate\Http\Request;
+use Mockery\Exception;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
@@ -59,13 +60,12 @@ class BudgetController extends Controller
     {
         try {
             $data = $this->budgetService->save($request);
-            Helper::activityLogInsert($data, '', 'Budget', 'Budget Created!');
             return BudgetResouce::make($data)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
             ]);
-        } catch (\Throwable $th) {
-            return $this->sendError($th->getMessage(), [], 500);
+        } catch (Exception $exception) {
+            return $this->sendError($exception->getMessage(), [], 500);
         }
     }
 

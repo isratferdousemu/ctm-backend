@@ -3,6 +3,7 @@
 namespace App\Http\Services\Admin\BudgetAllotment;
 
 
+use App\Helpers\Helper;
 use App\Http\Requests\Admin\Budget\StoreBudgetRequest;
 use App\Http\Requests\Admin\Budget\UpdateBudgetRequest;
 use App\Models\AllowanceProgram;
@@ -18,9 +19,12 @@ class BudgetService
 {
     public function save(StoreBudgetRequest $request): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|bool|\Illuminate\Database\Eloquent\Builder|array|null
     {
-        $budget_id = mt_rand(100000, 999999);
-        $validated = $request->safe()->merge(['budget_id' => $budget_id])->only(['budget_id', 'program_id', 'financial_year_id', 'calculation_type', 'previous_year_value', 'calculation_value', 'remarks']);
-        return Budget::create($validated);
+//        $budget_id = mt_rand(100000, 999999);
+//        $validated = $request->safe()->merge(['budget_id' => $budget_id])->only(['budget_id', 'program_id', 'financial_year_id', 'calculation_type', 'no_of_previous_year', 'calculation_value', 'remarks']);
+//        $validated = $request->merge(['budget_id' => $budget_id])->validated();
+        $budget = Budget::create($request);
+        Helper::activityLogInsert($budget, '', 'Budget', 'Budget Created!');
+        return $budget;
     }
 
     public function list(Request $request, $getAllRecords = false)
