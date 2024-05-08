@@ -303,19 +303,21 @@ class SystemconfigController extends Controller
 
         if($searchValue)
         {
-            $allowance->where(function($query) use ($searchValue) {
-                $query->where('name_en', 'like', '%' . $searchValue . '%');
-                $query->orWhere('name_bn', 'like', '%' . $searchValue . '%');
-                $query->orWhere('payment_cycle', 'like', '%' . $searchValue . '%');
-            });
+            $allowance->when(str_contains($searchValue, '%'), function ($q) {
+            $q->whereId(null);
+        });
+        $allowance->where(function($query) use ($searchValue) {
+            $query->where('name_en', 'like', '%' . $searchValue . '%');
+            $query->orWhere('name_bn', 'like', '%' . $searchValue . '%');
+            $query->orWhere('payment_cycle', 'like', '%' . $searchValue . '%');
+        });
 
-            $itemsPerPage = 10;
+        $itemsPerPage = 10;
 
-            if($request->has('itemsPerPage')) {
-                $itemsPerPage = $request->get('itemsPerPage');
-
-                return $allowance->paginate($itemsPerPage);
-            }
+        if($request->has('itemsPerPage')) {
+           $itemsPerPage = $request->get('itemsPerPage');
+           return $allowance->paginate($itemsPerPage);
+        }
         }else{
             $itemsPerPage = 10;
 

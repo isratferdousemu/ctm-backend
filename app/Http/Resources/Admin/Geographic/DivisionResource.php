@@ -20,6 +20,7 @@ class DivisionResource extends JsonResource
             'name_bn'              => $this->name_bn,
             'code'                 => $this->code,
             'type'                 => $this->type,
+            'children_count'       => $this->whenCounted('children')
         ];
     }
 }

@@ -24,6 +24,8 @@ class TrainerController extends Controller
             ;
         });
 
+        $query->with('designation');
+
         return $this->sendResponse($query->paginate(
             request('perPage')
         ));
@@ -34,11 +36,32 @@ class TrainerController extends Controller
      */
     public function store(TrainerRequest $request)
     {
-        $trainer = Trainer::create($request->validated());
+        $trainer = $this->saveTrainer($request, new Trainer());
 
         Helper::activityLogInsert($trainer, '','Trainer','Trainer Created !');
 
         return $this->sendResponse($trainer, 'Trainer created successfully');
+    }
+
+
+    /**
+     * @param $request
+     * @param $trainer
+     * @return mixed
+     */
+    public function saveTrainer($request, $trainer)
+    {
+        $trainer->name = $request->name;
+        $trainer->designation_id = $request->designation_id;
+        $trainer->mobile_no = $request->mobile_no;
+        $trainer->email = $request->email;
+        $trainer->address = $request->address;
+        if ($request->image) {
+            $trainer->image = $request->file('image')->store('public');
+        }
+        $trainer->save();
+
+        return $trainer;
     }
 
 
@@ -59,6 +82,7 @@ class TrainerController extends Controller
      */
     public function show(Trainer $trainer)
     {
+        $trainer->load('designation');
         return $this->sendResponse($trainer);
     }
 
@@ -69,7 +93,7 @@ class TrainerController extends Controller
     {
         $beforeUpdate = $trainer->replicate();
 
-        $trainer->update($request->validated());
+        $trainer = $this->saveTrainer($request, $trainer);
 
         Helper::activityLogUpdate($trainer, $beforeUpdate,'Trainer','Trainer Updated !');
 
