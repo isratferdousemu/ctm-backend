@@ -48,6 +48,10 @@ trait LookupTrait
             ['id' => 20, 'name' => 'Class'],
             ['id' => 24, 'name' => 'Trainer Designation'],
             ['id' => 25, 'name' => 'Grievance Solution type'],
+            ['id' => 26, 'name' => 'Training Circular Type'],
+            ['id' => 27, 'name' => 'Training Type'],
+            ['id' => 28, 'name' => 'Training Circular Status'],
+            ['id' => 29, 'name' => 'Training Module'],
         ];
 
         return collect($types);
