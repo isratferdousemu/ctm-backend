@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\GrievanceManagement\GrievanceSettingResource;
+use App\Http\Resources\Admin\GrievanceManagement\GrievanceSubjectResource;
 use App\Http\Services\Admin\GrievanceManagement\GrievanceSettingService;
 use App\Http\Traits\MessageTrait;
 use App\Models\GrievanceSetting;
+use App\Models\GrievanceSubject;
 use App\Models\GrievanceType;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
@@ -21,6 +23,22 @@ class GrievanceSettingController extends Controller
         $this->grievanceSetting = $GrievanceSettingService;
 
     }
+
+    public function grievanceSubjectType($id){
+           $grievanceSubject = GrievanceSubject::where('grievance_type_id',$id)->where('status', 1)->get();
+           return  $grievanceSubject;
+ 
+    }  
+    
+    public function grievanceSubject($id){
+          $grievanceSubject = GrievanceSetting::with('subjects')
+           ->where('grievance_type_id', $id)
+          ->get(); // Orders the query results by the 'created_at' column in descending order
+
+        return $grievanceSubject;
+
+ 
+    }
     /**
      * Display a listing of the resource.
      */
@@ -31,7 +49,12 @@ class GrievanceSettingController extends Controller
         $perPage = $request->query('perPage');
         $page = $request->query('page');
         $status = $request->query('status');
+        if($status=='active'){
+            $grievanceSetting = GrievanceSetting::with('grievanceType','grievanceSubject')->get();
+            $uniqueGrievanceTypes = $grievanceSetting->pluck('grievanceType')->unique();
 
+            return  $uniqueGrievanceTypes;
+        }
         $grievanceSetting = GrievanceSetting::query()
             ->with(['grievanceType', 'grievanceSubject', 'firstOfficer', 'secoundOfficer', 'thirdOfficer'])
             ->where(function ($query) use ($searchText) {
@@ -58,7 +81,7 @@ class GrievanceSettingController extends Controller
             ->orderBy('id', 'asc')
             ->latest()
             ->paginate($perPage, ['*'], 'page');
-
+           
         return GrievanceSettingResource::collection($grievanceSetting)->additional([
             'success' => true,
             'message' => $this->fetchDataSuccessMessage,
@@ -79,8 +102,12 @@ class GrievanceSettingController extends Controller
      */
     public function store(Request $request)
     {
-        //    $grievanceSetting = $this->grievanceSetting->store($request);
-        //    return $grievanceSetting;
+      // Manually check if the grievance_subject_id already exists
+         $existingGrievanceSetting = GrievanceSetting::where('grievance_subject_id', $request->grievance_subject_id)->first();
+            if ($existingGrievanceSetting) {
+                return response()->json(['success' => '201']);
+            }
+
         try {
             $grievanceSetting = $this->grievanceSetting->store($request);
             Helper::activityLogInsert($grievanceSetting, '', 'Grievance Setting', 'Grievance Setting Created !');
