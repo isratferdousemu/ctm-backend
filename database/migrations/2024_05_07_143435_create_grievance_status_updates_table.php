@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('grievance_id')->unsigned()->index();
             $table->bigInteger('resolver_id')->unsigned()->index();
+            $table->integer('forward_to')->nullable();
             $table->string('status')->nullable();
             $table->longText('remarks')->nullable();
             $table->string('solution')->nullable();

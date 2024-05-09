@@ -4,11 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role;
 
 class Grievance extends Model
 {
     use HasFactory;
-    
+public function resolver(){
+    return $this->belongsTo(Role::class,'resolver_id','id');
+
+ }
   public function grievanceSetting()
     {
         return $this->belongsTo(GrievanceSetting::class)
