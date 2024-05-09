@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Constants\TrainingLookUp;
 use App\Models\Lookup;
 use DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -82,6 +83,34 @@ class LookUpSeeder extends Seeder
             //Trainer Designation
             ['id' => 51, 'type' => 24, 'value_en' => 'Senior trainer', 'value_bn' => 'ঊর্ধ্বতন প্রশিক্ষক', 'default' => 1],
             ['id' => 52, 'type' => 24, 'value_en' => 'Trainer', 'value_bn' => 'প্রশিক্ষক', 'default' => 1],
+
+            //Training Circular Type
+            ['id' => 59, 'type' => 26, 'value_en' => 'Open', 'value_bn' => 'উন্মুক্ত', 'default' => 1],
+            ['id' => 60, 'type' => 26, 'value_en' => 'Selected', 'value_bn' => 'বাছাইকৃত', 'default' => 1],
+
+            //Training Type
+            ['id' => 61, 'type' => 27, 'value_en' => 'Online', 'value_bn' => 'অনলাইন', 'default' => 1],
+            ['id' => 62, 'type' => 27, 'value_en' => 'Physical', 'value_bn' => 'ফিজিক্যাল', 'default' => 1],
+
+
+            //Training Circular Status
+            ['id' => 63, 'type' => 28, 'value_en' => 'Active', 'value_bn' => 'সক্রিয়', 'default' => 1],
+            ['id' => 64, 'type' => 28, 'value_en' => 'Inactive', 'value_bn' => 'নিষ্ক্রিয়', 'default' => 1],
+            ['id' => 65, 'type' => 28, 'value_en' => 'In-Progress', 'value_bn' => 'চলমান', 'default' => 1],
+            ['id' => 66, 'type' => 28, 'value_en' => 'Completed', 'value_bn' => 'সম্পন্ন', 'default' => 1],
+
+            //Training Module
+            ['id' => 67, 'type' => 29, 'value_en' => 'System Configuration', 'value_bn' => 'সিস্টেম কনফিগারেশন', 'default' => 1],
+            ['id' => 68, 'type' => 29, 'value_en' => 'Budget & Allotment', 'value_bn' => 'বাজেট ও বরাদ্দ', 'default' => 1],
+            ['id' => 69, 'type' => 29, 'value_en' => 'Application & Selection', 'value_bn' => 'আবেদন ও নির্বাচন ব্যবস্থাপনা', 'default' => 1],
+            ['id' => 70, 'type' => 29, 'value_en' => 'Beneficiary Management', 'value_bn' => 'উপকারভোগী ব্যবস্থাপনা', 'default' => 1],
+            ['id' => 71, 'type' => 29, 'value_en' => 'Payroll Management', 'value_bn' => 'বেতন ব্যবস্থাপনা', 'default' => 1],
+            ['id' => 72, 'type' => 29, 'value_en' => 'Emergency Payment', 'value_bn' => 'জরুরী পেমেন্ট', 'default' => 1],
+            ['id' => 73, 'type' => 29, 'value_en' => 'Grievance Management', 'value_bn' => 'অভিযোগ ব্যবস্থাপনা', 'default' => 1],
+            ['id' => 74, 'type' => 29, 'value_en' => 'M&E Reporting', 'value_bn' => 'এমএন্ডই এবং রিপোর্টিং', 'default' => 1],
+            ['id' => 75, 'type' => 29, 'value_en' => 'API Manager', 'value_bn' => 'এপিআই ম্যানেজার', 'default' => 1],
+            ['id' => 76, 'type' => 29, 'value_en' => 'System Audit', 'value_bn' => 'সিস্টেম অডিট', 'default' => 1],
+
 
         ];
 
