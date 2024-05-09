@@ -8,12 +8,13 @@ use App\Models\ApplicationAllowanceValues;
 use App\Models\ApplicationPovertyValues;
 use App\Models\FinancialYear;
 use App\Models\Grievance;
+use App\Models\GrievanceSetting;
+use App\Models\GrievanceStatusUpdate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Log;
 
 class GrievanceService
 {
@@ -81,8 +82,15 @@ class GrievanceService
                 // If it exists, regenerate the random string
                 $uniqueaGrievance_id = Str::random(10);
             }
-
+            $grievanceSetting = GrievanceSetting::where('grievance_type_id', $request->grievance_type_id)
+                ->where('grievance_subject_id', $request->grievance_subject_id)
+                ->first();
+            //  return   $grievanceSetting;
 // Assign the unique random string to the permanent_mobile attribute
+           if(isset($grievanceSetting)){
+             $grievance->resolver_id = $grievanceSetting['first_tire_officer'];
+
+           }
             $grievance->is_existing_beneficiary = $request->is_existing_beneficiary;
             $grievance->verification_number = $request->verification_number;
             $grievance->tracking_no = $uniqueaGrievance_id;
@@ -117,13 +125,21 @@ class GrievanceService
             $grievance->address = $request->address;
             //  return $request->all();
             // $application->documents = $request->file('documents')->store('public');
-            if($request->file('documents')){
+            if ($request->file('documents')) {
                 $filePath = $request->file('documents')->store('public');
                 $grievance->documents = $filePath;
 
             }
-          
             $grievance->save();
+
+            $lastinsertedId = $grievance->id;
+            $grievanceApplication = Grievance::where('id', $lastinsertedId)->first();
+            $updateStatus = new GrievanceStatusUpdate();
+            $updateStatus->grievance_id = $grievanceApplication->id;
+            $updateStatus->status = $grievanceApplication->status;
+            $updateStatus->resolver_id = $grievanceApplication->resolver_id;
+            $updateStatus->save();
+
             DB::commit();
 
             return $grievance;
@@ -366,9 +382,6 @@ class GrievanceService
 
     }
 
-    
-
     // application PMTValues total calculation
-   
 
 }

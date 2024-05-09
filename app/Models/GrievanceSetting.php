@@ -11,9 +11,13 @@ class GrievanceSetting extends Model
 {
     use HasFactory;
 
+      public function subjects()
+    {
+        return $this->hasMany(GrievanceSubject::class,'id','grievance_subject_id');
+    }    
       public function grievanceType()
     {
-        return $this->belongsTo(GrievanceType::class,'grievance_type_id');
+        return $this->belongsTo(GrievanceType::class,'grievance_type_id','id');
     }
       public function grievanceSubject()
     {
