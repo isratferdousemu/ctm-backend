@@ -102,6 +102,16 @@ class OfficeController extends Controller
         $page = $request->query('page');
         $sortBy = $request->query('sortBy') ?? 'name_en';
         $orderBy = $request->query('orderBy') ?? 'asc';
+        $startDate = $request->query('from_date');
+        $endDate = $request->query('to_date');
+
+        $officeType = $request->query('office_type');
+        $divisionId = $request->query('division_id');
+        $districtId = $request->query('district_id');
+        $thanaId = $request->query('thana_id');
+        $cityId = $request->query('city_id');
+        $distPouroId = $request->query('dist_pouro_id');
+        $upazilaId = $request->query('upazila_id');
 
         $filterArrayNameEn = [];
         $filterArrayNameBn = [];
@@ -118,7 +128,14 @@ class OfficeController extends Controller
                 $page = 1;
             }
         }
-        $query = Office::query()
+
+        $data = Office::query()->with('assignLocation','assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
+            ->orderBy($sortBy, $orderBy);
+
+
+           $data->when(str_contains($searchText, '%'), function ($q) {
+                $q->whereId(null);
+                     })
             ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayComment, $filterArrayAddress) {
                 $query->where($filterArrayNameEn)
                     ->orWhere($filterArrayNameBn)
@@ -133,12 +150,68 @@ class OfficeController extends Controller
         // })
 
 
-        $this->filterByLocation($query);
+        $this->filterByLocation($data);
 
-        $query->with('assignLocation.parent.parent.parent', 'assignLocation.locationType', 'officeType', 'wards')
-            ->orderBy($sortBy, $orderBy);
+        if ($startDate && $endDate) {
+            $data->whereBetween('created_at', [$startDate, $endDate])
+                ->orWhere('created_at',$startDate);
+        }
 
-        return $query->paginate($perPage);
+        if ($request->filled('office_type')) {
+            $data->where('office_type',$officeType);
+        }
+
+        if($request->filled('division_id')){
+            $data->whereHas('assignLocation', function ($query) use ($divisionId) {
+                $query->where('id',$divisionId)
+                    ->orWhere('parent_id',$divisionId)
+                    ->orWhereHas('parent', function ($query) use ($divisionId) {
+                        $query->where('id', $divisionId)
+                            ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                $query->where('id', $divisionId)
+                                    ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                        $query->where('id', $divisionId);
+                                    });
+                            });
+                    });
+            });
+        }
+
+        if ($request->filled('district_id')) {
+            $data->whereHas('assignLocation', function ($query) use ($districtId) {
+                $query->where('id',$districtId)
+                    ->orWhere('parent_id',$districtId);
+            });
+        }
+
+        if ($request->filled('thana_id')) {
+            $data->whereHas('assignLocation.parent.parent', function ($query) use ($thanaId) {
+                $query->where('id',$thanaId);
+            });
+        }
+
+        if ($request->filled('city_id')) {
+            $data->whereHas('assignLocation', function ($query) use ($cityId) {
+                $query->where('id',$cityId)
+                    ->orWhere('parent_id',$cityId);
+            });
+        }
+
+        if ($request->filled('dist_pouro_id')) {
+            $data->whereHas('assignLocation', function ($query) use ($distPouroId) {
+                $query->where('id',$distPouroId)
+                    ->orWhere('parent_id',$distPouroId);
+            });
+        }
+
+        if ($request->filled('upazila_id')) {
+            $data->whereHas('assignLocation', function ($query) use ($upazilaId) {
+                $query->where('id',$upazilaId)
+                    ->orWhere('parent_id',$upazilaId);
+            });
+        }
+
+        return $data->paginate($perPage);
         return OfficeResource::collection($office)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
