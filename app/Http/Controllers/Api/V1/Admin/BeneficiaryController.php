@@ -199,13 +199,7 @@ class BeneficiaryController extends Controller
     public function update(UpdateBeneficiaryRequest $request, $id): \Illuminate\Http\JsonResponse|BeneficiaryResource
     {
         try {
-            $beforeUpdate = Beneficiary::findOrFail($id);
             $beneficiary = $this->beneficiaryService->update($request, $id);
-            Helper::activityLogUpdate($beneficiary, $beforeUpdate, "Beneficiary", "Beneficiary Updated!");
-//            activity("Beneficiary")
-//                ->causedBy(auth()->user())
-//                ->performedOn($beneficiary)
-//                ->log('Beneficiary Updated !');
             return BeneficiaryResource::make($beneficiary)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -224,12 +218,7 @@ class BeneficiaryController extends Controller
     public function delete(DeleteBeneficiaryRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $beneficiary = Beneficiary::findOrFail($id);
             $this->beneficiaryService->delete($request, $id);
-            Helper::activityLogDelete($beneficiary, '', 'Beneficiary', 'Beneficiary Deleted!!');
-//            activity("Beneficiary")
-//                ->causedBy(auth()->user())
-//                ->log('Beneficiary Deleted!!');
             return response()->json([
                 'success' => true,
                 'message' => $this->deleteSuccessMessage,
@@ -261,14 +250,7 @@ class BeneficiaryController extends Controller
     public function restore($id): \Illuminate\Http\JsonResponse|BeneficiaryResource
     {
         try {
-            $beforeUpdate = Beneficiary::withTrashed()->findOrFail($id);
             $this->beneficiaryService->restore($id);
-            $beneficiary = Beneficiary::findOrFail($id);
-            Helper::activityLogUpdate($beneficiary, $beforeUpdate, "Beneficiary", "Beneficiary Restored!");
-//            activity("Beneficiary")
-//                ->causedBy(auth()->user())
-//                ->performedOn(new Beneficiary())
-//                ->log('Beneficiary Restored!');
             return response()->json([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -282,14 +264,7 @@ class BeneficiaryController extends Controller
     public function restoreInactive($id): \Illuminate\Http\JsonResponse|BeneficiaryResource
     {
         try {
-            $beforeUpdate = Beneficiary::findOrFail($id);
             $this->beneficiaryService->restoreInactive($id);
-            $beneficiary = Beneficiary::findOrFail($id);
-            Helper::activityLogUpdate($beneficiary, $beforeUpdate, "Beneficiary", "Inactive Beneficiary Restored!");
-//            activity("Beneficiary")
-//                ->causedBy(auth()->user())
-//                ->performedOn(new Beneficiary())
-//                ->log('Inactive Beneficiary Restored!');
             return response()->json([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -303,14 +278,7 @@ class BeneficiaryController extends Controller
     public function restoreExit($id): \Illuminate\Http\JsonResponse|BeneficiaryResource
     {
         try {
-            $beforeUpdate = Beneficiary::findOrFail($id);
             $this->beneficiaryService->restoreExit($id);
-            $beneficiary = Beneficiary::findOrFail($id);
-            Helper::activityLogUpdate($beneficiary, $beforeUpdate, "Beneficiary", "Exited Beneficiary Restored!");
-//            activity("Beneficiary")
-//                ->causedBy(auth()->user())
-//                ->performedOn(new Beneficiary())
-//                ->log('Inactive Beneficiary Restored!');
             return response()->json([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -324,14 +292,7 @@ class BeneficiaryController extends Controller
     public function restoreReplace($id): \Illuminate\Http\JsonResponse|BeneficiaryResource
     {
         try {
-            $beforeUpdate = Beneficiary::findOrFail($id);
             $this->beneficiaryService->restoreReplace($id);
-            $beneficiary = Beneficiary::findOrFail($id);
-            Helper::activityLogUpdate($beneficiary, $beforeUpdate, "Beneficiary", "Replaced Beneficiary Restored!");
-//            activity("Beneficiary")
-//                ->causedBy(auth()->user())
-//                ->performedOn(new Beneficiary())
-//                ->log('Replaced Beneficiary Restored!');
             return response()->json([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -370,11 +331,6 @@ class BeneficiaryController extends Controller
     {
         try {
             $beneficiary = $this->beneficiaryService->replaceSave($request, $id);
-            Helper::activityLogInsert($beneficiary, '', 'Committee', 'Beneficiary Replaced!');
-//            activity("Beneficiary")
-//                ->causedBy(auth()->user())
-//                ->performedOn($beneficiary)
-//                ->log('Beneficiary Replaced !');
             return BeneficiaryResource::make($beneficiary)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,

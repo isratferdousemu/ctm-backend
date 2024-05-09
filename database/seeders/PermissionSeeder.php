@@ -618,6 +618,18 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
+                   [
+                'module_name' => $this->modulePermissionTrainingManagement,
+                'sub_module_name' => $this->modulePermissionTrainingManagement,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 249, "name" => "trainerInfo-create", "page_url" => "/training-management/trainer-information/create", "parent_page" => 1],
+                    ["id" => 250, "name" => "trainerInfo-view", "page_url" => "/training-management/trainer-information", "parent_page" => 1],
+                    ["id" => 251, "name" => "trainerInfo-edit", "page_url" => "/training-management/trainer-information/edit/:id", "parent_page" => 1],
+                    ["id" => 252, "name" => "trainerInfo-delete", "page_url" => "/training-management/trainer-information/view/:id", "parent_page" => 1]
+                ]
+
+            ],
             [
                 'module_name' => $this->modulePermissionSettingManagement,
                 'sub_module_name' => $this->settingManagement,
@@ -628,10 +640,7 @@ class PermissionSeeder extends Seeder
                     ["id" => 175, "name" => "generalSetting-edit", "page_url" => "/setting/general/edit/:id", "parent_page" => 0],
                     ["id" => 176, "name" => "generalSetting-delete", "page_url" => "/setting/general", "parent_page" => 0],
 
-                    // ["id" => 177, "name"=>"global-setting-create", "page_url"=>"/setting/global/create", "parent_page"=>0],
-                    // ["id" => 178, "name"=>"global-setting-view", "page_url"=>"/setting/global", "parent_page"=>0],
-                    // ["id" => 179, "name"=>"global-setting-edit", "page_url"=>"/setting/global/edit/:id", "parent_page"=>0],
-                    // ["id" => 180, "name"=>"global-setting-delete", "page_url"=>"/setting/global", "parent_page"=>0]
+                  
                 ]
 
             ],
@@ -648,7 +657,7 @@ class PermissionSeeder extends Seeder
             ],
         ];
 
-        //last id 236
+        //last id 252
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

@@ -15,6 +15,16 @@ use Illuminate\Support\Facades\DB;
  */
 class AllotmentService
 {
+    public function officeList()
+    {
+        $location_id = \request()->query('locatioln_id');
+
+    }
+    public function getLocationChainById($location_id)
+    {
+        $location_ids = [];
+
+    }
     public function save(StoreAllotmentRequest $request): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|bool|\Illuminate\Database\Eloquent\Builder|array|null
     {
         DB::beginTransaction();
@@ -42,7 +52,7 @@ class AllotmentService
         $sortByColumn = $request->query('sortBy', 'created_at');
         $orderByDirection = $request->query('orderBy', 'asc');
 
-        $query = Budget::query();
+        $query = Allotment::query();
         if ($program_id)
             $query = $query->where('program_id', $program_id);
 
