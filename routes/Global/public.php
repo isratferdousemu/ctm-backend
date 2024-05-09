@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\GrievanceSettingController;
 use App\Http\Controllers\Api\V1\GlobalController;
 use App\Http\Controllers\Api\V1\Admin\AdminController;
 use App\Http\Controllers\Api\V1\Admin\LocationController;
@@ -46,6 +47,11 @@ Route::prefix('global')->group(function () {
     Route::post('/online-grievance/card-verification',[GrievanceController::class, 'onlineGrievanceVerifyCard']);
     Route::get('/grievanceType/get', [GrievanceTypeController::class, 'getAllTypePaginated']);
     Route::get('/grievanceSubject/get', [GrievanceSubjectController::class, 'getAll']);
+    Route::get('/grievanceSubjectType/get/{id}', [GrievanceSettingController::class, 'grievanceSubjectType']);
+    Route::get('/grievanceSubject/get/{id}', [GrievanceSettingController::class, 'grievanceSubject']);
+    Route::get('/grievanceSetting/get', [GrievanceSettingController::class, 'getAll']);
+
+
 
 
 //    Route::get('/pdf', [\App\Http\Controllers\PDFController::class, 'index']);

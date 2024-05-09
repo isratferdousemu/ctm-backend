@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('tracking_no', 50);
             // entry
             $table->tinyInteger('is_existing_beneficiary');
+            $table->bigInteger('resolver_id')->unsigned()->index();
+            $table->longText('remarks')->nullable();
             $table->bigInteger('beneficiary_id')->unsigned()->index();
             $table->date('date_of_birth');
             $table->tinyInteger('verification_type')->nullable(); 

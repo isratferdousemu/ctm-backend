@@ -9,7 +9,14 @@ class Grievance extends Model
 {
     use HasFactory;
     
+  public function grievanceSetting()
+    {
+        return $this->belongsTo(GrievanceSetting::class)
+          ->where('grievance_type_id', $this->grievance_type_id)
+          ->where('grievance_subject_id', $this->grievance_subject_id);
 
+        // return $this->belongsTo(GrievanceSetting::class,'grievance_type_id','grievance_type_id');
+    }
  public function grievanceType()
     {
         return $this->belongsTo(GrievanceType::class,'grievance_type_id','id');
