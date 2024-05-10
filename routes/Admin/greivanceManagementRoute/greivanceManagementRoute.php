@@ -35,6 +35,7 @@ Route::prefix('admin/grievanceSubject')->group(function () {
 
 /* -----------------------------------Start Grienvace Settings--------------------------------------- */
 Route::prefix('admin/grievanceSetting')->group(function () {
+    Route::get('/grievanceSubjectType/get/{id}', [GrievanceSettingController::class, 'grievanceSubjectType'])->middleware(['role_or_permission:super-admin|grievanceSetting-view']);
     Route::get('/get', [GrievanceSettingController::class, 'getAll'])->middleware(['role_or_permission:super-admin|grievanceSetting-view']);
     Route::post('/store', [GrievanceSettingController::class, 'store'])->middleware(['role_or_permission:super-admin|grievance-setting-create']);
     Route::get('/edit/{id}', [GrievanceSettingController::class, 'edit'])->middleware(['role_or_permission:super-admin|grievance-setting-edit']);
@@ -47,11 +48,11 @@ Route::prefix('admin/grievanceSetting')->group(function () {
 /* -----------------------------------Start Grienvace Settings--------------------------------------- */
 Route::prefix('admin/grievance')->group(function () {
    Route::get('/get', [GrievanceController::class, 'getAllGrievancePaginated'])->middleware(['role_or_permission:super-admin|grievanceList-view']);
-//    Route::get('/get', [GrievanceController::class, 'getAllGrievancePaginated']);
+   Route::get('/settings/get', [GrievanceController::class, 'getGrievanceSettings'])->middleware(['role_or_permission:super-admin|grievanceList-view']);
    Route::get('get/{id}', [GrievanceController::class, 'getApplicationById'])->middleware(['role_or_permission:super-admin|grievance-list-view']);
    Route::get('/permissions', [GrievanceController::class, 'getApplicationPermission']);
-   Route::get('/committee-list', [GrievanceController::class, 'getCommitteeList']);
-   Route::post('/update-status', [GrievanceController::class, 'changeApplicationsStatus'])->middleware(['role_or_permission:super-admin|application-entry-edit']);
+   Route::get('/committee-list', [GrievanceController::class, 'getCommitteeList'])->middleware(['role_or_permission:super-admin|grievance-list-view']);
+   Route::post('/update-status', [GrievanceController::class, 'changeGrievanceStatus'])->middleware(['role_or_permission:super-admin|grievance-list-view']);
    Route::get('/generate-pdf', [GrievanceController::class, 'getPdf']);
 
 

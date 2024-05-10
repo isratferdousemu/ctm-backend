@@ -116,7 +116,7 @@ class ApiDataReceiveController extends Controller
      */
     public function update(ApiDataReceiveRequest $request, ApiDataReceive $apiDataReceive)
     {
-        $beforeUpdate = $apiDataReceive;
+        $beforeUpdate = $apiDataReceive->replicate();
 
         $apiDataReceive = $this->saveApiDataReceive($apiDataReceive, $request);
 

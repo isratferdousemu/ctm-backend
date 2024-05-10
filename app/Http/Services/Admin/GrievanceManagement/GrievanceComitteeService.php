@@ -3,6 +3,7 @@
 namespace App\Http\Services\Admin\GrievanceManagement;
 
 use App\Models\CommitteeApplication;
+use App\Models\GrievanceSetting;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -17,13 +18,17 @@ class GrievanceComitteeService
      */
     public function getGrievance($query, $user)
     {
-        // dd($query->get());
 
         // dd($user->committee_type_id);
         if ($user->committee_type_id) {
-            // dd( $user->committee_type_id);
+            // dd($user->roles->pluck('id'));
+            // $roles = [$user->roles->pluck('id')->first()];
+
             $assignedApplicationsId = CommitteeApplication::whereCommitteeId($user->committee_id)->pluck('application_id');
 
+   
+
+            // dd($query->get());
             // dd($user->committee_type_id);
             // dd($query->get());
             return match ($user->committee_type_id) {
@@ -110,9 +115,10 @@ class GrievanceComitteeService
     public function getDistrictPouroshava($user, $query, $assignedApplicationsId)
     {
         $distPouroId = $user->assign_location_id;
+        dd($user);
+        // $userRoleId = $user->assign_location_id;
 
-        $query->where('district_pouro_id', $distPouroId)
-        ;
+        $query->where('district_pouro_id', $distPouroId);
 
         return $this->applyWardIdFilter($query);
     }
@@ -151,15 +157,14 @@ class GrievanceComitteeService
     //see not selected too
     public function getCityCorporationApplications($user, $query, $assignedApplicationsId)
     {
+        // $settings = GrievanceSetting::all();
         $cityCorpId = $user->assign_location_id;
-        // dd($cityCorpId);
-
-//        $query->whereIn('id', $assignedApplicationsId);
-        // dd($query->get());
-
+        // $roles = [$user->roles->pluck('id')->first()];
+        // $query->whereIn('resolver_id', [$roles]);
         $query->where('city_id', $cityCorpId);
-        // dd($query->get());
+ 
 
+        // dd($query->get());
         $query->when(request('city_thana_id'), function ($q, $v) {
             $q->where('thana_id', $v);
         });

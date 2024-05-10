@@ -59,6 +59,7 @@ class TrainerController extends Controller
         if ($request->image) {
             $trainer->image = $request->file('image')->store('public');
         }
+        $trainer->description = $request->description;
         $trainer->save();
 
         return $trainer;

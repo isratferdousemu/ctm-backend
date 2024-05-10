@@ -13,6 +13,8 @@ class GrievanceSettingService
 
     public function store($request)
     {
+    
+
         DB::beginTransaction();
         try {
             $grievanceSettings = new GrievanceSetting();
