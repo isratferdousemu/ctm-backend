@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -113,6 +115,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, PermissionTrait;
     protected $guard_name = 'sanctum';
+    protected $guarded = ['id'];
     public function newQuery($excludeDeleted = true)
     {
         return parent::newQuery($excludeDeleted)
@@ -139,6 +142,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public $appends = ["photo_url"];
+
+    public function getPhotoUrlAttribute()
+    {
+        $file = $this->attributes['photo'];
+        if ($file)
+            $url = asset($file);
+        else
+            $url = 'https://i2.wp.com/ui-avatars.com/api/' . Str::slug("Avatar") . '/400';
+
+        return $url;
+    }
 
     public function __construct(array $attributes = [])
     {
