@@ -2,7 +2,7 @@
 
 
 use App\Http\Controllers\Api\V1\Admin\Training\TrainerController;
-use App\Http\Controllers\TrainingCircularController;
+use App\Http\Controllers\Api\V1\Admin\Training\TrainingCircularController;
 
 Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::apiResource('trainers', TrainerController::class);
