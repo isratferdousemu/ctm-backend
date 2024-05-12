@@ -10,6 +10,8 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::any('trainers/status/{trainer}', [TrainerController::class, 'updateStatus']);
 
     Route::apiResource('circulars', TrainingCircularController::class);
-    Route::get('circulars-details/{circular}', [TrainingCircularController::class, 'show'])->withoutMiddleware('auth:sanctum');
     Route::apiResource('time-slots', TimeSlotController::class);
 });
+
+Route::get('circulars-details/{circular}', [TrainingCircularController::class, 'show']);
+
