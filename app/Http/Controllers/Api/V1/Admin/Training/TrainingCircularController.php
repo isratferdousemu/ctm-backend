@@ -15,7 +15,7 @@ class TrainingCircularController extends Controller
     public function index()
     {
         $query = TrainingCircular::query();
-        $query->with('modules');
+        $query->with('modules', 'circularType', 'trainingType', 'status');
         $query->when(request('search'), function ($q, $v) {
             $q->where('circular_name', 'like', "%$v%")
             ;
