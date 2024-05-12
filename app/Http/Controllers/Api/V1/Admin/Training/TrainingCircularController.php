@@ -37,7 +37,7 @@ class TrainingCircularController extends Controller
 
         Helper::activityLogInsert($trainingCircular, '','Training Circular','Training Circular Created !');
 
-        return $this->sendResponse($trainingCircular, 'Training Circular Circular created successfully');
+        return $this->sendResponse($trainingCircular, 'Training Circular created successfully');
     }
 
     /**
