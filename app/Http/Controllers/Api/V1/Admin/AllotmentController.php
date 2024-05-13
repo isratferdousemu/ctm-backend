@@ -23,6 +23,11 @@ class AllotmentController extends Controller
      */
     private AllotmentService $allotmentService;
 
+    public function __construct(AllotmentService $allotmentService)
+    {
+        $this->allotmentService = $allotmentService;
+    }
+
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection

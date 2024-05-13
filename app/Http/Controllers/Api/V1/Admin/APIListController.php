@@ -94,7 +94,7 @@ class APIListController extends Controller
      */
     public function update(ApiListRequest $request, ApiList $apiList)
     {
-        $beforeUpdate = $apiList;
+        $beforeUpdate = $apiList->replicate();
         $apiList->api_purpose_id = $request->api_purpose_id;
         $apiList->api_unique_id = $request->api_unique_id;
         $apiList->name = $request->name;
