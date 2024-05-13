@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1\Admin\Training;
 
 use App\Helpers\Helper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Training\TrainingCircularRequest;
 use App\Models\TrainingCircular;
-use Illuminate\Http\Request;
 
 class TrainingCircularController extends Controller
 {
@@ -14,9 +14,15 @@ class TrainingCircularController extends Controller
      */
     public function index()
     {
+        $query = TrainingCircular::query();
+        $query->with('modules', 'circularType', 'trainingType', 'status');
+        $query->when(request('search'), function ($q, $v) {
+            $q->where('circular_name', 'like', "%$v%")
+            ;
+        });
 
-        return $this->sendResponse(
-            TrainingCircular::paginate(request('perPage'))
+        return $this->sendResponse($query
+            ->paginate(request('perPage'))
         );
     }
 
@@ -31,7 +37,7 @@ class TrainingCircularController extends Controller
 
         Helper::activityLogInsert($trainingCircular, '','Training Circular','Training Circular Created !');
 
-        return $this->sendResponse($trainingCircular, 'Training Circular Circular created successfully');
+        return $this->sendResponse($trainingCircular, 'Training Circular created successfully');
     }
 
     /**
@@ -55,9 +61,9 @@ class TrainingCircularController extends Controller
 
         $circular->modules()->sync($request->module_id);
 
-        Helper::activityLogInsert($circular, $beforeUpdate,'Training Circular','Training Circular Created !');
+        Helper::activityLogUpdate($circular, $beforeUpdate,'Training Circular','Training Circular Updated !');
 
-        return $this->sendResponse($circular, 'Training Circular Circular updated successfully');
+        return $this->sendResponse($circular, 'Training Circular updated successfully');
     }
 
     /**

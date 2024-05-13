@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Exceptions\AuthBasicErrorException;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\User\UserRequest;
@@ -10,6 +11,7 @@ use App\Http\Resources\Admin\Office\OfficeResource;
 use App\Http\Resources\Admin\User\UserResource;
 use App\Http\Services\Admin\User\OfficeHeadService;
 use App\Http\Services\Admin\User\UserService;
+use App\Http\Services\Auth\AuthService;
 use App\Http\Services\Notification\SMSservice;
 use App\Http\Traits\LocationTrait;
 use App\Http\Traits\MessageTrait;
@@ -22,61 +24,68 @@ use App\Models\Location;
 use App\Models\Office;
 use App\Models\User;
 use Auth;
+use Cache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
+use Illuminate\Http\Response;
+
 
 class UserController extends Controller
 {
-    use MessageTrait,UserTrait,RoleTrait, PermissionTrait, LocationTrait;
+    use MessageTrait, UserTrait, RoleTrait, PermissionTrait, LocationTrait;
     private $UserService;
 
-    public function __construct(UserService $UserService, public OfficeHeadService $officeHeadService, public SMSservice $SMSservice) {
+    public function __construct(UserService $UserService, public OfficeHeadService $officeHeadService, public SMSservice $SMSservice, public AuthService $authService)
+    {
         $this->UserService = $UserService;
+        $this->authService = $authService;
+        $this->SMSservice = $SMSservice;
     }
 
     /**
-    * @OA\Get(
-    *     path="/admin/user/get",
-    *      operationId="getAllUserPaginated",
-    *      tags={"ADMIN-USER"},
-    *      summary="get paginated users",
-    *      description="get paginated users",
-    *      security={{"bearer_token":{}}},
-    *     @OA\Parameter(
-    *         name="searchText",
-    *         in="query",
-    *         description="search by name, phone, email, username",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="userId",
-    *         in="query",
-    *         description="search by user_id",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="officeId",
-    *         in="query",
-    *         description="search by office_id",
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="perPage",
-    *         in="query",
-    *         description="number of division per page",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="page",
-    *         in="query",
-    *         description="page number",
-    *         @OA\Schema(type="integer")
-    *     ),
+     * @OA\Get(
+     *     path="/admin/user/get",
+     *      operationId="getAllUserPaginated",
+     *      tags={"ADMIN-USER"},
+     *      summary="get paginated users",
+     *      description="get paginated users",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         description="search by name, phone, email, username",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="query",
+     *         description="search by user_id",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="officeId",
+     *         in="query",
+     *         description="search by office_id",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of division per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
      *
      *     @OA\Parameter(
      *         name="user_id",
@@ -85,7 +94,7 @@ class UserController extends Controller
      *         @OA\Schema(type="integer")
      *     ),
      *
-    *      @OA\Response(
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -108,182 +117,177 @@ class UserController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
-    public function getAllUserPaginated(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $userId = $request->query('userId');
-    $officeId = $request->query('officeId');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
+     * )
+     */
+    public function getAllUserPaginated(Request $request)
+    {
+        // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $userId = $request->query('userId');
+        $officeId = $request->query('officeId');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
 
-    $userType = $request->query('user_type');
-    $officeType = $request->query('office_type');
-    $committeeType = $request->query('committee_type');
-    $divisionId = $request->query('division_id');
-    $districtId = $request->query('district_id');
-    $upazilaId = $request->query('upazila_id');
-    $thanaId = $request->query('thana_id');
-    $office_id = $request->query('office_id');
-    $committeeId = $request->query('committee_id');
-    $cityCorpoId = $request->query('city_corpo_id');
-    $paurashavaId = $request->query('paurashava_id');
-    $startDate = $request->from_date;
-    $endDate = $request->to_date;
+        $userType = $request->query('user_type');
+        $officeType = $request->query('office_type');
+        $committeeType = $request->query('committee_type');
+        $divisionId = $request->query('division_id');
+        $districtId = $request->query('district_id');
+        $upazilaId = $request->query('upazila_id');
+        $thanaId = $request->query('thana_id');
+        $office_id = $request->query('office_id');
+        $committeeId = $request->query('committee_id');
+        $cityCorpoId = $request->query('city_corpo_id');
+        $paurashavaId = $request->query('paurashava_id');
+        $startDate = $request->from_date;
+        $endDate = $request->to_date;
 
 
-    $data = User::query()
-        ->with(['office','assign_location.parent.parent.parent.parent','officeTypeInfo','roles', 'committee', 'userWards', 'assign_location'])
-        ->orderByDesc('id');
+        $data = User::query()
+            ->with(['office', 'assign_location.parent.parent.parent.parent', 'officeTypeInfo', 'roles', 'committee', 'userWards', 'assign_location'])
+            ->orderByDesc('id');
 
         if ($startDate && $endDate) {
             $data->whereBetween('created_at', [$startDate, $endDate])
-                ->orWhere('created_at',$startDate);
-
+                ->orWhere('created_at', $startDate);
         }
 
-    if ($request->filled('user_type')) {
-        if($userType == 1){
-            $data->where('user_type', 2)->whereNull('committee_type_id')->whereNotNull('office_type');
+        if ($request->filled('user_type')) {
+            if ($userType == 1) {
+                $data->where('user_type', 2)->whereNull('committee_type_id')->whereNotNull('office_type');
+            }
+            if ($userType == 2) {
+                $data->where('user_type', 2)->whereNotNull('committee_type_id')->whereNull('office_type');
+            }
+            if ($userType == 3) {
+                $data->where('user_type', 1)->whereNull('committee_type_id')->whereNull('office_type');
+            }
         }
-        if($userType == 2){
-            $data->where('user_type', 2)->whereNotNull('committee_type_id')->whereNull('office_type');
+        if ($request->filled('office_type')) {
+            $data->where('office_type', $officeType);
         }
-        if($userType == 3){
-            $data->where('user_type', 1)->whereNull('committee_type_id')->whereNull('office_type');
+        if ($request->filled('committee_type')) {
+            $data->where('committee_type_id', $committeeType);
         }
-    }
-    if ($request->filled('office_type')) {
-        $data->where('office_type',$officeType);
+        if ($request->filled('division_id')) {
 
-    }
-    if ($request->filled('committee_type')) {
-        $data->where('committee_type_id',$committeeType);
-    }
-    if ($request->filled('division_id')) {
-
-        if($userType == 1){
-            $data->where('user_type', 2)->whereNull('committee_type_id')->whereNotNull('office_type')
-                ->where('office_type',$officeType)
-                ->whereHas('assign_location', function ($query) use ($divisionId) {
-                    $query->where('id',$divisionId)
-                        ->orWhere('parent_id',$divisionId)
-                        ->orWhereHas('parent', function ($query) use ($divisionId) {
-                            $query->where('id', $divisionId)
-                                ->orWhereHas('parent', function ($query) use ($divisionId) {
-                                    $query->where('id', $divisionId)
-                                        ->orWhereHas('parent', function ($query) use ($divisionId) {
-                                            $query->where('id', $divisionId);
-                                        });
-                                });
-                        });
-                })
-
-            ;
+            if ($userType == 1) {
+                $data->where('user_type', 2)->whereNull('committee_type_id')->whereNotNull('office_type')
+                    ->where('office_type', $officeType)
+                    ->whereHas('assign_location', function ($query) use ($divisionId) {
+                        $query->where('id', $divisionId)
+                            ->orWhere('parent_id', $divisionId)
+                            ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                $query->where('id', $divisionId)
+                                    ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                        $query->where('id', $divisionId)
+                                            ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                                $query->where('id', $divisionId);
+                                            });
+                                    });
+                            });
+                    });
+            }
+            if ($userType == 2) {
+                $data->where('user_type', 2)->whereNotNull('committee_type_id')->whereNull('office_type')
+                    ->where('committee_type_id', $committeeType)
+                    ->whereHas('assign_location', function ($query) use ($divisionId) {
+                        $query->where('id', $divisionId)
+                            ->orWhere('parent_id', $divisionId)
+                            ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                $query->where('id', $divisionId)
+                                    ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                        $query->where('id', $divisionId)
+                                            ->orWhereHas('parent', function ($query) use ($divisionId) {
+                                                $query->where('id', $divisionId);
+                                            });
+                                    });
+                            });
+                    });
+            }
         }
-        if($userType == 2){
-            $data->where('user_type', 2)->whereNotNull('committee_type_id')->whereNull('office_type')
-                ->where('committee_type_id',$committeeType)
-                ->whereHas('assign_location', function ($query) use ($divisionId) {
-                    $query->where('id',$divisionId)
-                        ->orWhere('parent_id',$divisionId)
-                        ->orWhereHas('parent', function ($query) use ($divisionId) {
-                            $query->where('id', $divisionId)
-                                ->orWhereHas('parent', function ($query) use ($divisionId) {
-                                    $query->where('id', $divisionId)
-                                        ->orWhereHas('parent', function ($query) use ($divisionId) {
-                                            $query->where('id', $divisionId);
-                                        });
-                                });
-                        });
-                });
-
-        }
-    }
 
         if ($request->filled('district_id')) {
             $data->whereHas('assign_location', function ($query) use ($districtId) {
-                $query->where('id',$districtId)
-                ->orWhere('parent_id',$districtId);
+                $query->where('id', $districtId)
+                    ->orWhere('parent_id', $districtId);
             });
         }
 
         if ($request->filled('upazila_id')) {
             $data->whereHas('assign_location', function ($query) use ($upazilaId) {
-                $query->where('id',$upazilaId)
-                    ->orWhere('parent_id',$upazilaId);
+                $query->where('id', $upazilaId)
+                    ->orWhere('parent_id', $upazilaId);
             });
         }
 
         if ($request->filled('thana_id')) {
             $data->whereHas('assign_location', function ($query) use ($thanaId) {
-                $query->where('id',$thanaId)
-                    ->orWhere('parent_id',$thanaId);
+                $query->where('id', $thanaId)
+                    ->orWhere('parent_id', $thanaId);
             });
         }
 
         if ($request->filled('city_corpo_id')) {
             $data->whereHas('assign_location', function ($query) use ($cityCorpoId) {
-                $query->where('id',$cityCorpoId)
-                    ->orWhere('parent_id',$cityCorpoId);
+                $query->where('id', $cityCorpoId)
+                    ->orWhere('parent_id', $cityCorpoId);
             });
         }
 
         if ($request->filled('paurashava_id')) {
             $data->whereHas('assign_location', function ($query) use ($paurashavaId) {
-                $query->where('id',$paurashavaId)
-                    ->orWhere('parent_id',$paurashavaId);
+                $query->where('id', $paurashavaId)
+                    ->orWhere('parent_id', $paurashavaId);
             });
         }
 
 
         if ($request->filled('office_id')) {
-            $data->where('office_id',$office_id);
+            $data->where('office_id', $office_id);
         }
         if ($request->filled('committee_id')) {
-            $data->where('committee_id',$committeeId);
+            $data->where('committee_id', $committeeId);
         }
 
 
-    $filterArrayName=[];
-    $filterArrayUserName=[];
-    $filterArrayUserId=[];
-    $filterArrayEmail=[];
-    $filterArrayPhone=[];
-    $filterArrayOfficeId=[];
+        $filterArrayName = [];
+        $filterArrayUserName = [];
+        $filterArrayUserId = [];
+        $filterArrayEmail = [];
+        $filterArrayPhone = [];
+        $filterArrayOfficeId = [];
 
-    if ($searchText) {
-        $filterArrayName[] = ['full_name', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayUserName[] = ['username', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayUserId[] = ['user_id', 'LIKE', '%' . $userId . '%'];
-        $filterArrayEmail[] = ['email', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayPhone[] = ['mobile', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayOfficeId[] = ['office_id', 'LIKE', '%' . $officeId . '%'];
-    }
+        if ($searchText) {
+            $filterArrayName[] = ['full_name', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayUserName[] = ['username', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayUserId[] = ['user_id', 'LIKE', '%' . $userId . '%'];
+            $filterArrayEmail[] = ['email', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayPhone[] = ['mobile', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayOfficeId[] = ['office_id', 'LIKE', '%' . $officeId . '%'];
+        }
 
 
         // check this user is super-admin or not if not then check this user is office head or not if yes then get users under this office
-        $data->where(function ($query) use ($filterArrayName,$filterArrayUserName,$filterArrayUserId,$filterArrayEmail,$filterArrayPhone,$filterArrayOfficeId) {
-        $query->where($filterArrayName)
-              ->orWhere($filterArrayUserName)
-//              ->orWhere($filterArrayUserId)
-              ->orWhere($filterArrayEmail)
-//              ->orWhere($filterArrayOfficeId)
-              ->orWhere($filterArrayPhone)
-        ;
-    })
-        ->whereIn('id', $this->officeHeadService->getUsersUnderOffice());
+        $data->where(function ($query) use ($filterArrayName, $filterArrayUserName, $filterArrayUserId, $filterArrayEmail, $filterArrayPhone, $filterArrayOfficeId) {
+            $query->where($filterArrayName)
+                ->orWhere($filterArrayUserName)
+                //              ->orWhere($filterArrayUserId)
+                ->orWhere($filterArrayEmail)
+                //              ->orWhere($filterArrayOfficeId)
+                ->orWhere($filterArrayPhone);
+        })
+            ->whereIn('id', $this->officeHeadService->getUsersUnderOffice());
 
 
-    $users = $data->paginate($perPage, ['*'], 'page');
-// }
-    return $users;
-    return UserResource::collection($users)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
+        $users = $data->paginate($perPage, ['*'], 'page');
+        // }
+        return $users;
+        return UserResource::collection($users)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
 
 
     public function getUsersId()
@@ -430,49 +434,50 @@ class UserController extends Controller
 
     // 1. if the user has a committee type then the user will be created under that committee type - which means that the users will have the committtee ID
 
-    public function insertUser(UserRequest $request){
+    public function insertUser(UserRequest $request)
+    {
 
         $password = Helper::GeneratePassword();
         // check any user assign this office as a officeHead role permission or not and this request roles has officeHead role or not
-        if($request->role_id && $request->user_type == 1){
+        if ($request->role_id && $request->user_type == 1) {
             $role = Role::whereName($this->officeHead)->first();
-            if(in_array($role->id,$request->role_id)){
-                $officeHead = User::where('office_id',$request->office_id)->whereHas('roles', function ($query) {
+            if (in_array($role->id, $request->role_id)) {
+                $officeHead = User::where('office_id', $request->office_id)->whereHas('roles', function ($query) {
                     $query->where('name', $this->officeHead);
                 })->first();
-                if($officeHead){
+                if ($officeHead) {
                     return $this->sendError('This office already has a office head', [
-                        'office_id'=>'This office already has a office head',
+                        'office_id' => 'This office already has a office head',
                     ], 422);
                 }
             }
         }
 
-        $user = $this->UserService->createUser($request,$password);
+        $user = $this->UserService->createUser($request, $password);
 
-        Helper::activityLogInsert($user, '','User','User Created !');
+        Helper::activityLogInsert($user, '', 'User', 'User Created !');
 
-//            activity("User")
-//            ->causedBy(auth()->user())
-//            ->performedOn($user)
-//            ->log('User Created !');
+        //            activity("User")
+        //            ->causedBy(auth()->user())
+        //            ->performedOn($user)
+        //            ->log('User Created !');
 
-            return UserResource::make($user)->additional([
-                'success' => true,
-                'message' => $this->insertSuccessMessage,
-            ]);
+        return UserResource::make($user)->additional([
+            'success' => true,
+            'message' => $this->insertSuccessMessage,
+        ]);
     }
 
     public function update(UserUpdateRequest $request, $id)
     {
         try {
-            if($request->role_id && $request->user_type == 1){
+            if ($request->role_id && $request->user_type == 1) {
                 $role = Role::whereName($this->officeHead)->first();
-                if(in_array($role->id,$request->role_id)){
-                    $officeHead = User::where('office_id',$request->office_id)->whereHas('roles', function ($query) {
+                if (in_array($role->id, $request->role_id)) {
+                    $officeHead = User::where('office_id', $request->office_id)->whereHas('roles', function ($query) {
                         $query->where('name', $this->officeHead);
                     })->first();
-                    if($officeHead && $officeHead->id != $id){
+                    if ($officeHead && $officeHead->id != $id) {
                         return $this->sendError('This office already has a office head', [], 500);
                     }
                 }
@@ -483,14 +488,13 @@ class UserController extends Controller
 
             $user = $this->UserService->upddateUser($request, $id);
 
-            Helper::activityLogUpdate($user, $beforeUpdate,'User','User Updated !');
+            Helper::activityLogUpdate($user, $beforeUpdate, 'User', 'User Updated !');
 
             return UserResource::make($user)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
             ]);
-
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             \DB::rollBack();
 
             $error = $e->getMessage();
@@ -511,25 +515,22 @@ class UserController extends Controller
 
         $tokenLink = env('APP_FRONTEND_URL') . '/browser-token';
 
-        $message = "Welcome to the CTM application.Your account has been approved.".
+        $message = "Welcome to the CTM application.Your account has been approved." .
             "\nTo register your device please visit {$tokenLink} then copy the browser fingerprint code and provide it to your authority."
             .
-        "\nOnce your device is registered you can access the CTM Application using following credentials:
-        \nUsername: ". $user->username
-            ."\nPassword: ". $password .
-            "\nLogin URL: ". env('APP_FRONTEND_URL') . '/login'
-        ."\n-MIS, DSS"
-        ;
+            "\nOnce your device is registered you can access the CTM Application using following credentials:
+        \nUsername: " . $user->username
+            . "\nPassword: " . $password .
+            "\nLogin URL: " . env('APP_FRONTEND_URL') . '/login'
+            . "\n-MIS, DSS";
 
-        Log::info('password-'. $user->id, [$message]);
+        Log::info('password-' . $user->id, [$message]);
 
         $this->SMSservice->sendSms($user->mobile, $message);
 
-//        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
+        //        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
 
-        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->username,$password, $user->full_name));
-
-
+        Mail::to($user->email)->send(new UserCreateMail($user->email, $user->username, $password, $user->full_name));
     }
 
 
@@ -545,11 +546,9 @@ class UserController extends Controller
 
         $status = $user->fresh()->status;
 
-        Helper::activityLogUpdate($user, $beforeUpdate,'User','User Change Status !');
+        Helper::activityLogUpdate($user, $beforeUpdate, 'User', 'User Change Status !');
 
-        $status = $status == 1 ? 'active' :
-            ($status == 2 ? 'banned' :
-                ($status == $this->userAccountInactive ? 'inactive' : 'not changed'));
+        $status = $status == 1 ? 'active' : ($status == 2 ? 'banned' : ($status == $this->userAccountInactive ? 'inactive' : 'not changed'));
 
         return $this->sendResponse($user, "User is $status");
     }
@@ -558,7 +557,7 @@ class UserController extends Controller
     //1 = active, 2 = banned, 5 = inactive
     public function updateStatus($user)
     {
-        $user->status = match($user->status) {
+        $user->status = match ($user->status) {
             1 => 5,
             2 => 1,
             5 => 1,
@@ -566,7 +565,6 @@ class UserController extends Controller
         };
 
         $user->save();
-
     }
 
 
@@ -594,7 +592,7 @@ class UserController extends Controller
     {
         $url = "bulksmsbd.net/api/smsapi";
 
-        $message = $request->message ?: "Your OTP is 12132\n-MIS, DSS" ;
+        $message = $request->message ?: "Your OTP is 12132\n-MIS, DSS";
         $number = $request->number ?: "01747970935";
 
 
@@ -618,8 +616,8 @@ class UserController extends Controller
         $user = User::find(1);
         $user->email = $request->email ?: "tarikul5357@gmail.com";
 
-        $this->dispatch(new UserCreateJob($user->email,$user->username, '0000', 'Queue'));
-        Mail::to($user->email)->send(new UserCreateMail($user->email,$user->username, '1234', $user->full_name));
+        $this->dispatch(new UserCreateJob($user->email, $user->username, '0000', 'Queue'));
+        Mail::to($user->email)->send(new UserCreateMail($user->email, $user->username, '1234', $user->full_name));
     }
 
 
@@ -687,11 +685,12 @@ class UserController extends Controller
      *     )
      *
      */
-    public function getOfficeByLocationAssignId(Request $request){
+    public function getOfficeByLocationAssignId(Request $request)
+    {
         try {
             $getAssignLocationId = [];
             if ($request->has('location_type_id')) {
-                $getAssignLocationId[] = ['assign_location_id',$request->location_type_id];
+                $getAssignLocationId[] = ['assign_location_id', $request->location_type_id];
             }
             $office = Office::query()
                 ->where(function ($query) use ($getAssignLocationId, $request) {
@@ -764,7 +763,7 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $user->delete();
 
-            Helper::activityLogDelete($user, '','User','User Deleted !');
+            Helper::activityLogDelete($user, '', 'User', 'User Deleted !');
 
             return UserResource::make($user)->additional([
                 'success' => true,
@@ -779,19 +778,101 @@ class UserController extends Controller
 
     public function getRoles()
     {
-//        $isAdmin = auth()->user()->hasRole($this->superAdmin);
+        //        $isAdmin = auth()->user()->hasRole($this->superAdmin);
 
         $roles[] = $this->committee;
         $roles[] = $this->superAdmin;
 
-//        if (!$isAdmin) {
-//            $roles[] = $this->superAdmin;
-//        }
+        //        if (!$isAdmin) {
+        //            $roles[] = $this->superAdmin;
+        //        }
 
 
         return Role::whereNotIn('name', $roles)->get();
     }
 
+    public function getUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->load('office', 'officeTypeInfo', 'roles', 'assign_location', 'parent', 'committee', 'committeePermission');
+        return UserResource::make($user);
+    }
+    //user profile image update
+    public function uploadImage(Request $request)
+    {
+        // return auth()->user()->id;
+        $user = User::findOrFail(auth()->user()->id);
+
+        $existingPhoto = $user->photo;
+        if ($existingPhoto) {
+            $photoPath = public_path($existingPhoto);
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+        }
+
+        $image = $request->file('image');
+        $destinationPath = 'uploads/images';
+        $imageUrl = Helper::uploadImage($image, $destinationPath);
+        $user->update(["photo" => $imageUrl]);
+
+        // Save $imageUrl to the database or perform other actions
+
+        // return response()->json(['imageUrl' => $imageUrl], 200);
+        $user->save();
+        return UserResource::make($user)->additional([
+            'success' => true,
+            'message' => $this->insertSuccessMessage,
+        ]);
+    }
+    //auth user password update
+    public function passwordUpdate(Request $request)
+    {
+        // return $request->all();
+        $user = User::findOrFail($request->userId);
+        $code = $request->otp;
+        $cachedCode = Cache::get($this->userLoginOtpPrefix . $user->id);
+        if (!$cachedCode || $code != $cachedCode) {
+            throw new AuthBasicErrorException(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                'verify_failed',
+                "Verification code invalid !",
+            );
+        }
+        $user->salt = Helper::generateSalt();
+
+        $user->password = bcrypt($user->salt . $request->password);
+        $user->save();
+        $cachedCode = Cache::forget($this->userLoginOtpPrefix . $user->id);
+        return UserResource::make($user)->additional([
+            'success' => true,
+            'message' => $this->insertSuccessMessage,
+        ]);
+    }
 
 
+    public function updatePassOtp(Request $request)
+    {
+        // return $request->all();
+        $request->validate(
+            [
+                'mobile'      => 'required|exists:users,mobile',
+                'username'      => 'required|exists:users,username',
+            ],
+            [
+                'username.exists'     => 'This username does not match our record!',
+                'phone.exists'     => 'This phone does not match our record!',
+            ]
+        );
+
+        //    return $user = User::findOrFail($request->id);
+
+        $data = $this->authService->AdminForgotPassword($request);
+        $this->SMSservice->sendSms($request->mobile, $data);
+        activity("Update password")
+            ->withProperties(['userInfo' => Helper::BrowserIpInfo(), 'data' => $data])
+            ->log('Update Password OTP Send!!');
+
+        return response()->json(['success' => true, 'message' => 'Verification OTP Sent!', 'data' => $data]);
+    }
 }

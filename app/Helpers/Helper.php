@@ -201,4 +201,11 @@ class Helper{
             ->log($logDescription);
     }
 
+    public static function uploadImage($image, $destinationPath)
+    {
+        $imageName = time().'.'.$image->getClientOriginalExtension();
+        $image->move(public_path($destinationPath), $imageName);
+        return $destinationPath.'/'.$imageName;
+    }
+
 }
