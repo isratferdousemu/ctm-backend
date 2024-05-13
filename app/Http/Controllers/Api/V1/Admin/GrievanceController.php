@@ -381,8 +381,6 @@ class GrievanceController extends Controller
     {
 
          $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
-        //  dd($user);
-        // if($user->hasRole($this->officeHead) && $user->office_type || $user->hasRole($this->committee) && $user->committee_type_id){
         if($user->user_type==2){
             $roleIds = $user->roles->pluck('id');
             // dd( $roleIds);
@@ -394,7 +392,6 @@ class GrievanceController extends Controller
                ->select('grievance_type_id', 'grievance_subject_id')
                ->distinct()
                ->get();
-            //    dd($roleSettings);
             $settings = $settings->merge($roleSettings);
           }
            $settings = $settings->unique();
@@ -404,11 +401,7 @@ class GrievanceController extends Controller
 
         }
 
-        // dd($query->get());
-
-        // if ($user->hasRole($this->officeHead) && $user->office_type) {
         if ($user->office_type) {
-            // dd('ok');
             return (new GrievanceListService())->getGrievance($query, $user);
         }
 
