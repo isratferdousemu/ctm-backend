@@ -19,18 +19,9 @@ class GrievanceComitteeService
     public function getGrievance($query, $user)
     {
 
-        // dd($user->committee_type_id);
         if ($user->committee_type_id) {
-            // dd($user->roles->pluck('id'));
-            // $roles = [$user->roles->pluck('id')->first()];
-
             $assignedApplicationsId = CommitteeApplication::whereCommitteeId($user->committee_id)->pluck('application_id');
 
-   
-
-            // dd($query->get());
-            // dd($user->committee_type_id);
-            // dd($query->get());
             return match ($user->committee_type_id) {
                 12 => $this->getUnionApplications($user, $query, $assignedApplicationsId),
                 13 => $this->getWardApplications($user, $query, $assignedApplicationsId),
@@ -115,7 +106,6 @@ class GrievanceComitteeService
     public function getDistrictPouroshava($user, $query, $assignedApplicationsId)
     {
         $distPouroId = $user->assign_location_id;
-        dd($user);
         // $userRoleId = $user->assign_location_id;
 
         $query->where('district_pouro_id', $distPouroId);
@@ -166,7 +156,7 @@ class GrievanceComitteeService
 
         // dd($query->get());
         $query->when(request('city_thana_id'), function ($q, $v) {
-            $q->where('thana_id', $v);
+            $q->where('city_thana_id', $v);
         });
 
         return $this->applyWardIdFilter($query);
