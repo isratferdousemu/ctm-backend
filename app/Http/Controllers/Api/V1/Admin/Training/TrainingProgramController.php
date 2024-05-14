@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api\V1\Admin\Training;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Training\TrainingProgramRequest;
-use App\Models\TimeSlot;
+use App\Models\TrainingProgram;
 use App\Models\Trainer;
 use App\Models\TrainingCircular;
-use App\Models\TrainingProgram;
+use Illuminate\Http\Request;
 
 class TrainingProgramController extends Controller
 
@@ -16,14 +16,43 @@ class TrainingProgramController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = TimeSlot::query();
+        $query = TrainingProgram::query();
 
         $query->when(request('search'), function ($q, $v) {
-            $q->where('time', 'like', "%$v%")
+            $q->where('program_name', 'like', "%$v%")
             ;
         });
+
+        $query->when(request('training_type_id'), function ($q, $v) {
+            $q->whereHas('trainingCircular', function ($q) use ($v) {
+                $q->where('training_type_id', $v);
+            });
+        });
+
+        $query->when(request('training_circular_id'), function ($q, $v) {
+            $q->where('training_circular_id', $v);
+        });
+
+        $query->when(request('module_id'), function ($q, $v) {
+            $q->whereHas('modules', function ($q) use ($v) {
+                $q->whereId($v);
+            });
+        });
+
+        $query->when(request('status'), function ($q, $v) {
+            $q->where('status', $v);
+        });
+
+        $query->when(request('trainer_id'), function ($q, $v) {
+            $q->whereHas('trainers', function ($q) use ($v) {
+                $q->whereId($v);
+            });
+        });
+
+
+        $query->with('modules', 'trainingCircular', 'trainers');
 
         return $this->sendResponse($query
             ->paginate(request('perPage'))
@@ -35,33 +64,33 @@ class TrainingProgramController extends Controller
      */
     public function store(TrainingProgramRequest $request)
     {
-        $trainingProgram = $this->saveTrainingProgram($request, new TrainingProgram());
+        $program = $this->saveTrainingProgram($request, new TrainingProgram());
 
-        Helper::activityLogInsert($trainingProgram, '','Training Program','Training Program Created !');
+        Helper::activityLogInsert($program, '','Training Program','Training Program Created !');
 
-        return $this->sendResponse($trainingProgram, 'Training Program created successfully');
+        return $this->sendResponse($program, 'Training Program created successfully');
     }
 
 
     /**
      * @param $request
-     * @param TrainingProgram $trainingProgram
+     * @param TrainingProgram $program
      * @return TrainingProgram
      */
-    public function saveTrainingProgram($request, $trainingProgram)
+    public function saveTrainingProgram($request, $program)
     {
-        $trainingProgram->program_name = $request->program_name;
-        $trainingProgram->training_circular_id = $request->training_circular_id;
-        $trainingProgram->start_date = $request->start_date;
-        $trainingProgram->end_date = $request->end_date;
-        $trainingProgram->description = $request->description;
-        $trainingProgram->on_days = $request->on_days;
-        $trainingProgram->save();
+        $program->program_name = $request->program_name;
+        $program->training_circular_id = $request->training_circular_id;
+        $program->start_date = $request->start_date;
+        $program->end_date = $request->end_date;
+        $program->description = $request->description;
+        $program->on_days = $request->on_days;
+        $program->save();
 
-        $trainingProgram->modules()->sync($request->circular_modules);
-        $trainingProgram->modules()->sync($request->trainers);
+        $program->modules()->sync($request->circular_modules);
+        $program->trainers()->sync($request->trainers);
 
-        return $trainingProgram;
+        return $program;
     }
 
 
@@ -80,43 +109,58 @@ class TrainingProgramController extends Controller
     }
 
 
-    public function timeSlots()
+    public function TrainingPrograms()
     {
-        return $this->sendResponse(TimeSlot::get(['id', 'time']));
+        return $this->sendResponse(TrainingProgram::get(['id', 'time']));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(TimeSlot $trainingProgram)
+    public function show(TrainingProgram $program)
     {
-        return $this->sendResponse($trainingProgram);
+        $program->load('trainingCircular', 'modules', 'trainers');
+
+        return $this->sendResponse($program);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(TimeSlotRequest $request, TimeSlot $trainingProgram)
+    public function update(TrainingProgramRequest $request, TrainingProgram $program)
     {
-        $beforeUpdate = $trainingProgram->replicate();
+        $beforeUpdate = $program->replicate();
 
-        $trainingProgram->update($request->validated());
+        $program = $this->saveTrainingProgram($request, $program);
 
-        Helper::activityLogUpdate($trainingProgram, $beforeUpdate,'Training Program','Training Program Updated !');
+        Helper::activityLogUpdate($program, $beforeUpdate,'Training Program','Training Program Updated !');
 
-        return $this->sendResponse($trainingProgram, 'Training Program updated successfully');
+        return $this->sendResponse($program, 'Training Program updated successfully');
+    }
+
+
+    public function updateStatus(TrainingProgram $program)
+    {
+        $beforeUpdate = $program->replicate();
+
+        $program->update(['status' => !$program->status]);
+
+        Helper::activityLogUpdate($program, $beforeUpdate,'Training Program','Training Program Status Updated !');
+
+        return $this->sendResponse($program, 'Training Program status updated successfully');
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TimeSlot $trainingProgram)
+    public function destroy(TrainingProgram $program)
     {
-        $trainingProgram->delete();
+        $program->delete();
 
-        Helper::activityLogDelete($trainingProgram, '','Training Program','Training Program Deleted !');
+        Helper::activityLogDelete($program, '','Training Program','Training Program Deleted !');
 
-        return $this->sendResponse($trainingProgram, 'Training Program deleted successfully');
+        return $this->sendResponse($program, 'Training Program deleted successfully');
 
     }
 }

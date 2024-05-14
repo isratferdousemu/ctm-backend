@@ -14,6 +14,7 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::apiResource('time-slots', TimeSlotController::class);
     Route::apiResource('programs', TrainingProgramController::class);
     Route::get('program-circulars', [TrainingProgramController::class, 'circulars']);
+    Route::get('program-update-status', [TrainingProgramController::class, 'updateStatus']);
     Route::get('program-trainers', [TrainingProgramController::class, 'trainers']);
     Route::get('program-time-slots', [TrainingProgramController::class, 'timeSlots']);
 });
