@@ -19,6 +19,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('get-roles', [UserController::class, 'getRoles']);
         Route::get('get-users', [UserController::class, 'getUsersId']);
+        Route::get('get-user/{id}', [UserController::class, 'getUser']);
+        Route::post('password-update', [UserController::class, 'passwordUpdate']);
+        Route::post('upload-image', [UserController::class, 'uploadImage']);
+        Route::post('update-pass-otp', [UserController::class, 'updatePassOtp']);
 
     });
 

@@ -152,15 +152,10 @@ class GrievanceSettingController extends Controller
     {
         // return  $request->id;
         try {
-            $beforeUpdate = $request;
+            $beforeUpdate = GrievanceSetting::find($request->id);
             $grievanceSetting = $this->grievanceSetting->update($request);
-            Helper::activityLogInsert($grievanceSetting, $beforeUpdate, 'Grievance Setting', 'Grievance Setting Updated !');
-
+            Helper::activityLogUpdate($grievanceSetting, $beforeUpdate, 'Grievance Setting', 'Grievance Setting Updated !');
             return $grievanceSetting;
-            // return GrievanceSettingResource::make($grievanceSetting)->additional([
-            //     'sucess' => true,
-            //     'message' => $this->fetchDataSuccessMessage,
-            // ]);
         } catch (\Throwable $th) {
             throw $th;
         }
