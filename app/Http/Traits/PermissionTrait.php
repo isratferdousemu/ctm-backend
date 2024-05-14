@@ -73,6 +73,7 @@ trait PermissionTrait
     private $subAccountsInformation = "accounts-information";
     private $subPayrollGeneration = "payroll-generation";
     private $subEmergencyPayment = "emergency-payment";
+    private $subPayrollSetting = "payroll-setting";
 
 
     // module 5 sub modules
