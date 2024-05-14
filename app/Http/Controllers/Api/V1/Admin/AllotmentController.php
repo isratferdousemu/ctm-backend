@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\Allotment\UpdateAllotmentRequest;
 use App\Http\Requests\Admin\Budget\StoreBudgetRequest;
 use App\Http\Requests\Admin\Budget\UpdateBudgetRequest;
 use App\Http\Resources\Admin\Allotment\AllotmentResouce;
-use App\Http\Resources\Admin\Budget\BudgetResouce;
+use App\Http\Resources\Admin\Budget\BudgetResource;
 use App\Http\Services\Admin\BudgetAllotment\AllotmentService;
 use App\Http\Traits\MessageTrait;
 use Illuminate\Http\Request;
@@ -48,7 +48,7 @@ class AllotmentController extends Controller
 
     /**
      * @param StoreBudgetRequest $request
-     * @return BudgetResouce|\Illuminate\Http\JsonResponse
+     * @return BudgetResource|\Illuminate\Http\JsonResponse
      */
     public function add(StoreAllotmentRequest $request): \Illuminate\Http\JsonResponse|AllotmentResouce
     {
@@ -69,7 +69,7 @@ class AllotmentController extends Controller
 
     /**
      * @param $id
-     * @return BudgetResouce|\Illuminate\Http\JsonResponse
+     * @return BudgetResource|\Illuminate\Http\JsonResponse
      */
     public function show($id): \Illuminate\Http\JsonResponse|AllotmentResouce
     {
@@ -94,7 +94,7 @@ class AllotmentController extends Controller
     /**
      * @param UpdateBudgetRequest $request
      * @param $id
-     * @return BudgetResouce|\Illuminate\Http\JsonResponse
+     * @return BudgetResource|\Illuminate\Http\JsonResponse
      */
     public function update(UpdateAllotmentRequest $request, $id): \Illuminate\Http\JsonResponse|AllotmentResouce
     {
