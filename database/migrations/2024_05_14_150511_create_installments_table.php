@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('installments', function (Blueprint $table) {
             $table->id();
             $table->string("type");
-            $table->string("start");
+            $table->string("name")->nullable();
+            $table->string("start")->nullable();
             $table->string("end")->nullable();
             $table->boolean("status")->default(true);
             $table->integer("created_by")->nullable();
