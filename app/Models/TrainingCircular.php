@@ -39,6 +39,12 @@ class TrainingCircular extends Model
     }
 
 
+    public function programs()
+    {
+        return $this->hasMany(TrainingProgram::class, 'training_circular_id', 'id');
+    }
+
+
 
 
 }

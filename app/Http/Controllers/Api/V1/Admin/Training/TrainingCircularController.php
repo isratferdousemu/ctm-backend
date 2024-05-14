@@ -71,6 +71,8 @@ class TrainingCircularController extends Controller
      */
     public function destroy(TrainingCircular $circular)
     {
+        $circular->programs()->delete();
+
         $circular->delete();
 
         Helper::activityLogDelete($circular, '','Training Circular','Training Circular Deleted !');
