@@ -52,7 +52,7 @@ Route::prefix('admin/grievance')->group(function () {
    Route::get('get/{id}', [GrievanceController::class, 'getApplicationById'])->middleware(['role_or_permission:super-admin|grievance-list-view']);
    Route::get('/permissions', [GrievanceController::class, 'getApplicationPermission']);
    Route::get('/committee-list', [GrievanceController::class, 'getCommitteeList'])->middleware(['role_or_permission:super-admin|grievance-list-view']);
-   Route::post('/update-status', [GrievanceController::class, 'changeGrievanceStatus'])->middleware(['role_or_permission:super-admin|grievance-list-view']);
+   Route::post('/update-status', [GrievanceController::class, 'changeGrievanceStatus']);
    Route::get('/generate-pdf', [GrievanceController::class, 'getPdf']);
 
 

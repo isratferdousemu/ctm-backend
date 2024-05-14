@@ -5,7 +5,7 @@ namespace App\Http\Resources\Admin\Budget;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BudgetResouce extends JsonResource
+class BudgetResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

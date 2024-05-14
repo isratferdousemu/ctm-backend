@@ -369,7 +369,7 @@ class GrievanceController extends Controller
             $query->where('title_en', $request->grievanceType);
         }
 
-        $query->with('grievanceType', 'grievanceSubject', 'program', 'gender', 'division', 'district', 'districtPouroshova', 'cityCorporation', 'ward')
+        $query->with('resolver','grievanceType', 'grievanceSubject', 'program', 'gender', 'division', 'district', 'districtPouroshova', 'cityCorporation', 'ward')
             ->orderBy('id')
         ;
 
@@ -379,10 +379,11 @@ class GrievanceController extends Controller
 
     public function applyUserWiseGrievacne($query)
     {
-         $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
 
-        if($user->hasRole($this->officeHead) && $user->office_type || $user->hasRole($this->committee) && $user->committee_type_id){
+         $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+        if($user->user_type==2){
             $roleIds = $user->roles->pluck('id');
+            // dd( $roleIds);
             $settings = collect();
            foreach ($roleIds as $roleId) {
              $roleSettings = GrievanceSetting::where('first_tire_officer', $roleId)
@@ -394,15 +395,13 @@ class GrievanceController extends Controller
             $settings = $settings->merge($roleSettings);
           }
            $settings = $settings->unique();
+        //    dd( $settings);
            $query->whereIn('grievance_type_id', $settings->pluck('grievance_type_id'));
            $query->whereIn('grievance_subject_id', $settings->pluck('grievance_subject_id'));
 
         }
 
-        // dd($user);
-
-        if ($user->hasRole($this->officeHead) && $user->office_type) {
-            // dd('ok');
+        if ($user->office_type) {
             return (new GrievanceListService())->getGrievance($query, $user);
         }
 
@@ -425,23 +424,17 @@ class GrievanceController extends Controller
 
     public function changeGrievanceStatus(Request $request)
     {
-       
         DB::beginTransaction();
          try {
-        if (!$request->id) {
-            return response()->json([
-                'success' => false,
-                'error' => 'You have to select atleast one applicant .',
-            ]);
-        }
-        $user = auth()->user();
+         $user = auth()->user()->roles->pluck('id')[0];
 
         $grievance = new GrievanceStatusUpdate();
         $grievance->grievance_id = $request->id;
-        $grievance->resolver_id = $user->id;
+        $grievance->resolver_id =  $user;
         $grievance->status = $request->status;
         $grievance->remarks = $request->remarks;
         $grievance->solution = $request->solution;
+        $grievance->forward_to =$request->forwardOfficer;
         if ($request->file('documents')) {
           $filePath = $request->file('documents')->store('public');
           $grievance->file = $filePath;
@@ -450,8 +443,13 @@ class GrievanceController extends Controller
 
          $grievanceApplication=Grievance::where('id',$request->id)->first();
          $grievanceApplication->status=$request->status;
+         $grievanceApplication->resolver_id= $user;
+         $grievanceApplication->forward_to= $request->forwardOfficer;
          $grievanceApplication->save();
             DB::commit();
+           
+            Helper::activityLogInsert($grievance, '', 'Grievance List', 'Grievance Update Status !');
+
             return $grievance;
         } catch (\Throwable $th) {
             DB::rollBack();

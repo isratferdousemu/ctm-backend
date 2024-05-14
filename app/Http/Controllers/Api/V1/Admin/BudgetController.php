@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Budget\ApproveBudgetRequest;
 use App\Http\Requests\Admin\Budget\StoreBudgetRequest;
 use App\Http\Requests\Admin\Budget\UpdateBudgetRequest;
-use App\Http\Resources\Admin\Budget\BudgetResouce;
+use App\Http\Resources\Admin\Budget\BudgetDetailResource;
+use App\Http\Resources\Admin\Budget\BudgetResource;
 use App\Http\Services\Admin\BudgetAllotment\BudgetService;
 use App\Http\Traits\MessageTrait;
 use App\Models\Budget;
@@ -35,6 +37,19 @@ class BudgetController extends Controller
     }
 
     /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUserLocation(): \Illuminate\Http\JsonResponse
+    {
+        $uerLocation = $this->budgetService->getUserLocation();
+        return response()->json([
+            'data' => $uerLocation,
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ], ResponseAlias::HTTP_OK);
+    }
+
+    /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
@@ -43,7 +58,7 @@ class BudgetController extends Controller
         try {
             $budgetList = $this->budgetService->list($request);
 //            return response()->json($beneficiaryList);
-            return BudgetResouce::collection($budgetList)->additional([
+            return BudgetResource::collection($budgetList)->additional([
                 'success' => true,
                 'message' => $this->fetchSuccessMessage,
             ]);
@@ -54,13 +69,13 @@ class BudgetController extends Controller
 
     /**
      * @param StoreBudgetRequest $request
-     * @return BudgetResouce|\Illuminate\Http\JsonResponse
+     * @return BudgetResource|\Illuminate\Http\JsonResponse
      */
-    public function add(StoreBudgetRequest $request): \Illuminate\Http\JsonResponse|BudgetResouce
+    public function add(StoreBudgetRequest $request): \Illuminate\Http\JsonResponse|BudgetResource
     {
         try {
             $data = $this->budgetService->save($request);
-            return BudgetResouce::make($data)->additional([
+            return BudgetResource::make($data)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
             ]);
@@ -71,14 +86,14 @@ class BudgetController extends Controller
 
     /**
      * @param $id
-     * @return BudgetResouce|\Illuminate\Http\JsonResponse
+     * @return BudgetResource|\Illuminate\Http\JsonResponse
      */
-    public function show($id): \Illuminate\Http\JsonResponse|BudgetResouce
+    public function show($id): \Illuminate\Http\JsonResponse|BudgetResource
     {
         try {
             $budget = $this->budgetService->get($id);
             if ($budget) {
-                return BudgetResouce::make($budget)->additional([
+                return BudgetResource::make($budget)->additional([
                     'success' => true,
                     'message' => $this->fetchSuccessMessage,
                 ]);
@@ -96,16 +111,37 @@ class BudgetController extends Controller
     /**
      * @param UpdateBudgetRequest $request
      * @param $id
-     * @return BudgetResouce|\Illuminate\Http\JsonResponse
+     * @return BudgetResource|\Illuminate\Http\JsonResponse
      */
-    public function update(UpdateBudgetRequest $request, $id): \Illuminate\Http\JsonResponse|BudgetResouce
+    public function update(UpdateBudgetRequest $request, $id): \Illuminate\Http\JsonResponse|BudgetResource
     {
         try {
             $beforeUpdate = Budget::findOrFail($id);
             $data = $this->budgetService->update($request, $id);
 //            $afterUpdate = Budget::findOrFail($id);
             Helper::activityLogUpdate($data, $beforeUpdate, "Budget", "Budget Updated!");
-            return BudgetResouce::make($data)->additional([
+            return BudgetResource::make($data)->additional([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    public function approve(ApproveBudgetRequest $request, $id): \Illuminate\Http\JsonResponse|BudgetResource
+    {
+        try {
+            $beforeUpdate = Budget::findOrFail($id);
+            if (!$beforeUpdate->process_flag) {
+                throw new Exception('Budget not yet processed', ResponseAlias::HTTP_BAD_REQUEST);
+            } elseif ($beforeUpdate->is_approved) {
+                throw new Exception('Budget Already Approved', ResponseAlias::HTTP_BAD_REQUEST);
+            }
+            $data = $this->budgetService->approve($request, $id);
+//            $afterUpdate = Budget::findOrFail($id);
+            Helper::activityLogUpdate($data, $beforeUpdate, "Budget", "Budget Approved!");
+            return BudgetResource::make($data)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
             ]);
@@ -122,6 +158,9 @@ class BudgetController extends Controller
     {
         try {
             $budget = Budget::findOrFail($id);
+            if ($budget->is_approved == 1) {
+                throw new Exception('Budget Already Approved', ResponseAlias::HTTP_BAD_REQUEST);
+            }
             $this->budgetService->delete($id);
             Helper::activityLogDelete($budget, '', 'Budget', 'Budget Deleted!!');
             return response()->json([
@@ -146,4 +185,46 @@ class BudgetController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+
+    public function detailList($budget_id, Request $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        try {
+            $budget = Budget::find($budget_id);
+            if (!$budget) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $this->notFoundMessage,
+                ], ResponseAlias::HTTP_OK);
+            }
+            $budgetDetailList = $this->budgetService->detailList($budget_id, $request);
+//            return response()->json($budgetList);
+            return BudgetDetailResource::collection($budgetDetailList)->additional([
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ]);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    public function detailUpdate($budget_id, Request $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        try {
+            $budget = Budget::find($budget_id);
+            if (!$budget) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $this->notFoundMessage,
+                ], ResponseAlias::HTTP_OK);
+            }
+            $this->budgetService->detailUpdate($budget_id, $request);
+            return response()->json([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
 }

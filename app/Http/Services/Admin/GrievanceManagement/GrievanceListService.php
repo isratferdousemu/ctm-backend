@@ -16,10 +16,10 @@ class GrievanceListService
      */
     public function getGrievance($query, $user)
     {
-      // dd($user->office_type);
+        //   dd($user->office_type);
         if ($user->office_type) {
             return match ($user->office_type) {
-              
+
                 4, 5 => $this->applyLocationTypeFilter($query, request('division_id'), request('district_id')),
                 6 => $this->getDivision($user, $query),
                 7 => $this->getDistrict($user, $query),
@@ -63,7 +63,7 @@ class GrievanceListService
 
         if ($divisionId) {
             $query->where('division_id', $divisionId);
-            return  $query;
+            return $query;
             //  dd($query->get());
             if ($districtId) {
                 $query->where('district_id', $districtId);
@@ -168,9 +168,11 @@ class GrievanceListService
             ->where('district_id', $districtId)
             ->where('city_id', $cityCorpId)
         ;
+        // dd( $user->userWards()->pluck('id'));
+        // dd( $user);
 
         $query->whereIn('ward_id_city', $user->userWards()->pluck('id'));
-
+        //    dd($query->get());
         $query->when(request('city_thana_id'), function ($q, $v) {
             $q->where('thana_id', $v);
         });
@@ -193,10 +195,14 @@ class GrievanceListService
 
         $query->where('division_id', $divisionId)
             ->where('district_id', $districtId)
-            ->where('upazila_id', $upazilaId)
+            ->where('thana_id', $upazilaId)
         ;
-
-        $query->whereIn('ward_id', $user->userWards()->pluck('id'));
+     
+       $userWardIds = $user->userWards()->pluck('id');
+       if ($userWardIds->isNotEmpty()) {
+          $query->whereIn('ward_id', $userWardIds);
+        }
+        // dd($query->get());
 
         return $this->applySubLocationFilter($query);
 

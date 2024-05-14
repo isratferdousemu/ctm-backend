@@ -126,9 +126,9 @@ class GrievanceSubjectController extends Controller
     public function update(Request $request)
     {
         try {
-            $beforeUpdate = $request;
+            $beforeUpdate = GrievanceSubject::find($request->id);
             $grievanceSubject = $this->grievanceSubject->update($request);
-            Helper::activityLogInsert($grievanceSubject, $beforeUpdate, 'Grievance Subject', 'Grievance Subject Updated !');
+            Helper::activityLogUpdate($grievanceSubject, $beforeUpdate, 'Grievance Subject', 'Grievance Subject Updated !');
             return GrievanceSubjectResource::make($grievanceSubject)->additional([
                 'sucess' => true,
                 'message' => $this->fetchDataSuccessMessage,
