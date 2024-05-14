@@ -84,6 +84,14 @@ class LookUpSeeder extends Seeder
             ['id' => 51, 'type' => 24, 'value_en' => 'Senior trainer', 'value_bn' => 'ঊর্ধ্বতন প্রশিক্ষক', 'default' => 1],
             ['id' => 52, 'type' => 24, 'value_en' => 'Trainer', 'value_bn' => 'প্রশিক্ষক', 'default' => 1],
 
+
+            // Grievance Solution type
+            ['id' => 53, 'type' => 25, 'value_en' => 'Allegation have no prove or Truth', 'value_bn' => 'অভিযোগের কোনো প্রমাণ বা সত্যতা নেই', 'default' => 1],
+            ['id' => 54, 'type' => 25, 'value_en' => 'Dispatch to relative office', 'value_bn' => 'আত্মীয় অফিসে প্রেরণ', 'default' => 1],
+            ['id' => 55, 'type' => 25, 'value_en' => 'Solution Type -3', 'value_bn' => 'সমাধানের ধরন-3', 'default' => 1],
+            ['id' => 56, 'type' => 25, 'value_en' => 'Solution Type -4', 'value_bn' => 'সমাধানের ধরন-4', 'default' => 1],
+            ['id' => 57, 'type' => 25, 'value_en' => 'Solution Type -5', 'value_bn' => 'সমাধানের ধরন-5', 'default' => 1],
+            ['id' => 58, 'type' => 25, 'value_en' => 'Solution Type -6', 'value_bn' => 'সমাধানের ধরন-6', 'default' => 1],
             //Training Circular Type
             ['id' => 59, 'type' => 26, 'value_en' => 'Open', 'value_bn' => 'উন্মুক্ত', 'default' => 1],
             ['id' => 60, 'type' => 26, 'value_en' => 'Selected', 'value_bn' => 'বাছাইকৃত', 'default' => 1],

@@ -122,9 +122,9 @@ class GrievanceTypeController extends Controller
     public function update(GrievacneType $request)
     {
         try {
-           $beforeUpdate = $request;
+            $beforeUpdate = GrievanceType::find($request->id);
            $grievanceType = $this->grievanceType->update($request);
-           Helper::activityLogInsert($grievanceType, $beforeUpdate, 'Grievance Type', 'Grievance Type Updated !');
+           Helper::activityLogUpdate($grievanceType, $beforeUpdate, 'Grievance Type', 'Grievance Type Updated !');
 
            return GrievanceTypeResource::make($grievanceType)->additional([
                'sucess'=>true,

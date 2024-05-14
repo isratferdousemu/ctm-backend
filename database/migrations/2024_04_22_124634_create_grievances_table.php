@@ -17,6 +17,7 @@ return new class extends Migration
             // entry
             $table->tinyInteger('is_existing_beneficiary');
             $table->bigInteger('resolver_id')->unsigned()->index();
+            $table->integer('forward_to')->nullable();
             $table->longText('remarks')->nullable();
             $table->bigInteger('beneficiary_id')->unsigned()->index();
             $table->date('date_of_birth');

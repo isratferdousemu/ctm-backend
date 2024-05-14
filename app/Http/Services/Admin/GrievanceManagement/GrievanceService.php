@@ -89,6 +89,7 @@ class GrievanceService
 // Assign the unique random string to the permanent_mobile attribute
            if(isset($grievanceSetting)){
              $grievance->resolver_id = $grievanceSetting['first_tire_officer'];
+             $grievance->forward_to = $grievanceSetting['first_tire_officer'];
 
            }
             $grievance->is_existing_beneficiary = $request->is_existing_beneficiary;

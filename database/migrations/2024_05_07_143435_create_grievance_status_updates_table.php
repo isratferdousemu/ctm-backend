@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('grievance_status_updates', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('grievance_id')->unsigned()->index();
-            $table->bigInteger('resolver_id')->unsigned()->index();
+            $table->bigInteger('resolver_id')->unsigned()->index()->nullable();
+            $table->integer('forward_to')->nullable();
             $table->string('status')->nullable();
             $table->longText('remarks')->nullable();
             $table->string('solution')->nullable();
