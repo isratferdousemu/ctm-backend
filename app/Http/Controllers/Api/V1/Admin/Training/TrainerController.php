@@ -6,6 +6,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Training\TrainerRequest;
 use App\Models\Trainer;
+use App\Models\TrainingProgramTrainer;
 use Illuminate\Http\Request;
 
 class TrainerController extends Controller
@@ -108,6 +109,8 @@ class TrainerController extends Controller
     public function destroy(Trainer $trainer)
     {
         $trainer->delete();
+
+        TrainingProgramTrainer::where('trainer_id', $trainer->id)->delete();
 
         Helper::activityLogDelete($trainer, '','Trainer','Trainer Deleted !');
 

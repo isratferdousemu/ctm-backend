@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin\Training;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Training\TrainingProgramRequest;
+use App\Models\TimeSlot;
 use App\Models\TrainingProgram;
 use App\Models\Trainer;
 use App\Models\TrainingCircular;
@@ -49,6 +50,16 @@ class TrainingProgramController extends Controller
             $q->whereHas('trainers', function ($q) use ($v) {
                 $q->whereId($v);
             });
+        });
+
+
+        $query->when(request('start_date'), function ($q, $v) {
+            $q->whereDate('start_date', '>=', $v);
+        });
+
+
+        $query->when(request('end_date'), function ($q, $v) {
+            $q->whereDate('end_date', '<=', $v);
         });
 
 
@@ -109,9 +120,9 @@ class TrainingProgramController extends Controller
     }
 
 
-    public function TrainingPrograms()
+    public function timeSlots()
     {
-        return $this->sendResponse(TrainingProgram::get(['id', 'time']));
+        return $this->sendResponse(TimeSlot::get(['id', 'time']));
     }
 
     /**
