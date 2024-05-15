@@ -470,15 +470,17 @@ class BudgetService
     {
         DB::beginTransaction();
         $budget = Budget::findOrFail($budget_id);
-        if ($budget->allotment_create_flag == 1 || $budget->is_approved == 0) {
+        if ($budget->allotment_create_flag == 1 || $budget->is_approved == 0 || $budget->process_flag == 0) {
             throw new Exception('Either allotment created or budget not yet approved', ResponseAlias::HTTP_BAD_REQUEST);
         }
         try {
             DB::insert("
             INSERT
                 INTO
-                allotment_details (
+                allotments (
                 budget_id,
+                program_id,
+                financial_year_id,
                 location_type,
                 location_id,
                 ward_id,
@@ -498,6 +500,8 @@ class BudgetService
                 )
             SELECT
                 d.budget_id,
+                b.program_id,
+                b.financial_year_id,
                 d.location_type,
                 d.location_id,
                 d.ward_id,
@@ -515,7 +519,9 @@ class BudgetService
                 d.per_beneficiary_amount,
                 d.total_amount
             FROM
-                budget_details d
+                budgets b
+            INNER JOIN budget_details d ON
+                b.id = d.budget_id
             WHERE
                 d.budget_id = $budget_id;
             ");
@@ -702,18 +708,25 @@ class BudgetService
     {
         DB::beginTransaction();
         try {
-            if (!$request->has('budget_details')) {
+            $budget = Budget::find($budget_id);
+            if (!$budget) {
+                DB::rollBack();
+                throw new \Exception('No budget was found!');
+            } elseif (!$request->has('budget_details')) {
                 DB::rollBack();
                 throw new \Exception('No budget location was found!');
             }
             foreach ($request->input('budget_details') as $budget_detail) {
                 $budgetDetailInstance = BudgetDetail::findOrFail($budget_detail['id']);
+                $budgetDetailInstanceBeforeUpdate = $budgetDetailInstance->replicate();
+                $location = Location::find($budgetDetailInstance->location_id);
                 $budgetDetailInstance->total_beneficiaries = $budget_detail['total_beneficiaries'];
                 $budgetDetailInstance->per_beneficiary_amount = $budget_detail['per_beneficiary_amount'];
                 $budgetDetailInstance->total_amount = $budget_detail['total_amount'];
-                $budgetDetailInstance->modified_at = now();
-                $budgetDetailInstanceUpdated = $budgetDetailInstance->save();
-                Helper::activityLogUpdate($budgetDetailInstanceUpdated, $budgetDetailInstance, "Budget", "Location budget updated!");
+                $budgetDetailInstance->updated_at = now();
+                $budgetDetailInstance->save();
+
+                Helper::activityLogUpdate($budgetDetailInstance, $budgetDetailInstanceBeforeUpdate, "Budget", "Budget updated for location: " . $location?->name_en);
             }
 
             DB::commit();

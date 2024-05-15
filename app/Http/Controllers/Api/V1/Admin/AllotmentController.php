@@ -47,27 +47,6 @@ class AllotmentController extends Controller
     }
 
     /**
-     * @param StoreBudgetRequest $request
-     * @return BudgetResource|\Illuminate\Http\JsonResponse
-     */
-    public function add(StoreAllotmentRequest $request): \Illuminate\Http\JsonResponse|AllotmentResouce
-    {
-        try {
-            $data = $this->allotmentService->save($request);
-            activity("Allotment")
-                ->causedBy(auth()->user())
-                ->performedOn($data)
-                ->log('Allotment Created!');
-            return AllotmentResouce::make($data)->additional([
-                'success' => true,
-                'message' => $this->insertSuccessMessage,
-            ]);
-        } catch (\Throwable $th) {
-            return $this->sendError($th->getMessage(), [], 500);
-        }
-    }
-
-    /**
      * @param $id
      * @return BudgetResource|\Illuminate\Http\JsonResponse
      */
@@ -99,7 +78,7 @@ class AllotmentController extends Controller
     public function update(UpdateAllotmentRequest $request, $id): \Illuminate\Http\JsonResponse|AllotmentResouce
     {
         try {
-            $data = $this->allotmentService->update($request);
+            $data = $this->allotmentService->update($request, $id);
             activity("Budget")
                 ->causedBy(auth()->user())
                 ->performedOn($data)

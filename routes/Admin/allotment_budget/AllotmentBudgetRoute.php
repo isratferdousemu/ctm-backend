@@ -18,7 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/getProjection/{program_id}/{financial_year_id}', [BudgetController::class, 'getProjection'])->middleware(['role_or_permission:super-admin|budget-view']);
         // budget detail
         Route::get('/detail/list/{budget_id}', [BudgetController::class, 'detailList'])->middleware(['role_or_permission:super-admin|budget-view']);
-        Route::get('/detail/update/{budget_id}', [BudgetController::class, 'detailUpdate'])->middleware(['role_or_permission:super-admin|budget-view']);
+        Route::put('/detail/update/{budget_id}', [BudgetController::class, 'detailUpdate'])->middleware(['role_or_permission:super-admin|budget-view']);
     });
 
     /* -------------------------------------------------------------------------- */
@@ -26,9 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
     /* -------------------------------------------------------------------------- */
     Route::prefix('admin/allotment')->group(function () {
         Route::get('/list', [AllotmentController::class, 'list'])->middleware(['role_or_permission:super-admin|allotment-view']);
-        Route::post('/add', [AllotmentController::class, 'add'])->middleware(['role_or_permission:super-admin|allotment-create']);
         Route::get('/show/{id}', [AllotmentController::class, 'show'])->middleware(['role_or_permission:super-admin|allotment-view']);
-        Route::post('/update/{id}', [AllotmentController::class, 'update'])->middleware(['role_or_permission:super-admin|allotment-edit']);
+        Route::put('/update/{id}', [AllotmentController::class, 'update'])->middleware(['role_or_permission:super-admin|allotment-edit']);
         Route::delete('/delete/{id}', [AllotmentController::class, 'delete'])->middleware(['role_or_permission:super-admin|allotment-delete']);
     });
 
