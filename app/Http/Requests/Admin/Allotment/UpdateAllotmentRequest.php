@@ -22,7 +22,9 @@ class UpdateAllotmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'additional_beneficiaries' => 'required|numeric',
+            'total_beneficiaries' => 'required|numeric',
+            'total_amount' => 'required|numeric'
         ];
     }
 }

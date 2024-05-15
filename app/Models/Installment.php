@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PayrollActiveInstallment extends Model
+class Installment extends Model
 {
     use HasFactory;
+    protected $guarded = ['id'];
 
-    protected $table = 'payroll_active_installment';
 }

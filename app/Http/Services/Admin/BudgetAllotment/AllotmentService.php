@@ -3,11 +3,8 @@
 namespace App\Http\Services\Admin\BudgetAllotment;
 
 
-use App\Http\Requests\Admin\Allotment\StoreAllotmentRequest;
 use App\Http\Requests\Admin\Allotment\UpdateAllotmentRequest;
 use App\Models\Allotment;
-use App\Models\AllotmentDetails;
-use App\Models\Budget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -109,25 +106,23 @@ class AllotmentService
 
     /**
      * @param Request $request
-     * @param $getAllRecords
+     * @param bool $getAllRecords
      * @return mixed
      */
-    public function list(Request $request, $getAllRecords = false)
+    public function list(Request $request, bool $getAllRecords = false): mixed
     {
         $program_id = $request->query('program_id');
         $financial_year_id = $request->query('financial_year_id');
-
         $perPage = $request->query('perPage', 10);
 
-        $query = AllotmentDetails::query();
+        $query = Allotment::query();
         if ($program_id)
-            $query = $query->whereRelation('budget', 'program_id', $program_id);
+            $query = $query->where('program_id', $program_id);
 
         if ($financial_year_id)
-            $query = $query->whereRelation('budget', 'financial_year_id', $financial_year_id);
+            $query = $query->where('financial_year_id', $financial_year_id);
 
         $query = $this->applyLocationFilter($query, $request);
-
 
         if ($getAllRecords)
             return $query->with('upazila', 'cityCorporation', 'districtPourosova', 'location')
@@ -144,9 +139,9 @@ class AllotmentService
      * @param $id
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
      */
-    public function get($id)
+    public function get($id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
     {
-        return AllotmentDetails::with('budget.program', 'budget.financialYear', 'location')->find($id);
+        return Allotment::with('program', 'financialYear', 'location')->find($id);
     }
 
     /**
@@ -155,16 +150,17 @@ class AllotmentService
      * @return mixed
      * @throws \Throwable
      */
-    public function update(UpdateAllotmentRequest $request, $id)
+    public function update(UpdateAllotmentRequest $request, $id): mixed
     {
         DB::beginTransaction();
         try {
-            $allotmentDetail = AllotmentDetails::findOrFail($id);
-            $validated = $request->validated(['additional_beneficiaries', 'total_amount']);
-            $allotmentDetail->fill($validated);
-            $allotmentDetail->save();
+            $allotment = Allotment::findOrFail($id);
+            $validated = $request->safe()->only(['additional_beneficiaries', 'total_beneficiaries', 'total_amount']);
+            $allotment->fill($validated);
+            $allotment->updated_at = now();
+            $allotment->save();
             DB::commit();
-            return $allotmentDetail;
+            return $allotment;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -176,18 +172,10 @@ class AllotmentService
      * @return mixed
      * @throws \Throwable
      */
-    public function delete($id)
+    public function delete($id): mixed
     {
-        DB::beginTransaction();
-        try {
-            $allotmentDetail = AllotmentDetails::findOrFail($id);
-            $resp = $allotmentDetail->delete();
-            DB::commit();
-            return $resp;
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            throw $th;
-        }
+        $allotment = Allotment::findOrFail($id);
+        return $allotment->delete();
     }
 
 }

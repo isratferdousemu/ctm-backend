@@ -677,7 +677,7 @@ class PermissionSeeder extends Seeder
                     ["id" => 175, "name" => "generalSetting-edit", "page_url" => "/setting/general/edit/:id", "parent_page" => 0],
                     ["id" => 176, "name" => "generalSetting-delete", "page_url" => "/setting/general", "parent_page" => 0],
 
-                  
+
                 ]
 
             ],
@@ -691,6 +691,18 @@ class PermissionSeeder extends Seeder
                     ["id" => 178, "name" => "committee-permission-create", "page_url" => "/beneficiary-management/committee-permission/create", "parent_page" => 1],
                     ["id" => 179, "name" => "committee-permission-view", "page_url" => "/beneficiary-management/committee-permission", "parent_page" => 1],
                     ["id" => 181, "name" => "committee-permission-delete", "page_url" => "/beneficiary-management/committee-permission", "parent_page" => 1]
+                ]
+            ],
+
+            /* -------------------------------------------------------------------------- */
+            /*                             Payroll Management again                        */
+            /* -------------------------------------------------------------------------- */
+            [
+                'module_name' => $this->modulePermissionPayrollManagement,
+                'sub_module_name' => $this->subPayrollSetting,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 253, "name" => "payroll-setting-view", "page_url" => "/payroll-management/payroll-setting", "parent_page" => 1],
                 ]
             ],
         ];
