@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\Allotment\UpdateAllotmentRequest;
 use App\Http\Requests\Admin\Budget\StoreBudgetRequest;
 use App\Http\Requests\Admin\Budget\UpdateBudgetRequest;
 use App\Http\Resources\Admin\Allotment\AllotmentResouce;
-use App\Http\Resources\Admin\Budget\BudgetResouce;
+use App\Http\Resources\Admin\Budget\BudgetResource;
 use App\Http\Services\Admin\BudgetAllotment\AllotmentService;
 use App\Http\Traits\MessageTrait;
 use Illuminate\Http\Request;
@@ -47,29 +47,8 @@ class AllotmentController extends Controller
     }
 
     /**
-     * @param StoreBudgetRequest $request
-     * @return BudgetResouce|\Illuminate\Http\JsonResponse
-     */
-    public function add(StoreAllotmentRequest $request): \Illuminate\Http\JsonResponse|AllotmentResouce
-    {
-        try {
-            $data = $this->allotmentService->save($request);
-            activity("Allotment")
-                ->causedBy(auth()->user())
-                ->performedOn($data)
-                ->log('Allotment Created!');
-            return AllotmentResouce::make($data)->additional([
-                'success' => true,
-                'message' => $this->insertSuccessMessage,
-            ]);
-        } catch (\Throwable $th) {
-            return $this->sendError($th->getMessage(), [], 500);
-        }
-    }
-
-    /**
      * @param $id
-     * @return BudgetResouce|\Illuminate\Http\JsonResponse
+     * @return BudgetResource|\Illuminate\Http\JsonResponse
      */
     public function show($id): \Illuminate\Http\JsonResponse|AllotmentResouce
     {
@@ -94,12 +73,12 @@ class AllotmentController extends Controller
     /**
      * @param UpdateBudgetRequest $request
      * @param $id
-     * @return BudgetResouce|\Illuminate\Http\JsonResponse
+     * @return BudgetResource|\Illuminate\Http\JsonResponse
      */
     public function update(UpdateAllotmentRequest $request, $id): \Illuminate\Http\JsonResponse|AllotmentResouce
     {
         try {
-            $data = $this->allotmentService->update($request);
+            $data = $this->allotmentService->update($request, $id);
             activity("Budget")
                 ->causedBy(auth()->user())
                 ->performedOn($data)

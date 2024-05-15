@@ -26,19 +26,17 @@ class Allotment extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    public function budget()
+    {
+        return $this->belongsTo(Budget::class, 'budget_id', 'id');
+    }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function program()
     {
         return $this->belongsTo(AllowanceProgram::class, 'program_id');
     }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function location()
-    {
-        return $this->belongsTo(Location::class, 'location_id');
-    }
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -46,12 +44,32 @@ class Allotment extends Model
     {
         return $this->belongsTo(FinancialYear::class, 'financial_year_id');
     }
-
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function allotmentDetails()
+    public function upazila()
     {
-        return $this->hasMany(AllotmentDetails::class);
+        return $this->belongsTo(Location::class, 'upazila_id', 'id');
+    }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function cityCorporation()
+    {
+        return $this->belongsTo(Location::class, 'city_corp_id', 'id');
+    }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function districtPourosova()
+    {
+        return $this->belongsTo(Location::class, 'district_pourashava_id', 'id');
+    }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'location_id', 'id');
     }
 }

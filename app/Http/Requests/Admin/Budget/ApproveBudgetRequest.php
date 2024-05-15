@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Allotment;
+namespace App\Http\Requests\Admin\Budget;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAllotmentRequest extends FormRequest
+class ApproveBudgetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,9 @@ class UpdateAllotmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'additional_beneficiaries' => 'required|numeric',
-            'total_beneficiaries' => 'required|numeric',
-            'total_amount' => 'required|numeric'
+            'approved_by' => 'required|string|max:100',
+            'approved_document' => 'nullable|mimes:jpeg,jpg,pdf|max:2048',
+            'approved_remarks' => 'nullable',
         ];
     }
 }

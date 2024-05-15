@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Admin\Allotment;
+namespace App\Http\Resources\Admin\Budget;
 
 use App\Http\Resources\Admin\Location\LocationResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AllotmentResouce extends JsonResource
+class BudgetDetailResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,15 +17,18 @@ class AllotmentResouce extends JsonResource
     {
         return [
             "id" => $this->id,
+//            "budget_id" => $this->budget_id,
+//            "division_id" => $this->division_id,
+//            "district_id" => $this->district_id,
+//            "location_type" => $this->location_type,
             "location_id" => $this->location_id,
-            "regular_beneficiaries" => $this->regular_beneficiaries,
-            "additional_beneficiaries" => $this->additional_beneficiaries,
             "total_beneficiaries" => $this->total_beneficiaries,
             "per_beneficiary_amount" => $this->per_beneficiary_amount,
             "total_amount" => $this->total_amount,
             "office_area" => $this->officeArea(),
             "allotment_area" => LocationResource::make($this->whenLoaded('location')),
         ];
+
     }
 
     public function officeArea()
