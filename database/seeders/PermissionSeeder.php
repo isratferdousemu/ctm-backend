@@ -635,10 +635,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->modulePermissionTrainingManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 253, "name" => "trainerCircular-create", "page_url" => "/training-management/trainer-circular/create", "parent_page" => 1],
-                    ["id" => 254, "name" => "trainerCircular-view", "page_url" => "/training-management/trainer-circular", "parent_page" => 1],
-                    ["id" => 255, "name" => "trainerCircular-edit", "page_url" => "/training-management/trainer-circular/edit/:id", "parent_page" => 1],
-                    ["id" => 256, "name" => "trainerCircular-delete", "page_url" => "/training-management/trainer-circular/view/:id", "parent_page" => 1]
+                    ["id" => 253, "name" => "trainerCircular-create", "page_url" => "/training-management/training-circular/create", "parent_page" => 1],
+                    ["id" => 254, "name" => "trainerCircular-view", "page_url" => "/training-management/training-circular", "parent_page" => 1],
+                    ["id" => 255, "name" => "trainerCircular-edit", "page_url" => "/training-management/training-circular/edit/:id", "parent_page" => 1],
+                    ["id" => 256, "name" => "trainerCircular-delete", "page_url" => "/training-management/training-circular/view/:id", "parent_page" => 1]
                 ]
 
             ],
@@ -655,6 +655,19 @@ class PermissionSeeder extends Seeder
 
             ],
             [
+                'module_name' => $this->modulePermissionTrainingManagement,
+                'sub_module_name' => $this->modulePermissionTrainingManagement,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 261, "name" => "trainingProgram-create", "page_url" => "/training-management/training-program/create", "parent_page" => 1],
+                    ["id" => 262, "name" => "trainingProgram-view", "page_url" => "/training-management/training-program", "parent_page" => 1],
+                    ["id" => 263, "name" => "trainingProgram-edit", "page_url" => "/training-management/training-program/edit/:id", "parent_page" => 1],
+                    ["id" => 264, "name" => "trainingProgram-delete", "page_url" => "/training-management/training-program/view/:id", "parent_page" => 1]
+                ]
+
+            ],
+            
+            [
                 'module_name' => $this->modulePermissionSettingManagement,
                 'sub_module_name' => $this->settingManagement,
                 'guard_name' => $this->guard,
@@ -668,6 +681,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
+            
 
             [
                 'module_name' => $this->modulePermissionBeneficiaryManagement,
@@ -681,7 +695,7 @@ class PermissionSeeder extends Seeder
             ],
         ];
 
-        //last id 252
+        //last id 264
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
