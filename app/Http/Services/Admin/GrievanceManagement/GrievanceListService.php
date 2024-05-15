@@ -123,8 +123,15 @@ class GrievanceListService
             ->where('district_id', $districtId)
             ->where('district_pouro_id', $distPouroId)
         ;
+        return $user->office_type;
+        if($user->office_type==35){
+           return $query->when(request('ward_id'), function ($q, $v) {
+              $q->where('ward_id_dist', $v);
+          });
+ 
+        }
 
-        return $this->applyWardIdFilter($query);
+        // return $this->applyWardIdFilter($query);
     }
 
     public function applyWardIdFilter($query)
