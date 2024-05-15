@@ -38,6 +38,8 @@ Route::prefix('global')->group(function () {
 
     // Application Tracking API
     Route::post('/applicants_tracking',[ApplicationController::class, 'applicationTracking']);
+    // Grievance Tracking API
+    Route::post('/grievance_tracking',[GrievanceController::class, 'grievanceTracking']);
 
     Route::get('application/get/{id}', [ApplicationController::class, 'getPreviewById']);
     Route::post('/online-edited-application/registration',[ApplicationController::class, 'onlineApplicationEditedRegistration']);
