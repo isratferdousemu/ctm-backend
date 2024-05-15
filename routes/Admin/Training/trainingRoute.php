@@ -20,4 +20,5 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
 });
 
 Route::get('circulars-details/{circular}', [TrainingCircularController::class, 'show']);
+Route::get('training/program-details/{program}', [TrainingProgramController::class, 'show']);
 
