@@ -116,10 +116,13 @@ class BudgetController extends Controller
     public function update(UpdateBudgetRequest $request, $id): \Illuminate\Http\JsonResponse|BudgetResource
     {
         try {
-            $beforeUpdate = Budget::findOrFail($id);
+            $budget = Budget::findOrFail($id);
+            if (!$budget->process_flag) {
+                throw new Exception('Budget not yet processed', ResponseAlias::HTTP_BAD_REQUEST);
+            } elseif ($budget->is_approved) {
+                throw new Exception('Budget Already Approved', ResponseAlias::HTTP_BAD_REQUEST);
+            }
             $data = $this->budgetService->update($request, $id);
-//            $afterUpdate = Budget::findOrFail($id);
-            Helper::activityLogUpdate($data, $beforeUpdate, "Budget", "Budget Updated!");
             return BudgetResource::make($data)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
