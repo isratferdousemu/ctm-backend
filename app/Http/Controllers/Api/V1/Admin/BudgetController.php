@@ -13,6 +13,7 @@ use App\Http\Services\Admin\BudgetAllotment\BudgetService;
 use App\Http\Traits\MessageTrait;
 use App\Models\Budget;
 use Illuminate\Http\Request;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Mockery\Exception;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
@@ -228,6 +229,56 @@ class BudgetController extends Controller
         } catch (\Throwable $th) {
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+    public function getBudgetDetailListPdf($budget_id, Request $request): ResponseAlias
+    {
+        $budgetDetailList = $this->budgetService->detailList($budget_id, $request, true);
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+        $generated_by = $user->full_name;
+        $assign_location = '';
+        if ($user->assign_location) {
+            $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->name_bn : $user->assign_location?->name_en);
+            if ($user->assign_location?->parent) {
+                $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->name_bn : $user->assign_location?->parent?->name_en);
+                if ($user->assign_location?->parent?->parent) {
+                    $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->parent?->name_bn : $user->assign_location?->parent?->parent?->name_en);
+//                    if ($user->assign_location?->parent?->parent?->parent) {
+//                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
+//                    }
+                }
+            }
+        }
+        $data = ['budgetDetailList' => $budgetDetailList, 'generated_by' => $generated_by, 'assign_location' => $assign_location];
+        $pdf = LaravelMpdf::loadView('reports.budget.budget_detail_list', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-L',
+                'title' => __("budget.page_title"),
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 5,
+            ]);
+
+        return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf;charset=utf-8',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
+            ]);
+
+//        $fileName = 'উপকারভোগী_পরিবর্তন_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+//        $pdfPath = public_path("/pdf/$fileName");
+//        $pdf->save($pdfPath);
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
 }
