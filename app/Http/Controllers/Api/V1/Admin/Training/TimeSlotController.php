@@ -22,6 +22,8 @@ class TimeSlotController extends Controller
             ;
         });
 
+        $query->latest();
+
         return $this->sendResponse($query
             ->paginate(request('perPage'))
         );

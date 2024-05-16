@@ -131,8 +131,8 @@
     @foreach($budgetDetailList as $index => $budgetDetail)
         <tr>
             <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($index + 1) : $index + 1}}</td>
-            <td>{{app()->isLocale('bn') ? $budgetDetail?->office_area->name_bn : $budgetDetail?->office_area->name_en}}</td>
-            <td>{{app()->isLocale('bn') ? $budgetDetail?->allotment_area->name_bn : $budgetDetail?->allotment_area->name_en}}</td>
+            <td>{{app()->isLocale('bn') ? $budgetDetail?->office_area?->name_bn : $budgetDetail?->office_area?->name_en}}</td>
+            <td>{{app()->isLocale('bn') ? $budgetDetail?->allotment_area?->name_bn : $budgetDetail?->allotment_area?->name_en}}</td>
             <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($budgetDetail->total_beneficiaries) : $budgetDetail->total_beneficiaries}}</td>
             <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($budgetDetail->total_amount) : $budgetDetail->total_amount}}</td>
         </tr>
