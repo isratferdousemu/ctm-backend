@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Device;
 use App\Models\Installment;
+use App\Models\PayrollInstallmentSchedule;
 
 class InstallmentSeeder extends Seeder
 {
@@ -18,139 +19,112 @@ class InstallmentSeeder extends Seeder
         $installments = [
             [
                 'id' => 1,
-                'type' => "monthly",
-                'name' => '1st installment (July)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '1st installment (July)',
             ],
             [
                 'id' => 2,
-                'type' => "monthly",
-                'name' => '2nd installment (August)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '2nd installment (August)',
             ],
             [
                 'id' => 3,
-                'type' => "monthly",
-                'name' => '3rd installment (September)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '3rd installment (September)',
             ],
             [
                 'id' => 4,
-                'type' => "monthly",
-                'name' => '4th installment (October)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '4th installment (October)',
             ],
             [
                 'id' => 5,
-                'type' => "monthly",
-                'name' => '5th installment (November)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '5th installment (November)',
             ],
             [
                 'id' => 6,
-                'type' => "monthly",
-                'name' => '6th installment (December)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '6th installment (December)',
             ],
             [
                 'id' => 7,
-                'type' => "monthly",
-                'name' => '7th installment (January)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '7th installment (January)',
             ],
             [
                 'id' => 8,
-                'type' => "monthly",
-                'name' => '8th installment (February)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '8th installment (February)',
             ],
             [
                 'id' => 9,
-                'type' => "monthly",
-                'name' => '8th installment (March)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '9th installment (March)',
             ],
             [
                 'id' => 10,
-                'type' => "monthly",
-                'name' => '8th installment (April)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '10th installment (April)',
             ],
             [
                 'id' => 11,
-                'type' => "monthly",
-                'name' => '8th installment (May)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '11th installment (May)',
             ],
             [
                 'id' => 12,
-                'type' => "monthly",
-                'name' => '8th installment (June)',
-                'status' => 1,
+                'payment_cycle' => "Monthly",
+                'installment_name' => '12th installment (June)',
             ],
 
-            //quotarly
-            // [
-            //     'id' => 13,
-            //     'type' => "quarterly",
-            //     'name'=>'1st installment (July - September)',
-            //     'status' => 1,
-            // ],
-            // [
-            //     'id' => 14,
-            //     'type' => "quarterly",
-            //     'start' => 'October',
-            //     'end' => 'December',
-            //     'status' => 1,
-            // ],
-            // [
-            //     'id' => 15,
-            //     'type' => "quarterly",
-            //     'start' => 'January',
-            //     'end' => 'March',
-            //     'status' => 1,
-            // ],
-            // [
-            //     'id' => 16,
-            //     'type' => "quarterly",
-            //     'start' => 'April',
-            //     'end' => 'June',
-            //     'status' => 1,
-            // ],
+            //quatarly
+            [
+                'id' => 13,
+                'payment_cycle' => "Quaterly",
+                'installment_name'=>'1st installment (July - September)',
+            ],
+            [
+                'id' => 14,
+                'payment_cycle' => "Quaterly",
+                'installment_name'=>'2nd installment (October - December)',
+            ],
+            [
+                'id' => 15,
+                'payment_cycle' => "Quaterly",
+                'installment_name'=>'3rd installment (January - March)',
+            ],
+            [
+                'id' => 16,
+                'payment_cycle' => "Quaterly",
+                'installment_name'=>'4th installment (April - June)',
+            ],
 
-            // //
-            // [
-            //     'id' => 17,
-            //     'type' => "half-yearly",
-            //     'start' => 'July',
-            //     'end' => 'December',
-            //     'status' => 1,
-            // ],
-            // [
-            //     'id' => 18,
-            //     'type' => "half-yearly",
-            //     'start' => 'January',
-            //     'end' => 'June',
-            //     'status' => 1,
-            // ],
-            // //
-            // [
-            //     'id' => 19,
-            //     'type' => "yearly",
-            //     'start' => 'fullyear',
-            //     'end' => 'fullyear',
-            //     'status' => 1,
-            // ],
+            //
+            [
+                'id' => 17,
+                'payment_cycle' => "Half Yearly",
+                'installment_name'=>'1st installment (July - December)',
+            ],
+            [
+                'id' => 18,
+                'payment_cycle' => "Half Yearly",
+                'installment_name'=>'2nd installment (January - June)',
+            ],
+            //
+            [
+                'id' => 19,
+                'payment_cycle' => "Yearly",
+                'installment_name'=>'Installment (July - June)',
+            ],
         ];
 
 
         foreach ($installments as $value) {
-            Installment::create([
+            PayrollInstallmentSchedule::create([
                 'id' => $value['id'],
-                'type' => $value['type'],
-                'start' => $value['start'],
-                'end' => $value['end'] ?? null, // Use null if 'end' key is not present
-                'status' => $value['status'],
+                'payment_cycle' => $value['payment_cycle'],
+                'installment_name' => $value['installment_name'],
             ]);
         }
     }
