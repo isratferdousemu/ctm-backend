@@ -689,11 +689,13 @@ class PermissionSeeder extends Seeder
                 'guard_name' => $this->guard,
                 'permissions' => [
                     ["id" => 261, "name" => "payroll-setting-view", "page_url" => "/payroll-management/payroll-setting", "parent_page" => 1],
+                    ["id" => 262, "name" => "payroll-verification-view", "page_url" => "/payroll-management/payroll-verification-setting", "parent_page" => 1],
                 ]
             ],
+
         ];
 
-        //last id 252
+        //last id 262
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
