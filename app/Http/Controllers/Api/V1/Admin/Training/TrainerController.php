@@ -26,6 +26,7 @@ class TrainerController extends Controller
         });
 
         $query->with('designation');
+        $query->latest();
 
         return $this->sendResponse($query->paginate(
             request('perPage')

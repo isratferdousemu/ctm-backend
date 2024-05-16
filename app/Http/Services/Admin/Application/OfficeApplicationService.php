@@ -211,7 +211,9 @@ class OfficeApplicationService
             ->where('permanent_upazila_id', $upazilaId)
             ;
 
-        $query->whereIn('permanent_ward_id', $user->userWards()->pluck('id'));
+        if ($user->userWards()->exists()) {
+            $query->whereIn('permanent_ward_id', $user->userWards()->pluck('id'));
+        }
 
         return $this->applySubLocationFilter($query);
 

@@ -203,6 +203,7 @@ class UserService
                     $user->roles()->detach(
                         Role::whereName('committee')->value('id')
                     );
+
                 }
 
 
