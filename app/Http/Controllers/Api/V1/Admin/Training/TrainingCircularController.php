@@ -44,6 +44,8 @@ class TrainingCircularController extends Controller
             $q->whereDate('end_date', '<=', $v);
         });
 
+        $query->latest();
+
         return $this->sendResponse($query
             ->paginate(request('perPage'))
         );

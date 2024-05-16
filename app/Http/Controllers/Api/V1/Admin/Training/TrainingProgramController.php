@@ -65,6 +65,8 @@ class TrainingProgramController extends Controller
 
         $query->with('modules', 'trainingCircular', 'trainers');
 
+        $query->latest();
+
         return $this->sendResponse($query
             ->paginate(request('perPage'))
         );
