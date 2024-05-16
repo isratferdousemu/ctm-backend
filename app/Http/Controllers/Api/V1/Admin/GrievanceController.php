@@ -51,6 +51,24 @@ class GrievanceController extends Controller
 
     }
 
+
+     // Grievance tracking function
+    public function grievanceTracking(Request $request){
+        $application = Grievance::with('grievacneStatusDetails','grievanceType', 'grievanceSubject')
+                      ->where('tracking_no', '=', $request->tracking_no)
+                      ->orWhere('verification_number', '=',$request->nid)
+                      ->Where('date_of_birth', '=',  $request->date_of_birth)
+                      ->first();
+
+        return response()->json([
+            'status' => true,
+            'data' => $application,
+            'message' => $this->fetchSuccessMessage,
+        ], 200);
+
+
+    }
+
     public function getBeneficiaryByLocation()
     {
         $beneficiaries = $this->getBeneficiary();
@@ -173,6 +191,7 @@ class GrievanceController extends Controller
 
         $perPage = $request->query('perPage');
         $page = $request->query('page');
+        
 
         $filterArrayTracking_no = [];
         $filterArrayGrievanceType = [];
@@ -191,115 +210,117 @@ class GrievanceController extends Controller
         $filterArrayPouroId = [];
         $filterArraysubLocationType = [];
         $filterArrayWardId = [];
+        $filterArrayDistrictWardId = [];
         $filterArrayStatus = [];
 
         if ($searchText) {
             $filterArrayName[] = ['name', 'LIKE', '%' . $searchText . '%'];
-            $page = 1;
+            // $page = 1;
 
         }
 
         if ($verification_number) {
             $filterArrayVerificationNumber[] = ['verification_number', 'LIKE', '%' . $verification_number . '%'];
-            $page = 1;
+            // $page = 1;
 
         }
 
         if ($tracking_no) {
             $filterArrayTracking_no[] = ['tracking_no', 'LIKE', '%' . $tracking_no . '%'];
-            $page = 1;
+            // $page = 1;
 
         }
 
         if ($grievanceType) {
             $filterArrayGrievanceType[] = ['grievance_type_id', '=', $grievanceType];
-            $page = 1;
+            // $page = 1;
 
         }
 
         if ($grievanceSubject) {
             $filterArrayGrievanceSubject[] = ['grievance_subject_id', '=', $grievanceSubject];
-            $page = 1;
+            // $page = 1;
 
         }
         if ($location_type) {
             $filterArrayLocationType[] = ['location_type', '=', $location_type];
-            $page = 1;
+            // $page = 1;
 
         }
         if ($division_id) {
             $filterArrayDivisionId[] = ['division_id', '=', $division_id];
-            $page = 1;
+            // $page = 1;
 
         }
         if ($district_id) {
             $filterArrayDistrictId[] = ['district_id', '=', $district_id];
-            $page = 1;
+            // $page = 1;
 
         }
         if ($thana_id) {
             $filterArrayThanaId[] = ['thana_id', '=', $thana_id];
-            $page = 1;
+            // $page = 1;
 
         }
         if ($union_id) {
             $filterArrayUnionId[] = ['union_id', '=', $union_id];
-            $page = 1;
+            // $page = 1;
 
         }
 
         if ($city_id) {
             $filterArrayCityId[] = ['city_id', '=', $city_id];
-            $page = 1;
+            // $page = 1;
 
         }
         if ($city_thana_id) {
             $filterArrayCityThanaId[] = ['city_thana_id', '=', $city_thana_id];
-            $page = 1;
+            // $page = 1;
 
         }
 
         if ($district_pouro_id) {
             $filterArrayDistrictPouroId[] = ['district_pouro_id', '=', $district_pouro_id];
-            $page = 1;
+            // $page = 1;
 
         }
         if ($pouro_id) {
             $filterArrayPouroId[] = ['pouro_id', '=', $pouro_id];
-            $page = 1;
+            // $page = 1;
 
         }
         if ($sub_location_type) {
             $filterArraysubLocationType[] = ['sub_location_type', '=', $sub_location_type];
-            $page = 1;
+            // $page = 1;
 
         }
         if ($location_type == 3) {
             $filterArrayWardId[] = ['ward_id_city', '=', $ward_id];
-            $page = 1;
+            // $page = 1;
 
         } else if ($location_type == 1) {
             $filterArrayWardId[] = ['ward_id_pouro', '=', $ward_id];
-            $page = 1;
+            // $page = 1;
 
         } else {
             $filterArrayWardId[] = ['ward_id_dist', '=', $ward_id];
-            $page = 1;
+            // $page = 1;
 
         }
         if ($ward_id) {
-            $filterArrayWardId[] = ['ward_id_dist', '=', $ward_id];
-            $page = 1;
+            $filterArrayDistrictWardId[] = ['ward_id_dist', '=', $ward_id];
+            // $page = 1;
 
         }
         if ($status) {
             $filterArrayStatus[] = ['status', '=', $status];
-            $page = 1;
+            // $page = 1;
 
         }
-
+        // return $page;
+        // return $filterArrayWardId;
         $query = Grievance::query();
-        $this->applyUserWiseGrievacne($query);
+        // $this->applyUserWiseGrievacne($query);
         $query->when($searchText, function ($q) use ($filterArrayName) {
             $q->where($filterArrayName)
 
@@ -351,9 +372,11 @@ class GrievanceController extends Controller
         $query->when($sub_location_type, function ($q) use ($filterArraysubLocationType) {
             $q->where($filterArraysubLocationType);
         });
-        $query->when($ward_id, function ($q) use ($filterArrayWardId) {
-            $q->where($filterArrayWardId);
+        $query->when($ward_id, function ($q) use ($filterArrayDistrictWardId) {
+            $q->where($filterArrayDistrictWardId);
+            // return $q;
         });
+        // return  $query->get();
         $query->when($status, function ($q) use ($filterArrayStatus) {
             $q->where($filterArrayStatus);
         });
@@ -370,16 +393,16 @@ class GrievanceController extends Controller
         }
 
         $query->with('resolver','grievanceType', 'grievanceSubject', 'program', 'gender', 'division', 'district', 'districtPouroshova', 'cityCorporation', 'ward')
-            ->orderBy('id')
+            ->orderBy('id', 'DESC');
         ;
-
+        // return $page;
         return $query->paginate($perPage, ['*'], 'page', $page);
 
     }
 
     public function applyUserWiseGrievacne($query)
     {
-
+    //    return $query
          $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
         if($user->user_type==2){
             $roleIds = $user->roles->pluck('id');

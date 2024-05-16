@@ -414,9 +414,11 @@ class BudgetService
     public function update(UpdateBudgetRequest $request, $id)
     {
         $budget = Budget::findOrFail($id);
-        $validated = $request->validated();
+        $beforeUpdate = $budget->replicate();
+        $validated = $request->safe()->only(['calculation_type', 'no_of_previous_year', 'calculation_value', 'remarks']);
         $budget->fill($validated);
         $budget->save();
+        Helper::activityLogUpdate($budget, $beforeUpdate, "Budget", "Budget Updated!");
         return $budget;
     }
 
@@ -578,10 +580,10 @@ class BudgetService
 
     /**
      * @param Request $request
-     * @param $getAllRecords
+     * @param bool $getAllRecords
      * @return mixed
      */
-    public function detailList($budget_id, Request $request, $getAllRecords = false)
+    public function detailList($budget_id, Request $request, bool $getAllRecords = false)
     {
 
         $perPage = $request->query('perPage', 10);
