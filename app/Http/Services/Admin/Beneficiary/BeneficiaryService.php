@@ -466,7 +466,7 @@ class BeneficiaryService
         DB::beginTransaction();
         try {
             $beneficiary = Beneficiary::findOrFail($id);
-            $beforeUpdate = $beneficiary;
+            $beforeUpdate = $beneficiary->replicate();
             $validatedData = $request->only([
                 'nominee_en',
                 'nominee_bn',
@@ -596,9 +596,10 @@ class BeneficiaryService
     {
         DB::beginTransaction();
         try {
-            $beneficiaryBeforeUpdate = $beneficiary = Beneficiary::withTrashed()->findOrFail($id);
+            $beneficiary = Beneficiary::withTrashed()->findOrFail($id);
+            $beneficiaryBeforeUpdate = $beneficiary->replicate();
             $beneficiary->delete_cause = '';
-            $beneficiary = $beneficiary->save();
+            $beneficiary->save();
             Helper::activityLogUpdate($beneficiary, $beneficiaryBeforeUpdate, "Beneficiary", "Beneficiary Restored!");
             Beneficiary::withTrashed()->find($id)->restore();
             DB::commit();
@@ -618,9 +619,10 @@ class BeneficiaryService
     {
         DB::beginTransaction();
         try {
-            $beforeUpdate = $beneficiary = Beneficiary::findOrFail($id);
+            $beneficiary = Beneficiary::findOrFail($id);
+            $beforeUpdate = $beneficiary->replicate();
             $beneficiary->status = 1; // Active
-            $beneficiary = $beneficiary->save();
+            $beneficiary->save();
             Helper::activityLogUpdate($beneficiary, $beforeUpdate, "Beneficiary", "Inactive Beneficiary Restored!");
             DB::commit();
             return $beneficiary;
@@ -640,9 +642,10 @@ class BeneficiaryService
         DB::beginTransaction();
         try {
             $beneficiaryExit = BeneficiaryExit::findOrFail($id);
-            $beforeUpdate = $beneficiary = Beneficiary::findOrFail($beneficiaryExit->beneficiary_id);
+            $beneficiary = Beneficiary::findOrFail($beneficiaryExit->beneficiary_id);
+            $beforeUpdate = $beneficiary->replicate();
             $beneficiary->status = $beneficiaryExit->previous_status ?: 1;
-            $beneficiary = $beneficiary->save();
+            $beneficiary->save();
             Helper::activityLogUpdate($beneficiary, $beforeUpdate, "Beneficiary", "Exited Beneficiary Restored!");
             $deleted = $beneficiaryExit->delete();
             DB::commit();
@@ -664,14 +667,16 @@ class BeneficiaryService
         try {
             $beneficiaryReplace = BeneficiaryReplace::findOrFail($id);
 
-            $replacedBeneficiaryBeforeUpdate = Beneficiary::findOrFail($beneficiaryReplace->beneficiary_id);
-            $replacedBeneficiaryBeforeUpdate->status = 1; // Active
-            $replacedBeneficiary = $replacedBeneficiaryBeforeUpdate->save();
+            $replacedBeneficiary = Beneficiary::findOrFail($beneficiaryReplace->beneficiary_id);
+            $replacedBeneficiaryBeforeUpdate = $replacedBeneficiary->replicate();
+            $replacedBeneficiary->status = 1; // Active
+            $replacedBeneficiary->save();
             Helper::activityLogUpdate($replacedBeneficiary, $replacedBeneficiaryBeforeUpdate, "Beneficiary", "Replaced Beneficiary Restored!");
 
-            $replacedWithBeneficiaryBeforeUpdate = Beneficiary::findOrFail($beneficiaryReplace->replace_with_ben_id);
-            $replacedWithBeneficiaryBeforeUpdate->status = 3; // Waiting
-            $replacedWithBeneficiary = $replacedWithBeneficiaryBeforeUpdate->save();
+            $replacedWithBeneficiary = Beneficiary::findOrFail($beneficiaryReplace->replace_with_ben_id);
+            $replacedWithBeneficiaryBeforeUpdate = $replacedWithBeneficiary->replicate();
+            $replacedWithBeneficiary->status = 3; // Waiting
+            $replacedWithBeneficiary->save();
             Helper::activityLogUpdate($replacedWithBeneficiary, $replacedWithBeneficiaryBeforeUpdate, "Beneficiary", "Replaced Beneficiary Restored!");
 
             $beneficiaryReplace->delete();
@@ -786,19 +791,23 @@ class BeneficiaryService
                 throw new Exception("Can not replace same beneficiary");
             }
             $beneficiary = Beneficiary::findOrFail($id);
+//            $beforeUpdate = $beneficiary->replicate();
+
+            $replaceWithBeneficiaryId = $request->input('replace_with_ben_id');
+            $beneficiaryReplaceWith = Beneficiary::findOrFail($replaceWithBeneficiaryId);
+//            $beneficiaryReplaceWithBeforeUpdate = $beneficiaryReplaceWith->replicate();
+
             $beneficiary->status = 2; // Inactive
             $beneficiary->updated_at = now();
             $beneficiary->save();
 
-            Helper::activityLogInsert($beneficiary, '', 'Beneficiary', 'Beneficiary Replaced!');
+//            Helper::activityLogUpdate($beneficiary, $beforeUpdate, 'Beneficiary', 'Beneficiary replaced with: '. $beneficiaryReplaceWithBeforeUpdate->name_en);
 
-            $replaceWithBeneficiaryId = $request->input('replace_with_ben_id');
-            $beneficiaryReplaceWith = Beneficiary::findOrFail($replaceWithBeneficiaryId);
             $beneficiaryReplaceWith->status = 1; // Active
             $beneficiaryReplaceWith->updated_at = now();
             $beneficiaryReplaceWith->save();
 
-            Helper::activityLogInsert($beneficiaryReplaceWith, '', 'Beneficiary', 'Beneficiary Replaced!');
+//            Helper::activityLogUpdate($beneficiaryReplaceWith, $beneficiaryReplaceWithBeforeUpdate, 'Beneficiary', 'Beneficiary replaced with: '. $beforeUpdate->name_en);
 
             $beneficiaryReplace = new BeneficiaryReplace();
             $beneficiaryReplace->beneficiary_id = $id;
@@ -811,7 +820,10 @@ class BeneficiaryService
             $beneficiaryReplace->created_at = now();
             $beneficiaryReplace->save();
 
+            Helper::activityLogInsert($beneficiaryReplace, '', 'Beneficiary Replace', 'Beneficiary: ' . $beneficiary->name_en . '(' . $beneficiary->application_id . ') replaced with: ' . $beneficiaryReplaceWith->name_en . '(' . $beneficiaryReplaceWith->application_id . ')');
+
             DB::commit();
+
             return $beneficiary;
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -953,7 +965,7 @@ class BeneficiaryService
         try {
             if (!$request->has('beneficiaries')) {
                 DB::rollBack();
-                throw new \Exception('No beneficiaries was selected for replace!');
+                throw new \Exception('No beneficiaries was selected for exit!');
             }
             $exitDataList = [];
             foreach ($request->input('beneficiaries') as $beneficiary) {
@@ -963,10 +975,11 @@ class BeneficiaryService
                     'exit_reason_detail' => $request->input('exit_reason_detail'),
                     'exit_date' => $request->input('exit_date') ? Carbon::parse($request->input('exit_date')) : now(),
                 ];
-                $beneficiaryBeforeUpdate = Beneficiary::findOrFail($beneficiary['beneficiary_id']);
-                $beneficiaryBeforeUpdate->status = 2; // Inactive
-                $beneficiary = $beneficiaryBeforeUpdate->save();
-                Helper::activityLogUpdate($beneficiary, $beneficiaryBeforeUpdate, "Beneficiary", "Beneficiary Replaced!");
+                $beneficiary = Beneficiary::findOrFail($beneficiary['beneficiary_id']);
+                $beneficiaryBeforeUpdate = $beneficiary->replicate();
+                $beneficiary->status = 2; // Inactive
+                $beneficiary->save();
+                Helper::activityLogUpdate($beneficiary, $beneficiaryBeforeUpdate, "Beneficiary", "Beneficiary Exited!");
             }
             BeneficiaryExit::insert($exitDataList);
 
@@ -1134,9 +1147,10 @@ class BeneficiaryService
                     'activation_date' => $request->input('activation_date') ? Carbon::parse($request->input('activation_date')) : now(),
                 ];
 
-                $beneficiaryBeforeUpdate = Beneficiary::findOrFail($beneficiary['beneficiary_id']);
-                $beneficiaryBeforeUpdate->program_id = $request->input('to_program_id');
-                $beneficiary = $beneficiaryBeforeUpdate->save();
+                $beneficiary = Beneficiary::findOrFail($beneficiary['beneficiary_id']);
+                $beneficiaryBeforeUpdate = $beneficiary->replicate();
+                $beneficiary->program_id = $request->input('to_program_id');
+                $beneficiary->save();
                 Helper::activityLogUpdate($beneficiary, $beneficiaryBeforeUpdate, "Beneficiary", "Beneficiary Shifted!");
             }
             BeneficiaryShifting::insert($shiftingDataList);
@@ -1270,7 +1284,8 @@ class BeneficiaryService
             }
             $shiftingDataList = [];
             foreach ($request->input('beneficiaries') as $beneficiary) {
-                $beneficiaryBeforeUpdate = $beneficiaryInstance = Beneficiary::findOrFail($beneficiary['beneficiary_id']);
+                $beneficiaryInstance = Beneficiary::findOrFail($beneficiary['beneficiary_id']);
+                $beneficiaryBeforeUpdate = $beneficiaryInstance->replicate();
 //                dump($beneficiaryInstance);
                 $shiftingDataList[] = [
                     'beneficiary_id' => $beneficiary['beneficiary_id'],
@@ -1310,8 +1325,8 @@ class BeneficiaryService
                 $beneficiaryInstance->permanent_union_id = $request->input('to_union_id');
                 $beneficiaryInstance->permanent_ward_id = $request->input('to_ward_id');
                 $beneficiaryInstance->permanent_location_type_id = $request->input('to_location_type_id');
-                $beneficiary = $beneficiaryInstance->save();
-                Helper::activityLogUpdate($beneficiary, $beneficiaryBeforeUpdate, "Beneficiary", "Beneficiary Shifting!");
+                $beneficiaryInstance->save();
+                Helper::activityLogUpdate($beneficiaryInstance, $beneficiaryBeforeUpdate, "Beneficiary", "Beneficiary Location Shifted!");
 
             }
             BeneficiaryLocationShifting::insert($shiftingDataList);

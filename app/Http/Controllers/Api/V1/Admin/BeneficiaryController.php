@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Beneficiary\BeneficiaryExitRequest;
 use App\Http\Requests\Admin\Beneficiary\BeneficiaryLocationShiftingRequest;
@@ -19,11 +18,7 @@ use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryShiftingResource;
 use App\Http\Services\Admin\Beneficiary\BeneficiaryService;
 use App\Http\Traits\MessageTrait;
-use App\Models\AllowanceProgramAmount;
-use App\Models\Beneficiary;
-use App\Models\BeneficiaryReplace;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Mpdf\MpdfException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;

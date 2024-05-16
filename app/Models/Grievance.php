@@ -13,6 +13,12 @@ public function resolver(){
     return $this->belongsTo(Role::class,'resolver_id','id');
 
  }
+
+ 
+   public function grievacneStatusDetails()
+    {
+      return $this->hasMany(GrievanceStatusUpdate::class, 'grievance_id', 'id');
+    }
   public function grievanceSetting()
     {
         return $this->belongsTo(GrievanceSetting::class)
