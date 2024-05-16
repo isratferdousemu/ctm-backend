@@ -580,10 +580,10 @@ class BudgetService
 
     /**
      * @param Request $request
-     * @param $getAllRecords
+     * @param bool $getAllRecords
      * @return mixed
      */
-    public function detailList($budget_id, Request $request, $getAllRecords = false)
+    public function detailList($budget_id, Request $request, bool $getAllRecords = false)
     {
 
         $perPage = $request->query('perPage', 10);
