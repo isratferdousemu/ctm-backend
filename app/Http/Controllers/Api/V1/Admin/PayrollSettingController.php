@@ -29,11 +29,12 @@ class PayrollSettingController extends Controller
 
     public function payrollSettingSubmit(Request $request)
     {
-        // return $request->all();
         $rules = [
-            '*.allowance_id' => 'required|integer',
-            '*.selectedInstallments' => 'required|array',
-            '*.selectedInstallments.*.installment_id' => 'required|integer',
+            'allowances' => 'required|array',
+            'allowances.*.allowance_id' => 'required|integer',
+            'allowances.*.selectedInstallments' => 'required|array',
+            'allowances.*.selectedInstallments.*.installment_id' => 'required|integer',
+            'financial_year' => 'required|integer',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -48,20 +49,20 @@ class PayrollSettingController extends Controller
         \DB::beginTransaction();
 
         try {
-            $allSettings = PayrollInstallmentSetting::withTrashed()->get();
-            $allSettings->each(function ($setting) {
+           $allSettings = PayrollInstallmentSetting::withTrashed()->get();
+            foreach ($allSettings as $key => $setting) {
                 $setting->forceDelete();
-            });
-            foreach ($request->all() as $item) {
+            }
+            foreach ($request->allowances as $item) {
                 $allowanceId = $item['allowance_id'];
                 $installments = $item['selectedInstallments'];
-                PayrollInstallmentSetting::insert(array_map(function ($installment) use ($allowanceId, $request) {
-                    return [
+                foreach ($installments as $key => $value) {
+                    PayrollInstallmentSetting::create([
                         'program_id' => $allowanceId,
-                        'financial_year_id' => 1,
-                        'installment_schedule_id' => $installment['installment_id'],
-                    ];
-                }, $installments));
+                        'financial_year_id' => $request->financial_year,
+                        'installment_schedule_id' => $value['installment_id'],
+                    ]);
+                }
             }
 
             \DB::commit();
