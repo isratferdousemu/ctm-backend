@@ -8,6 +8,7 @@ use App\Models\FinancialYear;
 use App\Models\Installment;
 use App\Models\PayrollInstallmentSchedule;
 use App\Models\PayrollInstallmentSetting;
+use App\Models\PayrollVerificationSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -100,5 +101,33 @@ class PayrollSettingController extends Controller
             'success' => true,
             'data' => $formattedData,
         ]);
+    }
+
+    public function payrollVerification(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'verificationType' => 'required|in:direct_approval,verification_process',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        PayrollVerificationSetting::truncate();
+        PayrollVerificationSetting::create([
+            'verification_type'=>$request->verificationType,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Setting Updated Successfully',
+        ]);
+    }
+
+    public function getVerificationSetting(){
+        return PayrollVerificationSetting::latest()->first();
     }
 }
