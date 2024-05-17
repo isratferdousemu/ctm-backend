@@ -81,22 +81,22 @@ class InstallmentSeeder extends Seeder
             //quatarly
             [
                 'id' => 13,
-                'payment_cycle' => "Quaterly",
+                'payment_cycle' => "Quarterly",
                 'installment_name'=>'1st installment (July - September)',
             ],
             [
                 'id' => 14,
-                'payment_cycle' => "Quaterly",
+                'payment_cycle' => "Quarterly",
                 'installment_name'=>'2nd installment (October - December)',
             ],
             [
                 'id' => 15,
-                'payment_cycle' => "Quaterly",
+                'payment_cycle' => "Quarterly",
                 'installment_name'=>'3rd installment (January - March)',
             ],
             [
                 'id' => 16,
-                'payment_cycle' => "Quaterly",
+                'payment_cycle' => "Quarterly",
                 'installment_name'=>'4th installment (April - June)',
             ],
 

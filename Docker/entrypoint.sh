@@ -20,6 +20,7 @@ if [ "$role" = "app" ]; then
     php artisan l5-swagger:generate
     php artisan db:seed --class=PermissionSeeder
     php artisan db:seed --class=LookUpSeeder
+    php artisan db:seed --class=InstallmentSeeder
     php artisan storage:link
     php artisan schedule:run
 

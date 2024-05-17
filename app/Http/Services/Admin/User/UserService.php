@@ -10,6 +10,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class UserService
 {
@@ -197,6 +198,15 @@ class UserService
 
             if ($request->user_type == 1) {
                 $user->syncRoles(Arr::wrap($request->role_id));
+
+                if ($user->hasRole('committee')) {
+                    $user->roles()->detach(
+                        Role::whereName('committee')->value('id')
+                    );
+
+                }
+
+
             } else {
                 $user->syncRoles([]);
                 $user->assignRole('committee');
