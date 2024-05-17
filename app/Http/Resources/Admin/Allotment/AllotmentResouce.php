@@ -3,6 +3,8 @@
 namespace App\Http\Resources\Admin\Allotment;
 
 use App\Http\Resources\Admin\Location\LocationResource;
+use App\Http\Resources\Admin\Systemconfig\Finanacial\FinancialResource;
+use App\Http\Resources\AllowanceProgramResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,14 +19,17 @@ class AllotmentResouce extends JsonResource
     {
         return [
             "id" => $this->id,
-            "location_id" => $this->location_id,
+            "program" => AllowanceProgramResource::make($this->whenLoaded('program')),
+            "financialYear" => FinancialResource::make($this->whenLoaded('financialYear')),
+            "division" => LocationResource::make($this->whenLoaded('division')),
+            "district" => LocationResource::make($this->whenLoaded('district')),
+            "office_area" => $this->officeArea(),
+            "allotment_area" => LocationResource::make($this->whenLoaded('location')),
             "regular_beneficiaries" => $this->regular_beneficiaries,
             "additional_beneficiaries" => $this->additional_beneficiaries,
             "total_beneficiaries" => $this->total_beneficiaries,
             "per_beneficiary_amount" => $this->per_beneficiary_amount,
-            "total_amount" => $this->total_amount,
-            "office_area" => $this->officeArea(),
-            "allotment_area" => LocationResource::make($this->whenLoaded('location')),
+            "total_amount" => $this->total_amount
         ];
     }
 
