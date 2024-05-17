@@ -9,18 +9,19 @@
     <style>
         body {
             @if(app()->isLocale('bn'))
-                font-family: 'kalpurush', sans-serif !important;
+                  font-family: 'kalpurush', sans-serif !important;
             @else
-              font-family: "Work Sans", sans-serif !important;
+                font-family: "Work Sans", sans-serif !important;
             @endif
-               margin: 0;
+                 margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        h4, h5, h6{
+        h4, h5, h6 {
             font-weight: normal !important;
         }
+
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -130,9 +131,18 @@
     <tbody>
     @foreach($budgetDetailList as $index => $budgetDetail)
         <tr>
+            @php
+                $office_area = null;
+                if ($budgetDetail->upazila)
+                    $office_area = $budgetDetail->upazila;
+                if ($budgetDetail->cityCorporation)
+                    $office_area = $budgetDetail->cityCorporation;
+                if ($budgetDetail->districtPourosova)
+                    $office_area = $budgetDetail->districtPourosova;
+            @endphp
             <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($index + 1) : $index + 1}}</td>
-            <td>{{app()->isLocale('bn') ? $budgetDetail?->office_area?->name_bn : $budgetDetail?->office_area?->name_en}}</td>
-            <td>{{app()->isLocale('bn') ? $budgetDetail?->allotment_area?->name_bn : $budgetDetail?->allotment_area?->name_en}}</td>
+            <td>{{app()->isLocale('bn') ? $office_area?->name_bn : $office_area?->name_en}}</td>
+            <td>{{app()->isLocale('bn') ? $budgetDetail?->location?->name_bn : $budgetDetail?->location?->name_en}}</td>
             <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($budgetDetail->total_beneficiaries) : $budgetDetail->total_beneficiaries}}</td>
             <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($budgetDetail->total_amount) : $budgetDetail->total_amount}}</td>
         </tr>
@@ -146,7 +156,8 @@
             <td width="33%">
                 {{__("beneficiary_report.print_date")}}{{app()->isLocale('bn') ?  \App\Facades\BengaliUtil::bn_date_time(\Illuminate\Support\Carbon::now()->format('j F Y h:i A')) : \Illuminate\Support\Carbon::now()->format('j F Y h:i A')}}</td>
             <td width="33%" align="center">{PAGENO}/{nbpg}</td>
-            <td width="33%" style="text-align: right;">{{__("beneficiary_report.printed_by")}}{{$generated_by}}{{$assign_location}}</td>
+            <td width="33%"
+                style="text-align: right;">{{__("beneficiary_report.printed_by")}}{{$generated_by}}{{$assign_location}}</td>
         </tr>
     </table>
 </htmlpagefooter>
