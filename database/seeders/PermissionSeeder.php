@@ -635,10 +635,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->modulePermissionTrainingManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 253, "name" => "trainerCircular-create", "page_url" => "/training-management/trainer-circular/create", "parent_page" => 1],
-                    ["id" => 254, "name" => "trainerCircular-view", "page_url" => "/training-management/trainer-circular", "parent_page" => 1],
-                    ["id" => 255, "name" => "trainerCircular-edit", "page_url" => "/training-management/trainer-circular/edit/:id", "parent_page" => 1],
-                    ["id" => 256, "name" => "trainerCircular-delete", "page_url" => "/training-management/trainer-circular/view/:id", "parent_page" => 1]
+                    ["id" => 254, "name" => "trainingCircular-create", "page_url" => "/training-management/training-circular/create", "parent_page" => 1],
+                    ["id" => 255, "name" => "trainingCircular-view", "page_url" => "/training-management/training-circular", "parent_page" => 1],
+                    ["id" => 256, "name" => "trainingCircular-edit", "page_url" => "/training-management/training-circular/edit/:id", "parent_page" => 1],
+                    ["id" => 257, "name" => "trainingCircular-delete", "page_url" => "/training-management/training-circular/view/:id", "parent_page" => 1]
                 ]
 
             ],
@@ -647,13 +647,26 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->modulePermissionTrainingManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 257, "name" => "timeStot-create", "page_url" => "/training-management/time-slots/create", "parent_page" => 1],
-                    ["id" => 258, "name" => "timeStot-view", "page_url" => "/training-management/time-slots", "parent_page" => 1],
-                    ["id" => 259, "name" => "timeStot-edit", "page_url" => "/training-management/time-slots/edit/:id", "parent_page" => 1],
-                    ["id" => 260, "name" => "timeStot-delete", "page_url" => "/training-management/time-slots/view/:id", "parent_page" => 1]
+                    ["id" => 258, "name" => "timeStot-create", "page_url" => "/training-management/time-slots/create", "parent_page" => 1],
+                    ["id" => 259, "name" => "timeStot-view", "page_url" => "/training-management/time-slots", "parent_page" => 1],
+                    ["id" => 260, "name" => "timeStot-edit", "page_url" => "/training-management/time-slots/edit/:id", "parent_page" => 1],
+                    ["id" => 261, "name" => "timeStot-delete", "page_url" => "/training-management/time-slots/view/:id", "parent_page" => 1]
                 ]
 
             ],
+            [
+                'module_name' => $this->modulePermissionTrainingManagement,
+                'sub_module_name' => $this->modulePermissionTrainingManagement,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 262, "name" => "trainingProgram-create", "page_url" => "/training-management/training-program/create", "parent_page" => 1],
+                    ["id" => 263, "name" => "trainingProgram-view", "page_url" => "/training-management/training-program", "parent_page" => 1],
+                    ["id" => 264, "name" => "trainingProgram-edit", "page_url" => "/training-management/training-program/edit/:id", "parent_page" => 1],
+                    ["id" => 265, "name" => "trainingProgram-delete", "page_url" => "/training-management/training-program/view/:id", "parent_page" => 1]
+                ]
+
+            ],
+            
             [
                 'module_name' => $this->modulePermissionSettingManagement,
                 'sub_module_name' => $this->settingManagement,
@@ -668,6 +681,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
+            
 
             [
                 'module_name' => $this->modulePermissionBeneficiaryManagement,
@@ -695,7 +709,7 @@ class PermissionSeeder extends Seeder
 
         ];
 
-        //last id 262
+        //last id 264
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
