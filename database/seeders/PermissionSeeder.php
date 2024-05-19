@@ -545,10 +545,10 @@ class PermissionSeeder extends Seeder
                     ["id" => 163, "name" => "reporting-report-edit", "page_url" => "/reporting-management/reporting-report/edit/:id", "parent_page" => 1],
                     ["id" => 164, "name" => "reporting-report-delete", "page_url" => "/reporting-management/reporting-report/delete", "parent_page" => 1],
 
-                    ["id" => 165, "name" => "reporting-bireport-create", "page_url" => "/reporting-management/reporting-bireport", "parent_page" => 1],
-                    ["id" => 166, "name" => "reporting-bireport-view", "page_url" => "/reporting-management/reporting-bireport", "parent_page" => 1],
-                    ["id" => 167, "name" => "reporting-bireport-edit", "page_url" => "/reporting-management/reporting-bireport/edit/:id", "parent_page" => 1],
-                    ["id" => 168, "name" => "reporting-bireport-delete", "page_url" => "/reporting-management/reporting-bireport/delete", "parent_page" => 1],
+                    ["id" => 165, "name" => "bireport-create", "page_url" => "/reports/bi-report", "parent_page" => 1],
+                    ["id" => 166, "name" => "bireport-view", "page_url" => "/reports/bi-report/:id", "parent_page" => 1],
+                    ["id" => 167, "name" => "bireport-edit", "page_url" => "/reports/bi-report/:id", "parent_page" => 1],
+                    ["id" => 168, "name" => "bireport-delete", "page_url" => "/reports/bi-report/:id", "parent_page" => 1],
                 ]
             ],
 
@@ -635,10 +635,10 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->modulePermissionTrainingManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 253, "name" => "trainerCircular-create", "page_url" => "/training-management/trainer-circular/create", "parent_page" => 1],
-                    ["id" => 254, "name" => "trainerCircular-view", "page_url" => "/training-management/trainer-circular", "parent_page" => 1],
-                    ["id" => 255, "name" => "trainerCircular-edit", "page_url" => "/training-management/trainer-circular/edit/:id", "parent_page" => 1],
-                    ["id" => 256, "name" => "trainerCircular-delete", "page_url" => "/training-management/trainer-circular/view/:id", "parent_page" => 1]
+                    ["id" => 254, "name" => "trainingCircular-create", "page_url" => "/training-management/training-circular/create", "parent_page" => 1],
+                    ["id" => 255, "name" => "trainingCircular-view", "page_url" => "/training-management/training-circular", "parent_page" => 1],
+                    ["id" => 256, "name" => "trainingCircular-edit", "page_url" => "/training-management/training-circular/edit/:id", "parent_page" => 1],
+                    ["id" => 257, "name" => "trainingCircular-delete", "page_url" => "/training-management/training-circular/view/:id", "parent_page" => 1]
                 ]
 
             ],
@@ -647,13 +647,26 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->modulePermissionTrainingManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 257, "name" => "timeStot-create", "page_url" => "/training-management/time-slots/create", "parent_page" => 1],
-                    ["id" => 258, "name" => "timeStot-view", "page_url" => "/training-management/time-slots", "parent_page" => 1],
-                    ["id" => 259, "name" => "timeStot-edit", "page_url" => "/training-management/time-slots/edit/:id", "parent_page" => 1],
-                    ["id" => 260, "name" => "timeStot-delete", "page_url" => "/training-management/time-slots/view/:id", "parent_page" => 1]
+                    ["id" => 258, "name" => "timeStot-create", "page_url" => "/training-management/time-slots/create", "parent_page" => 1],
+                    ["id" => 259, "name" => "timeStot-view", "page_url" => "/training-management/time-slots", "parent_page" => 1],
+                    ["id" => 260, "name" => "timeStot-edit", "page_url" => "/training-management/time-slots/edit/:id", "parent_page" => 1],
+                    ["id" => 261, "name" => "timeStot-delete", "page_url" => "/training-management/time-slots/view/:id", "parent_page" => 1]
                 ]
 
             ],
+            [
+                'module_name' => $this->modulePermissionTrainingManagement,
+                'sub_module_name' => $this->modulePermissionTrainingManagement,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 262, "name" => "trainingProgram-create", "page_url" => "/training-management/training-program/create", "parent_page" => 1],
+                    ["id" => 263, "name" => "trainingProgram-view", "page_url" => "/training-management/training-program", "parent_page" => 1],
+                    ["id" => 264, "name" => "trainingProgram-edit", "page_url" => "/training-management/training-program/edit/:id", "parent_page" => 1],
+                    ["id" => 265, "name" => "trainingProgram-delete", "page_url" => "/training-management/training-program/view/:id", "parent_page" => 1]
+                ]
+
+            ],
+
             [
                 'module_name' => $this->modulePermissionSettingManagement,
                 'sub_module_name' => $this->settingManagement,
@@ -668,6 +681,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
+
 
             [
                 'module_name' => $this->modulePermissionBeneficiaryManagement,
