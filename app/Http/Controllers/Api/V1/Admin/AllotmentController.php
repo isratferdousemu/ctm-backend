@@ -12,6 +12,7 @@ use App\Http\Resources\Admin\Budget\BudgetResource;
 use App\Http\Services\Admin\BudgetAllotment\AllotmentService;
 use App\Http\Traits\MessageTrait;
 use Illuminate\Http\Request;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class AllotmentController extends Controller
@@ -110,6 +111,56 @@ class AllotmentController extends Controller
         } catch (\Throwable $th) {
             return $this->sendError($th->getMessage(), [], 500);
         }
+    }
+
+    public function report(Request $request): ResponseAlias
+    {
+        $allotmentList = $this->allotmentService->list($request, true);
+        $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
+        $generated_by = $user->full_name;
+        $assign_location = '';
+        if ($user->assign_location) {
+            $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->name_bn : $user->assign_location?->name_en);
+            if ($user->assign_location?->parent) {
+                $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->name_bn : $user->assign_location?->parent?->name_en);
+                if ($user->assign_location?->parent?->parent) {
+                    $assign_location .= ', ' . (app()->isLocale('bn') ? $user->assign_location?->parent?->parent?->name_bn : $user->assign_location?->parent?->parent?->name_en);
+//                    if ($user->assign_location?->parent?->parent?->parent) {
+//                        $assign_location .= ', ' . $user->assign_location?->parent?->parent?->parent?->name_bn;
+//                    }
+                }
+            }
+        }
+        $data = ['allotmentList' => $allotmentList, 'generated_by' => $generated_by, 'assign_location' => $assign_location];
+        $pdf = LaravelMpdf::loadView('reports.allotment.allotment_list', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-L',
+                'title' => __("allotment.page_title"),
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 5,
+            ]);
+
+        return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf;charset=utf-8',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
+            ]);
+
+//        $fileName = 'বাজেট_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+//        $pdfPath = public_path("/pdf/$fileName");
+//        $pdf->save($pdfPath);
+//        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
 }
