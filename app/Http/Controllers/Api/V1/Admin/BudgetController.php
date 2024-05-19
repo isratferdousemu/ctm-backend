@@ -275,7 +275,7 @@ class BudgetController extends Controller
                 'Content-Disposition' => 'inline; filename="preview.pdf"',
             ]);
 
-//        $fileName = 'উপকারভোগী_পরিবর্তন_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
+//        $fileName = 'বাজেট_তালিকা_' . now()->timestamp . '_' . auth()->id() . '.pdf';
 //        $pdfPath = public_path("/pdf/$fileName");
 //        $pdf->save($pdfPath);
 //        return $this->sendResponse(['url' => asset("/pdf/$fileName")]);

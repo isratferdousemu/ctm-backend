@@ -47,6 +47,20 @@ class Allotment extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    public function division()
+    {
+        return $this->belongsTo(Location::class, 'division_id', 'id');
+    }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function district()
+    {
+        return $this->belongsTo(Location::class, 'district_id', 'id');
+    }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function upazila()
     {
         return $this->belongsTo(Location::class, 'upazila_id', 'id');
