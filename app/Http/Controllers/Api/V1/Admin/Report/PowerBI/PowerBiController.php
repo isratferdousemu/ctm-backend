@@ -28,18 +28,23 @@ class PowerBiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage') ?? 10;
+        $page = $request->query('page');
+        $sortBy = $request->query('sortBy') ?? 'name_en';
+        $orderBy = $request->query('orderBy') ?? 'asc';
         $query = PowerBiReport::query();
 
-        $query->when(request('search'), function ($q, $v) {
+        $query->when($searchText, function ($q, $v) {
             $q->where('name_en', 'like', "%$v%")
                 ->orWhere('name_bn', 'like', "%$v%");
         });
+        $data = $query->orderBy($sortBy, $orderBy)->paginate($perPage, ['*'], 'page', $page);
 
-        $data = $this->sendResponse($query->paginate(request('perPage')));
+        return $data;
 
-       return $data;
 
     }
 
@@ -66,7 +71,11 @@ class PowerBiController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $data = PowerBiReport::where('id', $id)->first();
+        return \response()->json([
+            'power_report' => $data
+        ],Response::HTTP_OK);
+
     }
 
     /**
@@ -76,8 +85,9 @@ class PowerBiController extends Controller
     {
         $data = PowerBiReport::where('id', $id)->first();
         return \response()->json([
-            'device' => $data
+            'power_report' => $data
         ],Response::HTTP_OK);
+
     }
 
     /**
