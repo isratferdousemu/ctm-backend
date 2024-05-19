@@ -666,7 +666,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
-            
+
             [
                 'module_name' => $this->modulePermissionSettingManagement,
                 'sub_module_name' => $this->settingManagement,
@@ -681,7 +681,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
-            
+
 
             [
                 'module_name' => $this->modulePermissionBeneficiaryManagement,
@@ -702,14 +702,14 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subPayrollSetting,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 261, "name" => "payroll-setting-view", "page_url" => "/payroll-management/payroll-setting", "parent_page" => 1],
-                    ["id" => 262, "name" => "payroll-verification-view", "page_url" => "/payroll-management/payroll-verification-setting", "parent_page" => 1],
+                    ["id" => 266, "name" => "payroll-setting-view", "page_url" => "/payroll-management/payroll-setting", "parent_page" => 1],
+                    ["id" => 267, "name" => "payroll-verification-view", "page_url" => "/payroll-management/payroll-verification-setting", "parent_page" => 1],
                 ]
             ],
 
         ];
 
-        //last id 264
+        //last id 267
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
