@@ -702,9 +702,11 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subPayrollSetting,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 253, "name" => "payroll-setting-view", "page_url" => "/payroll-management/payroll-setting", "parent_page" => 1],
+                    ["id" => 261, "name" => "payroll-setting-view", "page_url" => "/payroll-management/payroll-setting", "parent_page" => 1],
+                    ["id" => 262, "name" => "payroll-verification-view", "page_url" => "/payroll-management/payroll-verification-setting", "parent_page" => 1],
                 ]
             ],
+
         ];
 
         //last id 264

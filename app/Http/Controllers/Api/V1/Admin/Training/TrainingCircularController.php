@@ -21,6 +21,31 @@ class TrainingCircularController extends Controller
             ;
         });
 
+        $query->when(request('training_type_id'), function ($q, $v) {
+            $q->where('training_type_id', $v);
+        });
+
+        $query->when(request('circular_type_id'), function ($q, $v) {
+            $q->where('circular_type_id', $v);
+        });
+
+        $query->when(request('module_id'), function ($q, $v) {
+            $q->whereHas('modules', function ($q) use ($v) {
+                $q->whereId($v);
+            });
+        });
+
+        $query->when(request('start_date'), function ($q, $v) {
+            $q->whereDate('start_date', '>=', $v);
+        });
+
+
+        $query->when(request('end_date'), function ($q, $v) {
+            $q->whereDate('end_date', '<=', $v);
+        });
+
+        $query->latest();
+
         return $this->sendResponse($query
             ->paginate(request('perPage'))
         );

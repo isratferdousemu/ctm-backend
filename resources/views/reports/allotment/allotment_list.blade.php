@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{__("budget_detail.page_title")}}</title>
+    <title>{{__("allotment.page_title")}}</title>
 
     <style>
         body {
             @if(app()->isLocale('bn'))
-                  font-family: 'kalpurush', sans-serif !important;
+                   font-family: 'kalpurush', sans-serif !important;
             @else
-                font-family: "Work Sans", sans-serif !important;
+                 font-family: "Work Sans", sans-serif !important;
             @endif
-                 margin: 0;
+                  margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
@@ -110,7 +110,7 @@
             <h5>{{__("beneficiary_report.header_line_4")}}</h5>
             <p><a target="_blank" href="https://dss.gov.bd/">www.dss.gov.bd</a></p>
             <br/>
-            <h2>{{__("budget_detail.title")}}</h2>
+            <h2>{{__("allotment.title")}}</h2>
         </td>
         <td width="20%" class="right"><img src="{{ public_path('image/logo.png') }}" alt="Right Image"
                                            style="width: 80px; height: 80px;"></td>
@@ -121,30 +121,40 @@
 <table class="border-table">
     <thead>
     <tr>
-        <th>{{__("budget_detail.sl_no")}}</th>
-        <th>{{__("budget_detail.office_area")}}</th>
-        <th>{{__("budget_detail.allotment_area")}}</th>
-        <th>{{__("budget_detail.total_beneficiaries")}}</th>
-        <th>{{__("budget_detail.total_amount")}}</th>
+        <th>{{__("allotment.sl_no")}}</th>
+        <th>{{__("allotment.program")}}</th>
+        <th>{{__("allotment.financial_year")}}</th>
+        <th>{{__("allotment.district")}}</th>
+        <th>{{__("allotment.office_area")}}</th>
+        <th>{{__("allotment.allotment_area")}}</th>
+        <th>{{__("allotment.regular_beneficiaries")}}</th>
+        <th>{{__("allotment.additional_beneficiaries")}}</th>
+        <th>{{__("allotment.total_beneficiaries")}}</th>
+        <th>{{__("allotment.total_amount")}}</th>
     </tr>
     </thead>
     <tbody>
-    @foreach($budgetDetailList as $index => $budgetDetail)
+    @foreach($allotmentList as $index => $allotment)
         <tr>
             @php
                 $office_area = null;
-                if ($budgetDetail->upazila)
-                    $office_area = $budgetDetail->upazila;
-                if ($budgetDetail->cityCorporation)
-                    $office_area = $budgetDetail->cityCorporation;
-                if ($budgetDetail->districtPourosova)
-                    $office_area = $budgetDetail->districtPourosova;
+                if ($allotment->upazila)
+                    $office_area = $allotment->upazila;
+                if ($allotment->cityCorporation)
+                    $office_area = $allotment->cityCorporation;
+                if ($allotment->districtPourosova)
+                    $office_area = $allotment->districtPourosova;
             @endphp
             <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($index + 1) : $index + 1}}</td>
+            <td>{{app()->isLocale('bn') ? $allotment?->program?->name_bn : $allotment?->program?->name_en}}</td>
+            <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($allotment?->financialYear?->financial_year) : $allotment?->financialYear?->financial_year}}</td>
+            <td>{{app()->isLocale('bn') ? $allotment?->district?->name_bn : $allotment?->district?->name_en}}</td>
             <td>{{app()->isLocale('bn') ? $office_area?->name_bn : $office_area?->name_en}}</td>
-            <td>{{app()->isLocale('bn') ? $budgetDetail?->location?->name_bn : $budgetDetail?->location?->name_en}}</td>
-            <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($budgetDetail->total_beneficiaries) : $budgetDetail->total_beneficiaries}}</td>
-            <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($budgetDetail->total_amount) : $budgetDetail->total_amount}}</td>
+            <td>{{app()->isLocale('bn') ? $allotment?->location?->name_bn : $allotment?->location?->name_en}}</td>
+            <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($allotment->regular_beneficiaries) : $allotment->regular_beneficiaries}}</td>
+            <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($allotment->additional_beneficiaries) : $allotment->additional_beneficiaries}}</td>
+            <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($allotment->total_beneficiaries) : $allotment->total_beneficiaries}}</td>
+            <td>{{app()->isLocale('bn') ? \App\Facades\BengaliUtil::bn_number($allotment->total_amount) : $allotment->total_amount}}</td>
         </tr>
     @endforeach
     </tbody>
