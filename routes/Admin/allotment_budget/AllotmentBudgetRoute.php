@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/show/{id}', [AllotmentController::class, 'show'])->middleware(['role_or_permission:super-admin|allotment-view']);
         Route::put('/update/{id}', [AllotmentController::class, 'update'])->middleware(['role_or_permission:super-admin|allotment-edit']);
         Route::delete('/delete/{id}', [AllotmentController::class, 'delete'])->middleware(['role_or_permission:super-admin|allotment-delete']);
+        // report
+        Route::get('/report', [AllotmentController::class, 'report'])->middleware(['role_or_permission:super-admin|allotment-view']);
     });
 
 
