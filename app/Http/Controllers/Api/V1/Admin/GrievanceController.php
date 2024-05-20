@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\Admin;
-
+use App\Events\RealTimeMessage;
 use App\Constants\ApplicationStatus;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
@@ -167,7 +167,7 @@ class GrievanceController extends Controller
 
     public function getAllGrievancePaginated(Request $request)
     {
-        // return 'ok';
+        // return  $data;
         // Retrieve the query parameters
         $searchText = $request->query('searchText');
         $verification_number = $request->query('verification_number');
