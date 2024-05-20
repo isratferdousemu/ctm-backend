@@ -120,6 +120,13 @@ class LookUpSeeder extends Seeder
             ['id' => 76, 'type' => 29, 'value_en' => 'System Audit', 'value_bn' => 'সিস্টেম অডিট', 'default' => 1],
 
 
+            //Training Participant Organization
+            ['id' => 77, 'type' => 30, 'value_en' => 'Ministry user', 'value_bn' => 'মিনিস্ট্রি ইউজার', 'default' => 1],
+            ['id' => 78, 'type' => 30, 'value_en' => 'CTM', 'value_bn' => 'সিটিমএম', 'default' => 1],
+            ['id' => 79, 'type' => 30, 'value_en' => 'USSO', 'value_bn' => 'ইউএসএসও', 'default' => 1],
+            ['id' => 80, 'type' => 30, 'value_en' => 'UCD', 'value_bn' => 'ইউসিডি', 'default' => 1]
+
+
         ];
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

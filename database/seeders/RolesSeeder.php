@@ -94,7 +94,7 @@ class RolesSeeder extends Seeder
             [
                 'full_name'            => 'CTM',
                 'username'            => 'ctm-01',
-                'user_id'            => 1000,
+                'user_id'            => 1,
                 'email'                 => 'admin@ctm.com',
                 'salt'                  => $salt,
                 'password'              => bcrypt($salt . '12345678'),

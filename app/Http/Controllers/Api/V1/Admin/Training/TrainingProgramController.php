@@ -132,7 +132,7 @@ class TrainingProgramController extends Controller
      */
     public function show(TrainingProgram $program)
     {
-        $program->load('trainingCircular', 'modules', 'trainers');
+        $program->load('trainingCircular.trainingType', 'modules', 'trainers');
 
         return $this->sendResponse($program);
     }

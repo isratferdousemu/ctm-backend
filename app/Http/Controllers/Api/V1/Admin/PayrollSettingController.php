@@ -31,10 +31,10 @@ class PayrollSettingController extends Controller
     public function payrollSettingSubmit(Request $request)
     {
         $rules = [
-            'allowances' => 'required|array',
-            'allowances.*.allowance_id' => 'required|integer',
-            'allowances.*.selectedInstallments' => 'required|array',
-            'allowances.*.selectedInstallments.*.installment_id' => 'required|integer',
+            'allowances' => 'array',
+            'allowances.*.allowance_id' => 'integer',
+            'allowances.*.selectedInstallments' => 'array',
+            'allowances.*.selectedInstallments.*.installment_id' => 'integer',
             'financial_year' => 'required|integer',
         ];
 
