@@ -20,12 +20,19 @@ class TrainerController extends Controller
 
         $query->when(request('search'), function ($q, $v) {
             $q->where('name', 'like', "%$v%")
+                ->orWhere('id', $v)
                 ->orWhere('mobile_no', 'like', "%$v%")
                 ->orWhere('email', 'like', "%$v%")
-            ;
+                ->orWhereHas('designation', function ($q) use ($v) {
+                    $q->where('value_en', 'like', "%$v%");
+                });
+
         });
 
+
+
         $query->with('designation');
+        $query->latest();
 
         return $this->sendResponse($query->paginate(
             request('perPage')

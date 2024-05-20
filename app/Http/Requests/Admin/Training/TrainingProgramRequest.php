@@ -23,7 +23,7 @@ class TrainingProgramRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'program_name' => 'required|string',
+            'program_name' => 'required|string|unique:training_programs,program_name,'. $this->program?->id,
             'training_circular_id' => 'required|exists:training_circulars,id',
             'circular_modules' => 'required|array',
             'circular_modules.*' => 'exists:lookups,id,type,' . TrainingLookUp::TRAINING_MODULE,

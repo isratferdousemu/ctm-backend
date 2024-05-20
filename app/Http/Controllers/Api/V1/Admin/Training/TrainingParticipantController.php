@@ -1,0 +1,114 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1\Admin\Training;
+
+use App\Helpers\Helper;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Training\ParticipantRequest;
+use App\Http\Services\Admin\Training\ParticipantService;
+use App\Models\TrainingCircular;
+use App\Models\TrainingParticipant;
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class TrainingParticipantController extends Controller
+{
+    public function __construct(public ParticipantService $participantService)
+    {
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $query = TimeSlot::query();
+
+        $query->when(request('search'), function ($q, $v) {
+            $q->where('time', 'like', "%$v%")
+            ;
+        });
+
+        return $this->sendResponse($query
+            ->paginate(request('perPage'))
+        );
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(ParticipantRequest $request)
+    {
+        $participant = TrainingParticipant::create($request->validated());
+
+        Helper::activityLogInsert($participant, '','Training Participant','Training Participant Created !');
+
+        return $this->sendResponse($participant, 'Training Participant created successfully');
+    }
+
+
+    public function getUsers($userType)
+    {
+        $query = User::query();
+
+        $query->select('id', 'username', 'full_name', 'user_id', 'user_type', 'photo');
+
+        $query->when($userType == 1, function ($q) {
+            $q->whereNotNull('office_type')
+                ->whereNull('committee_type_id');
+        }) ;
+
+        $query->when($userType == 2, function ($q) {
+            $q->whereNotNull('committee_type_id')
+                ->whereNull('office_type');
+        }) ;
+
+        return $this->sendResponse($query->get());
+    }
+
+
+    public function trainingCirculars()
+    {
+        $circulars = TrainingCircular::with('programs:id,program_name,training_circular_id')
+            ->select('id', 'circular_name')
+            ->get();
+
+        return $this->sendResponse($circulars);
+    }
+
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(TimeSlot $participant)
+    {
+        return $this->sendResponse($participant);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(TimeSlotRequest $request, TimeSlot $participant)
+    {
+        $beforeUpdate = $participant->replicate();
+
+        $participant->update($request->validated());
+
+        Helper::activityLogUpdate($participant, $beforeUpdate,'Training Participant','Training Participant Updated !');
+
+        return $this->sendResponse($participant, 'Training Participant updated successfully');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(TimeSlot $participant)
+    {
+        $participant->delete();
+
+        Helper::activityLogDelete($participant, '','Training Participant','Training Participant Deleted !');
+
+        return $this->sendResponse($participant, 'Training Participant deleted successfully');
+
+    }
+}

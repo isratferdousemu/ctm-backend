@@ -42,8 +42,8 @@ class TrainingProgramController extends Controller
             });
         });
 
-        $query->when(request('status'), function ($q, $v) {
-            $q->where('status', $v);
+        $query->when(request()->has('status'), function ($q, $v) {
+            $q->where('status', request('status'));
         });
 
         $query->when(request('trainer_id'), function ($q, $v) {
@@ -64,6 +64,8 @@ class TrainingProgramController extends Controller
 
 
         $query->with('modules', 'trainingCircular', 'trainers');
+
+        $query->latest();
 
         return $this->sendResponse($query
             ->paginate(request('perPage'))
@@ -130,7 +132,7 @@ class TrainingProgramController extends Controller
      */
     public function show(TrainingProgram $program)
     {
-        $program->load('trainingCircular', 'modules', 'trainers');
+        $program->load('trainingCircular.trainingType', 'modules', 'trainers');
 
         return $this->sendResponse($program);
     }

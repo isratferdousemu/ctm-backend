@@ -231,7 +231,7 @@ class ApplicationController extends Controller
         return response()->json([
             'status' => true,
             'data' => $data,
-            'message' => $this->fetchSuccessMessage,
+            'message' => $this->nidSuccessMessage,
         ], 200);
     }
     /**

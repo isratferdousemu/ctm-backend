@@ -124,14 +124,11 @@ class AllotmentService
 
         $query = $this->applyLocationFilter($query, $request);
 
+        $query = $query->with('program', 'financialYear', 'division', 'district', 'upazila', 'cityCorporation', 'districtPourosova', 'location');
         if ($getAllRecords)
-            return $query->with('upazila', 'cityCorporation', 'districtPourosova', 'location')
-                ->orderBy('location_id')
-                ->get();
+            return $query->orderBy('location_id')->get();
         else
-            return $query->with('upazila', 'cityCorporation', 'districtPourosova', 'location')
-                ->orderBy('location_id')
-                ->paginate($perPage);
+            return $query->paginate($perPage);
 
     }
 

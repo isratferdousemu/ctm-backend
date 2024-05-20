@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('get-divisions', [UserLocationController::class, 'getDivisions']);
     Route::get('get-districts/{divisionId}', [UserLocationController::class, 'getDistricts']);
     Route::get('get-upazilas/{districtId}', [UserLocationController::class, 'getUpazilas']);
+    Route::get('get-unions/{upazilaId}', [UserLocationController::class, 'getUnions']);
     Route::get('get-cities-pouroshavas/{districtId}/{locationType}', [UserLocationController::class, 'getCityPouroshavaList']);
     Route::any('get-offices', [UserLocationController::class, 'getOfficeList']);
     Route::get('get-office-wards/{officeId}', [UserLocationController::class, 'getOfficeWardList']);
