@@ -650,7 +650,7 @@ class PermissionSeeder extends Seeder
                     ["id" => 258, "name" => "timeStot-create", "page_url" => "/training-management/time-slots/create", "parent_page" => 1],
                     ["id" => 259, "name" => "timeStot-view", "page_url" => "/training-management/time-slots", "parent_page" => 1],
                     ["id" => 260, "name" => "timeStot-edit", "page_url" => "/training-management/time-slots/edit/:id", "parent_page" => 1],
-                    ["id" => 261, "name" => "timeStot-delete", "page_url" => "/training-management/time-slots/view/:id", "parent_page" => 1]
+                    ["id" => 265, "name" => "timeStot-delete", "page_url" => "/training-management/time-slots/view/:id", "parent_page" => 1]
                 ]
 
             ],
@@ -659,10 +659,22 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->modulePermissionTrainingManagement,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 262, "name" => "trainingProgram-create", "page_url" => "/training-management/training-program/create", "parent_page" => 1],
-                    ["id" => 263, "name" => "trainingProgram-view", "page_url" => "/training-management/training-program", "parent_page" => 1],
-                    ["id" => 264, "name" => "trainingProgram-edit", "page_url" => "/training-management/training-program/edit/:id", "parent_page" => 1],
-                    ["id" => 265, "name" => "trainingProgram-delete", "page_url" => "/training-management/training-program/view/:id", "parent_page" => 1]
+                    ["id" => 266, "name" => "trainingProgram-create", "page_url" => "/training-management/training-program/create", "parent_page" => 1],
+                    ["id" => 267, "name" => "trainingProgram-view", "page_url" => "/training-management/training-program", "parent_page" => 1],
+                    ["id" => 268, "name" => "trainingProgram-edit", "page_url" => "/training-management/training-program/edit/:id", "parent_page" => 1],
+                    ["id" => 269, "name" => "trainingProgram-delete", "page_url" => "/training-management/training-program/view/:id", "parent_page" => 1]
+                ]
+
+            ],
+                  [
+                'module_name' => $this->modulePermissionTrainingManagement,
+                'sub_module_name' => $this->modulePermissionTrainingManagement,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 270, "name" => "participant-create", "page_url" => "/training-management/participant/create", "parent_page" => 1],
+                    ["id" => 271, "name" => "participant-view", "page_url" => "/training-management/participant", "parent_page" => 1],
+                    ["id" => 272, "name" => "participant-edit", "page_url" => "/training-management/participant/edit/:id", "parent_page" => 1],
+                    ["id" => 273, "name" => "participant-delete", "page_url" => "/training-management/participant/view/:id", "parent_page" => 1]
                 ]
 
             ],
@@ -709,7 +721,7 @@ class PermissionSeeder extends Seeder
 
         ];
 
-        //last id 264
+        //last id 26
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
