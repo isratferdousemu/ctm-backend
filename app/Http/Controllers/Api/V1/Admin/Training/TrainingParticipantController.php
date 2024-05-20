@@ -6,7 +6,9 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Training\ParticipantRequest;
 use App\Http\Services\Admin\Training\ParticipantService;
+use App\Models\TrainingCircular;
 use App\Models\TrainingParticipant;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TrainingParticipantController extends Controller
@@ -43,6 +45,37 @@ class TrainingParticipantController extends Controller
 
         return $this->sendResponse($participant, 'Training Participant created successfully');
     }
+
+
+    public function getUsers($userType)
+    {
+        $query = User::query();
+
+        $query->select('id', 'username', 'full_name', 'user_id', 'user_type', 'photo');
+
+        $query->when($userType == 1, function ($q) {
+            $q->whereNotNull('office_type')
+                ->whereNull('committee_type_id');
+        }) ;
+
+        $query->when($userType == 2, function ($q) {
+            $q->whereNotNull('committee_type_id')
+                ->whereNull('office_type');
+        }) ;
+
+        return $this->sendResponse($query->get());
+    }
+
+
+    public function trainingCirculars()
+    {
+        $circulars = TrainingCircular::with('programs:id,program_name,training_circular_id')
+            ->select('id', 'circular_name')
+            ->get();
+
+        return $this->sendResponse($circulars);
+    }
+
 
     /**
      * Display the specified resource.
