@@ -721,7 +721,7 @@ class PermissionSeeder extends Seeder
 
         ];
 
-        //last id 26
+        //last id 273
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
