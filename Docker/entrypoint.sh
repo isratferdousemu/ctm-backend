@@ -17,13 +17,14 @@ if [ "$role" = "app" ]; then
     php artisan config:cache
     php artisan cache:clear
     php artisan optimize:clear
-    php artisan l5-swagger:generate
+    php artisan queue:work --queue=high,default
+    #php artisan l5-swagger:generate
     php artisan db:seed --class=PermissionSeeder
     php artisan db:seed --class=LookUpSeeder
     php artisan db:seed --class=InstallmentSeeder
     php artisan storage:link
     php artisan schedule:run
-    php artisan queue:work --queue=high,default
+    
 
 
     php artisan serve --port=$PORT --host=0.0.0.0 --env=.env
