@@ -6,6 +6,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Training\ExternalParticipantRequest;
 use App\Http\Requests\Admin\Training\ParticipantRequest;
+use App\Http\Requests\Admin\Training\ParticipantUpdateRequest;
 use App\Http\Services\Admin\Training\ParticipantService;
 use App\Models\TrainingCircular;
 use App\Models\TrainingParticipant;
@@ -60,6 +61,7 @@ class TrainingParticipantController extends Controller
             });
         });
 
+        $query->latest();
 
         return $this->sendResponse($query
             ->paginate(request('perPage'))
@@ -132,7 +134,7 @@ class TrainingParticipantController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(TimeSlotRequest $request, TimeSlot $participant)
+    public function update(ParticipantUpdateRequest $request, TrainingParticipant $participant)
     {
         $beforeUpdate = $participant->replicate();
 
@@ -146,7 +148,7 @@ class TrainingParticipantController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TimeSlot $participant)
+    public function destroy(TrainingParticipant $participant)
     {
         $participant->delete();
 
