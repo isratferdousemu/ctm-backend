@@ -31,5 +31,11 @@ class TrainingParticipant extends Model
     }
 
 
+    public function organization()
+    {
+        return $this->belongsTo(Lookup::class, 'organization_id', 'id');
+    }
+
+
 
 }

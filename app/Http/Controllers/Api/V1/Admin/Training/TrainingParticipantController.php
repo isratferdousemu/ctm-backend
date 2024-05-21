@@ -25,19 +25,41 @@ class TrainingParticipantController extends Controller
     {
         $query = TrainingParticipant::query();
 
-        $query->with('user', 'trainingCircular', 'trainingProgram');
+        $query->with('user', 'trainingCircular', 'trainingProgram', 'organization');
 
         $query->when($request->name, function ($q, $v) {
-            $q->where('full_name', 'like', "%$v%")
-                ->orWhereHas('user', function ($q) use ($v) {
-                    $q->where('full_name', 'like', "%$v%");
-                });
+            $q->where(function ($q) use ($v) {
+                $q->where('full_name', 'like', "%$v%")
+                    ->orWhereHas('user', function ($q) use ($v) {
+                        $q->where('full_name', 'like', "%$v%");
+                    });
+            });
         });
-
 
         $query->when($request->organization_id, function ($q, $v) {
-
+            $q->where('organization_id', $v);
         });
+
+        $query->when($request->circular_id, function ($q, $v) {
+            $q->where('training_circular_id', $v);
+        });
+
+        $query->when($request->program_id, function ($q, $v) {
+            $q->where('training_program_id', $v);
+        });
+
+        $query->when($request->office_type, function ($q, $v) {
+            $q->whereHas('user', function ($q) use ($v){
+                $q->where('office_type', $v);
+            });
+        });
+
+        $query->when($request->office_id, function ($q, $v) {
+            $q->whereHas('user', function ($q) use ($v){
+                $q->where('office_id', $v);
+            });
+        });
+
 
         return $this->sendResponse($query
             ->paginate(request('perPage'))
@@ -100,8 +122,10 @@ class TrainingParticipantController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TimeSlot $participant)
+    public function show(TrainingParticipant $participant)
     {
+        $participant->load('user', 'trainingCircular', 'trainingProgram', 'organization');
+
         return $this->sendResponse($participant);
     }
 
