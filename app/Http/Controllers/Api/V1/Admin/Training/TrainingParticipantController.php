@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin\Training;
 
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Training\ExternalParticipantRequest;
 use App\Http\Requests\Admin\Training\ParticipantRequest;
 use App\Http\Services\Admin\Training\ParticipantService;
 use App\Models\TrainingCircular;
@@ -22,12 +23,7 @@ class TrainingParticipantController extends Controller
      */
     public function index()
     {
-        $query = TimeSlot::query();
-
-        $query->when(request('search'), function ($q, $v) {
-            $q->where('time', 'like', "%$v%")
-            ;
-        });
+        $query = TrainingParticipant::query();
 
         return $this->sendResponse($query
             ->paginate(request('perPage'))
@@ -45,6 +41,17 @@ class TrainingParticipantController extends Controller
 
         return $this->sendResponse($participant, 'Training Participant created successfully');
     }
+
+
+    public function storeExternalParticipant(ExternalParticipantRequest $request)
+    {
+        $participant = $this->participantService->saveExternalParticipant($request);
+
+        Helper::activityLogInsert($participant, '','Training External Participant','Training Participant Created !');
+
+        return $this->sendResponse($participant, 'Training External Participant created successfully');
+    }
+
 
 
     public function getUsers($userType)
@@ -75,7 +82,6 @@ class TrainingParticipantController extends Controller
 
         return $this->sendResponse($circulars);
     }
-
 
     /**
      * Display the specified resource.
