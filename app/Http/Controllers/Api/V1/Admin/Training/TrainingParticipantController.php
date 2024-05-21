@@ -21,9 +21,18 @@ class TrainingParticipantController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $query = TrainingParticipant::query();
+
+        $query->with('user');
+
+        $query->when($request->name, function ($q, $v) {
+            $q->where('full_name', 'like', "%$v%")
+                ->orWhereHas('user', function ($q) use ($v) {
+                    $q->where('full_name', 'like', "%$v%");
+                });
+        });
 
         return $this->sendResponse($query
             ->paginate(request('perPage'))
