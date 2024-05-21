@@ -123,7 +123,7 @@ class PayrollSettingController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Setting Updated Successfully',
+            'message' => 'Payroll Verification Setting Updated Successfully',
         ]);
     }
 

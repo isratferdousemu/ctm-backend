@@ -35,8 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(AllowanceProgramSeeder::class);
         $this->call(InstallmentSeeder::class);
-
-
+        $this->call(BankTableSeeder::class);
 
         // Model::reguard(); // Enable mass assignment
 
