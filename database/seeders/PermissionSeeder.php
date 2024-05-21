@@ -545,10 +545,10 @@ class PermissionSeeder extends Seeder
                     ["id" => 163, "name" => "reporting-report-edit", "page_url" => "/reporting-management/reporting-report/edit/:id", "parent_page" => 1],
                     ["id" => 164, "name" => "reporting-report-delete", "page_url" => "/reporting-management/reporting-report/delete", "parent_page" => 1],
 
-                    ["id" => 165, "name" => "reporting-bireport-create", "page_url" => "/reporting-management/reporting-bireport", "parent_page" => 1],
-                    ["id" => 166, "name" => "reporting-bireport-view", "page_url" => "/reporting-management/reporting-bireport", "parent_page" => 1],
-                    ["id" => 167, "name" => "reporting-bireport-edit", "page_url" => "/reporting-management/reporting-bireport/edit/:id", "parent_page" => 1],
-                    ["id" => 168, "name" => "reporting-bireport-delete", "page_url" => "/reporting-management/reporting-bireport/delete", "parent_page" => 1],
+                    ["id" => 165, "name" => "bireport-create", "page_url" => "/reports/bi-report", "parent_page" => 1],
+                    ["id" => 166, "name" => "bireport-view", "page_url" => "/reports/bi-report/:id", "parent_page" => 1],
+                    ["id" => 167, "name" => "bireport-edit", "page_url" => "/reports/bi-report/:id", "parent_page" => 1],
+                    ["id" => 168, "name" => "bireport-delete", "page_url" => "/reports/bi-report/:id", "parent_page" => 1],
                 ]
             ],
 
@@ -678,7 +678,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
-            
+
             [
                 'module_name' => $this->modulePermissionSettingManagement,
                 'sub_module_name' => $this->settingManagement,
@@ -693,7 +693,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
-            
+
 
             [
                 'module_name' => $this->modulePermissionBeneficiaryManagement,
