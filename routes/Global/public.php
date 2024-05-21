@@ -46,6 +46,7 @@ Route::prefix('global')->group(function () {
 
     // grievance Entry
     Route::post('/grievance-entry',[GrievanceController::class, 'grievanceEntry']);
+    Route::get('/grievance_copy', [GrievanceController::class, 'getGrievanceCopyById']);
     Route::post('/online-grievance/card-verification',[GrievanceController::class, 'onlineGrievanceVerifyCard']);
     Route::get('/grievanceType/get', [GrievanceTypeController::class, 'getAllTypePaginated']);
     Route::get('/grievanceSubject/get', [GrievanceSubjectController::class, 'getAll']);
