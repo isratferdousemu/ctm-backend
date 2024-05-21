@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin\Training;
 
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Training\ExternalParticipantRequest;
 use App\Http\Requests\Admin\Training\ParticipantRequest;
 use App\Http\Services\Admin\Training\ParticipantService;
 use App\Models\TrainingCircular;
@@ -20,14 +21,45 @@ class TrainingParticipantController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = TimeSlot::query();
+        $query = TrainingParticipant::query();
 
-        $query->when(request('search'), function ($q, $v) {
-            $q->where('time', 'like', "%$v%")
-            ;
+        $query->with('user', 'trainingCircular', 'trainingProgram', 'organization');
+
+        $query->when($request->name, function ($q, $v) {
+            $q->where(function ($q) use ($v) {
+                $q->where('full_name', 'like', "%$v%")
+                    ->orWhereHas('user', function ($q) use ($v) {
+                        $q->where('full_name', 'like', "%$v%");
+                    });
+            });
         });
+
+        $query->when($request->organization_id, function ($q, $v) {
+            $q->where('organization_id', $v);
+        });
+
+        $query->when($request->circular_id, function ($q, $v) {
+            $q->where('training_circular_id', $v);
+        });
+
+        $query->when($request->program_id, function ($q, $v) {
+            $q->where('training_program_id', $v);
+        });
+
+        $query->when($request->office_type, function ($q, $v) {
+            $q->whereHas('user', function ($q) use ($v){
+                $q->where('office_type', $v);
+            });
+        });
+
+        $query->when($request->office_id, function ($q, $v) {
+            $q->whereHas('user', function ($q) use ($v){
+                $q->where('office_id', $v);
+            });
+        });
+
 
         return $this->sendResponse($query
             ->paginate(request('perPage'))
@@ -45,6 +77,17 @@ class TrainingParticipantController extends Controller
 
         return $this->sendResponse($participant, 'Training Participant created successfully');
     }
+
+
+    public function storeExternalParticipant(ExternalParticipantRequest $request)
+    {
+        $participant = $this->participantService->saveExternalParticipant($request);
+
+        Helper::activityLogInsert($participant, '','Training External Participant','Training Participant Created !');
+
+        return $this->sendResponse($participant, 'Participant registration successfully');
+    }
+
 
 
     public function getUsers($userType)
@@ -76,12 +119,13 @@ class TrainingParticipantController extends Controller
         return $this->sendResponse($circulars);
     }
 
-
     /**
      * Display the specified resource.
      */
-    public function show(TimeSlot $participant)
+    public function show(TrainingParticipant $participant)
     {
+        $participant->load('user', 'trainingCircular', 'trainingProgram', 'organization');
+
         return $this->sendResponse($participant);
     }
 

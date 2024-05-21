@@ -12,4 +12,30 @@ class TrainingParticipant extends Model
     protected $guarded = ['id'];
 
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
+    public function trainingCircular()
+    {
+        return $this->belongsTo(TrainingCircular::class);
+    }
+
+
+
+    public function trainingProgram()
+    {
+        return $this->belongsTo(TrainingProgram::class);
+    }
+
+
+    public function organization()
+    {
+        return $this->belongsTo(Lookup::class, 'organization_id', 'id');
+    }
+
+
+
 }
