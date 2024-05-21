@@ -18,5 +18,18 @@ class TrainingParticipant extends Model
     }
 
 
+    public function trainingCircular()
+    {
+        return $this->belongsTo(TrainingCircular::class);
+    }
+
+
+
+    public function trainingProgram()
+    {
+        return $this->belongsTo(TrainingProgram::class);
+    }
+
+
 
 }

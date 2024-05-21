@@ -25,13 +25,18 @@ class TrainingParticipantController extends Controller
     {
         $query = TrainingParticipant::query();
 
-        $query->with('user');
+        $query->with('user', 'trainingCircular', 'trainingProgram');
 
         $query->when($request->name, function ($q, $v) {
             $q->where('full_name', 'like', "%$v%")
                 ->orWhereHas('user', function ($q) use ($v) {
                     $q->where('full_name', 'like', "%$v%");
                 });
+        });
+
+
+        $query->when($request->organization_id, function ($q, $v) {
+
         });
 
         return $this->sendResponse($query
@@ -58,7 +63,7 @@ class TrainingParticipantController extends Controller
 
         Helper::activityLogInsert($participant, '','Training External Participant','Training Participant Created !');
 
-        return $this->sendResponse($participant, 'Training External Participant created successfully');
+        return $this->sendResponse($participant, 'Participant registration successfully');
     }
 
 
