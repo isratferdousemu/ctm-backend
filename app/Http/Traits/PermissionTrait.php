@@ -74,6 +74,8 @@ trait PermissionTrait
     private $subPayrollGeneration = "payroll-generation";
     private $subEmergencyPayment = "emergency-payment";
     private $subPayrollSetting = "payroll-setting";
+    private $subPayrollVerificationSetting = "payroll-verification-setting";
+    private $subPaymentProcessor = "payment-processor";
 
 
     // module 5 sub modules
