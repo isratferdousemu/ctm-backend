@@ -124,12 +124,13 @@
     </thead>
     <tbody>
 
-    @foreach($dataInfo as $key => $data)
+ @foreach($dataInfo as $key => $data)
         <tr>
             @foreach($data as $Key => $chunkList)
-                <td>{{ $chunkList }}</td>
+                <td style="max-width: 150px; overflow-wrap: break-word;">
+                    {{ $chunkList }}
+                </td>
             @endforeach
-
         </tr>
     @endforeach
 
@@ -138,7 +139,7 @@
 </table>
 
 <div class="footer">
-    {{ $language == 'en' ? "Copyright @, " . date("Y ") . ", DSS" : "কপিরাইট @, " . \App\Helpers\Helper::englishToBangla(date("Y ")) . ", ডিএসএস" }}
+    {{ $language == 'en' ? "Copyright @ " . date("Y ") . ", DSS" : "কপিরাইট @, " . \App\Helpers\Helper::englishToBangla(date("Y ")) . ", ডিএসএস" }}
     <div align="right"><b>{PAGENO} / {nbpg}</b></div>
 </div>
 

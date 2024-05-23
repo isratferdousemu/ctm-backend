@@ -452,7 +452,7 @@ class AuthController extends Controller
 
     //test
      public function LoginAdmin(Request $request){
-        broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
+//        broadcast(new RealTimeMessage('Hello World! I am an event 😄'));
 
 
 

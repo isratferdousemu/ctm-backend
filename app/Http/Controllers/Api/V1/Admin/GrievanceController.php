@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\Admin;
-
+use App\Events\RealTimeMessage;
 use App\Constants\ApplicationStatus;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
@@ -40,6 +40,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 
+
 class GrievanceController extends Controller
 {
     use MessageTrait, BeneficiaryTrait, LocationTrait, LocationTrait, RoleTrait;
@@ -50,6 +51,72 @@ class GrievanceController extends Controller
         $this->grievanceService = $grievanceService;
 
     }
+ public function getGrievanceCopyById(Request $request)
+
+{
+    $id=$request->application_id;
+    $application = Grievance::where('id', '=', $id)
+        ->with([
+            'grievanceType',
+            'grievanceSubject',
+            'program',
+            'gender', 
+            'division',
+            'district',
+            'districtPouroshova',
+            'cityCorporation', 
+            'ward'
+
+        ])->first();
+
+
+    if (!$application) {
+        return response()->json(['error' => 'Grievance Application not found'], Response::HTTP_NOT_FOUND);
+    }
+
+    // $imagePath = $application->documents;
+    // $imageData = Storage::disk('public')->get($imagePath);
+    // $image=Helper::urlToBase64($imageData);
+
+     $dynamic=$request->all();
+
+     $title=$request->title;
+     $data = ['data' => $application,
+                'request'=>$dynamic,
+                 'title' => $title,
+                //  'image'=>$image 
+
+ ];
+//  return $data ;
+        $pdf = LaravelMpdf::loadView('reports.grievance_copy', $data, [],
+            [
+                'mode' => 'utf-8',
+                'format' => 'A4-P',
+                'title' => $title,
+                'orientation' => 'L',
+                'default_font_size' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+            ]);
+
+
+
+
+         return \Illuminate\Support\Facades\Response::stream(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf;charset=utf-8',
+                'Content-Disposition' => 'inline; filename="preview.pdf"',
+            ]);
+
+}
 
 
      // Grievance tracking function
@@ -167,7 +234,7 @@ class GrievanceController extends Controller
 
     public function getAllGrievancePaginated(Request $request)
     {
-        // return 'ok';
+        // return  $data;
         // Retrieve the query parameters
         $searchText = $request->query('searchText');
         $verification_number = $request->query('verification_number');

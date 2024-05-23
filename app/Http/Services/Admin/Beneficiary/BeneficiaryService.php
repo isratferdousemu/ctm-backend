@@ -615,7 +615,7 @@ class BeneficiaryService
      * @return bool
      * @throws \Throwable
      */
-    public function restoreInactive($id): bool
+    public function restoreInactive($id)
     {
         DB::beginTransaction();
         try {
@@ -637,7 +637,7 @@ class BeneficiaryService
      * @return bool
      * @throws \Throwable
      */
-    public function restoreExit($id): bool
+    public function restoreExit($id)
     {
         DB::beginTransaction();
         try {
@@ -661,7 +661,7 @@ class BeneficiaryService
      * @return bool
      * @throws \Throwable
      */
-    public function restoreReplace($id): bool
+    public function restoreReplace($id)
     {
         DB::beginTransaction();
         try {
