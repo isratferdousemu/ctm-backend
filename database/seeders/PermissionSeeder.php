@@ -719,19 +719,6 @@ class PermissionSeeder extends Seeder
                 ]
             ],
 
-            [
-                'module_name' => $this->modulePermissionPayrollManagement,
-                'sub_module_name' => $this->subPaymentProcessor,
-                'guard_name' => $this->guard,
-                'permissions' => [
-                    ["id" => 274, "name" => "payment-processor-access", "page_url" => "/payroll-management/payment-processor", "parent_page" => 1],
-                    ["id" => 275, "name" => "payment-processor-create", "page_url" => "/payroll-management/payment-processor", "parent_page" => 1],
-                    ["id" => 276, "name" => "payment-processor-show", "page_url" => "/payroll-management/payment-processor", "parent_page" => 1],
-                    ["id" => 277, "name" => "payment-processor-edit", "page_url" => "/payroll-management/payment-processor", "parent_page" => 1],
-                    ["id" => 278, "name" => "payment-processor-delete", "page_url" => "/payroll-management/payment-processor", "parent_page" => 1],
-                ]
-            ],
-
         ];
 
         //last id 278
