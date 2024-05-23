@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\PaymentProcessorController;
 use App\Http\Controllers\Api\V1\Admin\PayrollSettingController;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -16,6 +17,9 @@ Route::middleware('auth:sanctum')->group(function () {
         //for payroll verification
         Route::post('/verification-setting-submit', [PayrollSettingController::class, 'payrollVerification']);
         Route::get('/get-verification-setting', [PayrollSettingController::class, 'getVerificationSetting']);
+        //for payment processor
+        Route::get('/get-banks', [PaymentProcessorController::class, 'getBanks']);
+        Route::apiResource('/payment-processor', PaymentProcessorController::class);
 
 
 
