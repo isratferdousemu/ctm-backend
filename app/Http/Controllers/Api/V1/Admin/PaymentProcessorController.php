@@ -89,7 +89,7 @@ class PaymentProcessorController extends Controller
 
     public function show($id)
     {
-        return PayrollPaymentProcessor::findOrFail($id);
+        return PayrollPaymentProcessor::with('bank','ProcessorArea','ProcessorArea.division','ProcessorArea.district','ProcessorArea.district')->findOrFail($id);
     }
 
     public function update(Request $request, $id)
@@ -123,4 +123,6 @@ class PaymentProcessorController extends Controller
     {
         return bank::all();
     }
+
+
 }

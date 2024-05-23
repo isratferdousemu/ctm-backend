@@ -43,4 +43,24 @@ class PayrollPaymentProcessorArea extends Model
     {
         return $this->belongsTo(Location::class, 'upazila_id', 'id');
     }
+
+    public function union(): BelongsTo
+    {
+        return $this->belongsTo(Location::class, 'union_id', 'id');
+    }
+
+    public function thana(): BelongsTo
+    {
+        return $this->belongsTo(Location::class, 'thana_id', 'id');
+    }
+
+    public function CityCorporation(): BelongsTo
+    {
+        return $this->belongsTo(Location::class, 'city_corp_id', 'id');
+    }
+
+    public function DistrictPourashava(): BelongsTo
+    {
+        return $this->belongsTo(Location::class, 'district_pourashava_id', 'id');
+    }
 }
