@@ -32,8 +32,9 @@ if [ "$role" = "app" ]; then
     exec docker-php-entrypoint "$@"
 elif [ "$role" = "queue" ]; then
     
- #   echo "Running the queue ... "
+     
      php artisan queue:work --queue=high,default
+     echo "Running the queue ... "
   #  php artisan queue:work --verbose --tries=3 --timeout=0
    # php /var/www/artisan queue:work --verbose --tries=3 --timeout=180
 elif [ "$role" = "websocket" ]; then
