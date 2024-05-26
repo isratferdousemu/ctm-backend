@@ -16,7 +16,7 @@ class PaymentProcessorController extends Controller
     public function index(Request $request)
     {
 
-        $data = PayrollPaymentProcessor::with('ProcessorArea','ProcessorArea.division','ProcessorArea.district','ProcessorArea.district')->latest();
+        $data = PayrollPaymentProcessor::with('bank','ProcessorArea','ProcessorArea.division','ProcessorArea.district','ProcessorArea.district')->latest();
         if ($request->search)
             $data = $data->where(function ($data) use ($request) {
                 //Search the data by name
@@ -89,7 +89,7 @@ class PaymentProcessorController extends Controller
 
     public function show($id)
     {
-        return PayrollPaymentProcessor::with('ProcessorArea','ProcessorArea.division','ProcessorArea.district','ProcessorArea.district')->findOrFail($id);
+        return PayrollPaymentProcessor::with('bank','ProcessorArea','ProcessorArea.division','ProcessorArea.district','ProcessorArea.district')->findOrFail($id);
     }
 
     public function update(Request $request, $id)

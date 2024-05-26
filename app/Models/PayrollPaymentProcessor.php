@@ -27,7 +27,7 @@ class PayrollPaymentProcessor extends Model
 
     public function bank(): BelongsTo
     {
-        return $this->belongsTo(bank::class, 'bank_id', 'id');
+        return $this->belongsTo(Bank::class, 'bank_id', 'id');
     }
 
     /**
