@@ -16,15 +16,16 @@ class PaymentProcessorController extends Controller
     public function index(Request $request)
     {
 
-        $data = PayrollPaymentProcessor::with('bank','ProcessorArea','ProcessorArea.division','ProcessorArea.district','ProcessorArea.district')->latest();
+        $data = PayrollPaymentProcessor::with('bank', 'ProcessorArea', 'ProcessorArea.division', 'ProcessorArea.district', 'ProcessorArea.upazila', 'ProcessorArea.union', 'ProcessorArea.thana', 'ProcessorArea.CityCorporation', 'ProcessorArea.DistrictPourashava','ProcessorArea.LocationType')->latest();
         if ($request->search)
             $data = $data->where(function ($data) use ($request) {
                 //Search the data by name
                 $data = $data->where('name_en', 'LIKE', '%' . $request->search . '%')
-                ->orWhere('focal_phone_no', 'LIKE', '%' . $request->search.'%');
+                    ->orWhere('focal_phone_no', 'LIKE', '%' . $request->search . '%');
             });
-        return $this->sendResponse($data
-            ->paginate(request('perPage'))
+        return $this->sendResponse(
+            $data
+                ->paginate(request('perPage'))
         );
         // $data = $data->paginate($request->get('rows', 10));
 
@@ -80,7 +81,7 @@ class PaymentProcessorController extends Controller
 
             DB::commit();
 
-            return response()->json(['success' => true,'message' => 'Payment processor created successfully']);
+            return response()->json(['success' => true, 'message' => 'Payment processor created successfully']);
         } catch (Throwable $e) {
             DB::rollBack();
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
@@ -89,7 +90,7 @@ class PaymentProcessorController extends Controller
 
     public function show($id)
     {
-        return PayrollPaymentProcessor::with('bank','ProcessorArea','ProcessorArea.division','ProcessorArea.district','ProcessorArea.district')->findOrFail($id);
+        return PayrollPaymentProcessor::with('bank', 'ProcessorArea', 'ProcessorArea.division', 'ProcessorArea.district', 'ProcessorArea.upazila', 'ProcessorArea.union', 'ProcessorArea.thana', 'ProcessorArea.CityCorporation', 'ProcessorArea.DistrictPourashava')->findOrFail($id);
     }
 
     public function update(Request $request, $id)
@@ -123,6 +124,4 @@ class PaymentProcessorController extends Controller
     {
         return bank::all();
     }
-
-
 }
