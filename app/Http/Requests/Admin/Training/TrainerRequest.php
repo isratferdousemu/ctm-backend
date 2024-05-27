@@ -37,7 +37,7 @@ class TrainerRequest extends FormRequest
                 'unique:users,email'
             ],
             'user_id' => [
-                Rule::excludeIf((bool)$this->is_external),
+                Rule::excludeIf($this->is_external == 1),
                 'unique:trainers,user_id'
             ],
             'address' => 'nullable',
