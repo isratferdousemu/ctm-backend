@@ -1,9 +1,6 @@
 version: '3.7'
 
-networks:
-  web-ctm-app-net:
-    name: my-ctm-web-app-net
-    driver: bridge
+
 
 volumes:
   db-storage:
@@ -29,9 +26,13 @@ services:
       #DB_PASSWORD: root
 
     ports:
-       - "80:80"
+       - "7575:80"
     networks:
-       - web-ctm-app-net
+       - ppims_net
+    
+    volumes:
+      - api:/var/lib/docker/volumes/api/_data
+      - /docker_volume/api/dev:/storage/app/public
 
   # ctm-mysql services
   # mariadb:
@@ -67,5 +68,8 @@ services:
   #     - 8080:80
   #   networks:
   #     - web-ctm-app-net
+networks:
+   ppims_net:
+     name: ppims_net
 
 ###End Of File
