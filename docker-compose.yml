@@ -29,7 +29,7 @@ services:
        - ppims_net
     
     volumes:
-      - ./docker_volume/ctm-backend/dev:/var/www/storage/app/public/public
+      - ctm-app-backend:/var/www/storage/app/public
 
   # ctm-mysql services
   # mariadb:
