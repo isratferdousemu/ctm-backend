@@ -68,7 +68,7 @@ class TimeSlotController extends Controller
      */
     public function destroy(TimeSlot $timeSlot)
     {
-        $timeSlot->delete();
+        $timeSlot->forceDelete();
 
         Helper::activityLogDelete($timeSlot, '','Time Slot','Time Slot Deleted !');
 

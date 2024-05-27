@@ -100,7 +100,7 @@ class TrainingParticipantController extends Controller
     {
         $query = User::query();
 
-        $query->select('id', 'username', 'full_name', 'user_id', 'user_type', 'photo');
+        $query->select('id', 'username', 'full_name', 'user_id', 'user_type', 'photo', 'mobile', 'email');
 
         $query->when($userType == 1, function ($q) {
             $q->whereNotNull('office_type')
