@@ -1,13 +1,11 @@
 version: '3.7'
 
-
-
 volumes:
-  db-storage:
+  ctm-app-backend:
 
 services:
   # ctm-app service
-  backend-app:
+  api:
     #image: devibcs/ctm-apps:backend-service-1.0
     container_name: ctm-backend
     image: 'ctm-app-backend'
@@ -31,8 +29,7 @@ services:
        - ppims_net
     
     volumes:
-      - api:/var/lib/docker/volumes/api/_data
-      - /docker_volume/api/dev:/storage/app/public
+      - ./docker_volume/ctm-backend/dev:/var/www/storage/app/public/public
 
   # ctm-mysql services
   # mariadb:
