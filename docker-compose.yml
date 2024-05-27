@@ -1,6 +1,7 @@
 version: '3.7'
 
-
+volumes:
+  ctm-app-backend:
 
 services:
   # ctm-app service
@@ -29,7 +30,7 @@ services:
     
     volumes:
       - ctm-app-backend:/var/lib/docker/volumes/ctm-app-backend/_data
-      - /docker_volume/api/dev:/storage/app/public
+      - /docker_volume/ctm-backend/dev:/storage/app/public
 
   # ctm-mysql services
   # mariadb:
