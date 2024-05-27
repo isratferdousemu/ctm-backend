@@ -1,7 +1,8 @@
 version: '3.7'
 
 
-
+volumes:
+  ctm-app-backend
 
 services:
   # ctm-app service
