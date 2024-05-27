@@ -28,12 +28,17 @@ class TrainerRequest extends FormRequest
             'designation_id' => ['nullable', Rule::exists(Lookup::class, 'id')->where('type', 24)],
             'mobile_no' => 'nullable|numeric|regex:/^01[3-9]\d{8}$/',
             'username' => [
-                Rule::requiredIf($this->is_external),
+                Rule::excludeIf(!$this->is_external),
                 'unique:users,username'
             ],
-            'email' => 'nullable|email|unique:users,email',
+            'email' => [
+                Rule::excludeIf(!$this->is_external),
+                'email',
+                'unique:users,email'
+            ],
             'user_id' => [
-                Rule::requiredIf(!$this->external)
+                Rule::excludeIf((bool)$this->is_external),
+                'unique:trainers,user_id'
             ],
             'address' => 'nullable',
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
