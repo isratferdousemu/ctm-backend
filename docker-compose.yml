@@ -29,6 +29,10 @@ services:
        - "7575:80"
     networks:
        - ppims_net
+    
+    volumes:
+      - api:/var/lib/docker/volumes/api/_data
+      - /docker_volume/api/dev:/storage/app/public
 
   # ctm-mysql services
   # mariadb:
