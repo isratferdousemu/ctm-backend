@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ $language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,11 +27,11 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px; /* Add margin to separate tables */
+            margin-bottom: 20px;
         }
 
         table.img-table img {
-            width: 30px; /* Adjust the width of your images */
+            width: 30px;
             height: auto;
         }
 
@@ -60,7 +60,7 @@
 
         .title {
             font-size: 20px;
-            margin: 0; /* Remove default margin */
+            margin: 0;
         }
 
         .footer {
@@ -73,13 +73,11 @@
 </head>
 <body>
 
-<p>{{ $language == 'en' ? "Listed Report |Department of Social Services" : "তালিকাভুক্ত  রিপোর্ট | সমাজসেবা অধিদফতর" }} </p>
+<p>{{ $language == 'en' ? "Listed Report |Department of Social Services" : "তালিকাভুক্ত  রিপোর্ট | সমাজসেবা অধিদফতর" }}</p>
 
-<div class="title-container">
-    <!-- Empty div for the first table -->
-</div>
+<div class="title-container"></div>
 
-<table style="border: none;">
+<table>
     <tbody>
     <tr>
         <td class="left">
@@ -106,40 +104,36 @@
                 <a target="_blank" href="https://dss.gov.bd/">www.dss.gov.bd</a>
             </td>
         @endif
-        <td class="right">  <img src="{{ public_path('image/logo.png') }}" alt="Right Image" style="width: 80px; height: 80px;"></td>
+        <td class="right">
+            <img src="{{ public_path('image/logo.png') }}" alt="Right Image" style="width: 80px; height: 80px;">
+        </td>
     </tr>
     </tbody>
 </table>
 
 <table class="border-table">
     <thead>
-
     <tr>
-        {{--        <th style="width: 10%;">ক্রমিক নং </th>--}}
-
-        @foreach($headerInfo as $Key => $chunkList)
+        @foreach($headerInfo as $chunkList)
             <th>{{ $chunkList }}</th>
         @endforeach
     </tr>
     </thead>
     <tbody>
-
- @foreach($dataInfo as $key => $data)
+    @foreach($dataInfo as $data)
         <tr>
-            @foreach($data as $Key => $chunkList)
+            @foreach($data as $chunkList)
                 <td style="max-width: 150px; overflow-wrap: break-word;">
                     {{ $chunkList }}
                 </td>
             @endforeach
         </tr>
     @endforeach
-
     </tbody>
-
 </table>
 
 <div class="footer">
-    {{ $language == 'en' ? "Copyright @ " . date("Y ") . ", DSS" : "কপিরাইট @, " . \App\Helpers\Helper::englishToBangla(date("Y ")) . ", ডিএসএস" }}
+    {!! $language == 'en' ? "Copyright @ " . date("Y") . ", DSS" : "কপিরাইট @ " . \App\Helpers\Helper::englishToBangla(date("Y")) . ", ডিএসএস" !!}
     <div align="right"><b>{PAGENO} / {nbpg}</b></div>
 </div>
 
