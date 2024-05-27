@@ -2,8 +2,7 @@ version: '3.7'
 
 
 
-volumes:
-  db-storage:
+
 
 services:
   # ctm-app service
