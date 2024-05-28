@@ -30,7 +30,7 @@ class TrainerUpdateRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                'unique:trainers,email'
+                'unique:trainers,email,' . $this->trainer->id,
             ],
             'address' => 'nullable',
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
