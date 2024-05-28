@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin\Training;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Training\TrainerRequest;
+use App\Http\Requests\Admin\Training\TrainerUpdateRequest;
 use App\Http\Services\Admin\Training\TrainerService;
 use App\Models\Trainer;
 use App\Models\TrainingProgramModule;
@@ -84,7 +85,7 @@ class TrainerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(TrainerRequest $request, Trainer $trainer)
+    public function update(TrainerUpdateRequest $request, Trainer $trainer)
     {
         $beforeUpdate = $trainer->replicate();
 
