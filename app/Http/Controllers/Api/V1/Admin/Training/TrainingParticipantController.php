@@ -75,6 +75,8 @@ class TrainingParticipantController extends Controller
     {
         $participant = TrainingParticipant::create($request->validated());
 
+        $participant->user->assignRole('participant');
+
         Helper::activityLogInsert($participant, '','Training Participant','Training Participant Created !');
 
         return $this->sendResponse($participant, 'Training Participant created successfully');
@@ -83,7 +85,9 @@ class TrainingParticipantController extends Controller
 
     public function storeExternalParticipant(ExternalParticipantRequest $request)
     {
-        $participant = $this->participantService->saveExternalParticipant($request);
+        $user = $this->participantService->saveExternalUser($request);
+
+        $participant = $this->participantService->saveExternalParticipant($request, $user);
 
         Helper::activityLogInsert($participant, '','Training External Participant','Training Participant Created !');
 
@@ -96,7 +100,7 @@ class TrainingParticipantController extends Controller
     {
         $query = User::query();
 
-        $query->select('id', 'username', 'full_name', 'user_id', 'user_type', 'photo');
+        $query->select('id', 'username', 'full_name', 'user_id', 'user_type', 'photo', 'mobile', 'email');
 
         $query->when($userType == 1, function ($q) {
             $q->whereNotNull('office_type')

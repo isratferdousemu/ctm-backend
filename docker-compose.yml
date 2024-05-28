@@ -1,16 +1,11 @@
 version: '3.7'
 
-networks:
-  web-ctm-app-net:
-    name: my-ctm-web-app-net
-    driver: bridge
-
 volumes:
-  db-storage:
+  ctm-app-backend:
 
 services:
   # ctm-app service
-  backend-app:
+  api:
     #image: devibcs/ctm-apps:backend-service-1.0
     container_name: ctm-backend
     image: 'ctm-app-backend'
@@ -29,9 +24,12 @@ services:
       #DB_PASSWORD: root
 
     ports:
-       - "80:80"
+       - "7575:80"
     networks:
-       - web-ctm-app-net
+       - ppims_net
+    
+    volumes:
+      - ctm-app-backend:/var/www/storage/app/public
 
   # ctm-mysql services
   # mariadb:
@@ -67,5 +65,8 @@ services:
   #     - 8080:80
   #   networks:
   #     - web-ctm-app-net
+networks:
+   ppims_net:
+     name: ppims_net
 
 ###End Of File

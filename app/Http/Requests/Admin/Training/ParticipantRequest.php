@@ -40,9 +40,9 @@ class ParticipantRequest extends FormRequest
                     ->where('user_id', $this->user_id)
                     ->ignore($this->participant?->id)
             ],
-            'organization_id' => 'nullable|integer|min:0|max:16777215',
-            'designation' => 'nullable|string|max:255',
-            'document' => 'nullable|string|max:255',
+//            'organization_id' => 'nullable|integer|min:0|max:16777215',
+//            'designation' => 'nullable|string|max:255',
+//            'document' => 'nullable|string|max:255',
 
         ];
     }

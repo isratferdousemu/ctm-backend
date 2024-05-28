@@ -5,12 +5,20 @@ namespace App\Http\Controllers\Api\V1\Admin\Training;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Training\TrainerRequest;
+use App\Http\Requests\Admin\Training\TrainerUpdateRequest;
+use App\Http\Services\Admin\Training\TrainerService;
 use App\Models\Trainer;
+use App\Models\TrainingProgramModule;
 use App\Models\TrainingProgramTrainer;
 use Illuminate\Http\Request;
 
 class TrainerController extends Controller
 {
+
+    public function __construct(public TrainerService $trainerService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -29,9 +37,7 @@ class TrainerController extends Controller
 
         });
 
-
-
-        $query->with('designation');
+        $query->with('designation', 'user');
         $query->latest();
 
         return $this->sendResponse($query->paginate(
@@ -44,34 +50,53 @@ class TrainerController extends Controller
      */
     public function store(TrainerRequest $request)
     {
-        $trainer = $this->saveTrainer($request, new Trainer());
+        if ($request->is_external == 1) {
+            $user = $this->trainerService->storeUser($request);
+            $trainer = $this->trainerService->storeTrainer($request, $user->id);
+            $this->trainerService->approveUser($user);
+        } else {
+            $trainer = $this->trainerService->storeTrainer($request, $request->user_id);
+        }
 
         Helper::activityLogInsert($trainer, '','Trainer','Trainer Created !');
 
         return $this->sendResponse($trainer, 'Trainer created successfully');
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function show(Trainer $trainer)
+    {
+        $trainer->load('designation', 'programs.modules');
+
+        $trainer->programs_count = $trainer->programs()->count();
+
+        $trainer->modules_count = TrainingProgramModule::query()
+            ->whereIn('training_program_id', $trainer->programs()->pluck('id'))
+            ->get()
+            ->unique('module_id')
+            ->count()
+        ;
+
+        return $this->sendResponse($trainer);
+    }
 
     /**
-     * @param $request
-     * @param $trainer
-     * @return mixed
+     * Update the specified resource in storage.
      */
-    public function saveTrainer($request, $trainer)
+    public function update(TrainerUpdateRequest $request, Trainer $trainer)
     {
-        $trainer->name = $request->name;
-        $trainer->designation_id = $request->designation_id;
-        $trainer->mobile_no = $request->mobile_no;
-        $trainer->email = $request->email;
-        $trainer->address = $request->address;
-        if ($request->image) {
-            $trainer->image = $request->file('image')->store('public');
-        }
-        $trainer->description = $request->description;
-        $trainer->save();
+        $beforeUpdate = $trainer->replicate();
 
-        return $trainer;
+        $trainer = $this->trainerService->updateTrainer($request, $trainer);
+
+        Helper::activityLogUpdate($trainer, $beforeUpdate,'Trainer','Trainer Updated !');
+
+        return $this->sendResponse($trainer, 'Trainer updated successfully');
+
     }
+
 
 
     public function updateStatus(Trainer $trainer)
@@ -83,30 +108,6 @@ class TrainerController extends Controller
         Helper::activityLogUpdate($trainer, $beforeUpdate,'Trainer','Trainer Status Updated !');
 
         return $this->sendResponse($trainer, 'Trainer status updated successfully');
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Trainer $trainer)
-    {
-        $trainer->load('designation');
-        return $this->sendResponse($trainer);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(TrainerRequest $request, Trainer $trainer)
-    {
-        $beforeUpdate = $trainer->replicate();
-
-        $trainer = $this->saveTrainer($request, $trainer);
-
-        Helper::activityLogUpdate($trainer, $beforeUpdate,'Trainer','Trainer Updated !');
-
-        return $this->sendResponse($trainer, 'Trainer updated successfully');
 
     }
 
