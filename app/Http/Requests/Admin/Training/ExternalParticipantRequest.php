@@ -24,9 +24,14 @@ class ExternalParticipantRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'username' => [
+                'required',
+                Rule::unique('users')
+            ],
             'email' => [
                 'required',
                 'email',
+                Rule::unique('users')
             ],
             'full_name' => [
                 'required'
@@ -38,13 +43,10 @@ class ExternalParticipantRequest extends FormRequest
             'training_program_id' => [
                 'required',
                 Rule::exists('training_programs', 'id'),
-                Rule::unique('training_participants', 'training_program_id')
-                    ->where('training_circular_id', $this->training_circular_id)
-                    ->where('email', $this->email)
             ],
-            'organization_id' => 'nullable|integer|min:0|max:16777215',
-            'designation' => 'nullable|string|max:255',
-            'document' => 'nullable|string|max:255',
+//            'organization_id' => 'nullable|integer|min:0|max:16777215',
+//            'designation' => 'nullable|string|max:255',
+//            'document' => 'nullable|string|max:255',
 
         ];
     }

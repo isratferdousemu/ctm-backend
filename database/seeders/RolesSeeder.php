@@ -89,6 +89,34 @@ class RolesSeeder extends Seeder
                 ->get()
         );
 
+        $trainingRole = Role::create([
+            'guard_name' => $guard,
+            'code' => "10004",
+            'default' => 1,
+            'status'  => 1,
+            'name_en' => $this->trainer,
+            'name_bn' => $this->trainer,
+            'name' => $this->trainer
+        ]);
+        $trainingRole->givePermissionTo(
+            Permission::where('module_name', $this->modulePermissionTrainingManagement)
+                ->get()
+        );
+
+        $participantRole = Role::create([
+            'guard_name' => $guard,
+            'code' => "10005",
+            'default' => 1,
+            'status'  => 1,
+            'name_en' => $this->participant,
+            'name_bn' => $this->participant,
+            'name' => $this->participant
+        ]);
+        $participantRole->givePermissionTo(
+            Permission::where('module_name', $this->modulePermissionTrainingManagement)
+                ->get()
+        );
+
         $salt = Helper::generateSalt();
         $admin = User::create(
             [

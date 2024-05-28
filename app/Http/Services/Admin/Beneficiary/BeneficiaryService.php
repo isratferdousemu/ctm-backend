@@ -141,7 +141,7 @@ class BeneficiaryService
 
         $division_id = $request->query('division_id');
         $district_id = $request->query('district_id');
-//        $location_type_id = $request->query('location_type_id');
+        $location_type_id = $request->query('location_type');
         $city_corp_id = $request->query('city_corp_id');
         $district_pourashava_id = $request->query('district_pourashava_id');
         $upazila_id = $request->query('upazila_id');
@@ -195,6 +195,8 @@ class BeneficiaryService
             $query = $query->where('permanent_division_id', $division_id);
         if ($district_id && $district_id > 0)
             $query = $query->where('permanent_district_id', $district_id);
+        if ($location_type_id && $location_type_id > 0)
+            $query = $query->where('permanent_location_type_id', $location_type_id);
         if ($city_corp_id && $city_corp_id > 0)
             $query = $query->where('permanent_city_corp_id', $city_corp_id);
         if ($district_pourashava_id && $district_pourashava_id > 0)
@@ -232,7 +234,7 @@ class BeneficiaryService
 
         $division_id = $request->query('division_id');
         $district_id = $request->query('district_id');
-//        $location_type_id = $request->query('location_type_id');
+        $location_type_id = $request->query('location_type');
         $city_corp_id = $request->query('city_corp_id');
         $district_pourashava_id = $request->query('district_pourashava_id');
         $upazila_id = $request->query('upazila_id');
@@ -286,6 +288,8 @@ class BeneficiaryService
             $query = $query->where('beneficiaries.permanent_division_id', $division_id);
         if ($district_id && $district_id > 0)
             $query = $query->where('beneficiaries.permanent_district_id', $district_id);
+        if ($location_type_id && $location_type_id > 0)
+            $query = $query->where('beneficiaries.permanent_location_type_id', $location_type_id);
         if ($city_corp_id && $city_corp_id > 0)
             $query = $query->where('beneficiaries.permanent_city_corp_id', $city_corp_id);
         if ($district_pourashava_id && $district_pourashava_id > 0)
@@ -1033,6 +1037,8 @@ class BeneficiaryService
         $perPage = $request->query('perPage', 10);
         $sortByColumn = $request->query('sortBy', 'beneficiary_exits.created_at');
         $orderByDirection = $request->query('orderBy', 'asc');
+        $fromDate = $request->query('from_date') ? Carbon::parse($request->query('from_date'))->startOfDay() : null;
+        $toDate = $request->query('to_date') ? Carbon::parse($request->query('to_date'))->endOfDay() : null;
 
         $query = DB::table('beneficiary_exits')
             ->join('beneficiaries', 'beneficiaries.id', '=', 'beneficiary_exits.beneficiary_id')
@@ -1049,6 +1055,13 @@ class BeneficiaryService
             ->join('lookups AS exit_reason', 'exit_reason.id', '=', 'beneficiary_exits.exit_reason_id', 'left');
         if ($program_id)
             $query = $query->where('beneficiaries.program_id', $program_id);
+
+        if ($fromDate)
+            $query = $query->whereDate('beneficiary_exits.exit_date', '>=', $fromDate);
+
+        if ($toDate)
+            $query = $query->whereDate('beneficiary_exits.exit_date', '<=', $toDate);
+
 
         $query = $this->applyLocationFilter2($query, $request);
 
