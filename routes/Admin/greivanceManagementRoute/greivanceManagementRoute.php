@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Api\V1\Admin\GrievanceController;
+use App\Http\Controllers\Api\V1\Admin\GrievanceDashboardController;
 use App\Http\Controllers\Api\V1\Admin\GrievanceSettingController;
 use App\Http\Controllers\Api\V1\Admin\GrievanceSubjectController;
 use App\Http\Controllers\Api\V1\Admin\GrievanceTypeController;
@@ -55,10 +56,23 @@ Route::prefix('admin/grievance')->group(function () {
    Route::post('/update-status', [GrievanceController::class, 'changeGrievanceStatus']);
    Route::get('/generate-pdf', [GrievanceController::class, 'getPdf']);
 
-
 /* -----------------------------------End Grienvace Settings--------------------------------------- */
 
 });
+/* -----------------------------------Start Grienvace Dashboard--------------------------------------- */
+
+Route::prefix('admin/grievance-dashboard')->group(function () {
+    Route::get('/get-total-approve-grievance', [GrievanceDashboardController::class, 'programStatusWisetotalNumberOfGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
+    Route::get('/total-numberof-grievance', [GrievanceDashboardController::class, 'totalNumberOfdGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
+    Route::get('/numberReceivedOfGrievance', [GrievanceDashboardController::class, 'numberReceivedOfGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
+    Route::get('/numberOfSolvedGrievance', [GrievanceDashboardController::class, 'numberOfSolvedGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
+    Route::get('/numberOfCanceledGrievance', [GrievanceDashboardController::class, 'numberOfCanceledGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
+    Route::get('/numberOfPendingdGrievance', [GrievanceDashboardController::class, 'numberOfPendingdGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
+
+});
+/* -----------------------------------End Grienvace dashboard--------------------------------------- */
+
+
 
 
 });

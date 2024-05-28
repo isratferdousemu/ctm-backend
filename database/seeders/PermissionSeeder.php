@@ -494,8 +494,8 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subGrievanceDashboard,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 215, "name" => "GrievanceManagementDashboard-create", "page_url" => "/system-configuration/dashboard", "parent_page" => 1],
-                    ["id" => 216, "name" => "GrievanceManagementDashboard-view", "page_url" => "/system-configuration/dashboard", "parent_page" => 1]
+                    ["id" => 215, "name" => "grievanceDashboard-view", "page_url" => "/grievance/dashboard", "parent_page" => 1],
+                    // ["id" => 216, "name" => "grievanceDashboard-create", "page_url" => "/grievance/dashboard", "parent_page" => 1]
                 ]
             ],
              [
