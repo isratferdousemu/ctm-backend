@@ -153,7 +153,7 @@ class PaymentProcessorController extends Controller
     public function destroy($id)
     {
         $paymentProcessor = PayrollPaymentProcessor::findOrFail($id);
-        $paymentProcessor->delete();
+        $paymentProcessor->forceDelete();
 
         return response()->json(['message' => 'Payment Processor deleted successfully']);
     }
