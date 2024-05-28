@@ -15,20 +15,22 @@ trait RoleTrait
     private $superAdmin = 'super-admin';
     private $staff = 'staff';
     //*------------------------------------ Office Roles ------------------------------------*/
-    
+
     private $officeHead = 'office-head';
     private $dataEntryOperator = 'data-entry-operator';
     private $applicationListRole = 'application-list-role';
-    
-    
+
+
     //*------------------------------------ Committee Type Roles ------------------------------------*/
-    
+
     private $committee = 'committee';
-    
+    private $trainer = 'trainer';
+    private $participant = 'participant';
+
     private $unionCommittee = 'union-committee';
     private $upazilaCommittee = 'upazila-committee';
-    
-    private $wardCommittee = 'ward-committee'; 
+
+    private $wardCommittee = 'ward-committee';
     private $cityCorporationCommittee = 'city-corporation-committee';
     private $circleSocialCommittee = 'circle-social-committee';
     private $pouroCommittee = 'pouro-committee';
@@ -43,7 +45,7 @@ trait RoleTrait
     // Circle Social Office
 
 
-    // ****************User Management********************************    
+    // ****************User Management********************************
     // Super Admin Role
     // Super Admin Can Approve the Created User and Make them Active or Inactive
     // ************************************************
@@ -53,17 +55,17 @@ trait RoleTrait
     // ************************************************
 
     // Users with " Office Type = Division Office"
-    //  will have the permission to approve the user with 
-    //  "Office Type = District Office", 
-    //  "Office Type = Upazila Office", 
-    //  "Office Type = Union Office", 
+    //  will have the permission to approve the user with
+    //  "Office Type = District Office",
+    //  "Office Type = Upazila Office",
+    //  "Office Type = Union Office",
     //  "Office Type = City Corporation Office" and make them active or inactive
     // ************************************************
     // Approve | Reject | Forward | Return
     // ************************************************
     //    0    |    0   |     0   |    0
     // ************************************************
-    
+
     // Users with " Office Type = District Office"
     //  will have the permission to approve the user with
     //  "Office Type = Upazila Office",
@@ -95,7 +97,7 @@ trait RoleTrait
     // ************************************************
     //    0    |    1   |     1   |    0
     // ************************************************
-    
+
     // Application List Role - Application Selection Module
     // Users who belong to Upazila Committee Type and has Application List Role can see all the applications under that office has following permission
     // ************************************************

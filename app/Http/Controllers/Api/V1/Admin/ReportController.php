@@ -899,30 +899,36 @@ class ReportController extends Controller
         return $this->sendResponse(['url' => asset("/pdf/$fileName")]);
     }
 
-    public function commonReport(Request $request)
+     public function commonReport(Request $request)
     {
         set_time_limit(120);
 
-        $data = ['headerInfo' => $request->header,'dataInfo'=>$request->data,'fileName' => $request->fileName,'language' => $request->language];
+        $data = [
+            'headerInfo' => $request->header,
+            'dataInfo' => $request->data,
+            'fileName' => $request->fileName,
+            'language' => $request->language,
+        ];
 
         ini_set("pcre.backtrack_limit", "5000000");
-        $pdf = LaravelMpdf::loadView('reports.dynamic', $data, [],
-            [
-                'mode' => 'utf-8',
-                'format' => 'A4-P',
-                'title' => $request->fileName,
-                'orientation' => 'L',
-                'default_font_size' => 10,
-                'margin_left' => 10,
-                'margin_right' => 10,
-                'margin_top' => 10,
-                'margin_bottom' => 10,
-                'margin_header' => 10,
-                'margin_footer' => 10,
-            ]);
 
+        // Load the view and pass the data to it
+        $pdf = LaravelMpdf::loadView('reports.dynamic', $data, [], [
+            'mode' => 'utf-8',
+            'format' => 'A4-P',
+            'title' => $request->fileName,
+            'orientation' => 'L',
+            'default_font_size' => 10,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'margin_header' => 10,
+            'margin_footer' => 10,
+            'default_font' => 'DejaVuSans', // Ensure Unicode support
+        ]);
 
-        return \Illuminate\Support\Facades\Response::stream(
+        return Response::stream(
             function () use ($pdf) {
                 echo $pdf->output();
             },
@@ -930,8 +936,7 @@ class ReportController extends Controller
             [
                 'Content-Type' => 'application/pdf;charset=utf-8',
                 'Content-Disposition' => 'inline; filename="preview.pdf"',
-            ]);
+            ]
+        );
     }
-
-
 }

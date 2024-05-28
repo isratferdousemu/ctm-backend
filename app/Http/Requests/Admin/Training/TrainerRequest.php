@@ -27,10 +27,23 @@ class TrainerRequest extends FormRequest
             'name' => 'required|string',
             'designation_id' => ['nullable', Rule::exists(Lookup::class, 'id')->where('type', 24)],
             'mobile_no' => 'nullable|numeric|regex:/^01[3-9]\d{8}$/',
-            'email' => 'nullable|email|unique:trainers,email,'. $this->trainer?->id,
+            'username' => [
+                Rule::excludeIf(!$this->is_external),
+                'unique:users,username'
+            ],
+            'email' => [
+                Rule::excludeIf(!$this->is_external),
+                'email',
+                'unique:users,email'
+            ],
+            'user_id' => [
+                Rule::requiredIf(!$this->is_external),
+                'unique:trainers,user_id'
+            ],
             'address' => 'nullable',
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'status' => 'sometimes|in:0,1',
+            'is_external' => 'sometimes|boolean'
         ];
     }
 }

@@ -24,10 +24,7 @@ class ParticipantUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => [
-                'required',
-                Rule::exists('users', 'id')
-            ],
+            'full_name' => [Rule::requiredIf($this->participant->is_by_poll)],
             'training_circular_id' => [
                 'required',
                 Rule::exists('training_circulars', 'id')
@@ -37,8 +34,12 @@ class ParticipantUpdateRequest extends FormRequest
                 Rule::exists('training_programs', 'id'),
                 Rule::unique('training_participants', 'training_program_id')
                     ->where('training_circular_id', $this->training_circular_id)
-                    ->where('user_id', $this->user_id)
-                    ->ignore($this->participant?->id)
+                    ->when($this->participant->is_by_poll, function ($q) {
+                        $q->where('email', $this->participant->email);
+                    }, function ($q) {
+                        $q->where('user_id', $this->participant->user_id);
+                    })
+                    ->ignore($this->participant->id)
             ],
             'organization_id' => 'nullable|integer|min:0|max:16777215',
             'designation' => 'nullable|string|max:255',

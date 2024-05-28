@@ -159,6 +159,34 @@ class UserLocationController extends Controller
         };
     }
 
+    public function getUnionOrThana($upazilaId,$locationType){
+        $data = [];
+        $user = auth()->user();
+
+        if (in_array($user->office_type, [4,5,6,7,9,35]) || $user->user_type == 1) {
+            if($locationType == 2){ // if upazila then get union
+                $data = Location::whereParentId($upazilaId)
+                ->whereType("union")
+                // ->whereLocationType($locationType)
+                ->when($user->assign_location_id, function ($q, $v) {
+                    $q->where('id', $v);
+                })->get();
+            }else{ // get city corporation wise thana
+                $data = Location::whereParentId($upazilaId)
+                ->whereType("thana")
+                // ->whereLocationType($locationType)
+                ->when($user->assign_location_id, function ($q, $v) {
+                    $q->where('id', $v);
+                })->get();
+            }
+
+
+            return $this->sendResponse($data);
+        }
+
+        return $this->sendResponse($data);
+    }
+
 
 
 

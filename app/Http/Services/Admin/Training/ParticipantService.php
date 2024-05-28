@@ -24,15 +24,18 @@ class ParticipantService
         $user->user_id = $user->id;
         $user->save();
 
+        $user->assignRole('participant');
+
         return $user;
 
     }
 
 
-    public function saveExternalParticipant($request)
+    public function saveExternalParticipant($request, $user)
     {
         $participant = new TrainingParticipant(
             [
+                'user_id' => $user->id,
                 'email' => $request->email,
                 'full_name' => $request->full_name,
                 'training_circular_id' => $request->training_circular_id,

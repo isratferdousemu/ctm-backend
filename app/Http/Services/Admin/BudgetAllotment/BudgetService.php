@@ -142,6 +142,7 @@ class BudgetService
             $calculationType = Lookup::findOrFail($budget->calculation_type);
             $no_of_previous_year = $budget->no_of_previous_year ?: 1;
             $previousFinancialYearIds = FinancialYear::whereDate('end_date', '<', $financialYear->end_date)->orderBy('end_date')->limit($no_of_previous_year)->pluck('id')->toArray();
+            $per_beneficiary_amount = 100;
 
             $allotmentAreas = DB::select("
             SELECT
@@ -251,7 +252,7 @@ class BudgetService
                 $budgetDetail = [
                     'budget_id' => $budget->id,
                     'total_beneficiaries' => 100,
-                    'per_beneficiary_amount' => 100,
+                    'per_beneficiary_amount' => $per_beneficiary_amount,
                     'total_amount' => 10000,
                     'division_id' => $allotmentArea->division_id,
                     'district_id' => $allotmentArea->district_id,
@@ -286,7 +287,7 @@ class BudgetService
      * @param array $location
      * @return int[]
      */
-    public function calculateBudget(Budget $budget, array $previousFinancialYearIds, $calculationType, array $location = array()): array
+    public function calculateBudget($program_id, $financial_year_id, $per_beneficiary_amount, $calculationTypeKeyword, $calculationValue, array $previousFinancialYearIds, array $location = array()): array
     {
         // initialize
         $data = [
@@ -295,12 +296,6 @@ class BudgetService
             'current_total_beneficiary' => 0,
             'current_total_amount' => 0,
         ];
-
-        $program_id = $budget->program_id;
-        $financial_year_id = $budget->financial_year_id;
-        $calculation_type = $budget->calculation_type;
-        $no_of_previous_year = $budget->no_of_previous_year;
-        $calculation_value = $budget->calculation_value;
 
         $query = DB::table('budget')
             ->join('budget_detail', 'budget_detail.budget_id', '=', 'budget.id')
@@ -353,10 +348,42 @@ class BudgetService
         if ($previous_total_beneficiary == 0 || $previous_total_amount == 0) {
             $currentBeneficiaryResult = $beneficiaryQuery->selectRaw('count(id) as total_beneficiary, max(monthly_allowance)')->first();
             $current_total_beneficiary = $currentBeneficiaryResult->total_beneficiary;
-            $per_beneficiary_amount = $currentBeneficiaryResult->per_beneficiary_amount;
             $current_total_amount = $current_total_beneficiary * $per_beneficiary_amount;
+            $data["current_total_beneficiary"] = $current_total_beneficiary;
+            $data["current_total_amount"] = $current_total_amount;
         } else {
-
+            switch ($calculationTypeKeyword) {
+                case "PERCENTAGE_OF_AMOUNT":
+                    $current_total_amount = $previous_total_amount * ($calculationValue / 100) + $previous_total_amount;
+                    $current_total_beneficiary = $per_beneficiary_amount > 0 ? floor($current_total_amount / $per_beneficiary_amount) : 0;
+                    break;
+                case "FIXED_AMOUNT":
+                    $current_total_amount = $previous_total_amount + $calculationValue;
+                    $current_total_beneficiary = $per_beneficiary_amount > 0 ? floor($current_total_amount / $per_beneficiary_amount) : 0;
+                    break;
+                case "PERCENTAGE_OF_BENEFICIARY":
+                    $current_total_beneficiary = $previous_total_beneficiary;
+                    $current_total_amount = $previous_total_amount;
+                    break;
+                case "FIXED_BENEFICIARY":
+                    $current_total_beneficiary = $previous_total_beneficiary;
+                    $current_total_amount = $previous_total_amount;
+                    break;
+                case "BY_APPLICATION":
+                    $current_total_beneficiary = $previous_total_beneficiary;
+                    $current_total_amount = $previous_total_amount;
+                    break;
+                case "BY_POVERTY_SCORE":
+                    $current_total_beneficiary = $previous_total_beneficiary;
+                    $current_total_amount = $previous_total_amount;
+                    break;
+                case "BY_POPULATION":
+                    $current_total_beneficiary = $previous_total_beneficiary;
+                    $current_total_amount = $previous_total_amount;
+                    break;
+                default:
+                    break;
+            }
         }
 
         return $data;
