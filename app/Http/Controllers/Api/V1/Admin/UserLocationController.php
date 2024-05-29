@@ -167,14 +167,14 @@ class UserLocationController extends Controller
             if($locationType == 2){ // if upazila then get union
                 $data = Location::whereParentId($upazilaId)
                 ->whereType("union")
-                ->whereLocationType($locationType)
+                // ->whereLocationType($locationType)
                 ->when($user->assign_location_id, function ($q, $v) {
                     $q->where('id', $v);
                 })->get();
             }else{ // get city corporation wise thana
                 $data = Location::whereParentId($upazilaId)
                 ->whereType("thana")
-                ->whereLocationType($locationType)
+                // ->whereLocationType($locationType)
                 ->when($user->assign_location_id, function ($q, $v) {
                     $q->where('id', $v);
                 })->get();
