@@ -64,10 +64,13 @@ Route::prefix('admin/grievance')->group(function () {
 Route::prefix('admin/grievance-dashboard')->group(function () {
     Route::get('/get-total-approve-grievance', [GrievanceDashboardController::class, 'programStatusWisetotalNumberOfGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
     Route::get('/total-numberof-grievance', [GrievanceDashboardController::class, 'totalNumberOfdGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
+    Route::get('/location-wise-grievance', [GrievanceDashboardController::class, 'locationWisetotalNumberOfGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
+    Route::get('/program-wise-grievance', [GrievanceDashboardController::class, 'programWisetotalNumberOfGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
     Route::get('/numberReceivedOfGrievance', [GrievanceDashboardController::class, 'numberReceivedOfGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
     Route::get('/numberOfSolvedGrievance', [GrievanceDashboardController::class, 'numberOfSolvedGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
     Route::get('/numberOfCanceledGrievance', [GrievanceDashboardController::class, 'numberOfCanceledGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
     Route::get('/numberOfPendingdGrievance', [GrievanceDashboardController::class, 'numberOfPendingdGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
+    Route::get('/status-wise-grievance', [GrievanceDashboardController::class, 'statusWisetotalNumberOfGrievance']) /*->middleware(['role_or_permission:super-admin|applicationDashboard-view'])*/;
 
 });
 /* -----------------------------------End Grienvace dashboard--------------------------------------- */
