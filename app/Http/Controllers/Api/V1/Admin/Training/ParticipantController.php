@@ -78,6 +78,8 @@ class ParticipantController extends Controller
             $participant = $this->participantService->storeParticipant($request, $request->user_id);
         }
 
+        $this->participantService->sendPasscode($participant);
+
         Helper::activityLogInsert($participant, '','Training Participant','Training Participant Created !');
         return $this->sendResponse($participant, 'Training Participant created successfully');
     }

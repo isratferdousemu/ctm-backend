@@ -53,12 +53,25 @@ class ParticipantService
                 'user_id' => $userId,
                 'training_circular_id' => $request->training_circular_id,
                 'training_program_id' => $request->training_program_id,
+                'passcode' => rand(1e7, 1e10)
             ]
         );
 
         $participant->save();
 
         return $participant;
+    }
+
+
+    public function sendPasscode($participant)
+    {
+        $programName = $participant->trainingProgram->program_name;
+
+        $message = "Congratulations! You have been registered as a participant for $programName. Your User Id is {$participant->user_id} and Passcode is {$participant->passcode}."
+            ."\nPlease keep this information secure and ensure you have it available when you start your exam.\n-MIS, DSS";
+
+        (new SMSservice())->sendSms($participant->user->mobile, $message);
+
     }
 
 

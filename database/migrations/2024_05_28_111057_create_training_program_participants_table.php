@@ -16,9 +16,10 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('training_circular_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('training_program_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('passcode',10);
             $table->json('exam_response')->nullable();
             $table->json('trainer_rating_response')->nullable();
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }
