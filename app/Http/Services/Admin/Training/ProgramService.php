@@ -21,6 +21,7 @@ class ProgramService
         $program->on_days = $request->on_days;
         $program->question_link = $request->question_link;
         $program->trainer_ratings_link = $request->trainer_ratings_link;
+        $program->status = $request->status;
 
         $program->save();
 
@@ -48,6 +49,7 @@ class ProgramService
         $program->on_days = $request->on_days;
         $program->question_link = $request->question_link;
         $program->trainer_ratings_link = $request->trainer_ratings_link;
+        $program->status = $request->status;
 
         $program->save();
 
