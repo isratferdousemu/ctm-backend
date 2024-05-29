@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommonResource;
 use App\Models\bank;
+use App\Models\Beneficiary;
 use App\Models\PayrollPaymentProcessor;
 use App\Models\PayrollPaymentProcessorArea;
 use Illuminate\Http\Request;
@@ -92,7 +93,7 @@ class PaymentProcessorController extends Controller
 
     public function show($id)
     {
-        return PayrollPaymentProcessor::with('bank', 'ProcessorArea', 'ProcessorArea.division', 'ProcessorArea.district', 'ProcessorArea.upazila', 'ProcessorArea.union', 'ProcessorArea.thana', 'ProcessorArea.CityCorporation', 'ProcessorArea.DistrictPourashava','ProcessorArea.LocationType')->findOrFail($id);
+        return PayrollPaymentProcessor::with('bank', 'ProcessorArea', 'ProcessorArea.division', 'ProcessorArea.district', 'ProcessorArea.upazila', 'ProcessorArea.union', 'ProcessorArea.thana', 'ProcessorArea.CityCorporation', 'ProcessorArea.DistrictPourashava', 'ProcessorArea.LocationType')->findOrFail($id);
     }
 
     public function update(Request $request, $id)
@@ -161,5 +162,21 @@ class PaymentProcessorController extends Controller
     public function getBanks()
     {
         return bank::all();
+    }
+
+    public function getBeneficiaryPayrollStatus($beneficiaryId)
+    {
+        $beneficiaryPayrollStatus = Beneficiary::with(['payrollDetails' => function ($query) {
+            $query->select('id', 'payroll_id', 'beneficiary_id', 'status', 'amount', 'total_amount');
+        }, 'payrollDetails.payroll' => function ($query) {
+            $query->select('id', 'program_id', 'financial_year_id', 'is_approved', 'approved_by_id', 'approved_at', 'is_rejected', 'rejected_by_id', 'rejected_at');
+        }])->find($beneficiaryId);
+
+        if ($beneficiaryPayrollStatus) {
+            $data = $beneficiaryPayrollStatus->toArray();
+            return response()->json(['data' => $data, 'message' => 'Beneficiary payroll status retrieved successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Beneficiary not found or no payroll details available'], 404);
+        }
     }
 }
