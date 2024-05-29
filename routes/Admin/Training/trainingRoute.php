@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\Api\V1\Admin\Training\ParticipantController;
 use App\Http\Controllers\Api\V1\Admin\Training\TimeSlotController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainerController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainingCircularController;
@@ -24,7 +25,7 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::post('participants/external', [TrainingParticipantController::class, 'storeExternalParticipant']);
     Route::get('participants/users/{type}', [TrainingParticipantController::class, 'getUsers']);
     Route::get('participants/circulars', [TrainingParticipantController::class, 'trainingCirculars']);
-    Route::resource('participants', TrainingParticipantController::class);
+    Route::resource('participants', ParticipantController::class);
 
 
 });

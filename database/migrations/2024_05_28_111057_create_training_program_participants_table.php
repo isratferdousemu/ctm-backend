@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('training_program_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->json('exam_response')->nullable();
             $table->json('trainer_rating_response')->nullable();
-            $table->boolean('status')->default(0);
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }
