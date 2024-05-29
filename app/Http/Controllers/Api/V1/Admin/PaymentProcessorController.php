@@ -92,7 +92,7 @@ class PaymentProcessorController extends Controller
 
     public function show($id)
     {
-        return PayrollPaymentProcessor::with('bank', 'ProcessorArea', 'ProcessorArea.division', 'ProcessorArea.district', 'ProcessorArea.upazila', 'ProcessorArea.union', 'ProcessorArea.thana', 'ProcessorArea.CityCorporation', 'ProcessorArea.DistrictPourashava')->findOrFail($id);
+        return PayrollPaymentProcessor::with('bank', 'ProcessorArea', 'ProcessorArea.division', 'ProcessorArea.district', 'ProcessorArea.upazila', 'ProcessorArea.union', 'ProcessorArea.thana', 'ProcessorArea.CityCorporation', 'ProcessorArea.DistrictPourashava','ProcessorArea.LocationType')->findOrFail($id);
     }
 
     public function update(Request $request, $id)
