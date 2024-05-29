@@ -19,6 +19,8 @@ class ProgramService
         $program->end_date = $request->end_date;
         $program->description = $request->description;
         $program->on_days = $request->on_days;
+        $program->question_link = $request->question_link;
+        $program->trainer_ratings_link = $request->trainer_ratings_link;
 
         $program->save();
 
@@ -44,6 +46,8 @@ class ProgramService
         $program->end_date = $request->end_date;
         $program->description = $request->description;
         $program->on_days = $request->on_days;
+        $program->question_link = $request->question_link;
+        $program->trainer_ratings_link = $request->trainer_ratings_link;
 
         $program->save();
 
