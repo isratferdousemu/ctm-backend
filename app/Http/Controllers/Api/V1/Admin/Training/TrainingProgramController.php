@@ -71,7 +71,7 @@ class TrainingProgramController extends Controller
         });
 
 
-        $query->with('modules', 'trainingCircular', 'trainers', 'statusName');
+        $query->with('modules', 'trainingCircular.trainingType', 'trainers', 'statusName');
 
         $query->latest();
 
