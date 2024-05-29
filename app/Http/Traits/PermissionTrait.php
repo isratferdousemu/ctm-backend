@@ -22,7 +22,7 @@ trait PermissionTrait
     private $modulePermissionApplicationSelection = "ApplicationSelection";
     private $modulePermissionBeneficiaryManagement = "BeneficiaryManagement";
     private $modulePermissionPayrollManagement = "PayrollManagement";
-    private $modulePermissionEmergencyManagement = "EmergencyManagement";
+    private $modulePermissionEmergencyPayment = "EmergencyPayment";
     private $modulePermissionGrievanceManagement = "GrievanceManagement";
     private $modulePermissionReportingSystem = "ReportingSystem";
     private $modulePermissionAPIManager = "APIManager";
@@ -58,8 +58,8 @@ trait PermissionTrait
 
 
     // module 3 sub modules
-    private $subCommitteeInformation= "committee-information";
-    private $subCommitteePermissionInformation= "committee-permission-information";
+    private $subCommitteeInformation = "committee-information";
+    private $subCommitteePermissionInformation = "committee-permission-information";
     private $subAllocationInformation = "allocation-information";
     private $subBeneficiaryInformationManagement = "beneficiary-information-management";
     private $subBeneficiaryReplacement = "beneficiary-replacement";
@@ -72,7 +72,7 @@ trait PermissionTrait
     private $subPaymentProcessorInformation = "payment-processor-information";
     private $subAccountsInformation = "accounts-information";
     private $subPayrollGeneration = "payroll-generation";
-    private $subEmergencyPayment = "emergency-payment";
+    private $subEmergencyAllotment = "emergency-allotment";
     private $subPayrollSetting = "payroll-setting";
     private $subPayrollVerificationSetting = "payroll-verification-setting";
     private $subPaymentProcessor = "payment-processor";
@@ -165,8 +165,8 @@ trait PermissionTrait
                     $query->where('name', $this->officeHead);
                 })->first();
 
-                 // print_r($officeHead);
-                 if ($officeHead) {
+                // print_r($officeHead);
+                if ($officeHead) {
                     // IS OFFICE HEAD
                     $data = array(
                         'type' => $officeHead->assign_location->type,

@@ -3,11 +3,92 @@
 namespace App\Http\Services\Admin\Training;
 
 use App\Helpers\Helper;
+use App\Http\Services\Notification\SMSservice;
+use App\Http\Traits\RoleTrait;
+use App\Mail\UserCreateMail;
 use App\Models\TrainingParticipant;
+use App\Models\TrainingProgramParticipant;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class ParticipantService
 {
+    use RoleTrait;
+
+    public function storeUser($request)
+    {
+        $user = new User();
+        $user->full_name = $request->full_name;
+        $user->username = $request->username;
+        $user->mobile = $request->mobile;
+        $user->email = $request->email;
+        $user->user_type = 2;
+        $user->salt = Helper::generateSalt();
+        $user->password = bcrypt($user->salt . Helper::GeneratePassword());
+
+        $user->save();
+
+        $user->user_id = $user->id;
+        $user->save();
+
+        $user->assignRole($this->participant);
+
+        return $user;
+    }
+
+
+    public function storeParticipant($request, $userId)
+    {
+        $programExists = TrainingProgramParticipant::where('user_id', $userId)
+            ->where('training_program_id', $request->training_program_id)
+            ->exists();
+
+        if ($programExists) {
+            throw ValidationException::withMessages(['training_program_id' => 'Participant already exists']);
+        }
+
+        $participant = new TrainingProgramParticipant(
+            [
+                'user_id' => $userId,
+                'training_circular_id' => $request->training_circular_id,
+                'training_program_id' => $request->training_program_id,
+            ]
+        );
+
+        $participant->save();
+
+        return $participant;
+    }
+
+
+
+    public function approveUser($user)
+    {
+        $password = Helper::GeneratePassword();
+
+        $user->status = 1;
+        $user->password = bcrypt($user->salt . $password);
+        $user->save();
+
+        $tokenLink = env('APP_FRONTEND_URL') . '/browser-token';
+
+        $message = "Welcome to the CTM application." .
+            "\nTo register your device please visit {$tokenLink} then copy the browser fingerprint code and provide it to your authority."
+            .
+            "\nOnce your device is registered you can access the CTM Application using following credentials:
+        \nUsername: " . $user->username
+            . "\nPassword: " . $password .
+            "\nLogin URL: " . env('APP_FRONTEND_URL') . '/login'
+            . "\n-MIS, DSS";
+
+
+        (new SMSservice())->sendSms($user->mobile, $message);
+
+        //        $this->dispatch(new UserCreateJob($user->email,$user->username, $password));
+
+        Mail::to($user->email)->send(new UserCreateMail($user->email, $user->username, $password, $user->full_name));
+    }
 
     public function saveExternalUser($request)
     {

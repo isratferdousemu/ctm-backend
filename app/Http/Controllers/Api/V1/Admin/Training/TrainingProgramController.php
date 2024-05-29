@@ -71,7 +71,7 @@ class TrainingProgramController extends Controller
         });
 
 
-        $query->with('modules', 'trainingCircular', 'trainers');
+        $query->with('modules', 'trainingCircular.trainingType', 'trainers', 'statusName');
 
         $query->latest();
 
@@ -146,7 +146,7 @@ class TrainingProgramController extends Controller
      */
     public function show(TrainingProgram $program)
     {
-        $program->load('trainingCircular.trainingType', 'modules', 'trainers');
+        $program->load('trainingCircular.trainingType', 'modules', 'trainers', 'statusName');
 
         return $this->sendResponse($program);
     }

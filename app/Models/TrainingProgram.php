@@ -46,6 +46,12 @@ class TrainingProgram extends Model
     }
 
 
+    public function statusName()
+    {
+        return $this->belongsTo(Lookup::class, 'status', 'id');
+    }
+
+
 
 
 }
