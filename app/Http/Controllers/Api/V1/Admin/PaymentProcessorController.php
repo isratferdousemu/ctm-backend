@@ -164,8 +164,9 @@ class PaymentProcessorController extends Controller
         return bank::all();
     }
 
-    public function getBeneficiaryPayrollStatus($beneficiaryId)
+    public function getPaymentTrackingInfo(Request $request)
     {
+        return $request->all();
         $beneficiaryPayrollStatus = Beneficiary::with(['payrollDetails' => function ($query) {
             $query->select('id', 'payroll_id', 'beneficiary_id', 'status', 'amount', 'total_amount');
         }, 'payrollDetails.payroll' => function ($query) {
