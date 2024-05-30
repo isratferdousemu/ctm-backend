@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommonResource;
 use App\Models\bank;
+use App\Models\Beneficiary;
 use App\Models\PayrollPaymentProcessor;
 use App\Models\PayrollPaymentProcessorArea;
 use Illuminate\Http\Request;
@@ -92,7 +93,7 @@ class PaymentProcessorController extends Controller
 
     public function show($id)
     {
-        return PayrollPaymentProcessor::with('bank', 'ProcessorArea', 'ProcessorArea.division', 'ProcessorArea.district', 'ProcessorArea.upazila', 'ProcessorArea.union', 'ProcessorArea.thana', 'ProcessorArea.CityCorporation', 'ProcessorArea.DistrictPourashava','ProcessorArea.LocationType')->findOrFail($id);
+        return PayrollPaymentProcessor::with('bank', 'ProcessorArea', 'ProcessorArea.division', 'ProcessorArea.district', 'ProcessorArea.upazila', 'ProcessorArea.union', 'ProcessorArea.thana', 'ProcessorArea.CityCorporation', 'ProcessorArea.DistrictPourashava', 'ProcessorArea.LocationType')->findOrFail($id);
     }
 
     public function update(Request $request, $id)
@@ -161,5 +162,14 @@ class PaymentProcessorController extends Controller
     public function getBanks()
     {
         return bank::all();
+    }
+
+    public function getPaymentTrackingInfo(Request $request)
+    {
+        // return $request->nid;
+
+        return Beneficiary::with('payroll', 'PaymentCycle')
+            ->where('verification_number', $request->beneficiary_id)
+            ->first();
     }
 }
