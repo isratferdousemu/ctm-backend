@@ -53,7 +53,6 @@ class PayrollPaymentProcessorArea extends Model
     {
         return $this->belongsTo(Location::class, 'thana_id', 'id');
     }
-
     public function CityCorporation(): BelongsTo
     {
         return $this->belongsTo(Location::class, 'city_corp_id', 'id');
@@ -62,5 +61,10 @@ class PayrollPaymentProcessorArea extends Model
     public function DistrictPourashava(): BelongsTo
     {
         return $this->belongsTo(Location::class, 'district_pourashava_id', 'id');
+    }
+
+    public function LocationType(): BelongsTo
+    {
+        return $this->belongsTo(Lookup::class, 'location_type', 'id');
     }
 }

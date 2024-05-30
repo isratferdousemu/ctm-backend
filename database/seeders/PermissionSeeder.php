@@ -217,25 +217,25 @@ class PermissionSeeder extends Seeder
                     ["id" => 194, "name" => "applicationDashboard-create", "page_url" => "/application-management/dashboard", "parent_page" => 1],
                     ["id" => 197, "name" => "applicationDashboard-view", "page_url" => "/application-management/dashboard", "parent_page" => 1],
 
-//                    ["id" => 65, "name" => "primaryUnion-create", "page_url" => "/application-management/primary-selection-union/create", "parent_page" => 1],
-//                    ["id" => 66, "name" => "primaryUnion-view", "page_url" => "/application-management/primary-selection-union", "parent_page" => 1],
-//                    ["id" => 67, "name" => "primaryUnion-edit", "page_url" => "/application-management/primary-selection-union/edit/:id", "parent_page" => 1],
-//                    ["id" => 68, "name" => "primaryUnion-delete", "page_url" => "/application-management/primary-selection-union", "parent_page" => 1],
-//
-//                    ["id" => 69, "name" => "primaryUpazila-create", "page_url" => "/application-management/primary-selection-upazila/create", "parent_page" => 1],
-//                    ["id" => 70, "name" => "primaryUpazila-view", "page_url" => "/application-management/primary-selection-upazila", "parent_page" => 1],
-//                    ["id" => 71, "name" => "primaryUpazila-edit", "page_url" => "/application-management/primary-selection-upazila/edit/:id", "parent_page" => 1],
-//                    ["id" => 72, "name" => "primaryUpazila-delete", "page_url" => "/application-management/primary-selection-upazila", "parent_page" => 1],
-//
-//                    ["id" => 73, "name" => "final-view-create", "page_url" => "/application-management/final/create", "parent_page" => 1],
-//                    ["id" => 74, "name" => "final-view-view", "page_url" => "/application-management/final", "parent_page" => 1],
-//                    ["id" => 75, "name" => "final-view-edit", "page_url" => "/application-management/final/edit/:id", "parent_page" => 1],
-//                    ["id" => 76, "name" => "final-view-delete", "page_url" => "/application-management/final", "parent_page" => 1],
-//
-//                    ["id" => 77, "name" => "approval-view-create", "page_url" => "/application-management/approval/create", "parent_page" => 1],
-//                    ["id" => 78, "name" => "approval-view-view", "page_url" => "/application-management/approval", "parent_page" => 1],
-//                    ["id" => 79, "name" => "approval-view-edit", "page_url" => "/application-management/approval/edit/:id", "parent_page" => 1],
-//                    ["id" => 80, "name" => "approval-view-delete", "page_url" => "/application-management/approval", "parent_page" => 1],
+                    //                    ["id" => 65, "name" => "primaryUnion-create", "page_url" => "/application-management/primary-selection-union/create", "parent_page" => 1],
+                    //                    ["id" => 66, "name" => "primaryUnion-view", "page_url" => "/application-management/primary-selection-union", "parent_page" => 1],
+                    //                    ["id" => 67, "name" => "primaryUnion-edit", "page_url" => "/application-management/primary-selection-union/edit/:id", "parent_page" => 1],
+                    //                    ["id" => 68, "name" => "primaryUnion-delete", "page_url" => "/application-management/primary-selection-union", "parent_page" => 1],
+                    //
+                    //                    ["id" => 69, "name" => "primaryUpazila-create", "page_url" => "/application-management/primary-selection-upazila/create", "parent_page" => 1],
+                    //                    ["id" => 70, "name" => "primaryUpazila-view", "page_url" => "/application-management/primary-selection-upazila", "parent_page" => 1],
+                    //                    ["id" => 71, "name" => "primaryUpazila-edit", "page_url" => "/application-management/primary-selection-upazila/edit/:id", "parent_page" => 1],
+                    //                    ["id" => 72, "name" => "primaryUpazila-delete", "page_url" => "/application-management/primary-selection-upazila", "parent_page" => 1],
+                    //
+                    //                    ["id" => 73, "name" => "final-view-create", "page_url" => "/application-management/final/create", "parent_page" => 1],
+                    //                    ["id" => 74, "name" => "final-view-view", "page_url" => "/application-management/final", "parent_page" => 1],
+                    //                    ["id" => 75, "name" => "final-view-edit", "page_url" => "/application-management/final/edit/:id", "parent_page" => 1],
+                    //                    ["id" => 76, "name" => "final-view-delete", "page_url" => "/application-management/final", "parent_page" => 1],
+                    //
+                    //                    ["id" => 77, "name" => "approval-view-create", "page_url" => "/application-management/approval/create", "parent_page" => 1],
+                    //                    ["id" => 78, "name" => "approval-view-view", "page_url" => "/application-management/approval", "parent_page" => 1],
+                    //                    ["id" => 79, "name" => "approval-view-edit", "page_url" => "/application-management/approval/edit/:id", "parent_page" => 1],
+                    //                    ["id" => 80, "name" => "approval-view-delete", "page_url" => "/application-management/approval", "parent_page" => 1],
                 ]
             ],
             [
@@ -331,17 +331,17 @@ class PermissionSeeder extends Seeder
                     ["id" => 104, "name" => "committee-delete", "page_url" => "/beneficiary-management/committee", "parent_page" => 1]
                 ]
             ],
-//            [
-//                'module_name' => $this->modulePermissionBeneficiaryManagement,
-//                'sub_module_name' => $this->subCommitteeInformation,
-//                'guard_name' => $this->guard,
-//                'permissions' => [
-//                    ["id" => 101, "name" => "committee-create", "page_url" => "/beneficiary-management/committee/create", "parent_page" => 1],
-//                    ["id" => 102, "name" => "committee-view", "page_url" => "/beneficiary-management/committee", "parent_page" => 1],
-//                    ["id" => 103, "name" => "committee-edit", "page_url" => "/beneficiary-management/committee/edit/:id", "parent_page" => 1],
-//                    ["id" => 104, "name" => "committee-delete", "page_url" => "/beneficiary-management/committee", "parent_page" => 1]
-//                ]
-//            ],
+            //            [
+            //                'module_name' => $this->modulePermissionBeneficiaryManagement,
+            //                'sub_module_name' => $this->subCommitteeInformation,
+            //                'guard_name' => $this->guard,
+            //                'permissions' => [
+            //                    ["id" => 101, "name" => "committee-create", "page_url" => "/beneficiary-management/committee/create", "parent_page" => 1],
+            //                    ["id" => 102, "name" => "committee-view", "page_url" => "/beneficiary-management/committee", "parent_page" => 1],
+            //                    ["id" => 103, "name" => "committee-edit", "page_url" => "/beneficiary-management/committee/edit/:id", "parent_page" => 1],
+            //                    ["id" => 104, "name" => "committee-delete", "page_url" => "/beneficiary-management/committee", "parent_page" => 1]
+            //                ]
+            //            ],
             [
                 'module_name' => $this->modulePermissionBeneficiaryManagement,
                 'sub_module_name' => $this->subAllocationInformation,
@@ -353,54 +353,54 @@ class PermissionSeeder extends Seeder
                     ["id" => 108, "name" => "allocation-delete", "page_url" => "/beneficiary-management/allocation", "parent_page" => 1]
                 ]
             ],
-//            [
-//                'module_name' => $this->modulePermissionBeneficiaryManagement,
-//                'sub_module_name' => $this->subBeneficiaryReplacement,
-//                'guard_name' => $this->guard,
-//                'permissions' => [
-//                    ["id" => 109, "name" => "beneficiaryReplacement-create", "page_url" => "/beneficiary-management/beneficiary-replacement/create", "parent_page" => 1],
-//                    ["id" => 110, "name" => "beneficiaryReplacement-view", "page_url" => "/beneficiary-management/beneficiary-replacement-list", "parent_page" => 1],
-//                    ["id" => 111, "name" => "beneficiaryReplacement-edit", "page_url" => "/beneficiary-management/beneficiary-replacement/edit/:id", "parent_page" => 1],
-//                    ["id" => 112, "name" => "beneficiaryReplacement-delete", "page_url" => "/beneficiary-management/beneficiary-replacement", "parent_page" => 1]
-//
-//                ]
-//            ],
-//            [
-//                'module_name' => $this->modulePermissionBeneficiaryManagement,
-//                'sub_module_name' => $this->subBeneficiaryIDCard,
-//                'guard_name' => $this->guard,
-//                'permissions' => [
-//                    ["id" => 113, "name" => "beneficiaryIdCard-create", "page_url" => "/beneficiary-management/beneficiary-card/create", "parent_page" => 1],
-//                    ["id" => 114, "name" => "beneficiaryIdCard-view", "page_url" => "/beneficiary-management/beneficiary-card", "parent_page" => 1],
-//                    ["id" => 115, "name" => "beneficiaryIdCard-edit", "page_url" => "/beneficiary-management/beneficiary-card/edit/:id", "parent_page" => 1],
-//                    ["id" => 116, "name" => "beneficiaryIdCard-delete", "page_url" => "/beneficiary-management/beneficiary-card", "parent_page" => 1]
-//
-//                ]
-//            ],
-//            [
-//                'module_name' => $this->modulePermissionBeneficiaryManagement,
-//                'sub_module_name' => $this->subBeneficiaryIDShifting,
-//                'guard_name' => $this->guard,
-//                'permissions' => [
-//                    ["id" => 117, "name" => "beneficiaryShifting-create", "page_url" => "/beneficiary-management/beneficiary-shifting/create", "parent_page" => 1],
-//                    ["id" => 118, "name" => "beneficiaryShifting-view", "page_url" => "/beneficiary-management/beneficiary-shifting", "parent_page" => 1],
-//                    ["id" => 119, "name" => "beneficiaryShifting-edit", "page_url" => "/beneficiary-management/beneficiary-shifting/edit/:id", "parent_page" => 1],
-//                    ["id" => 120, "name" => "beneficiaryShifting-delete", "page_url" => "/beneficiary-management/beneficiary-shifting/delete/:id", "parent_page" => 1]
-//
-//                ]
-//            ],
-//            [
-//                'module_name' => $this->modulePermissionBeneficiaryManagement,
-//                'sub_module_name' => $this->subBeneficiaryIDExit,
-//                'guard_name' => $this->guard,
-//                'permissions' => [
-//                    ["id" => 182, "name" => "beneficiaryExit-create", "page_url" => "/beneficiary-management/beneficiary-exit/create", "parent_page" => 1],
-//                    ["id" => 183, "name" => "beneficiaryExit-view", "page_url" => "/beneficiary-management/beneficiary-exit", "parent_page" => 1],
-//                    ["id" => 184, "name" => "beneficiaryExit-edit", "page_url" => "/beneficiary-management/beneficiary-exit/edit/:id", "parent_page" => 1],
-//                    ["id" => 185, "name" => "beneficiaryExit-delete", "page_url" => "/beneficiary-management/beneficiary-exit/delete/:id", "parent_page" => 1]
-//
-//                ]
-//            ],
+            //            [
+            //                'module_name' => $this->modulePermissionBeneficiaryManagement,
+            //                'sub_module_name' => $this->subBeneficiaryReplacement,
+            //                'guard_name' => $this->guard,
+            //                'permissions' => [
+            //                    ["id" => 109, "name" => "beneficiaryReplacement-create", "page_url" => "/beneficiary-management/beneficiary-replacement/create", "parent_page" => 1],
+            //                    ["id" => 110, "name" => "beneficiaryReplacement-view", "page_url" => "/beneficiary-management/beneficiary-replacement-list", "parent_page" => 1],
+            //                    ["id" => 111, "name" => "beneficiaryReplacement-edit", "page_url" => "/beneficiary-management/beneficiary-replacement/edit/:id", "parent_page" => 1],
+            //                    ["id" => 112, "name" => "beneficiaryReplacement-delete", "page_url" => "/beneficiary-management/beneficiary-replacement", "parent_page" => 1]
+            //
+            //                ]
+            //            ],
+            //            [
+            //                'module_name' => $this->modulePermissionBeneficiaryManagement,
+            //                'sub_module_name' => $this->subBeneficiaryIDCard,
+            //                'guard_name' => $this->guard,
+            //                'permissions' => [
+            //                    ["id" => 113, "name" => "beneficiaryIdCard-create", "page_url" => "/beneficiary-management/beneficiary-card/create", "parent_page" => 1],
+            //                    ["id" => 114, "name" => "beneficiaryIdCard-view", "page_url" => "/beneficiary-management/beneficiary-card", "parent_page" => 1],
+            //                    ["id" => 115, "name" => "beneficiaryIdCard-edit", "page_url" => "/beneficiary-management/beneficiary-card/edit/:id", "parent_page" => 1],
+            //                    ["id" => 116, "name" => "beneficiaryIdCard-delete", "page_url" => "/beneficiary-management/beneficiary-card", "parent_page" => 1]
+            //
+            //                ]
+            //            ],
+            //            [
+            //                'module_name' => $this->modulePermissionBeneficiaryManagement,
+            //                'sub_module_name' => $this->subBeneficiaryIDShifting,
+            //                'guard_name' => $this->guard,
+            //                'permissions' => [
+            //                    ["id" => 117, "name" => "beneficiaryShifting-create", "page_url" => "/beneficiary-management/beneficiary-shifting/create", "parent_page" => 1],
+            //                    ["id" => 118, "name" => "beneficiaryShifting-view", "page_url" => "/beneficiary-management/beneficiary-shifting", "parent_page" => 1],
+            //                    ["id" => 119, "name" => "beneficiaryShifting-edit", "page_url" => "/beneficiary-management/beneficiary-shifting/edit/:id", "parent_page" => 1],
+            //                    ["id" => 120, "name" => "beneficiaryShifting-delete", "page_url" => "/beneficiary-management/beneficiary-shifting/delete/:id", "parent_page" => 1]
+            //
+            //                ]
+            //            ],
+            //            [
+            //                'module_name' => $this->modulePermissionBeneficiaryManagement,
+            //                'sub_module_name' => $this->subBeneficiaryIDExit,
+            //                'guard_name' => $this->guard,
+            //                'permissions' => [
+            //                    ["id" => 182, "name" => "beneficiaryExit-create", "page_url" => "/beneficiary-management/beneficiary-exit/create", "parent_page" => 1],
+            //                    ["id" => 183, "name" => "beneficiaryExit-view", "page_url" => "/beneficiary-management/beneficiary-exit", "parent_page" => 1],
+            //                    ["id" => 184, "name" => "beneficiaryExit-edit", "page_url" => "/beneficiary-management/beneficiary-exit/edit/:id", "parent_page" => 1],
+            //                    ["id" => 185, "name" => "beneficiaryExit-delete", "page_url" => "/beneficiary-management/beneficiary-exit/delete/:id", "parent_page" => 1]
+            //
+            //                ]
+            //            ],
 
 
             /* -------------------------------------------------------------------------- */
@@ -440,14 +440,14 @@ class PermissionSeeder extends Seeder
                 ]
             ],
             [
-                'module_name' => $this->modulePermissionEmergencyManagement,
-                'sub_module_name' => $this->subEmergencyPayment,
+                'module_name' => $this->modulePermissionEmergencyPayment,
+                'sub_module_name' => $this->subEmergencyAllotment,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 133, "name" => "emergency-allotment-create", "page_url" => "/payroll-management/emergency-allotment/create", "parent_page" => 1],
-                    ["id" => 134, "name" => "emergency-allotment-view", "page_url" => "/payroll-management/emergency-allotment", "parent_page" => 1],
-                    ["id" => 135, "name" => "emergency-allotment-edit", "page_url" => "/payroll-management/emergency-allotment/edit/:id", "parent_page" => 1],
-                    ["id" => 136, "name" => "emergency-allotment-delete", "page_url" => "/payroll-management/emergency-allotment", "parent_page" => 1],
+                    ["id" => 133, "name" => "emergency-allotment-create", "page_url" => "/emergency-payment/emergency-allotment/create", "parent_page" => 1],
+                    ["id" => 134, "name" => "emergency-allotment-view", "page_url" => "/emergency-payment/emergency-allotment", "parent_page" => 1],
+                    ["id" => 135, "name" => "emergency-allotment-edit", "page_url" => "/emergency-payment/emergency-allotment/edit/:id", "parent_page" => 1],
+                    ["id" => 136, "name" => "emergency-allotment-delete", "page_url" => "/emergency-payment/emergency-allotment/delete/:id", "parent_page" => 1],
 
                     ["id" => 137, "name" => "emergency-beneficiary-create", "page_url" => "/payroll-management/emergency-beneficiary/create", "parent_page" => 1],
                     ["id" => 138, "name" => "emergency-beneficiary-view", "page_url" => "/payroll-management/emergency-beneficiary", "parent_page" => 1],
@@ -489,16 +489,16 @@ class PermissionSeeder extends Seeder
                     ["id" => 152, "name" => "grievanceList-delete", "page_url" => "/grievance-management/list", "parent_page" => 1]
                 ]
             ],
-             [
+            [
                 'module_name' => $this->modulePermissionGrievanceManagement,
                 'sub_module_name' => $this->subGrievanceDashboard,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 215, "name" => "GrievanceManagementDashboard-create", "page_url" => "/system-configuration/dashboard", "parent_page" => 1],
-                    ["id" => 216, "name" => "GrievanceManagementDashboard-view", "page_url" => "/system-configuration/dashboard", "parent_page" => 1]
+                    ["id" => 215, "name" => "grievanceDashboard-view", "page_url" => "/grievance/dashboard", "parent_page" => 1],
+                    // ["id" => 216, "name" => "grievanceDashboard-create", "page_url" => "/grievance/dashboard", "parent_page" => 1]
                 ]
             ],
-             [
+            [
                 'module_name' => $this->modulePermissionGrievanceManagement,
                 'sub_module_name' => $this->modulePermissionGrievanceManagement,
                 'guard_name' => $this->guard,
@@ -509,7 +509,7 @@ class PermissionSeeder extends Seeder
                     ["id" => 220, "name" => "grievanceType-delete", "page_url" => "/grievance-management/type-delete", "parent_page" => 1]
                 ]
             ],
-             [
+            [
                 'module_name' => $this->modulePermissionGrievanceManagement,
                 'sub_module_name' => $this->subGrievanceSubject,
                 'guard_name' => $this->guard,
@@ -618,7 +618,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
-                   [
+            [
                 'module_name' => $this->modulePermissionTrainingManagement,
                 'sub_module_name' => $this->modulePermissionTrainingManagement,
                 'guard_name' => $this->guard,
@@ -630,7 +630,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
-                       [
+            [
                 'module_name' => $this->modulePermissionTrainingManagement,
                 'sub_module_name' => $this->modulePermissionTrainingManagement,
                 'guard_name' => $this->guard,
@@ -642,7 +642,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
-                    [
+            [
                 'module_name' => $this->modulePermissionTrainingManagement,
                 'sub_module_name' => $this->modulePermissionTrainingManagement,
                 'guard_name' => $this->guard,
@@ -666,7 +666,7 @@ class PermissionSeeder extends Seeder
                 ]
 
             ],
-                  [
+            [
                 'module_name' => $this->modulePermissionTrainingManagement,
                 'sub_module_name' => $this->modulePermissionTrainingManagement,
                 'guard_name' => $this->guard,
@@ -728,8 +728,7 @@ class PermissionSeeder extends Seeder
         DB::table('permissions')->truncate();
         for ($i = 0; $i < count($permissions); $i++) {
             $groupPermissions = $permissions[$i]['module_name'];
-            $subModulePermissions = $permissions
-            [$i]['sub_module_name'];
+            $subModulePermissions = $permissions[$i]['sub_module_name'];
             $guardPermissions = $permissions[$i]['guard_name'];
             for ($j = 0; $j < count($permissions[$i]['permissions']); $j++) {
                 //create permissions
