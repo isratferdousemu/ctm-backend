@@ -317,20 +317,40 @@ class ApplicationService
 // $application->image = 'application/' . $path_3;
 
     // $application->image = $request->file('image')->store('public');
+    // $imagePath = $request->file('image')->store('public');
+    // $application->image=$imagePath;
+    // $signaturePath = $request->file('signature')->store('public');
+    // $application->signature=$signaturePath ;
+  
+    // $nominee_imagePath = $request->file('nominee_image')->store('public');
+    // $application->nominee_image=$nominee_imagePath ;
+
+
+    // $nominee_signaturePath = $request->file('nominee_signature')->store('public');
+    // $application->nominee_signature=$nominee_signaturePath;
+    if ($request->hasFile('image')) {
     $imagePath = $request->file('image')->store('public');
-    $application->image=$imagePath;
+    $application->image = $imagePath;
+}
+
+// Check if signature file is present and store it
+if ($request->hasFile('signature')) {
     $signaturePath = $request->file('signature')->store('public');
-    $application->signature=$signaturePath ;
-    // $application->signature = $request->file('signature')->store('public');
+    $application->signature = $signaturePath;
+}
 
-
-    // $application->nominee_image = $request->file('nominee_image')->store('public');
+// Check if nominee image file is present and store it
+if ($request->hasFile('nominee_image')) {
     $nominee_imagePath = $request->file('nominee_image')->store('public');
-    $application->nominee_image=$nominee_imagePath ;
+    $application->nominee_image = $nominee_imagePath;
+}
 
-    // $application->nominee_signature = $request->file('nominee_signature')->store('public');
+// Check if nominee signature file is present and store it
+if ($request->hasFile('nominee_signature')) {
     $nominee_signaturePath = $request->file('nominee_signature')->store('public');
-    $application->nominee_signature=$nominee_signaturePath;
+    $application->nominee_signature = $nominee_signaturePath;
+}
+
 
             $application->save();
 
