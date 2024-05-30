@@ -124,7 +124,14 @@ class LookUpSeeder extends Seeder
             ['id' => 77, 'type' => 30, 'value_en' => 'Ministry user', 'value_bn' => 'মিনিস্ট্রি ইউজার', 'default' => 1],
             ['id' => 78, 'type' => 30, 'value_en' => 'CTM', 'value_bn' => 'সিটিমএম', 'default' => 1],
             ['id' => 79, 'type' => 30, 'value_en' => 'USSO', 'value_bn' => 'ইউএসএসও', 'default' => 1],
-            ['id' => 80, 'type' => 30, 'value_en' => 'UCD', 'value_bn' => 'ইউসিডি', 'default' => 1]
+            ['id' => 80, 'type' => 30, 'value_en' => 'UCD', 'value_bn' => 'ইউসিডি', 'default' => 1],
+
+
+            //Training program status
+            ['id' => 81, 'type' => 31, 'value_en' => 'Pending', 'value_bn' => 'বিচারাধীন', 'default' => 1],
+            ['id' => 82, 'type' => 31, 'value_en' => 'In Progress', 'value_bn' => 'চলমান', 'default' => 1],
+            ['id' => 83, 'type' => 31, 'value_en' => 'Completed', 'value_bn' => 'সম্পন্ন', 'default' => 1],
+            ['id' => 84, 'type' => 31, 'value_en' => 'Postponed', 'value_bn' => 'স্থগিত', 'default' => 1],
 
 
         ];

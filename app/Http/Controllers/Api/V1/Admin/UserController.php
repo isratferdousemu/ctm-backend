@@ -617,7 +617,7 @@ class UserController extends Controller
         $user->email = $request->email ?: "tarikul5357@gmail.com";
 
         $this->dispatch(new UserCreateJob($user->email, $user->username, '0000', 'Queue'));
-        Mail::to($user->email)->send(new UserCreateMail($user->email, $user->username, '1234', $user->full_name));
+//        Mail::to($user->email)->send(new UserCreateMail($user->email, $user->username, '1234', $user->full_name));
     }
 
 
