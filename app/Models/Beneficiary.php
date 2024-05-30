@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Beneficiary extends Model
@@ -209,6 +210,26 @@ class Beneficiary extends Model
     public function permanentWard()
     {
         return $this->belongsTo(Location::class, 'permanent_ward_id', 'id');
+    }
+
+    /**
+     * Get the PayrollDetails associated with the Beneficiary
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function payroll(): HasOne
+    {
+        return $this->hasOne(PayrollDetail::class, 'beneficiary_id', 'id');
+    }
+
+    /**
+     * Get the PaymentCycle associated with the Beneficiary
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function PaymentCycle(): HasOne
+    {
+        return $this->hasOne(PayrollPaymentCycleDetail::class, 'beneficiary_id', 'id');
     }
 
 }

@@ -83,6 +83,10 @@ class AllowanceProgram extends Model
     public function applications()
     {
         return $this->hasMany(Application::class, 'program_id');
+    }  
+     public function grievances()
+    {
+        return $this->hasMany(Grievance::class, 'program_id');
     }
 
     public function beneficiaries()
