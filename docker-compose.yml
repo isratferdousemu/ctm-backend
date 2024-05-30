@@ -1,5 +1,11 @@
 version: '3.7'
 
+networks:
+  web-ctm-app-net:
+    name: my-ctm-web-app-net
+    driver: bridge
+
+
 volumes:
   ctm-app-backend:
 
@@ -24,9 +30,9 @@ services:
       #DB_PASSWORD: root
 
     ports:
-       - "7575:80"
+       - "80:80"
     networks:
-       - ppims_net
+       - web-ctm-app-net
     
     volumes:
       - ctm-app-backend:/var/www/storage/app/public
@@ -65,8 +71,4 @@ services:
   #     - 8080:80
   #   networks:
   #     - web-ctm-app-net
-networks:
-   ppims_net:
-     name: ppims_net
-
 ###End Of File
