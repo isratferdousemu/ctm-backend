@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Beneficiary;
+use App\Models\Payroll;
+use App\Models\PayrollDetail;
 use Illuminate\Database\Seeder;
 
 class BeneficiarySeeder extends Seeder
