@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Exceptions\AuthBasicErrorException;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\User\UploadImageRequest;
 use App\Http\Requests\Admin\User\UserRequest;
 use App\Http\Requests\Admin\User\UserUpdateRequest;
 use App\Http\Resources\Admin\Office\OfficeResource;
@@ -798,7 +799,7 @@ class UserController extends Controller
         return UserResource::make($user);
     }
     //user profile image update
-    public function uploadImage(Request $request)
+    public function uploadImage(UploadImageRequest $request)
     {
         // return auth()->user()->id;
         $user = User::findOrFail(auth()->user()->id);
