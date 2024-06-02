@@ -730,13 +730,13 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subPayrollPaymentTracking,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 279, "name" => "payroll-payment-tracking", "page_url" => "/payroll-management/payment-tracking", "parent_page" => 1],
+                    ["id" => 274, "name" => "payroll-payment-tracking", "page_url" => "/payroll-management/payment-tracking", "parent_page" => 1],
                 ]
             ],
 
         ];
 
-        //last id 278
+        //last id 274
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
