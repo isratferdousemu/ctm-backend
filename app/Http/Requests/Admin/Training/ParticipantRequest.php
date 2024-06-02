@@ -25,10 +25,10 @@ class ParticipantRequest extends FormRequest
     {
         return [
             'full_name' => [
-                Rule::requiredIf($this->is_external),
+                Rule::requiredIf($this->is_external == 1),
             ],
             'mobile' => [
-                Rule::requiredIf($this->is_external),
+                Rule::requiredIf($this->is_external == 1),
                 'numeric',
                 'regex:/^01[3-9]\d{8}$/'
             ],
