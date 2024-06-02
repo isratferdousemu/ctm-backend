@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\PayrollManagement\PaymentTrackingResource;
 use App\Http\Resources\CommonResource;
 use App\Models\bank;
 use App\Models\Beneficiary;
@@ -168,8 +169,43 @@ class PaymentProcessorController extends Controller
     {
         // return $request->nid;
 
-        return Beneficiary::with('payroll', 'PaymentCycle')
+        // return Beneficiary::with('payroll', 'PaymentCycle')
+        //     ->where('verification_number', $request->beneficiary_id)
+        //     ->first();
+
+            $Beneficiary = Beneficiary::with('program',
+            'gender',
+            'currentDivision',
+            'currentDistrict',
+            'currentCityCorporation',
+            'currentDistrictPourashava',
+            'currentUpazila',
+            'currentPourashava',
+            'currentThana',
+            'currentUnion',
+            'currentWard',
+            'permanentDivision',
+            'permanentDistrict',
+            'permanentCityCorporation',
+            'permanentDistrictPourashava',
+            'permanentUpazila',
+            'permanentPourashava',
+            'permanentThana',
+            'permanentUnion',
+            'permanentWard',
+            'financialYear','payroll','PaymentCycle')
             ->where('verification_number', $request->beneficiary_id)
             ->first();
+
+            if ($Beneficiary) {
+                return (new PaymentTrackingResource($Beneficiary))->additional([
+                    'success' => true,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Beneficiary not found'
+                ], 404);
+            }
     }
 }

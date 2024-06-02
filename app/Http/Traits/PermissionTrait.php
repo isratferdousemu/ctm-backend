@@ -75,6 +75,7 @@ trait PermissionTrait
     private $subEmergencyAllotment = "emergency-allotment";
     private $subPayrollSetting = "payroll-setting";
     private $subPayrollVerificationSetting = "payroll-verification-setting";
+    private $subPayrollPaymentTracking = "payment-tracking";
     private $subPaymentProcessor = "payment-processor";
 
 
