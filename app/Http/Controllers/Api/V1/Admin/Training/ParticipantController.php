@@ -30,11 +30,8 @@ class ParticipantController extends Controller
         $query->with('user', 'trainingCircular', 'trainingProgram');
 
         $query->when($request->name, function ($q, $v) {
-            $q->where(function ($q) use ($v) {
-                $q->where('full_name', 'like', "%$v%")
-                    ->orWhereHas('user', function ($q) use ($v) {
-                        $q->where('full_name', 'like', "%$v%");
-                    });
+            $q->whereHas('user', function ($q) use ($v) {
+                $q->where('full_name', 'like', "%$v%");
             });
         });
 
