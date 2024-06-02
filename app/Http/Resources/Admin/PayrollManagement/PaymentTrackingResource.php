@@ -18,7 +18,7 @@ class PaymentTrackingResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        // return parent::toArray($request);
         return [
             "id" => $this->id,
             "program_id" => $this->program_id,
@@ -38,7 +38,7 @@ class PaymentTrackingResource extends JsonResource
             "age" => $this->age,
             "date_of_birth" => $this->date_of_birth,
             "nationality" => $this->nationality,
-            "gender" => LookupResource::make($this->whenLoaded('gender')),
+            // "gender" => LookupResource::make($this->whenLoaded('gender')),
             "education_status" => $this->education_status,
             "profession" => $this->profession,
             "religion" => $this->religion,
@@ -117,7 +117,7 @@ class PaymentTrackingResource extends JsonResource
             // "application_date" => $this->application_date,
             // "approve_date" => $this->approve_date
             "payroll" => $this->payroll,
-            "payment_cycle" => $this->payment_cycle,
+            "payment_cycle" => $this->paymentCycle,
         ];
     }
 
