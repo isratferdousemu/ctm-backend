@@ -36,6 +36,7 @@ services:
     
     volumes:
       - ctm-app-backend:/var/www/storage/app/public
+    command: /bin/sh -c "php artisan queue:work"
 
   # ctm-mysql services
   # mariadb:
