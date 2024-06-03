@@ -95,6 +95,7 @@ Route::middleware('auth:sanctum')->group(function () {
     /* -------------------------------------------------------------------------- */
 
     Route::prefix('admin/device')->group(function () {
+        Route::get('/show/{device}', [DeviceController::class, 'show']);
         Route::post('/status/{id}', [DeviceController::class, 'deviceStatusUpdate'])->middleware(['role_or_permission:super-admin|device-registration-edit']);
         Route::post('/insert', [DeviceController::class, 'insertDevice'])->middleware(['role_or_permission:super-admin|device-registration-create']);
         Route::get('/get',[DeviceController::class, 'getAllDevicePaginated'])->middleware(['role_or_permission:super-admin|device-registration-view']);
