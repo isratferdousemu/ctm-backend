@@ -41,6 +41,7 @@ Route::prefix('v1')->group(function () {
     include "Mobile/Application/application-selection/applicationSelectionRoute.php";
     include "Mobile/Beneficiary/BeneficiaryRoute.php";
     include "Mobile/PayrollManagement/PayrollRoute.php";
+    include "Mobile/EmergencyManagement/EmergencyRoute.php";
 });
 
 
