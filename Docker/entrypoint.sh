@@ -30,6 +30,9 @@ if [ "$role" = "app" ]; then
 
 
     php artisan serve --port=$PORT --host=0.0.0.0 --env=.env
+
+    set -e
+    php artisan queue:work
     
     exec docker-php-entrypoint "$@"
     
