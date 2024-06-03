@@ -23,7 +23,6 @@ if [ "$role" = "app" ]; then
     php artisan db:seed --class=InstallmentSeeder
     php artisan db:seed --class=BankTableSeeder
     php artisan storage:link
-    php artisan queue:work
     php artisan schedule:run
     
     #php artisan queue:listen #--queue=high,default
