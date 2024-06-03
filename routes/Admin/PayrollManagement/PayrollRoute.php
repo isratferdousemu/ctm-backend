@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\PaymentProcessorController;
+use App\Http\Controllers\Api\V1\Admin\PayrollDashboardController;
 use App\Http\Controllers\Api\V1\Admin\PayrollSettingController;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -22,6 +23,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('/payment-processor', PaymentProcessorController::class);
         // beneficiary tracking information
         Route::post('/payment-tracking-info', [PaymentProcessorController::class, 'getPaymentTrackingInfo']);
+        // dashboard
+        Route::get('/payroll-status-data', [PayrollDashboardController::class, 'payrollData']);
+        Route::get('/monthly-approved-payroll', [PayrollDashboardController::class, 'monthlyApprovedPayroll']);
+        Route::get('/program-wise-payroll', [PayrollDashboardController::class, 'programWisePayroll']);
 
 
     });
