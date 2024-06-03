@@ -20,7 +20,8 @@ Route::middleware('auth:sanctum')->group(function () {
         //for payment processor
         Route::get('/get-banks', [PaymentProcessorController::class, 'getBanks']);
         Route::apiResource('/payment-processor', PaymentProcessorController::class);
-
+        // beneficiary tracking information
+        Route::post('/payment-tracking-info', [PaymentProcessorController::class, 'getPaymentTrackingInfo']);
 
 
     });

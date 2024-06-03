@@ -5,15 +5,23 @@ namespace App\Http\Controllers\Api\V1\Admin\Training;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Training\TrainingProgramRequest;
+use App\Http\Services\Admin\Training\ProgramService;
 use App\Models\TimeSlot;
 use App\Models\TrainingProgram;
 use App\Models\Trainer;
 use App\Models\TrainingCircular;
+use App\Models\TrainingProgramParticipant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TrainingProgramController extends Controller
 
 {
+
+    public function __construct(public ProgramService $programService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -63,7 +71,7 @@ class TrainingProgramController extends Controller
         });
 
 
-        $query->with('modules', 'trainingCircular', 'trainers');
+        $query->with('modules', 'trainingCircular.trainingType', 'trainers', 'statusName');
 
         $query->latest();
 
@@ -77,10 +85,16 @@ class TrainingProgramController extends Controller
      */
     public function store(TrainingProgramRequest $request)
     {
-        $program = $this->saveTrainingProgram($request, new TrainingProgram());
+        DB::beginTransaction();
+        try {
+            $program = $this->programService->storeProgram($request);
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
 
         Helper::activityLogInsert($program, '','Training Program','Training Program Created !');
-
         return $this->sendResponse($program, 'Training Program created successfully');
     }
 
@@ -132,7 +146,7 @@ class TrainingProgramController extends Controller
      */
     public function show(TrainingProgram $program)
     {
-        $program->load('trainingCircular.trainingType', 'modules', 'trainers');
+        $program->load('trainingCircular.trainingType', 'modules', 'trainers', 'statusName');
 
         return $this->sendResponse($program);
     }
@@ -144,10 +158,16 @@ class TrainingProgramController extends Controller
     {
         $beforeUpdate = $program->replicate();
 
-        $program = $this->saveTrainingProgram($request, $program);
+        DB::beginTransaction();
+        try {
+            $program = $this->programService->updateProgram($request, $program);
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
 
         Helper::activityLogUpdate($program, $beforeUpdate,'Training Program','Training Program Updated !');
-
         return $this->sendResponse($program, 'Training Program updated successfully');
     }
 
@@ -155,13 +175,31 @@ class TrainingProgramController extends Controller
     public function updateStatus(TrainingProgram $program)
     {
         $beforeUpdate = $program->replicate();
-
         $program->update(['status' => !$program->status]);
-
         Helper::activityLogUpdate($program, $beforeUpdate,'Training Program','Training Program Status Updated !');
 
         return $this->sendResponse($program, 'Training Program status updated successfully');
 
+    }
+
+
+    public function updateExamStatus(TrainingProgram $program)
+    {
+        $beforeUpdate = $program->replicate();
+        $program->update(['exam_status' => !$program->exam_status]);
+        Helper::activityLogUpdate($program, $beforeUpdate,'Training Program','Training Program Exam Status Updated !');
+
+        return $this->sendResponse($program, 'Exam status updated successfully');
+
+    }
+
+    public function updateRatingStatus(TrainingProgram $program)
+    {
+        $beforeUpdate = $program->replicate();
+        $program->update(['rating_status' => !$program->rating_status]);
+        Helper::activityLogUpdate($program, $beforeUpdate,'Training Program','Training Program Rating Status Updated !');
+
+        return $this->sendResponse($program, 'Rating status updated successfully');
     }
 
     /**
@@ -170,6 +208,8 @@ class TrainingProgramController extends Controller
     public function destroy(TrainingProgram $program)
     {
         $program->delete();
+
+        TrainingProgramParticipant::where('training_program_id', $program->id)->delete();
 
         Helper::activityLogDelete($program, '','Training Program','Training Program Deleted !');
 

@@ -40,6 +40,18 @@ class TrainingProgram extends Model
     }
 
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'training_program_participants', 'training_program_id', 'user_id');
+    }
+
+
+    public function statusName()
+    {
+        return $this->belongsTo(Lookup::class, 'status', 'id');
+    }
+
+
 
 
 }

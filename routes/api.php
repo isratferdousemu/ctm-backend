@@ -40,6 +40,7 @@ Route::prefix('v1')->group(function () {
     include "Mobile/Auth/AuthRoute.php";
     include "Mobile/Application/application-selection/applicationSelectionRoute.php";
     include "Mobile/Beneficiary/BeneficiaryRoute.php";
+    include "Mobile/PayrollManagement/PayrollRoute.php";
 });
 
 

@@ -24,9 +24,28 @@ class ParticipantRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => [
+            'full_name' => [
+                Rule::requiredIf($this->is_external == 1),
+            ],
+            'mobile' => [
+                Rule::requiredIf($this->is_external == 1),
+                'numeric',
+                'regex:/^01[3-9]\d{8}$/'
+            ],
+            'username' => [
+                Rule::excludeIf(!$this->is_external),
                 'required',
-                Rule::exists('users', 'id')
+                'unique:users,username'
+            ],
+            'email' => [
+                Rule::excludeIf(!$this->is_external),
+                'required',
+                'email',
+                'unique:users,email'
+            ],
+            'user_id' => [
+                Rule::requiredIf(!$this->is_external),
+                Rule::exists('users', 'id'),
             ],
             'training_circular_id' => [
                 'required',
@@ -35,14 +54,7 @@ class ParticipantRequest extends FormRequest
             'training_program_id' => [
                 'required',
                 Rule::exists('training_programs', 'id'),
-                Rule::unique('training_participants', 'training_program_id')
-                    ->where('training_circular_id', $this->training_circular_id)
-                    ->where('user_id', $this->user_id)
-                    ->ignore($this->participant?->id)
             ],
-//            'organization_id' => 'nullable|integer|min:0|max:16777215',
-//            'designation' => 'nullable|string|max:255',
-//            'document' => 'nullable|string|max:255',
 
         ];
     }
