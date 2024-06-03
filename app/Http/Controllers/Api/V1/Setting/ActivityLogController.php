@@ -115,6 +115,10 @@ class ActivityLogController extends Controller
             $activityLog->whereBetween('created_at', [$startDate, $endDate]);
         }
 
+        if ($startDate) {
+            $activityLog->whereDate('created_at', $startDate);
+        }
+
         if ($request->filled('office_id')) {
             $officeId = $request->office_id;
             $activityLog->whereHas('causer', function ($query) use ($officeId) {
@@ -147,6 +151,7 @@ class ActivityLogController extends Controller
             $activityLog->whereHas('causer', function ($query) use ($userInfo) {
                 $query->whereIn('user_id', $userInfo);
             });
+
         } elseif ($request->filled('district_id')) { // Check if only district_id is provided
             $districtId = $request->district_id;
             $userInfo = User::where('assign_location_id', $districtId)->pluck('id');

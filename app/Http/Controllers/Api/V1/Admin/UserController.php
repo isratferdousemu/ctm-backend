@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Exceptions\AuthBasicErrorException;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\User\UploadImageRequest;
 use App\Http\Requests\Admin\User\UserRequest;
 use App\Http\Requests\Admin\User\UserUpdateRequest;
 use App\Http\Resources\Admin\Office\OfficeResource;
@@ -617,7 +618,7 @@ class UserController extends Controller
         $user->email = $request->email ?: "tarikul5357@gmail.com";
 
         $this->dispatch(new UserCreateJob($user->email, $user->username, '0000', 'Queue'));
-        Mail::to($user->email)->send(new UserCreateMail($user->email, $user->username, '1234', $user->full_name));
+//        Mail::to($user->email)->send(new UserCreateMail($user->email, $user->username, '1234', $user->full_name));
     }
 
 
@@ -798,7 +799,7 @@ class UserController extends Controller
         return UserResource::make($user);
     }
     //user profile image update
-    public function uploadImage(Request $request)
+    public function uploadImage(UploadImageRequest $request)
     {
         // return auth()->user()->id;
         $user = User::findOrFail(auth()->user()->id);

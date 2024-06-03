@@ -53,6 +53,7 @@ trait LookupTrait
             ['id' => 28, 'name' => 'Training Circular Status'],
             ['id' => 29, 'name' => 'Training Module'],
             ['id' => 30, 'name' => 'Training Participant Designation'],
+            ['id' => 31, 'name' => 'Training Program Status'],
         ];
 
         return collect($types);

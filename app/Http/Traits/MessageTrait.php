@@ -105,7 +105,8 @@ trait MessageTrait
     private $deleteSuccessMessage = 'Delete Success';
     //fetch success
     private $fetchSuccessMessage = 'Operation successful';
-    private $nidSuccessMessage = 'NID information verified successfully';
+    private $appicantSuccessMessage = 'NID information verified successfully';
+    private $nidSuccessMessage = ' Nominee NID information verified successfully';
 
     private $fetchDataSuccessMessage = 'Data Fetch Successfully Done';
     private $otpSendMessage = 'Otp Send Successfully';

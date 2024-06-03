@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Constants\DeviceType;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Device\DeviceRequest;
@@ -248,6 +249,13 @@ class DeviceController extends Controller
         return \response()->json([
             'device' => $device
         ],Response::HTTP_OK);
+    }
+
+
+    public function show(Device $device)
+    {
+        $device->deviceTypeName = DeviceType::TYPES[$device->device_type] ?? '';
+        return $this->sendResponse($device);
     }
 
     /**
