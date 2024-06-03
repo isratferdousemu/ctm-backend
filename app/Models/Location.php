@@ -106,6 +106,24 @@ class Location extends Model
      public function grievances()
     {
         return $this->hasMany(Grievance::class, 'division_id');
+    }    
+     public function districtGrievances()
+    {
+        return $this->hasMany(Grievance::class, 'district_id');
+    } 
+    public function thanasGrievances()
+    {
+        return $this->hasMany(Grievance::class, 'thana_id');
+    }
+
+    public function districts()
+    {
+        return $this->hasMany(Location::class, 'parent_id')->where('type', 'district');
+    }
+
+    public function thanas()
+    {
+        return $this->hasMany(Location::class, 'parent_id')->where('type', 'thana');
     }
 
 }
