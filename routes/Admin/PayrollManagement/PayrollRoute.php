@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/payment-tracking-info', [PaymentProcessorController::class, 'getPaymentTrackingInfo']);
         // dashboard
         Route::get('/payroll-status-data', [PayrollDashboardController::class, 'payrollData']);
+        Route::get('/payment-cycle-status-data', [PayrollDashboardController::class, 'paymentCycleStatusData']);
         Route::get('/monthly-approved-payroll', [PayrollDashboardController::class, 'monthlyApprovedPayroll']);
         Route::get('/program-wise-payroll', [PayrollDashboardController::class, 'programWisePayroll']);
 
