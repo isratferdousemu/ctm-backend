@@ -86,6 +86,31 @@ class PayrollService
         return $query->count();
     }
 
+    public function getActiveBeneficiaries($allotment_id): \Illuminate\Database\Eloquent\Collection|array
+    {
+        $allotmentArea = Allotment::findOrfail($allotment_id);
+        $query = Beneficiary::query();
+        $query = $query->where('program_id', $allotmentArea->program_id)
+            ->where('financial_year_id', $allotmentArea->financial_year_id);
+//            ->where('status', 1);
+        if ($allotmentArea->city_corp_id)
+            $query = $query->where('permanent_city_corp_id', $allotmentArea->city_corp_id);
+        if ($allotmentArea->district_pourashava_id)
+            $query = $query->where('permanent_district_pourashava_id', $allotmentArea->district_pourashava_id);
+        if ($allotmentArea->upazila_id)
+            $query = $query->where('permanent_upazila_id', $allotmentArea->upazila_id);
+        if ($allotmentArea->pourashava_id)
+            $query = $query->where('permanent_pourashava_id', $allotmentArea->pourashava_id);
+        if ($allotmentArea->thana_id)
+            $query = $query->where('permanent_thana_id', $allotmentArea->thana_id);
+        if ($allotmentArea->union_id)
+            $query = $query->where('permanent_union_id', $allotmentArea->union_id);
+        if ($allotmentArea->ward_id)
+            $query = $query->where('permanent_ward_id', $allotmentArea->ward_id);
+
+        return $query->get();
+    }
+
     /**
      * @param $query
      * @param $request

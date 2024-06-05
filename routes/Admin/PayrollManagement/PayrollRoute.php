@@ -25,8 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/payment-tracking-info', [PaymentProcessorController::class, 'getPaymentTrackingInfo']);
 
         // for payroll create
-        Route::get('/get-active-installments/{program_id}/{financial_year_id}', [PayrollController::class, 'getActiveInstallments'])->middleware(['role_or_permission:super-admin|payroll-setting-view']);
-        Route::get('/get-allotment-area-list', [PayrollController::class, 'getAllotmentAreaList'])->middleware(['role_or_permission:super-admin|payroll-setting-view']);
+        Route::get('/get-active-installments/{program_id}/{financial_year_id}', [PayrollController::class, 'getActiveInstallments'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
+        Route::get('/get-allotment-area-list', [PayrollController::class, 'getAllotmentAreaList'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
+        Route::get('/get-allotted-beneficiary-list/{allotment_id}', [PayrollController::class, 'getActiveBeneficiaries'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
     });
 
 
