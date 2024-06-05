@@ -67,29 +67,44 @@ class GrievanceDashboardController extends Controller
     public function locationWisetotalNumberOfGrievance(Request $request)
     {
         $status = $request->status;
+        $type = $request->type;
         $breadcrumb = $request->breadcrumb;
         $startDate = $request->start_date;
         $endDate = $request->end_date;
         $currentYear = Carbon::now()->year;
         $thirtyDaysAgo = Carbon::now()->subDays(30);
+        
+        $parentId = $request->get('parent_id', null);
 
-        $type = $request->get('type', 'division');
+        // $type = $request->get('type', 'division');
+        if ($breadcrumb == 'breadcrumb' && $type == 'division') {
+            // $type = 'division';
+            $query = Location::where('type', $type);
 
-        //  if($breadcrumb=='breadcrumb' &&  $type=='division'){
-        //     $type =  'division';
-        //  }elseif($breadcrumb=='breadcrumb' &&  $type=='district'){
-        //     $type =  'district';
-        //  }elseif($breadcrumb=='breadcrumb' &&  $type=='thana'){
-        //     $type =  'thana';
-        //  }
-        // $type = $request->get('type', 'division'); // default to division if type is not provided
-        $parentId = $request->get('parent_id', null); // get parent_id if provided
+        } elseif ($breadcrumb == 'breadcrumb' && $type == 'district') {
+          $query = Location::where('type', $type);
 
-        $query = Location::where('parent_id', $parentId)->where('type', $type);
+        } elseif ($breadcrumb == 'breadcrumb' && $type == 'thana') {
+           $query = Location::where('type', $type);
+        } else {
+            $type = $request->get('type', 'division');
+            $query = Location::where('parent_id', $parentId)->where('type', $type);
 
-        if ($parentId) {
-            $query->where('parent_id', $parentId);
+            if ($parentId) {
+             $query->where('parent_id', $parentId);
+             }
+
+            // return  $type;
         }
+        
+        // // $type = $request->get('type', 'division'); // default to division if type is not provided
+        // $parentId = $request->get('parent_id', null); // get parent_id if provided
+
+        // $query = Location::where('parent_id', $parentId)->where('type', $type);
+        // // return $query->get();
+        // if ($parentId) {
+        //     $query->where('parent_id', $parentId);
+        // }
 
         if ($request->status == 'location') {
 
@@ -186,31 +201,30 @@ class GrievanceDashboardController extends Controller
                 //     },
 
                 // ]);
-            } 
-        }
-        else {
-                // If start date and end date are provided, filter by the specified date range
-                if ($startDate && $endDate) {
-                    $query->withCount(['grievances' => function ($query) use ($startDate, $endDate, $status) {
-                        $query->whereBetween('created_at', [$startDate, $endDate]);
-                    }]);
-                } else {
-                    // If start date and end date are not provided, filter by the current year
-                    $query->withCount(['grievances' => function ($query) use ($currentYear, $status) {
-                        $query->whereYear('created_at', $currentYear);
-                    }]);
-                }
-
+            }
+        } else {
+            // If start date and end date are provided, filter by the specified date range
+            if ($startDate && $endDate) {
+                $query->withCount(['grievances' => function ($query) use ($startDate, $endDate, $status) {
+                    $query->whereBetween('created_at', [$startDate, $endDate]);
+                }]);
+            } else {
+                // If start date and end date are not provided, filter by the current year
+                $query->withCount(['grievances' => function ($query) use ($currentYear, $status) {
+                    $query->whereYear('created_at', $currentYear);
+                }]);
             }
 
-            // Execute the query
-            $programs = $query->get();
+        }
 
-            return response()->json([
-                'data' => $programs,
-                'success' => true,
-                'message' => $this->fetchSuccessMessage,
-            ], ResponseAlias::HTTP_OK);
+        // Execute the query
+        $programs = $query->get();
+
+        return response()->json([
+            'data' => $programs,
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ], ResponseAlias::HTTP_OK);
         // }
     }
 
