@@ -53,12 +53,12 @@ class PayrollService
         $query = $query
             ->selectRaw('allotments.*, payrolls.allotment_id')
             ->with('upazila', 'cityCorporation', 'districtPourosova', 'location');
-        $allotmentAreaList = $query->orderBy('location_id')->paginate($perPage);
+         return $allotmentAreaList = $query->orderBy('location_id')->paginate($perPage);
 
-        return $allotmentAreaList->map(function ($allotmentArea) {
-            $allotmentArea->active_beneficiaries = $this->countActiveBeneficiaries($allotmentArea);
-            return $allotmentArea;
-        });
+//        return $allotmentAreaList->map(function ($allotmentArea) {
+//            $allotmentArea->active_beneficiaries = $this->countActiveBeneficiaries($allotmentArea);
+//            return $allotmentArea;
+//        });
 
     }
 

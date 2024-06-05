@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin\Payroll;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
+use App\Http\Resources\Admin\Payroll\ActiveBeneficiaryResource;
 use App\Http\Resources\Admin\Payroll\AllotmentResource;
 use App\Http\Resources\Admin\Payroll\PayrollInstallmentScheduleResource;
 use App\Http\Services\Admin\Beneficiary\BeneficiaryService;
@@ -66,7 +67,7 @@ class PayrollController extends Controller
         try {
             $beneficiaryList = $this->payrollService->getActiveBeneficiaries($allotment_id);
 //            return response()->json($beneficiaryList);
-            return BeneficiaryResource::collection($beneficiaryList)->additional([
+            return ActiveBeneficiaryResource::collection($beneficiaryList)->additional([
                 'success' => true,
                 'message' => $this->fetchSuccessMessage,
             ]);
