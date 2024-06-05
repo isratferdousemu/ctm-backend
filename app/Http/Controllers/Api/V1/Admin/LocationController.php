@@ -1044,8 +1044,9 @@ class LocationController extends Controller
             ->join('locations as parent2', 'locations.parent_id', '=', 'parent2.id') // Join with the parent table
             ->join('locations as parent1', 'parent2.parent_id', '=', 'parent1.id') // Join with the grandparent table
             ->select(
-                'locations.*',
-            )
+        'locations.*',
+        \DB::raw('(SELECT COUNT(*) FROM locations as children WHERE children.parent_id = locations.id) as children_count') // Subquery to count children
+    )
             ->when(str_contains($searchText, '%'), function ($q) {
                 $q->whereNull('locations.id');
             })
@@ -1508,40 +1509,43 @@ class LocationController extends Controller
      */
 
     public function getAllThanaPaginated(Request $request)
-    {
-        // Retrieve the query parameters
-        $searchText = $request->query('searchText');
-        $perPage = $request->query('perPage');
-        $page = $request->query('page');
+{
+    // Retrieve the query parameters
+    $searchText = $request->query('searchText');
+    $perPage = $request->query('perPage');
+    $page = $request->query('page');
 
-        $filterArrayNameEn = [];
-        $filterArrayNameBn = [];
-        $filterArrayCode = [];
+    $filterArrayNameEn = [];
+    $filterArrayNameBn = [];
+    $filterArrayCode = [];
 
-        if ($searchText) {
-            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
-        }
-        $thana = Location::query()
-            ->when(str_contains($searchText, '%'), function ($q) {
-                $q->whereNull('locations.id');
-            })
-            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
-                $query->where($filterArrayNameEn)
-                    ->orWhere($filterArrayNameBn)
-                    ->orWhere($filterArrayCode);
-            })
-            ->whereType($this->thana)
-            ->with('parent.parent.parent', 'locationType')
-            ->latest()
-            ->paginate($perPage, ['*'], 'page');
-        // return $thana;
-        return CityResource::collection($thana)->additional([
-            'success' => true,
-            'message' => $this->fetchSuccessMessage,
-        ]);
+    if ($searchText) {
+        $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayCode[] = ['code', 'LIKE', '%' . $searchText . '%'];
     }
+
+    $thana = Location::query()
+        ->select('locations.*', \DB::raw('(SELECT COUNT(*) FROM locations as children WHERE children.parent_id = locations.id) as children_count'))
+        ->when(str_contains($searchText, '%'), function ($q) {
+            $q->whereNull('locations.id');
+        })
+        ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+            $query->where($filterArrayNameEn)
+                ->orWhere($filterArrayNameBn)
+                ->orWhere($filterArrayCode);
+        })
+        ->whereType($this->thana)
+        ->with('parent.parent.parent', 'locationType')
+        ->latest()
+        ->paginate($perPage, ['*'], 'page', $page);
+
+    return CityResource::collection($thana)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
+
 
     /**
      * @OA\Get(
