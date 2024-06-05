@@ -91,8 +91,8 @@ class PayrollService
         $allotmentArea = Allotment::findOrfail($allotment_id);
         $query = Beneficiary::query();
         $query = $query->where('program_id', $allotmentArea->program_id)
-            ->where('financial_year_id', $allotmentArea->financial_year_id);
-//            ->where('status', 1);
+            ->where('financial_year_id', $allotmentArea->financial_year_id)
+            ->where('status', 1);
         if ($allotmentArea->city_corp_id)
             $query = $query->where('permanent_city_corp_id', $allotmentArea->city_corp_id);
         if ($allotmentArea->district_pourashava_id)
