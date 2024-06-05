@@ -6,7 +6,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Emergency\EmergencyAllotmentRequest;
 use App\Http\Resources\Admin\Emergency\EmergencyAllotmentResource;
-use App\Http\Services\Admin\Emergency\EmergencyAllotmentService;
+use App\Http\Services\Admin\Emergency\PayrollService;
 use App\Http\Traits\MessageTrait;
 use App\Models\EmergencyAllotment;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class EmergencyAllotmentController extends Controller
 
     protected $emergencyAllotmentService;
 
-    public function __construct(EmergencyAllotmentService $emergencyAllotmentService)
+    public function __construct(PayrollService $emergencyAllotmentService)
     {
         $this->emergencyAllotmentService = $emergencyAllotmentService;
     }
