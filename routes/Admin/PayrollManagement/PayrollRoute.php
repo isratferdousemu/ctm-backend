@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/payment-cycle-status-data', [PayrollDashboardController::class, 'paymentCycleStatusData']);
         Route::get('/monthly-approved-payroll', [PayrollDashboardController::class, 'monthlyApprovedPayroll']);
         Route::get('/program-wise-payroll', [PayrollDashboardController::class, 'programWisePayroll']);
+        Route::get('/total-payment-processor', [PayrollDashboardController::class, 'totalPaymentProcessor']);
+        Route::get('/program-wise-payment-cycle', [PayrollDashboardController::class, 'programWisePaymentCycle']);
 
 
     });
