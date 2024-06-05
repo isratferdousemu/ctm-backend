@@ -3,6 +3,7 @@
 namespace App\Http\Services\Admin\Payroll;
 
 use App\Models\Allotment;
+use App\Models\Beneficiary;
 use App\Models\PayrollInstallmentSetting;
 use Illuminate\Http\Request;
 
@@ -24,17 +25,6 @@ class PayrollService
             ->get();
     }
 
-    public function getAllotmentList()
-    {
-        return Allotment::query()
-            ->join('payroll_installment_schedules', 'payroll_installment_schedules.id', '=', 'payroll_installment_settings.installment_schedule_id')
-            ->select('payroll_installment_schedules.*')
-            ->where('payroll_installment_settings.program_id', $program_id)
-            ->where('payroll_installment_settings.financial_year_id', $financial_year_id)
-            ->orderBy('payroll_installment_schedules.installment_name')
-            ->get();
-    }
-
     /**
      * @param Request $request
      * @param bool $getAllRecords
@@ -47,8 +37,7 @@ class PayrollService
         $perPage = $request->query('perPage', 100);
 
         $query = Allotment::query()
-//            ->join('beneficiaries', 'allotments.location_id', '=', 'beneficiaries.permanent_location_id', 'left')
-            ->join('payrolls', 'allotments.id', '=', 'payrolls.allotment_id', 'left');
+            ->leftJoin('payrolls', 'allotments.id', '=', 'payrolls.allotment_id');
         $query = $query->where(function ($query) {
             return $query->where('payrolls.is_submitted', 0)
                 ->orWhere('payrolls.is_submitted', null);
@@ -64,8 +53,37 @@ class PayrollService
         $query = $query
             ->selectRaw('allotments.*, payrolls.allotment_id')
             ->with('upazila', 'cityCorporation', 'districtPourosova', 'location');
-        return $query->orderBy('location_id')->paginate($perPage);
+        $allotmentAreaList = $query->orderBy('location_id')->paginate($perPage);
 
+        return $allotmentAreaList->map(function ($allotmentArea) {
+            $allotmentArea->active_beneficiaries = $this->countActiveBeneficiaries($allotmentArea);
+            return $allotmentArea;
+        });
+
+    }
+
+    private function countActiveBeneficiaries(Allotment $allotmentArea): int
+    {
+        $query = Beneficiary::query();
+        $query = $query->where('program_id', $allotmentArea->program_id)
+            ->where('financial_year_id', $allotmentArea->financial_year_id);
+//            ->where('status', 1);
+        if ($allotmentArea->city_corp_id)
+            $query = $query->where('permanent_city_corp_id', $allotmentArea->city_corp_id);
+        if ($allotmentArea->district_pourashava_id)
+            $query = $query->where('permanent_district_pourashava_id', $allotmentArea->district_pourashava_id);
+        if ($allotmentArea->upazila_id)
+            $query = $query->where('permanent_upazila_id', $allotmentArea->upazila_id);
+        if ($allotmentArea->pourashava_id)
+            $query = $query->where('permanent_pourashava_id', $allotmentArea->pourashava_id);
+        if ($allotmentArea->thana_id)
+            $query = $query->where('permanent_thana_id', $allotmentArea->thana_id);
+        if ($allotmentArea->union_id)
+            $query = $query->where('permanent_union_id', $allotmentArea->union_id);
+        if ($allotmentArea->ward_id)
+            $query = $query->where('permanent_ward_id', $allotmentArea->ward_id);
+
+        return $query->count();
     }
 
     /**
