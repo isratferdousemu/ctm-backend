@@ -26,6 +26,8 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::get('participants/users/{type}', [TrainingParticipantController::class, 'getUsers']);
     Route::get('participants/circulars', [TrainingParticipantController::class, 'trainingCirculars']);
     Route::resource('participants', ParticipantController::class);
+    Route::post('token/update', [TimeSlotController::class, 'updateToken']);
+     Route::post('token/update', [TimeSlotController::class, 'updateToken']);
 
 
 });
