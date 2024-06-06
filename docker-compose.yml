@@ -28,7 +28,6 @@ services:
       #DB_DATABASE: ctm
       #DB_USERNAME: root
       #DB_PASSWORD: root
-    command: php artisan queue:work
     ports:
        - "80:80"
     networks:
