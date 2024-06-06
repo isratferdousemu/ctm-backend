@@ -74,3 +74,4 @@ Route::prefix('global')->group(function () {
 
 Route::get('/send-sms', [\App\Http\Controllers\Api\V1\Admin\UserController::class, 'sendSmsTest']);
 Route::get('/send-mail', [\App\Http\Controllers\Api\V1\Admin\UserController::class, 'sendMail']);
+Route::get('/payment/processor/area', [\App\Http\Controllers\Api\V1\Admin\GlobalController::class, 'paymentArea']);

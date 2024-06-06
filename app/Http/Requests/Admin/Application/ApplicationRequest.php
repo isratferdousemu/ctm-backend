@@ -65,11 +65,11 @@ class ApplicationRequest extends FormRequest
             'city_id'              =>'sometimes|exists:locations,id',
             'city_thana_id'              =>'sometimes|exists:locations,id',
             'district_pouro_id'              =>'sometimes|exists:locations,id',
-            // 'mobile'                =>'required|unique:applications,mobile',
-            'mobile' => [
-            'required',
-            new UniqueMobileNumber(),
-        ],
+            'mobile'                =>'required',
+        //     'mobile' => [
+        //     'required',
+        //     new UniqueMobileNumber(),
+        // ],
             'permanent_division_id'              =>'required|exists:locations,id',
             'permanent_district_id'              =>'required|exists:locations,id',
             'permanent_upazila'              =>'sometimes|exists:locations,id',
