@@ -2,10 +2,13 @@
 
 namespace App\Http\Services\Admin\Payroll;
 
+use App\Http\Requests\Admin\Payroll\SavePayrollRequest;
 use App\Models\Allotment;
 use App\Models\Beneficiary;
+use App\Models\Payroll;
 use App\Models\PayrollInstallmentSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PayrollService
 {
@@ -59,6 +62,10 @@ class PayrollService
         });
     }
 
+    /**
+     * @param Allotment $allotmentArea
+     * @return int
+     */
     private function countActiveBeneficiaries(Allotment $allotmentArea): int
     {
         $query = Beneficiary::query();
@@ -83,6 +90,11 @@ class PayrollService
         return $query->count();
     }
 
+    /**
+     * @param Request $request
+     * @param int $allotment_id
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
     public function getActiveBeneficiaries(Request $request, int $allotment_id): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $allotmentArea = Allotment::findOrfail($allotment_id);
@@ -107,6 +119,46 @@ class PayrollService
             $query = $query->where('permanent_ward_id', $allotmentArea->ward_id);
 
         return $query->with('permanentUpazila', 'permanentCityCorporation', 'permanentDistrictPourashava', 'permanentUnion', 'permanentPourashava', 'permanentWard')->paginate($perPage);
+    }
+
+    /**
+     * @param SavePayrollRequest $request
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function setBeneficiaries(SavePayrollRequest $request): mixed
+    {
+        DB::beginTransaction();
+        try {
+            $allotment = Allotment::findOrFail($request->post('allotment_id'));
+            $validatedPayrollData = $request->safe()->merge([
+                'total_beneficiaries' => $allotment->total_beneficiaries,
+                'sub_total_amount' => 1,
+                'total_charge' => 1,
+                'total_amount' => 1])
+                ->only([
+                    'program_id',
+                    'financial_year_id',
+                    'office_id',
+                    'allotment_id',
+                    'installment_schedule_id']);
+            $payroll = Payroll::create($validatedPayrollData);
+
+            $validatedPayrollDetailsData = $request->validated('payroll_details');
+            if ($validatedPayrollDetailsData) {
+                collect($validatedPayrollDetailsData)->map(function ($data) {
+//                    $data['charge'=>1,'total_amount'=>$data['amount']];
+//                    $data->total_amount = $data->charge + $data->amount;
+                    return $data;
+                })->toArray();
+                $payroll->payrollDeails()->createMany($validatedPayrollDetailsData);
+            }
+            DB::commit();
+            return $payroll;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**
