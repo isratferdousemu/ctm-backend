@@ -26,6 +26,7 @@ Route::prefix('v1')->group(function () {
     include "Admin/APIManager/APIManagerRoute.php";
     include "Admin/Training/trainingRoute.php";
     include "Admin/PayrollManagement/PayrollRoute.php";
+    include "Admin/Emergency/EmergencyManagementRoute.php";
 
 });
 
@@ -40,6 +41,7 @@ Route::prefix('v1')->group(function () {
     include "Mobile/Application/application-selection/applicationSelectionRoute.php";
     include "Mobile/Beneficiary/BeneficiaryRoute.php";
     include "Mobile/PayrollManagement/PayrollRoute.php";
+    include "Mobile/EmergencyManagement/EmergencyRoute.php";
 });
 
 

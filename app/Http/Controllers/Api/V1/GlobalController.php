@@ -11,6 +11,7 @@ use App\Models\MobileOperator;
 use App\Models\AllowanceProgram;
 use App\Http\Traits\MessageTrait;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\CommonResource;
 use App\Http\Services\Global\GlobalService;
 use App\Http\Resources\Admin\PMTScore\VariableResource;
 use App\Http\Resources\Admin\Systemconfig\Allowance\AllowanceResource;
@@ -20,18 +21,19 @@ class GlobalController extends Controller
     use MessageTrait;
     private $globalService;
 
-    public function __construct(GlobalService $globalService) {
-        $this->globalService= $globalService;
+    public function __construct(GlobalService $globalService)
+    {
+        $this->globalService = $globalService;
     }
 
     /**
-    * @OA\Get(
-    *     path="/global/program",
-    *      operationId="getAllProgram",
-    *     tags={"GLOBAL"},
-    *      summary="get all program",
-    *      description="get all program",
-    *      @OA\Response(
+     * @OA\Get(
+     *     path="/global/program",
+     *      operationId="getAllProgram",
+     *     tags={"GLOBAL"},
+     *      summary="get all program",
+     *      description="get all program",
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -54,23 +56,24 @@ class GlobalController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
-    public function getAllProgram(){
-        $data = AllowanceProgram::where('is_active',1)->with('lookup','addtionalfield.additional_field_value')->get();
+     * )
+     */
+    public function getAllProgram()
+    {
+        $data = AllowanceProgram::where('is_active', 1)->with('lookup', 'addtionalfield.additional_field_value')->get();
         return AllowanceResource::collection($data)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
         ]);
     }
-     /**
-    * @OA\Get(
-    *     path="/global/mobile-operator",
-    *      operationId="getAllMobileOperator",
-    *     tags={"GLOBAL"},
-    *      summary="get all mobile operator",
-    *      description="get all mobile operator",
-    *      @OA\Response(
+    /**
+     * @OA\Get(
+     *     path="/global/mobile-operator",
+     *      operationId="getAllMobileOperator",
+     *     tags={"GLOBAL"},
+     *      summary="get all mobile operator",
+     *      description="get all mobile operator",
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -93,21 +96,21 @@ class GlobalController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
-    public function getAllMobileOperator(){
+     * )
+     */
+    public function getAllMobileOperator()
+    {
         $data = MobileOperator::get();
         return $data;
-       
     }
     /**
-    * @OA\Get(
-    *     path="/global/pmt",
-    *      operationId="getAllPMTVariableWithSub",
-    *     tags={"GLOBAL"},
-    *      summary="get all PMT variable with sub-variable",
-    *      description="get all PMT variable with sub-variables",
-    *      @OA\Response(
+     * @OA\Get(
+     *     path="/global/pmt",
+     *      operationId="getAllPMTVariableWithSub",
+     *     tags={"GLOBAL"},
+     *      summary="get all PMT variable with sub-variable",
+     *      description="get all PMT variable with sub-variables",
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -130,14 +133,26 @@ class GlobalController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
-    public function getAllPMTVariableWithSub(){
+     * )
+     */
+    public function getAllPMTVariableWithSub()
+    {
         $data = Variable::whereParentId(null)->with('children')->get();
         return VariableResource::collection($data)->additional([
             'success' => true,
             'message' => $this->fetchSuccessMessage,
         ]);
+    }
+
+
+    public function dropdownList(Request $request)
+    {
+        $data = $this->globalService->getdropdownList($request);
+        return handleResponse($data, null);
+    }
+     public function paymentArea($location_type,$location_id)
+    {
+        
     }
     
 }

@@ -285,50 +285,88 @@ class SystemconfigController extends Controller
      *          )
     * )
     */
+     
     public function getAllallowancePaginated(Request $request){
-        // Retrieve the query parameters
-        $allowance = new AllowanceProgram;
+         $searchText = $request->query('search');
+        $perPage = $request->query('perPage');
+        $page = $request->get('page');
+        $sortBy = $request->query('sortBy') ?? 'name_en';
+        $orderBy = $request->query('orderBy') ?? 'asc';
 
-        if ($request->has('sortBy') && $request->has('sortDesc')) {
-            $sortBy = $request->query('sortBy');
 
-            $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayCode = [];
 
-            $allowance = $allowance->orderBy($sortBy, $sortDesc);
-        } else {
-            $allowance = $allowance->orderBy('name_en', 'asc');
-        }
+        if ($searchText) {
+            $filterArrayNameEn[] = ['name_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['name_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayCode[] = ['payment_cycle', 'LIKE', '%' . $searchText . '%'];
 
-        $searchValue = $request->input('search');
 
-        if($searchValue)
-        {
-            $allowance->when(str_contains($searchValue, '%'), function ($q) {
-            $q->whereId(null);
-        });
-        $allowance->where(function($query) use ($searchValue) {
-            $query->where('name_en', 'like', '%' . $searchValue . '%');
-            $query->orWhere('name_bn', 'like', '%' . $searchValue . '%');
-            $query->orWhere('payment_cycle', 'like', '%' . $searchValue . '%');
-        });
-
-        $itemsPerPage = 10;
-
-        if($request->has('itemsPerPage')) {
-           $itemsPerPage = $request->get('itemsPerPage');
-           return $allowance->paginate($itemsPerPage);
-        }
-        }else{
-            $itemsPerPage = 10;
-
-            if($request->has('itemsPerPage'))
-            {
-                $itemsPerPage = $request->get('itemsPerPage');
-
+            if ($searchText != null) {
+                $page = 1;
             }
-
-        return $allowance->paginate($itemsPerPage);
         }
+        $allowance = AllowanceProgram::query()
+            ->when(str_contains($searchText, '%'), function ($q) {
+                $q->whereId(null);
+            })
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayCode) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayCode);
+            })
+            // ->whereParentId(null)
+            // ->withCount('children')
+            // ->latest()
+            ->orderBy($sortBy, $orderBy)
+            ->paginate($perPage, ['*'], 'page', $page);
+             return $allowance;
+        // Retrieve the query parameters
+        // $allowance = new AllowanceProgram;
+
+        // if ($request->has('sortBy') && $request->has('sortDesc')) {
+        //     $sortBy = $request->query('sortBy');
+
+        //     $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+
+        //     $allowance = $allowance->orderBy($sortBy, $sortDesc);
+        // } else {
+        //     $allowance = $allowance->orderBy('name_en', 'asc');
+        // }
+
+        // $searchValue = $request->input('search');
+        
+
+        // if($searchValue)
+        // {
+        //     $allowance->when(str_contains($searchValue, '%'), function ($q) {
+        //     $q->whereId(null);
+        // });
+        // $allowance->where(function($query) use ($searchValue) {
+        //     $query->where('name_en', 'like', '%' . $searchValue . '%');
+        //     $query->orWhere('name_bn', 'like', '%' . $searchValue . '%');
+        //     $query->orWhere('payment_cycle', 'like', '%' . $searchValue . '%');
+        // });
+
+        // $itemsPerPage = 10;
+
+        // if($request->has('itemsPerPage')) {
+        //    $itemsPerPage = $request->get('itemsPerPage');
+        //    return $allowance->paginate($itemsPerPage);
+        // }
+        // }else{
+        //     $itemsPerPage = 10;
+
+        //     if($request->has('itemsPerPage'))
+        //     {
+        //         $itemsPerPage = $request->get('itemsPerPage');
+
+        //     }
+
+        // return $allowance->paginate($itemsPerPage);
+        // }
 
 
     }

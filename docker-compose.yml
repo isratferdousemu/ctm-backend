@@ -28,7 +28,6 @@ services:
       #DB_DATABASE: ctm
       #DB_USERNAME: root
       #DB_PASSWORD: root
-
     ports:
        - "80:80"
     networks:
@@ -36,6 +35,7 @@ services:
     
     volumes:
       - ctm-app-backend:/var/www/storage/app/public
+    
 
   # ctm-mysql services
   # mariadb:

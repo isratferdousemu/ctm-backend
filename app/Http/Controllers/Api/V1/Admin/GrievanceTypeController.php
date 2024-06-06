@@ -14,57 +14,54 @@ use App\Helpers\Helper;
 
 class GrievanceTypeController extends Controller
 {
-     use MessageTrait;
+    use MessageTrait;
     private $grievanceType;
-    public function __construct(GrievanceTypeService $grievanceTypeService ){
+    public function __construct(GrievanceTypeService $grievanceTypeService)
+    {
         $this->grievanceType = $grievanceTypeService;
-        
     }
     /**
      * Display a listing of the resource.
      */
     public function getAllTypePaginated(Request $request)
     {
-       
+
         // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
-    $status=$request->query('status');
-    if( $status=='active'){
-        $grievanceType = GrievanceType::where('status',1)->get();  
-    return GrievanceTypeResource::collection($grievanceType)->additional([
-    'success' => true,
-    'message' => $this->fetchDataSuccessMessage,
-]);
- 
-    }
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
+        $status = $request->query('status');
+        if ($status == 'active') {
+            $grievanceType = GrievanceType::where('status', 1)->get();
+            return GrievanceTypeResource::collection($grievanceType)->additional([
+                'success' => true,
+                'message' => $this->fetchDataSuccessMessage,
+            ]);
+        }
 
-    $filterArrayNameEn=[];
-    $filterArrayNameBn=[];
-    $filterArrayKeyWord=[];
+        $filterArrayNameEn = [];
+        $filterArrayNameBn = [];
+        $filterArrayKeyWord = [];
 
-    if ($searchText) {
-        $filterArrayNameEn[] = ['title_en', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayNameBn[] = ['title_bn', 'LIKE', '%' . $searchText . '%'];
-        $filterArrayKeyWord[] = ['status', 'LIKE', '%' . $searchText . '%'];
-    }
-     $grievanceType = GrievanceType::query()
-    ->where(function ($query) use ($filterArrayNameEn,$filterArrayNameBn,$filterArrayKeyWord) {
-        $query->where($filterArrayNameEn)
-              ->orWhere($filterArrayNameBn)
-              ->orWhere($filterArrayKeyWord);
-    })
-    ->orderBy('title_en', 'asc')
-    ->latest()
-    ->paginate($perPage, ['*'], 'page');
+        if ($searchText) {
+            $filterArrayNameEn[] = ['title_en', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayNameBn[] = ['title_bn', 'LIKE', '%' . $searchText . '%'];
+            $filterArrayKeyWord[] = ['status', 'LIKE', '%' . $searchText . '%'];
+        }
+        $grievanceType = GrievanceType::query()
+            ->where(function ($query) use ($filterArrayNameEn, $filterArrayNameBn, $filterArrayKeyWord) {
+                $query->where($filterArrayNameEn)
+                    ->orWhere($filterArrayNameBn)
+                    ->orWhere($filterArrayKeyWord);
+            })
+            ->orderBy('title_en', 'asc')
+            ->latest()
+            ->paginate($perPage, ['*'], 'page');
 
-    return GrievanceTypeResource::collection($grievanceType)->additional([
-        'success' => true,
-        'message' => $this->fetchDataSuccessMessage,
-    ]);
-        
-       
+        return GrievanceTypeResource::collection($grievanceType)->additional([
+            'success' => true,
+            'message' => $this->fetchDataSuccessMessage,
+        ]);
     }
 
     /**
@@ -85,7 +82,7 @@ class GrievanceTypeController extends Controller
             Helper::activityLogInsert($grievanceType, '', 'Grievance Type', 'Grievance Type Created !');
             return GrievanceTypeResource::make($grievanceType)->additional([
                 'success' => true,
-                'message' => $this->insertSuccessMessage, 
+                'message' => $this->insertSuccessMessage,
             ]);
         } catch (\Throwable $th) {
             return $this->sendError($th->getMessage(), [], 500);
@@ -106,11 +103,11 @@ class GrievanceTypeController extends Controller
     public function edit($id)
     {
         try {
-           $grievanceType = $this->grievanceType->edit($id);
-           return GrievanceTypeResource::make($grievanceType)->additional([
-               'sucess'=>true,
-               'message'=>$this->fetchDataSuccessMessage,
-           ]);
+            $grievanceType = $this->grievanceType->edit($id);
+            return GrievanceTypeResource::make($grievanceType)->additional([
+                'sucess' => true,
+                'message' => $this->fetchDataSuccessMessage,
+            ]);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -123,13 +120,13 @@ class GrievanceTypeController extends Controller
     {
         try {
             $beforeUpdate = GrievanceType::find($request->id);
-           $grievanceType = $this->grievanceType->update($request);
-           Helper::activityLogUpdate($grievanceType, $beforeUpdate, 'Grievance Type', 'Grievance Type Updated !');
+            $grievanceType = $this->grievanceType->update($request);
+            Helper::activityLogUpdate($grievanceType, $beforeUpdate, 'Grievance Type', 'Grievance Type Updated !');
 
-           return GrievanceTypeResource::make($grievanceType)->additional([
-               'sucess'=>true,
-               'message'=>$this->fetchDataSuccessMessage,
-           ]);
+            return GrievanceTypeResource::make($grievanceType)->additional([
+                'sucess' => true,
+                'message' => $this->fetchDataSuccessMessage,
+            ]);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -140,13 +137,13 @@ class GrievanceTypeController extends Controller
      */
     public function destroy($id)
     {
-       try {
-           $grievanceType = $this->grievanceType->destroy($id);
-           Helper::activityLogDelete($grievanceType, '', 'Grievance Type', 'Grievance Type Deleted !');
-           return GrievanceTypeResource::make($grievanceType)->additional([
-               'success'=>true,
-               'message'=>$this->deleteSuccessMessage,
-           ]);
+        try {
+            $grievanceType = $this->grievanceType->destroy($id);
+            Helper::activityLogDelete($grievanceType, '', 'Grievance Type', 'Grievance Type Deleted !');
+            return GrievanceTypeResource::make($grievanceType)->additional([
+                'success' => true,
+                'message' => $this->deleteSuccessMessage,
+            ]);
         } catch (\Throwable $th) {
             throw $th;
         }

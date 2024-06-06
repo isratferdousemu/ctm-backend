@@ -234,8 +234,12 @@ class GrievanceController extends Controller
 
     public function getAllGrievancePaginated(Request $request)
     {
-        // return  $data;
+        // return  $request;
         // Retrieve the query parameters
+        // return $request->query('end_date');
+
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
         $searchText = $request->query('searchText');
         $verification_number = $request->query('verification_number');
         $tracking_no = $request->query('tracking_no');
@@ -259,11 +263,20 @@ class GrievanceController extends Controller
         $perPage = $request->query('perPage');
         $page = $request->query('page');
         
+        $name = $request->query('name');
+        $mobile = $request->query('mobile');
+        $status = $request->query('status');
+        $dates = $request->query('dates');
+        
 
         $filterArrayTracking_no = [];
         $filterArrayGrievanceType = [];
         $filterArrayGrievanceSubject = [];
         $filterArrayName = [];
+        $filterArrayMobile = [];
+        $filterArrayDates = [];
+        $filterArrayStatus = [];
+
         $filterArrayVerificationNumber = [];
         $filterArrayLocationType = [];
         $filterArrayDivisionId = [];
@@ -278,12 +291,10 @@ class GrievanceController extends Controller
         $filterArraysubLocationType = [];
         $filterArrayWardId = [];
         $filterArrayDistrictWardId = [];
-        $filterArrayStatus = [];
+       
 
-        if ($searchText) {
-            $filterArrayName[] = ['name', 'LIKE', '%' . $searchText . '%'];
-            // $page = 1;
-
+        if ($name) {
+            $filterArrayName[] = ['name', 'LIKE', '%' . $name . '%'];
         }
 
         if ($verification_number) {
@@ -388,11 +399,10 @@ class GrievanceController extends Controller
         // return $filterArrayWardId;
         $query = Grievance::query();
         // $this->applyUserWiseGrievacne($query);
-        $query->when($searchText, function ($q) use ($filterArrayName) {
-            $q->where($filterArrayName)
-
-            ;
-        });
+        $query->when($name, function ($q) use ($filterArrayName) {
+            $q->where($filterArrayName);
+        });    
+  
 
         $query->when($verification_number, function ($q) use ($filterArrayVerificationNumber) {
             $q->where($filterArrayVerificationNumber);
@@ -450,6 +460,12 @@ class GrievanceController extends Controller
 
         if ($request->has('status')) {
             $query->where('status', $request->status);
+        }  
+         if ($request->has('mobile')) {
+            $query->where('mobile', $request->mobile);
+        }  
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
         if ($request->has('gender_id')) {
