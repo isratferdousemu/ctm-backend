@@ -7,9 +7,11 @@ use App\Models\AllowanceProgram;
 use App\Models\Location;
 use App\Models\Payroll;
 use App\Models\PayrollPaymentCycle;
+use App\Models\PayrollPaymentCycleDetail;
 use App\Models\PayrollPaymentProcessor;
 use App\Models\PayrolPaymentCycle;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 
 class PayrollDashboardController extends Controller
@@ -88,14 +90,14 @@ class PayrollDashboardController extends Controller
             $programs = AllowanceProgram::where('is_active', 1)
                 ->with(['payroll' => function ($query) use ($startDate, $endDate) {
                     $query->whereBetween('payment_cycle_generated_at', [$startDate, $endDate])
-                          ->where('is_payment_cycle_generated', 1);
+                        ->where('is_payment_cycle_generated', 1);
                 }])
                 ->get();
         } else {
             $programs = AllowanceProgram::where('is_active', 1)
                 ->with(['payroll' => function ($query) use ($currentYear) {
                     $query->whereYear('payment_cycle_generated_at', $currentYear)
-                          ->where('is_payment_cycle_generated', 1);
+                        ->where('is_payment_cycle_generated', 1);
                 }])
                 ->get();
         }
@@ -194,5 +196,91 @@ class PayrollDashboardController extends Controller
         return [
             'data' => $result
         ];
+    }
+
+    public function totalAmountDisbursed(Request $request)
+    {
+        $request->validate([
+            'program_id' => 'sometimes|integer',
+        ]);
+
+        $currentYear = now()->year;
+
+        $years = range($currentYear - 2, $currentYear + 2);
+
+        $programId = $request->input('program_id');
+
+        $paymentCycleDetailsQuery = PayrollPaymentCycleDetail::where('status', 'Completed')
+            ->whereIn(DB::raw('YEAR(created_at)'), $years)
+            ->select(
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('SUM(total_amount) as total_amount')
+            )
+            ->groupBy('year');
+
+        if ($programId) {
+            $paymentCycleDetailsQuery = $paymentCycleDetailsQuery->whereHas('payroll', function ($query) use ($programId) {
+                $query->where('program_id', $programId);
+            });
+        }
+
+        $paymentCycleDetails = $paymentCycleDetailsQuery->get();
+
+        return response()->json(['data' => $paymentCycleDetails]);
+    }
+
+    public function programBalance(Request $request)
+    {
+        $request->validate([
+            'program_id' => 'integer',
+        ]);
+
+        $programId = $request->input('program_id');
+        $programsQuery = AllowanceProgram::with('programAmount');
+
+        if ($programId) {
+            $programsQuery->where('id', $programId);
+        }
+        $programs = $programsQuery->get();
+        $totalAmount = 0;
+
+        foreach ($programs as $program) {
+            if ($program->programAmount) {
+                $totalAmount += $program->programAmount->amount ?? 0;
+            }
+        }
+
+        $paymentCycleDetails = PayrollPaymentCycleDetail::with('payroll')->where('status', 'Completed');
+        if ($programId) {
+            $paymentCycleDetails = $paymentCycleDetails->whereHas('payroll', function ($q) use ($programId) {
+                $q->where('program_id', $programId);
+            });
+        }
+        $paymentCycleDetails = $paymentCycleDetails->get();
+        $totalDisbursed = 0;
+
+        foreach ($paymentCycleDetails as $item) {
+            $totalDisbursed += $item['total_amount'] ?? 0;
+        }
+        $remaining = $totalAmount - $totalDisbursed;
+
+        $data = [
+            [
+                'name_en' => 'Total Amount',
+                'name_bn' => 'মোট পরিমাণ',
+                'count' => $totalAmount
+            ],
+            [
+                'name_en' => 'Total Disbursed',
+                'name_bn' => 'মোট বিতরণ',
+                'count' => $totalDisbursed
+            ],
+            [
+                'name_en' => 'Remaining',
+                'name_bn' => 'অবশিষ্ট',
+                'count' => $remaining
+            ]
+        ];
+        return response()->json(['data' => $data]);
     }
 }
