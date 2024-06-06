@@ -62,10 +62,10 @@ class PayrollController extends Controller
         }
     }
 
-    public function getActiveBeneficiaries($allotment_id): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function getActiveBeneficiaries(Request $request, $allotment_id): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         try {
-            $beneficiaryList = $this->payrollService->getActiveBeneficiaries($allotment_id);
+            $beneficiaryList = $this->payrollService->getActiveBeneficiaries($request, $allotment_id);
 //            return response()->json($beneficiaryList);
             return ActiveBeneficiaryResource::collection($beneficiaryList)->additional([
                 'success' => true,

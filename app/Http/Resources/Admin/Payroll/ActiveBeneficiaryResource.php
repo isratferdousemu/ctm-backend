@@ -29,6 +29,9 @@ class ActiveBeneficiaryResource extends JsonResource
             "spouse_name_en" => $this->spouse_name_en,
             "spouse_name_bn" => $this->spouse_name_bn,
             "beneficiary_address" => $this->beneficiary_address(),
+            "permanentDistrict" => LocationResource::make($this->whenLoaded('permanentDistrict')),
+            "upazilaCityDistPourosova" => $this->upazilaCityDistPourosova(),
+            "unionWardPourosova" => $this->unionWardPourosova(),
             "age" => $this->age,
             "date_of_birth" => $this->date_of_birth,
             "nationality" => $this->nationality,
@@ -38,19 +41,14 @@ class ActiveBeneficiaryResource extends JsonResource
             "marital_status" => $this->marital_status,
             "email" => $this->email,
             "mobile" => $this->mobile,
-            "permanent_district_id" => $this->permanent_district_id,
-            "permanentDistrict" => LocationResource::make($this->whenLoaded('permanentDistrict')),
-            "upazilaCityDistPourosova" => $this->upazilaCityDistPourosova(),
-            "unionWardPourosova" => $this->unionWardPourosova(),
-            "union_or_pourashava" => ($this->permanentUnion?->name_en ?: $this->permanentPourashava?->name_en),
             "account_name" => $this->account_name,
             "account_number" => $this->account_number,
             "account_owner" => $this->account_owner,
+            "account_type" => $this->account_type, //1=Bank;2=Mobile
             "bank_name" => $this->bank_name,
             "branch_name" => $this->branch_name,
             "monthly_allowance" => $this->monthly_allowance,
-            "status" => $this->status,
-            "score" => $this->score
+            "status" => $this->status
         ];
     }
 

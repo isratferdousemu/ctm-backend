@@ -53,13 +53,10 @@ class PayrollService
         $query = $query
             ->selectRaw('allotments.*, payrolls.allotment_id')
             ->with('upazila', 'cityCorporation', 'districtPourosova', 'location');
-         return $allotmentAreaList = $query->orderBy('location_id')->paginate($perPage);
-
-//        return $allotmentAreaList->map(function ($allotmentArea) {
-//            $allotmentArea->active_beneficiaries = $this->countActiveBeneficiaries($allotmentArea);
-//            return $allotmentArea;
-//        });
-
+        return $query->orderBy('location_id')->paginate($perPage)->through(function ($allotmentArea) {
+            $allotmentArea->active_beneficiaries = $this->countActiveBeneficiaries($allotmentArea);
+            return $allotmentArea;
+        });
     }
 
     private function countActiveBeneficiaries(Allotment $allotmentArea): int
@@ -86,9 +83,10 @@ class PayrollService
         return $query->count();
     }
 
-    public function getActiveBeneficiaries($allotment_id): \Illuminate\Database\Eloquent\Collection|array
+    public function getActiveBeneficiaries(Request $request, int $allotment_id): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $allotmentArea = Allotment::findOrfail($allotment_id);
+        $perPage = $request->query('perPage', 100);
         $query = Beneficiary::query();
         $query = $query->where('program_id', $allotmentArea->program_id)
             ->where('financial_year_id', $allotmentArea->financial_year_id)
@@ -108,7 +106,7 @@ class PayrollService
         if ($allotmentArea->ward_id)
             $query = $query->where('permanent_ward_id', $allotmentArea->ward_id);
 
-        return $query->get();
+        return $query->with('permanentUpazila', 'permanentCityCorporation', 'permanentDistrictPourashava', 'permanentUnion', 'permanentPourashava', 'permanentWard')->paginate($perPage);
     }
 
     /**
