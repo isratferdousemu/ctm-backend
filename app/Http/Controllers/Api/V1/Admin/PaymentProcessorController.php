@@ -27,12 +27,22 @@ class PaymentProcessorController extends Controller
                 $data = $data->where('name_en', 'LIKE', '%' . $request->search . '%')
                     ->orWhere('focal_phone_no', 'LIKE', '%' . $request->search . '%');
             });
-        return $this->sendResponse(
-            $data
-                ->paginate(request('perPage'))
-        );
-        // $data = $data->paginate($request->get('rows', 10));
 
+        // if ($request->filter != false) {
+        //     $data = $data->whereHas('ProcessorArea', function ($query) use ($request) {
+        //         $query->where('location_type', $request->location_type)
+        //             ->where('division_id', $request->division_id)
+        //             ->where('district_id', $request->district_id)
+        //             ->where('upazila_id', $request->upazila_id)
+        //             ->where('city_corp_id', $request->city_corp_id)
+        //             ->where('thana_id', $request->thana_id)
+        //             ->where('district_pourashava_id', $request->district_pouro_id)
+        //             ->where('union_id', $request->union_id);
+        //     });
+        // }
+
+        return $this->sendResponse($data->paginate(request('perPage')));
+        // $data = $data->paginate($request->get('rows', 10));
         // return CommonResource::collection($data);
     }
 
@@ -167,13 +177,8 @@ class PaymentProcessorController extends Controller
 
     public function getPaymentTrackingInfo(Request $request)
     {
-        // return $request->nid;
-
-        // return Beneficiary::with('payroll', 'PaymentCycle')
-        //     ->where('verification_number', $request->beneficiary_id)
-        //     ->first();
-
-            $Beneficiary = Beneficiary::with('program',
+        $Beneficiary = Beneficiary::with(
+            'program',
             'gender',
             'currentDivision',
             'currentDistrict',
@@ -193,19 +198,22 @@ class PaymentProcessorController extends Controller
             'permanentThana',
             'permanentUnion',
             'permanentWard',
-            'financialYear','payroll','PaymentCycle')
+            'financialYear',
+            'payroll',
+            'PaymentCycle'
+        )
             ->where('verification_number', $request->beneficiary_id)
             ->first();
 
-            if ($Beneficiary) {
-                return (new PaymentTrackingResource($Beneficiary))->additional([
-                    'success' => true,
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Beneficiary not found'
-                ], 404);
-            }
+        if ($Beneficiary) {
+            return (new PaymentTrackingResource($Beneficiary))->additional([
+                'success' => true,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Beneficiary not found'
+            ], 404);
+        }
     }
 }

@@ -733,6 +733,14 @@ class PermissionSeeder extends Seeder
                     ["id" => 274, "name" => "payroll-payment-tracking", "page_url" => "/payroll-management/payment-tracking", "parent_page" => 1],
                 ]
             ],
+            [
+                'module_name' => $this->modulePermissionPayrollManagement,
+                'sub_module_name' => $this->subPayrollDashboard,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 275, "name" => "payroll-dashboard-show", "page_url" => "/payroll-management/dashboard", "parent_page" => 1],
+                ]
+            ],
 
         ];
 

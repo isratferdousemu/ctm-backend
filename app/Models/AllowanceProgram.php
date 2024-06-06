@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\AllowanceProgram
@@ -83,7 +85,7 @@ class AllowanceProgram extends Model
     public function applications()
     {
         return $this->hasMany(Application::class, 'program_id');
-    }  
+    }
      public function grievances()
     {
         return $this->hasMany(Grievance::class, 'program_id');
@@ -92,6 +94,21 @@ class AllowanceProgram extends Model
     public function beneficiaries()
     {
         return $this->hasMany(Beneficiary::class, 'program_id');
+    }
+
+    /**
+     * Get all of the payroll for the AllowanceProgram
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function payroll(): HasMany
+    {
+        return $this->hasMany(Payroll::class, 'program_id', 'id');
+    }
+
+    public function programAmount(): HasOne
+    {
+        return $this->hasOne(AllowanceProgramAmount::class, 'allowance_program_id', 'id');
     }
 
 
