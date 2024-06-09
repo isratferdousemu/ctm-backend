@@ -28,18 +28,34 @@ class PaymentProcessorController extends Controller
                     ->orWhere('focal_phone_no', 'LIKE', '%' . $request->search . '%');
             });
 
-        // if ($request->filter != false) {
-        //     $data = $data->whereHas('ProcessorArea', function ($query) use ($request) {
-        //         $query->where('location_type', $request->location_type)
-        //             ->where('division_id', $request->division_id)
-        //             ->where('district_id', $request->district_id)
-        //             ->where('upazila_id', $request->upazila_id)
-        //             ->where('city_corp_id', $request->city_corp_id)
-        //             ->where('thana_id', $request->thana_id)
-        //             ->where('district_pourashava_id', $request->district_pouro_id)
-        //             ->where('union_id', $request->union_id);
-        //     });
-        // }
+            // if ($request->filter !== false) {
+                $data->whereHas('ProcessorArea', function ($query) use ($request) {
+                    if ($request->location_type) {
+                        $query->where('location_type', $request->location_type);
+                    }
+                    if ($request->division_id) {
+                        $query->where('division_id', $request->division_id);
+                    }
+                    if ($request->district_id) {
+                        $query->where('district_id', $request->district_id);
+                    }
+                    if ($request->upazila_id) {
+                        $query->where('upazila_id', $request->upazila_id);
+                    }
+                    if ($request->city_corp_id) {
+                        $query->where('city_corp_id', $request->city_corp_id);
+                    }
+                    if ($request->thana_id) {
+                        $query->where('thana_id', $request->thana_id);
+                    }
+                    if ($request->district_pouro_id) {
+                        $query->where('district_pourashava_id', $request->district_pouro_id);
+                    }
+                    if ($request->union_id) {
+                        $query->where('union_id', $request->union_id);
+                    }
+                });
+            // }
 
         return $this->sendResponse($data->paginate(request('perPage')));
         // $data = $data->paginate($request->get('rows', 10));

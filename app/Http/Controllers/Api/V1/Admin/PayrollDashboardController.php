@@ -46,27 +46,40 @@ class PayrollDashboardController extends Controller
         $endDate = $request->end_date;
         $currentYear = Carbon::now()->year;
 
-        if ($startDate && $endDate) {
-            $programs = AllowanceProgram::where('is_active', 1)
-                ->with(['payroll' => function ($query) use ($startDate, $endDate) {
+        // if ($startDate && $endDate) {
+        //     $programs = AllowanceProgram::where('is_active', 1)
+        //         ->with(['payroll' => function ($query) use ($currentYear) {
+        //             $query->with(['payrollDetails' => function ($query) use ($currentYear) {
+        //                 $query->whereYear('created_at', $currentYear);
+        //             }]);
+        //         }])
+        //         ->get();
+        // } else {
+        //     $programs = AllowanceProgram::where('is_active', 1)
+        //         ->with(['payroll' => function ($query) use ($currentYear) {
+        //             $query->with(['payrollDetails' => function ($query) use ($currentYear) {
+        //                 $query->whereYear('created_at', $currentYear);
+        //             }]);
+        //         }])
+        //         ->get();
+        // }
+
+        $programs = AllowanceProgram::where('is_active', 1)
+            ->with(['payroll' => function ($query) use ($startDate, $endDate, $currentYear) {
+                if ($startDate && $endDate) {
                     $query->whereBetween('created_at', [$startDate, $endDate]);
-                }])
-                ->get();
-        } else {
-            $programs = AllowanceProgram::where('is_active', 1)
-                ->with(['payroll' => function ($query) use ($currentYear) {
+                } else {
                     $query->whereYear('created_at', $currentYear);
-                }])
-                ->get();
-        }
+                }
+                $query->with('payrollDetails');
+            }])
+            ->get();
 
+        $programWisePayrollData = $programs->map(function ($program) {
 
-        $totalPayrolls = $programs->sum(function ($program) {
-            return $program->payroll->count();
-        });
-
-        $programWisePayrollData = $programs->map(function ($program) use ($totalPayrolls) {
-            $payrollCount = $program->payroll->count();
+            $payrollCount = $program->payroll->sum(function ($payroll) {
+                return $payroll->payrollDetails->count();
+            });
 
             return [
                 'name_en' => $program->name_en,
@@ -74,6 +87,8 @@ class PayrollDashboardController extends Controller
                 'payroll_count' => $payrollCount,
             ];
         });
+
+
 
         return response()->json([
             'data' => $programWisePayrollData
@@ -122,7 +137,7 @@ class PayrollDashboardController extends Controller
         ]);
     }
 
-    public function monthlyApprovedPayroll(Request $request)
+     public function monthlyApprovedPayroll(Request $request)
     {
         try {
             $currentDate = now();
@@ -137,6 +152,15 @@ class PayrollDashboardController extends Controller
                 ->groupBy('year', 'month')
                 ->orderBy('year', 'asc')
                 ->orderBy('month', 'asc');
+
+                // $query = Payroll::selectRaw('YEAR(payrolls.created_at) as year, MONTH(payrolls.created_at) as month, COUNT(DISTINCT payrolls.id) as count')
+                // ->join('payroll_details', 'payroll_details.payroll_id', '=', 'payrolls.id')
+                // ->where('payrolls.is_approved', 1)
+                // ->whereYear('payrolls.created_at', $currentYear)
+                // ->groupBy('year', 'month')
+                // ->orderBy('year', 'asc')
+                // ->orderBy('month', 'asc');
+
 
             if ($programId) {
                 $query->where('program_id', $programId);
@@ -170,6 +194,67 @@ class PayrollDashboardController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    // public function monthlyApprovedPayroll(Request $request) {
+    //     try {
+    //         $currentDate = now();
+    //         $currentYear = $currentDate->year;
+
+    //         // Define the date range from June of the current year to July of the next year
+    //         $startDate = Carbon::create($currentYear, 6, 1); // June 1 of the current year
+    //         $endDate = Carbon::create($currentYear + 1, 7, 31); // July 31 of the next year
+
+    //         $programId = $request->input('program_id');
+
+    //         $query = Payroll::selectRaw('YEAR(payrolls.created_at) as year, MONTH(payrolls.created_at) as month, COUNT(DISTINCT payrolls.id) as count')
+    //             ->join('payroll_details', 'payroll_details.payroll_id', '=', 'payrolls.id')
+    //             ->where('is_approved', 1)
+    //             ->whereBetween('created_at', [$startDate, $endDate])
+    //             ->groupBy('year', 'month')
+    //             ->orderBy('year', 'asc')
+    //             ->orderBy('month', 'asc');
+
+    //         if ($programId) {
+    //             $query->where('program_id', $programId);
+    //         }
+
+    //         $results = $query->get();
+
+    //         // Initialize the collection for monthly payroll count
+    //         $monthlyPayrollCount = collect();
+    //         for ($i = 6; $i <= 12; $i++) {
+    //             $monthlyPayrollCount->push([
+    //                 'year' => $currentYear,
+    //                 'month' => $i,
+    //                 'count' => 0,
+    //                 'month_name' => Carbon::create()->month($i)->format('F')
+    //             ]);
+    //         }
+    //         for ($i = 1; $i <= 7; $i++) {
+    //             $monthlyPayrollCount->push([
+    //                 'year' => $currentYear + 1,
+    //                 'month' => $i,
+    //                 'count' => 0,
+    //                 'month_name' => Carbon::create()->month($i)->format('F')
+    //             ]);
+    //         }
+
+    //         $results->each(function ($item) use ($monthlyPayrollCount) {
+    //             $monthlyPayrollCount->transform(function ($monthData) use ($item) {
+    //                 if ($monthData['year'] == $item->year && $monthData['month'] == $item->month) {
+    //                     $monthData['count'] = $item->count;
+    //                 }
+    //                 return $monthData;
+    //             });
+    //         });
+
+    //         return [
+    //             'data' => $monthlyPayrollCount
+    //         ];
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
 
     public function totalPaymentProcessor()
     {
