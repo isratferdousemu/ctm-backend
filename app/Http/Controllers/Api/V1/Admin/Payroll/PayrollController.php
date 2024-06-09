@@ -32,6 +32,24 @@ class PayrollController extends Controller
     }
 
     /**
+     * @param $program_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProgramInfo($program_id): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $program = $this->payrollService->getProgramInfo($program_id);
+            return response()->json([
+                'data' => $program,
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
      * @param int $program_id
      * @param int $financial_year_id
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
@@ -100,6 +118,20 @@ class PayrollController extends Controller
                 'success' => true,
                 'message' => $this->fetchSuccessMessage,
             ], ResponseAlias::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    public function previewBeneficiaries(Request $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        try {
+            $beneficiaryList = $this->payrollService->previewBeneficiaries($request);
+//            return response()->json($beneficiaryList);
+            return \App\Http\Resources\Admin\Payroll\BeneficiaryResource::collection($beneficiaryList)->additional([
+                'success' => true,
+                'message' => $this->fetchSuccessMessage,
+            ]);
         } catch (\Throwable $th) {
             return $this->sendError($th->getMessage(), [], 500);
         }

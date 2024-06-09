@@ -4,6 +4,10 @@ namespace App\Http\Services\Admin\Payroll;
 
 use App\Http\Requests\Admin\Payroll\SavePayrollRequest;
 use App\Models\Allotment;
+use App\Models\AllowanceProgram;
+use App\Models\AllowanceProgramAdditionalField;
+use App\Models\AllowanceProgramAge;
+use App\Models\AllowanceProgramAmount;
 use App\Models\Beneficiary;
 use App\Models\Payroll;
 use App\Models\PayrollInstallmentSetting;
@@ -14,6 +18,24 @@ use Illuminate\Support\Facades\DB;
 
 class PayrollService
 {
+
+    /**
+     * @param $program_id
+     * @return array
+     */
+    public function getProgramInfo($program_id)
+    {
+        $allowance = AllowanceProgram::findOrFail($program_id);
+        $allowance_age = AllowanceProgramAge::where('allowance_program_id', $program_id)->with('gender')->get();
+        $allowance_amount = AllowanceProgramAmount::where('allowance_program_id', $program_id)->with('type')->get();
+
+        return [
+            'allowance_program' => $allowance,
+            'age_limit_wise_allowance' => $allowance_age,
+            'type_wise_allowance' => $allowance_amount
+        ];
+    }
+
     /**
      * @param $program_id
      * @param $financial_year_id
@@ -207,6 +229,46 @@ class PayrollService
             DB::rollBack();
             throw $th;
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function previewBeneficiaries(Request $request): mixed
+    {
+        $program_id = $request->query('program_id');
+        $financial_year_id = $request->query('financial_year_id');
+        $installment_schedule_id = $request->query('installment_schedule_id');
+        $perPage = $request->query('perPage', 100);
+
+        $query = Beneficiary::query()
+            ->join('payroll_details', 'beneficiaries.id', '=', 'payroll_details.beneficiary_id')
+            ->join('payrolls', 'payrolls.id', '=', 'payroll_details.payroll_id')
+            ->join('allotments', 'allotments.id', '=', 'payrolls.allotment_id');
+        $query = $query->where(function ($query) {
+            return $query->where('payrolls.is_submitted', 0)
+                ->orWhere('payrolls.is_submitted', null);
+        });
+
+        $query = $query->where('payrolls.program_id', $program_id);
+        $query = $query->where('payrolls.financial_year_id', $financial_year_id);
+        $query = $query->where('payrolls.installment_schedule_id', $installment_schedule_id);
+
+        $query = $this->applyLocationFilter($query, $request);
+
+        $query = $query
+            ->selectRaw('beneficiaries.*, payroll_details.amount, payroll_details.charge, payroll_details.total_amount')
+            ->with('permanentCityCorporation', 'permanentDistrictPourashava', 'permanentUpazila', 'permanentPourashava', 'permanentUnion', 'permanentWard');
+        return $query->orderBy('beneficiaries.permanent_city_corp_id')
+            ->orderBy('beneficiaries.permanent_district_pourashava_id')
+            ->orderBy('beneficiaries.permanent_upazila_id')
+            ->orderBy('beneficiaries.permanent_pourashava_id')
+            ->orderBy('beneficiaries.permanent_thana_id')
+            ->orderBy('beneficiaries.permanent_union_id')
+            ->orderBy('beneficiaries.permanent_ward_id')
+//            ->toSql();
+            ->paginate($perPage);
     }
 
     /**

@@ -35,10 +35,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/program-balance', [PayrollDashboardController::class, 'programBalance']);
 
         // for payroll create
+        Route::get('/get-program-info/{program_id}', [PayrollController::class, 'getProgramInfo'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
         Route::get('/get-active-installments/{program_id}/{financial_year_id}', [PayrollController::class, 'getActiveInstallments'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
         Route::get('/get-allotment-area-list', [PayrollController::class, 'getAllotmentAreaList'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
         Route::get('/get-active-beneficiaries/{allotment_id}', [PayrollController::class, 'getActiveBeneficiaries'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
         Route::post('/set-beneficiaries', [PayrollController::class, 'setBeneficiaries'])->middleware(['role_or_permission:super-admin|payroll-create']);
+        Route::get('/preview-beneficiaries', [PayrollController::class, 'previewBeneficiaries'])->middleware(['role_or_permission:super-admin|payroll-create']);
         Route::post('/submit-payroll', [PayrollController::class, 'submitPayroll'])->middleware(['role_or_permission:super-admin|payroll-create']);
     });
 
