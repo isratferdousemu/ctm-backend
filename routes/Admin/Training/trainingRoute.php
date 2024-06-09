@@ -21,11 +21,15 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::get('program-circulars', [TrainingProgramController::class, 'circulars']);
     Route::get('program-trainers', [TrainingProgramController::class, 'trainers']);
     Route::get('program-time-slots', [TrainingProgramController::class, 'timeSlots']);
+    Route::get('programs/sync-data/{program}', [TrainingProgramController::class, 'syncData']);
+    Route::get('programs-test', [TrainingProgramController::class, 'testKobo']);
 
     Route::post('participants/external', [TrainingParticipantController::class, 'storeExternalParticipant']);
     Route::get('participants/users/{type}', [TrainingParticipantController::class, 'getUsers']);
     Route::get('participants/circulars', [TrainingParticipantController::class, 'trainingCirculars']);
     Route::resource('participants', ParticipantController::class);
+    Route::post('token/update', [TimeSlotController::class, 'updateToken']);
+     Route::post('token/update', [TimeSlotController::class, 'updateToken']);
 
 
 });

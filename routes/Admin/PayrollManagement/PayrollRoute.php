@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\PaymentProcessorController;
+use App\Http\Controllers\Api\V1\Admin\PayrollDashboardController;
 use App\Http\Controllers\Api\V1\Admin\Payroll\PayrollController;
 use App\Http\Controllers\Api\V1\Admin\PayrollSettingController;
 
@@ -23,6 +24,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('/payment-processor', PaymentProcessorController::class);
         // beneficiary tracking information
         Route::post('/payment-tracking-info', [PaymentProcessorController::class, 'getPaymentTrackingInfo']);
+        // dashboard
+        Route::get('/payroll-status-data', [PayrollDashboardController::class, 'payrollData']);
+        Route::get('/payment-cycle-status-data', [PayrollDashboardController::class, 'paymentCycleStatusData']);
+        Route::get('/monthly-approved-payroll', [PayrollDashboardController::class, 'monthlyApprovedPayroll']);
+        Route::get('/program-wise-payroll', [PayrollDashboardController::class, 'programWisePayroll']);
+        Route::get('/total-payment-processor', [PayrollDashboardController::class, 'totalPaymentProcessor']);
+        Route::get('/program-wise-payment-cycle', [PayrollDashboardController::class, 'programWisePaymentCycle']);
+        Route::get('/total-amount-disbursed', [PayrollDashboardController::class, 'totalAmountDisbursed']);
+        Route::get('/program-balance', [PayrollDashboardController::class, 'programBalance']);
 
         // for payroll create
         Route::get('/get-active-installments/{program_id}/{financial_year_id}', [PayrollController::class, 'getActiveInstallments'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);

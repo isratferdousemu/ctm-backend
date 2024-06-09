@@ -40,29 +40,6 @@ Route::middleware(['auth:sanctum', 'language'])->group(function () {
         Route::get('/getBeneficiaryShiftingListPdf', [BeneficiaryController::class, 'getBeneficiaryShiftingListPdf'])->middleware(['role_or_permission:super-admin|beneficiaryShifting-view']);
     });
 
-    Route::prefix('admin/beneficiary-dashboard')->group(function () {
-        Route::get('/getTotalBeneficiaries', [BeneficiaryDashboardController::class, 'getTotalBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
-        Route::get('/getLocationWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getLocationWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
-        Route::get('/getGenderWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getGenderWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
-        Route::get('/getYearWiseWaitingBeneficiaries', [BeneficiaryDashboardController::class, 'getYearWiseWaitingBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
-        Route::get('/getProgramWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getProgramWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
-        Route::get('/getAgeWiseBeneficiaries', [BeneficiaryDashboardController::class, 'getAgeWiseBeneficiaries'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
-        Route::get('/getYearWiseProgramShifting', [BeneficiaryDashboardController::class, 'getYearWiseProgramShifting'])->middleware(['role_or_permission:super-admin|beneficiaryDashboard-view']);
-    });
-
-    Route::prefix('admin/committee')->group(function () {
-        Route::post('/add', [CommitteeController::class, 'add'])->middleware(['role_or_permission:super-admin|committee-create']);
-        Route::get('/list', [CommitteeController::class, 'list'])->middleware(['role_or_permission:super-admin|committee-view']);
-        Route::get('/show/{id}', [CommitteeController::class, 'show'])->middleware(['role_or_permission:super-admin|committee-view']);
-        Route::put('/update/{id}', [CommitteeController::class, 'update'])->middleware(['role_or_permission:super-admin|committee-edit']);
-        Route::delete('/delete/{id}', [CommitteeController::class, 'delete'])->middleware(['role_or_permission:super-admin|committee-delete']);
-        Route::get('/{typeId}/{locationId}', [LocationController::class, 'getCommitteesByLocation'])/*->middleware(['role_or_permission:super-admin|demo-graphic-view'])*/;
-        // report
-        Route::get('/getCommitteeListPdf', [CommitteeController::class, 'getCommitteeListPdf'])->middleware(['role_or_permission:super-admin|committee-view']);
-    });
-
-    Route::apiResource('admin/committee-permissions', CommitteePermissionController::class)
-        ->only('index', 'store', 'destroy');
 });
 
 
