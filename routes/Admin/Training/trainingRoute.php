@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::get('participants/circulars', [TrainingParticipantController::class, 'trainingCirculars']);
     Route::resource('participants', ParticipantController::class);
     Route::post('token/update', [TimeSlotController::class, 'updateToken']);
-     Route::post('token/update', [TimeSlotController::class, 'updateToken']);
+    Route::get('kobo_token', [TimeSlotController::class, 'getToken']);
 
 
 });
