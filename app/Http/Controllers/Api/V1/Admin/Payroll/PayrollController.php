@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin\Payroll;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Payroll\SavePayrollRequest;
+use App\Http\Requests\Admin\Payroll\SubmitPayrollRequest;
 use App\Http\Resources\Admin\Beneficiary\BeneficiaryResource;
 use App\Http\Resources\Admin\Payroll\ActiveBeneficiaryResource;
 use App\Http\Resources\Admin\Payroll\AllotmentResource;
@@ -123,6 +124,10 @@ class PayrollController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function previewBeneficiaries(Request $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         try {
@@ -132,6 +137,23 @@ class PayrollController extends Controller
                 'success' => true,
                 'message' => $this->fetchSuccessMessage,
             ]);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     * @param SubmitPayrollRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function submitPayroll(SubmitPayrollRequest $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $this->payrollService->submitPayroll($request);
+            return response()->json([
+                'success' => true,
+                'message' => $this->updateSuccessMessage,
+            ], ResponseAlias::HTTP_OK);
         } catch (\Throwable $th) {
             return $this->sendError($th->getMessage(), [], 500);
         }

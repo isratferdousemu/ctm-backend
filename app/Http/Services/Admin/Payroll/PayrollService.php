@@ -3,6 +3,7 @@
 namespace App\Http\Services\Admin\Payroll;
 
 use App\Http\Requests\Admin\Payroll\SavePayrollRequest;
+use App\Http\Requests\Admin\Payroll\SubmitPayrollRequest;
 use App\Models\Allotment;
 use App\Models\AllowanceProgram;
 use App\Models\AllowanceProgramAdditionalField;
@@ -10,6 +11,7 @@ use App\Models\AllowanceProgramAge;
 use App\Models\AllowanceProgramAmount;
 use App\Models\Beneficiary;
 use App\Models\Payroll;
+use App\Models\PayrollDetail;
 use App\Models\PayrollInstallmentSetting;
 use App\Models\PayrollPaymentProcessor;
 use Arr;
@@ -78,7 +80,7 @@ class PayrollService
         $query = $this->applyLocationFilter($query, $request);
 
         $query = $query
-            ->selectRaw('allotments.*, payrolls.allotment_id')
+            ->selectRaw('allotments.*, payrolls.allotment_id, payrolls.total_beneficiaries as saved_beneficiaries')
             ->with('upazila', 'cityCorporation', 'districtPourosova', 'location');
         return $query->orderBy('location_id')->paginate($perPage)->through(function ($allotmentArea) {
             $allotmentArea->active_beneficiaries = $this->countActiveBeneficiaries($allotmentArea);
@@ -258,7 +260,7 @@ class PayrollService
         $query = $this->applyLocationFilter($query, $request);
 
         $query = $query
-            ->selectRaw('beneficiaries.*, payroll_details.amount, payroll_details.charge, payroll_details.total_amount')
+            ->selectRaw('beneficiaries.*, payroll_details.payroll_id, payroll_details.id as payroll_detail_id, payroll_details.amount, payroll_details.charge, payroll_details.total_amount')
             ->with('permanentCityCorporation', 'permanentDistrictPourashava', 'permanentUpazila', 'permanentPourashava', 'permanentUnion', 'permanentWard');
         return $query->orderBy('beneficiaries.permanent_city_corp_id')
             ->orderBy('beneficiaries.permanent_district_pourashava_id')
@@ -269,6 +271,33 @@ class PayrollService
             ->orderBy('beneficiaries.permanent_ward_id')
 //            ->toSql();
             ->paginate($perPage);
+    }
+
+    /**
+     * @param SubmitPayrollRequest $request
+     * @return bool
+     * @throws \Throwable
+     */
+    public function submitPayroll(SubmitPayrollRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $requestData = $request->validated();
+            $return = false;
+            if ($requestData) {
+                $payroll_ids = array_unique(Arr::pluck($requestData['payroll_details'], 'payroll_id'));
+                $user = auth()->user();
+                $dataToBeUpdated = ['is_submitted' => 1, 'submitted_by_id' => $user?->id, 'submitted_at' => now()];
+                Payroll::query()->whereIn('id', $payroll_ids)->update($dataToBeUpdated);
+//                PayrollDetail::query()->whereIn('payroll_id', $payroll_ids)->update($dataToBeUpdated);
+                $return = true;
+            }
+            DB::commit();
+            return $return;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**

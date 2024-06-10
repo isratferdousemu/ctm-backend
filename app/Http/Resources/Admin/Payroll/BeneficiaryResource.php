@@ -48,6 +48,8 @@ class BeneficiaryResource extends JsonResource
             "account_type" => $this->account_type, //1=Bank;2=Mobile
             "bank_name" => $this->bank_name,
             "branch_name" => $this->branch_name,
+            "payroll_id" => $this->payroll_id,
+            "payroll_detail_id" => $this->payroll_detail_id,
             "amount" => $this->amount,
             "charge" => $this->charge,
             "total_amount" => $this->total_amount,
