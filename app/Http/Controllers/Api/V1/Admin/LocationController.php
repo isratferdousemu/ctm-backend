@@ -3543,7 +3543,9 @@ class LocationController extends Controller
     public function getCommitteesByLocation($typeId, $locationId)
     {
         return $this->sendResponse(Committee::whereCommitteeType($typeId)
-            ->whereLocationId($locationId)
+            ->when($locationId != -1, function ($q) use ($locationId) {
+                $q->whereLocationId($locationId);
+            })
             ->get()
         );
 

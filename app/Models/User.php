@@ -147,7 +147,7 @@ class User extends Authenticatable
 
     public function getPhotoUrlAttribute()
     {
-        $file = $this->attributes['photo'];
+        $file = $this->attributes['photo'] ?? null;
         if ($file)
             $url = asset($file);
         else

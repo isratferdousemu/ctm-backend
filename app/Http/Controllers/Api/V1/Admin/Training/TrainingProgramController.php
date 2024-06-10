@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\V1\Admin\Training;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Training\TrainingProgramRequest;
+use App\Http\Services\Admin\Training\KoboService;
 use App\Http\Services\Admin\Training\ProgramService;
+use App\Http\Traits\RoleTrait;
 use App\Models\TimeSlot;
 use App\Models\TrainingProgram;
 use App\Models\Trainer;
@@ -13,12 +15,13 @@ use App\Models\TrainingCircular;
 use App\Models\TrainingProgramParticipant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class TrainingProgramController extends Controller
-
 {
+    use RoleTrait;
 
-    public function __construct(public ProgramService $programService)
+    public function __construct(public ProgramService $programService, public KoboService $koboService)
     {
     }
 
@@ -71,6 +74,19 @@ class TrainingProgramController extends Controller
         });
 
 
+        if (\Auth::user()->hasRole($this->participant)) {
+            $query->whereHas('participants', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
+        }
+
+        if (\Auth::user()->hasRole($this->trainer)) {
+            $query->whereHas('trainers', function ($q) {
+                $q->where('trainer_id', auth()->id());
+            });
+        }
+
+
         $query->with('modules', 'trainingCircular.trainingType', 'trainers', 'statusName');
 
         $query->latest();
@@ -78,6 +94,60 @@ class TrainingProgramController extends Controller
         return $this->sendResponse($query
             ->paginate(request('perPage'))
         );
+
+
+
+
+    }
+
+
+    public function testKobo(TrainingProgram $program)
+    {
+        $token = env('KOBO_API_TOKEN');
+        $formId = "a8dzS9mTqe7onKLtg7GJoC";
+        $formId = "aoh7beyhUxZ2yAMCJjgCwW";
+
+        $endpoint = 'assets/' . $formId . '/data?format=json';
+        $endpoint = 'assets/' . $formId . '?format=json';
+//        $endpoint = 'assets/' . $formId . '?.json';
+
+
+        $examResults = $this->koboService->getData($endpoint, $token);
+
+        return $examResults;
+        dd($examResults['content']['survey']);
+//        dd($examResults['summary']['labels']);
+
+    }
+
+    public function syncData(TrainingProgram $program)
+    {
+        if (!$program->form_id && !$program->training_form_id) {
+            throw new HttpException(400, "No data to sync");
+        }
+
+        DB::beginTransaction();
+        try {
+            $token = env('KOBO_API_TOKEN');
+            if ($program->form_id) {
+                $this->koboService->insertQuestion($program, $token);
+                $this->koboService->insertAnswers($program, $token);
+            }
+
+            if ($program->training_form_id) {
+                $this->koboService->insertTrainingPaper($program, $token);
+                $this->koboService->insertTrainerRatingAnswers($program, $token);
+            }
+            DB::commit();
+            return $this->sendResponse($program, 'Data synced successfully');
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
+
+
+
+
     }
 
     /**
@@ -98,27 +168,6 @@ class TrainingProgramController extends Controller
         return $this->sendResponse($program, 'Training Program created successfully');
     }
 
-
-    /**
-     * @param $request
-     * @param TrainingProgram $program
-     * @return TrainingProgram
-     */
-    public function saveTrainingProgram($request, $program)
-    {
-        $program->program_name = $request->program_name;
-        $program->training_circular_id = $request->training_circular_id;
-        $program->start_date = $request->start_date;
-        $program->end_date = $request->end_date;
-        $program->description = $request->description;
-        $program->on_days = $request->on_days;
-        $program->save();
-
-        $program->modules()->sync($request->circular_modules);
-        $program->trainers()->sync($request->trainers);
-
-        return $program;
-    }
 
 
     public function circulars()
@@ -147,6 +196,10 @@ class TrainingProgramController extends Controller
     public function show(TrainingProgram $program)
     {
         $program->load('trainingCircular.trainingType', 'modules', 'trainers', 'statusName');
+
+        if (auth()->user() && auth()->user()->hasRole($this->participant)) {
+            $program->participant = $program->participants()->firstWhere('user_id', auth()->id());
+        }
 
         return $this->sendResponse($program);
     }
@@ -216,4 +269,7 @@ class TrainingProgramController extends Controller
         return $this->sendResponse($program, 'Training Program deleted successfully');
 
     }
+
+
+
 }
