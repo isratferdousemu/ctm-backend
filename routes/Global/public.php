@@ -67,6 +67,8 @@ Route::prefix('global')->group(function () {
     // For commong table lookup value
 
     Route::get('common-dropdown', [GlobalController::class, 'dropdownList']);
+    //payment processor 
+    Route::get('coverage-area/{location_type}/{sub_location}/{location_id}', [GlobalController::class, 'coverageArea']);
 });
 
 
