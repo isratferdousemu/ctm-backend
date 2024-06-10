@@ -54,4 +54,9 @@ class Payroll extends Model
     {
         return $this->hasMany(PayrollDetail::class, 'payroll_id','id');
     }
+
+    public function paymentCycleDetails()
+    {
+        return $this->hasMany(PayrollPaymentCycleDetail::class, 'payroll_id','id');
+    }
 }

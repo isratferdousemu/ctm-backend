@@ -83,21 +83,41 @@ class PayrollDashboardController extends Controller
         $endDate = $request->end_date;
         $currentYear = Carbon::now()->year;
 
+        // if ($startDate && $endDate) {
+        //     $programs = AllowanceProgram::where('is_active', 1)
+        //         ->with(['payroll' => function ($query) use ($startDate, $endDate) {
+        //             $query->whereBetween('payment_cycle_generated_at', [$startDate, $endDate])
+        //                 ->where('is_payment_cycle_generated', 1);
+        //         }])
+        //         ->get();
+        // } else {
+        //     $programs = AllowanceProgram::where('is_active', 1)
+        //         ->with(['payroll' => function ($query) use ($currentYear) {
+        //             $query->whereYear('payment_cycle_generated_at', $currentYear)
+        //                 ->where('is_payment_cycle_generated', 1);
+        //         }])
+        //         ->get();
+        // }
+
         $programs = AllowanceProgram::where('is_active', 1)
             ->with(['payroll' => function ($query) use ($startDate, $endDate, $currentYear) {
                 if ($startDate && $endDate) {
-                    $query->whereBetween('created_at', [$startDate, $endDate]);
+                    // $query->whereBetween('created_at', [$startDate, $endDate]);
+                    $query->whereBetween('payment_cycle_generated_at', [$startDate, $endDate])
+                        ->where('is_payment_cycle_generated', 1);
                 } else {
-                    $query->whereYear('created_at', $currentYear);
+                    // $query->whereYear('created_at', $currentYear);
+                    $query->whereYear('created_at', $currentYear)
+                        ->where('is_payment_cycle_generated', 1);
                 }
-                $query->with('payrollDetails');
+                $query->with('paymentCycleDetails');
             }])
             ->get();
 
         $programWisePayrollData = $programs->map(function ($program) {
 
             $payrollCount = $program->payroll->sum(function ($payroll) {
-                return $payroll->payrollDetails->count();
+                return $payroll->paymentCycleDetails->count();
             });
 
             return [
@@ -112,7 +132,7 @@ class PayrollDashboardController extends Controller
         ]);
     }
 
-     public function monthlyApprovedPayroll(Request $request)
+    public function monthlyApprovedPayroll(Request $request)
     {
         try {
             $currentDate = now();
@@ -128,13 +148,13 @@ class PayrollDashboardController extends Controller
                 ->orderBy('year', 'asc')
                 ->orderBy('month', 'asc');
 
-                // $query = Payroll::selectRaw('YEAR(payrolls.created_at) as year, MONTH(payrolls.created_at) as month, COUNT(DISTINCT payrolls.id) as count')
-                // ->join('payroll_details', 'payroll_details.payroll_id', '=', 'payrolls.id')
-                // ->where('payrolls.is_approved', 1)
-                // ->whereYear('payrolls.created_at', $currentYear)
-                // ->groupBy('year', 'month')
-                // ->orderBy('year', 'asc')
-                // ->orderBy('month', 'asc');
+            // $query = Payroll::selectRaw('YEAR(payrolls.created_at) as year, MONTH(payrolls.created_at) as month, COUNT(DISTINCT payrolls.id) as count')
+            // ->join('payroll_details', 'payroll_details.payroll_id', '=', 'payrolls.id')
+            // ->where('payrolls.is_approved', 1)
+            // ->whereYear('payrolls.created_at', $currentYear)
+            // ->groupBy('year', 'month')
+            // ->orderBy('year', 'asc')
+            // ->orderBy('month', 'asc');
 
 
             if ($programId) {
@@ -345,7 +365,34 @@ class PayrollDashboardController extends Controller
     }
 
     //emergency dashboard data
-    public function emergencyDashboardData(){
 
+    public function paymentCycleDisbursementStatus(Request $request)
+    {
+        $programId = $request->input('program_id');
+
+        $payrollPaymentCycleDetails = PayrollPaymentCycleDetail::with('payroll');
+
+        if ($programId) {
+            $payrollPaymentCycleDetails->whereHas('payroll', function ($query) use ($programId) {
+                $query->where('program_id', $programId);
+            });
+        }
+
+        $completed = (clone $payrollPaymentCycleDetails)->where('status', 'Completed')->count();
+        $pending = (clone $payrollPaymentCycleDetails)->where('status', 'Pending')->count();
+        $initiated = (clone $payrollPaymentCycleDetails)->where('status', 'Initiated')->count();
+        $failed = (clone $payrollPaymentCycleDetails)->where('status', 'Failed')->count();
+
+        $statusCounts = [
+            ['name' => 'Completed', 'count' => $completed],
+            ['name' => 'Pending', 'count' => $pending],
+            ['name' => 'Initiated', 'count' => $initiated],
+            ['name' => 'Failed', 'count' => $failed],
+        ];
+
+        return response()->json($statusCounts);
+    }
+    public function emergencyDashboardData()
+    {
     }
 }
