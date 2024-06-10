@@ -477,7 +477,6 @@ class GrievanceController extends Controller
 
         $query->with('resolver','grievanceType', 'grievanceSubject', 'program', 'gender', 'division', 'district', 'districtPouroshova', 'cityCorporation', 'ward')
             ->orderBy('id', 'DESC');
-        ;
         // return $page;
         return $query->paginate($perPage, ['*'], 'page', $page);
 
