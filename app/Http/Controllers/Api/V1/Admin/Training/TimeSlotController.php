@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api\V1\Admin\Training;
 
 use App\Helpers\Helper;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Training\TimeSlotRequest;
 use App\Models\TimeSlot;
 use Illuminate\Http\Request;
+use App\Models\KoboUpdateToken;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Training\TimeSlotRequest;
 
 class TimeSlotController extends Controller
 {
@@ -75,4 +76,37 @@ class TimeSlotController extends Controller
         return $this->sendResponse($timeSlot, 'Time Slot deleted successfully');
 
     }
+    //update kobo token
+    public function updateToken(Request $request)
+{
+    // Validate the request
+    $request->validate([
+        // 'id' => 'required|exists:kobo_update_tokens,id', // Ensure 'id' exists in 'kobo_update_tokens' table
+        'token' => 'required|string' // Ensure 'token' is not null and is a string
+    ]);
+
+    // Find the existing token record
+     $before = KoboUpdateToken::where('id',1)->get();
+    $beforeUpdate = KoboUpdateToken::find(1);
+
+    // Get the new token from the request
+    $updateToken = $request->token;
+    $beforeUpdate->token = $updateToken;
+    $beforeUpdate->save();
+
+    // Log the update activity
+    Helper::activityLogUpdate($beforeUpdate,'$before', 'Kobo Token', 'Kobo Token Updated !');
+
+    // Update the token in the database
+ 
+
+    // Return a success response
+    return $this->sendResponse($updateToken, 'Token updated successfully');
+}
+    public function getToken(){
+
+        $token=KoboUpdateToken::find(1);
+        return  $token;
+    }
+
 }

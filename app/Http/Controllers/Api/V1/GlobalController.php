@@ -150,4 +150,9 @@ class GlobalController extends Controller
         $data = $this->globalService->getdropdownList($request);
         return handleResponse($data, null);
     }
+     public function paymentArea($location_type,$location_id)
+    {
+        
+    }
+    
 }

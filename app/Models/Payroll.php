@@ -46,4 +46,12 @@ class Payroll extends Model
     {
         return $this->belongsTo(Allotment::class, 'allotment_id', 'id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function payrollDeails()
+    {
+        return $this->hasMany(PayrollDetail::class, 'payroll_id');
+    }
 }
