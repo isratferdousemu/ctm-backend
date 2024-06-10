@@ -41,9 +41,16 @@ class TrainingProgram extends Model
     {
         return new Attribute(
             function () {
-                return TrainingProgramParticipant::where('training_program_id', $this->id)
+                $status = TrainingProgramParticipant::where('training_program_id', $this->id)
                     ->where('user_id', auth()->id())
                     ->value('status');
+
+                if ($status == 1) {
+                    return [
+                        'user_name' => auth()->user()->full_name,
+                        'program_name' => $this->program_name,
+                    ];
+                }
             }
         );
     }

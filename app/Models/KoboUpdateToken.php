@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class KoboUpdateToken extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
 }
