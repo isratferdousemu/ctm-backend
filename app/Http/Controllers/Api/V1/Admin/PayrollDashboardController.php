@@ -46,24 +46,6 @@ class PayrollDashboardController extends Controller
         $endDate = $request->end_date;
         $currentYear = Carbon::now()->year;
 
-        // if ($startDate && $endDate) {
-        //     $programs = AllowanceProgram::where('is_active', 1)
-        //         ->with(['payroll' => function ($query) use ($currentYear) {
-        //             $query->with(['payrollDetails' => function ($query) use ($currentYear) {
-        //                 $query->whereYear('created_at', $currentYear);
-        //             }]);
-        //         }])
-        //         ->get();
-        // } else {
-        //     $programs = AllowanceProgram::where('is_active', 1)
-        //         ->with(['payroll' => function ($query) use ($currentYear) {
-        //             $query->with(['payrollDetails' => function ($query) use ($currentYear) {
-        //                 $query->whereYear('created_at', $currentYear);
-        //             }]);
-        //         }])
-        //         ->get();
-        // }
-
         $programs = AllowanceProgram::where('is_active', 1)
             ->with(['payroll' => function ($query) use ($startDate, $endDate, $currentYear) {
                 if ($startDate && $endDate) {
@@ -101,29 +83,22 @@ class PayrollDashboardController extends Controller
         $endDate = $request->end_date;
         $currentYear = Carbon::now()->year;
 
-        if ($startDate && $endDate) {
-            $programs = AllowanceProgram::where('is_active', 1)
-                ->with(['payroll' => function ($query) use ($startDate, $endDate) {
-                    $query->whereBetween('payment_cycle_generated_at', [$startDate, $endDate])
-                        ->where('is_payment_cycle_generated', 1);
-                }])
-                ->get();
-        } else {
-            $programs = AllowanceProgram::where('is_active', 1)
-                ->with(['payroll' => function ($query) use ($currentYear) {
-                    $query->whereYear('payment_cycle_generated_at', $currentYear)
-                        ->where('is_payment_cycle_generated', 1);
-                }])
-                ->get();
-        }
+        $programs = AllowanceProgram::where('is_active', 1)
+            ->with(['payroll' => function ($query) use ($startDate, $endDate, $currentYear) {
+                if ($startDate && $endDate) {
+                    $query->whereBetween('created_at', [$startDate, $endDate]);
+                } else {
+                    $query->whereYear('created_at', $currentYear);
+                }
+                $query->with('payrollDetails');
+            }])
+            ->get();
 
+        $programWisePayrollData = $programs->map(function ($program) {
 
-        $totalPayrolls = $programs->sum(function ($program) {
-            return $program->payroll->count();
-        });
-
-        $programWisePayrollData = $programs->map(function ($program) use ($totalPayrolls) {
-            $payrollCount = $program->payroll->count();
+            $payrollCount = $program->payroll->sum(function ($payroll) {
+                return $payroll->payrollDetails->count();
+            });
 
             return [
                 'name_en' => $program->name_en,
@@ -367,5 +342,10 @@ class PayrollDashboardController extends Controller
             ]
         ];
         return response()->json(['data' => $data]);
+    }
+
+    //emergency dashboard data
+    public function emergencyDashboardData(){
+
     }
 }

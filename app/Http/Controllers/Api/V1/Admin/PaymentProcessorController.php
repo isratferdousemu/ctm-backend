@@ -66,8 +66,8 @@ class PaymentProcessorController extends Controller
     {
         $request->validate([
             'processor_type' => 'required',
-            'name_en' => 'required|string|unique:payroll_payment_processors,name_en',
-            'name_bn' => 'required|string|unique:payroll_payment_processors,name_bn',
+            'name_en' => 'string|nullable',
+            'name_bn' => 'string|nullable',
             'focal_phone' => 'required|unique:payroll_payment_processors,focal_phone_no',
             'focal_email' => 'required|email|unique:payroll_payment_processors,focal_email_address',
             'division' => 'required',
@@ -127,8 +127,8 @@ class PaymentProcessorController extends Controller
     {
         $request->validate([
             'processor_type' => 'required',
-            'name_en' => 'required|string',
-            'name_bn' => 'required|string',
+            'name_en' => 'string|nullable',
+            'name_bn' => 'string|nullable',
             'focal_phone' => 'required',
             'focal_email' => 'required|email',
             'division' => 'required',
