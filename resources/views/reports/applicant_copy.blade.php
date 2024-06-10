@@ -579,6 +579,19 @@
 </td>
     <td class="right" style="width: 30%; font-size: 20px;"></td>
 </tr>
+</tr>
+  <tr>
+    <td class="left" style="width: 40%;font-size: 20px;">
+        {{$request['mfs_name']}}
+    </td>
+ <td class="left" style="width: 60%;font-size: 20px;">
+     <span class="right">:</span>
+ {{ $data->mfs_name ?? "N/A" }}
+
+    <!-- Notice the space character before the Blade directive -->
+</td>
+    <td class="right" style="width: 30%; font-size: 20px;"></td>
+</tr>
   <tr>
     <td class="left" style="width: 40%;font-size: 20px;">
         {{$request['branch_name']}}

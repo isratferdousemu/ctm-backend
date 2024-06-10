@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\PayrollPaymentProcessor;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PayrollPaymentProcessorArea extends Model
 {
@@ -66,5 +67,9 @@ class PayrollPaymentProcessorArea extends Model
     public function LocationType(): BelongsTo
     {
         return $this->belongsTo(Lookup::class, 'location_type', 'id');
+    }
+    public function payment_processor()
+    {
+        return $this->belongsTo(PayrollPaymentProcessor::class);
     }
 }
