@@ -77,6 +77,7 @@ trait PermissionTrait
     private $subPayrollVerificationSetting = "payroll-verification-setting";
     private $subPayrollPaymentTracking = "payment-tracking";
     private $subPaymentProcessor = "payment-processor";
+    private $subPayrollDashboard = "payroll-dashboard";
 
 
     // module 5 sub modules

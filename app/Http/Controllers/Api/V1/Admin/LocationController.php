@@ -2029,207 +2029,169 @@ class LocationController extends Controller
      * )
      */
 
-    public function getAllUnionPaginated(Request $request)
-    {
+   public function getAllUnionPaginated(Request $request)
+{
+    // Filter
+    $location_type = $request->query('location_type');
+    $division_id = $request->query('division_id');
+    $district_id = $request->query('district_id');
+    $city_id = $request->query('city_id');
+    $district_pouro_id = $request->query('district_pouro_id');
+    $upazila_id = $request->query('upazila_id');
+    // Filter
 
-        //Filter
-        $location_type = $request->query('location_type');
-        $division_id = $request->query('division_id');
-        $district_id = $request->query('district_id');
+    // Retrieve the query parameters
+    $searchText = $request->query('searchText');
+    $perPage = $request->query('perPage') ?? 10;
+    $page = $request->query('page');
+    $sortBy = $request->query('sortBy') ?? 'name_en';
+    $orderBy = $request->query('orderBy') ?? 'asc';
 
-        $city_id = $request->query('city_id');
-        $district_pouro_id = $request->query('district_pouro_id');
-        $upazila_id = $request->query('upazila_id');
-        //Filter
+    $filterArrayNameEn = [];
+    $filterArrayNameBn = [];
+    $filterArrayCode = [];
 
-        // Retrieve the query parameters
-        $searchText = $request->query('searchText');
-        $perPage = $request->query('perPage') ?? 10;
-        $page = $request->query('page');
-        $sortBy = $request->query('sortBy') ?? 'name_en';
-        $orderBy = $request->query('orderBy') ?? 'asc';
+    $parent3filterArrayNameEn = [];
+    $parent3filterArrayNameBn = [];
+    $parent3filterArrayCode = [];
 
-        $filterArrayNameEn = [];
-        $filterArrayNameBn = [];
-        $filterArrayCode = [];
+    $parent2filterArrayNameEn = [];
+    $parent2filterArrayNameBn = [];
+    $parent2filterArrayCode = [];
 
-        $parent3filterArrayNameEn = [];
-        $parent3filterArrayNameBn = [];
-        $parent3filterArrayCode = [];
+    $parent1filterArrayNameEn = [];
+    $parent1filterArrayNameBn = [];
+    $parent1filterArrayCode = [];
 
-        $parent2filterArrayNameEn = [];
-        $parent2filterArrayNameBn = [];
-        $parent2filterArrayCode = [];
+    if ($searchText) {
+        // Union/Thana/Pouro
+        $filterArrayNameEn[] = ['locations.name_en', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayNameBn[] = ['locations.name_bn', 'LIKE', '%' . $searchText . '%'];
+        $filterArrayCode[] = ['locations.code', 'LIKE', '%' . $searchText . '%'];
 
-        $parent1filterArrayNameEn = [];
-        $parent1filterArrayNameBn = [];
-        $parent1filterArrayCode = [];
+        // Upazila/City/District Pouroshava
+        $parent3filterArrayNameEn[] = ['parent3.name_en', 'LIKE', '%' . $searchText . '%'];
+        $parent3filterArrayNameBn[] = ['parent3.name_bn', 'LIKE', '%' . $searchText . '%'];
+        $parent3filterArrayCode[] = ['parent3.code', 'LIKE', '%' . $searchText . '%'];
+        // District
+        $parent2filterArrayNameEn[] = ['parent2.name_en', 'LIKE', '%' . $searchText . '%'];
+        $parent2filterArrayNameBn[] = ['parent2.name_bn', 'LIKE', '%' . $searchText . '%'];
+        $parent2filterArrayCode[] = ['parent2.code', 'LIKE', '%' . $searchText . '%'];
 
-        if ($searchText) {
+        // Division
+        $parent1filterArrayNameEn[] = ['parent1.name_en', 'LIKE', '%' . $searchText . '%'];
+        $parent1filterArrayNameBn[] = ['parent1.name_bn', 'LIKE', '%' . $searchText . '%'];
+        $parent1filterArrayCode[] = ['parent1.code', 'LIKE', '%' . $searchText . '%'];
 
-            /// Union/Thana/Pouro
-            $filterArrayNameEn[] = ['locations.name_en', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayNameBn[] = ['locations.name_bn', 'LIKE', '%' . $searchText . '%'];
-            $filterArrayCode[]   = ['locations.code', 'LIKE', '%' . $searchText . '%'];
-
-            /// Upazila/City/District Pouroshava
-            $parent3filterArrayNameEn[] = ['parent3.name_en', 'LIKE', '%' . $searchText . '%'];
-            $parent3filterArrayNameBn[] = ['parent3.name_bn', 'LIKE', '%' . $searchText . '%'];
-            $parent3filterArrayCode[]   = ['parent3.code', 'LIKE', '%' . $searchText . '%'];
-            /// District
-            $parent2filterArrayNameEn[] = ['parent2.name_en', 'LIKE', '%' . $searchText . '%'];
-            $parent2filterArrayNameBn[] = ['parent2.name_bn', 'LIKE', '%' . $searchText . '%'];
-            $parent2filterArrayCode[]   = ['parent2.code', 'LIKE', '%' . $searchText . '%'];
-
-            /// Division
-            $parent1filterArrayNameEn[] = ['parent1.name_en', 'LIKE', '%' . $searchText . '%'];
-            $parent1filterArrayNameBn[] = ['parent1.name_bn', 'LIKE', '%' . $searchText . '%'];
-            $parent1filterArrayCode[]   = ['parent1.code', 'LIKE', '%' . $searchText . '%'];
-
-            if ($searchText != null) {
-                $page = 1;
-            }
+        if ($searchText != null) {
+            $page = 1;
         }
-
-        //
-        // this is a 3 Level Search/Sorting
-        // so this will start from name which is at level 3
-        // then parent.name which is at level 2
-        // then parent.parent.name which is at level 1
-        //
-
-        // Level 3
-        if ($sortBy == 'name_en') {
-            $sortBy = 'name_en';
-        }
-        // Level 2
-        if ($sortBy == 'parent.name_en') {
-            $sortBy = 'parent3.name_en';
-        }
-        // Level 2
-        if ($sortBy == 'parent.parent.name_en') {
-            $sortBy = 'parent2.name_en';
-        }
-        // Level 1
-        if ($sortBy == 'parent.parent.parent.name_en') {
-            $sortBy = 'parent1.name_en';
-        }
-
-        ///
-        // parent4
-        // parent3
-        // parent2
-        // parent1
-        /// JOIN and Search in Nested 1 is Nested of 2 which means parent2.parent1
-
-        $union = Location::query()
-            ->join('locations as parent3', 'locations.parent_id', '=', 'parent3.id') // Join with the parent table
-            ->join('locations as parent2', 'parent3.parent_id', '=', 'parent2.id') // Join with the parent table
-            ->join('locations as parent1', 'parent2.parent_id', '=', 'parent1.id') // Join with the grandparent table
-            ->select(
-                'locations.*',
-            )
-            ->when(str_contains($searchText, '%'), function ($q) {
-                $q->whereNull('locations.id');
-            })
-            //searching
-            ->where(function ($query) use (
-                $filterArrayNameEn,
-                $filterArrayNameBn,
-                $filterArrayCode,
-                $parent3filterArrayNameEn,
-                $parent3filterArrayNameBn,
-                $parent3filterArrayCode,
-                $parent2filterArrayNameEn,
-                $parent2filterArrayNameBn,
-                $parent2filterArrayCode,
-                $parent1filterArrayNameEn,
-                $parent1filterArrayNameBn,
-                $parent1filterArrayCode
-            ) {
-
-                $query->where($filterArrayNameEn)
-                    ->orWhere($filterArrayNameBn)
-                    ->orWhere($filterArrayCode) // Union Level Search
-
-                    ->orWhereHas('parent', function ($query) use (
-                        $parent3filterArrayNameEn,
-                        $parent3filterArrayNameBn,
-                        $parent3filterArrayCode,
-                        $parent2filterArrayNameEn,
-                        $parent2filterArrayNameBn,
-                        $parent2filterArrayCode,
-                        $parent1filterArrayNameEn,
-                        $parent1filterArrayNameBn,
-                        $parent1filterArrayCode
-                    ) {
-                        $query->where($parent3filterArrayNameEn)
-                            ->orWhere($parent3filterArrayNameBn)
-                            ->orWhere($parent3filterArrayCode) // City Level Search
-
-                            ->orWhereHas('parent', function ($query) use (
-                                $parent2filterArrayNameEn,
-                                $parent2filterArrayNameBn,
-                                $parent2filterArrayCode,
-                                $parent1filterArrayNameEn,
-                                $parent1filterArrayNameBn,
-                                $parent1filterArrayCode
-                            ) {
-                                $query->where($parent2filterArrayNameEn)
-                                    ->orWhere($parent2filterArrayNameBn)
-                                    ->orWhere($parent2filterArrayCode) // District Level Search
-
-                                    ->orWhereHas('parent', function ($query) use ($parent1filterArrayNameEn, $parent1filterArrayNameBn, $parent1filterArrayCode) {
-                                        $query->where($parent1filterArrayNameEn)
-                                            ->orWhere($parent1filterArrayNameBn)
-                                            ->orWhere($parent1filterArrayCode); // Division Level Search
-                                    });
-                            });
-                    });
-            })
-
-            //searching
-            // ->where('locations.type', '=', $this->union)
-            // ->orwhere('locations.type', '=', $this->thana)
-            // thana1E
-            // ->where('locations.location_type', '=', '2')
-            // ->orWhere('locations.type', [$this->thana])
-            // ->whereIn('locations.type', [$this->thana])
-            ->whereIn('locations.type', [$this->pouro, $this->thana, $this->union])
-            // ->whereType($this->union)
-            // ->where('locations.type', [$this->thana])
-            // ->get();
-            // , $this->union, $this->thana
-            // ->latest()
-
-            // Filtering
-
-            ->when($city_id, function ($query, $city_id) {
-                return $query->where('parent3.id', $city_id);
-            })
-            ->when($upazila_id, function ($query, $upazila_id) {
-                return $query->where('parent3.id', $upazila_id);
-            })
-
-            ->when($district_id, function ($query, $district_id) {
-                return $query->where('parent2.id', $district_id);
-            })
-            ->when($division_id, function ($query, $division_id) {
-                return $query->where('parent1.id', $division_id);
-            })
-
-            // End Filtering
-
-            ->orderBy($sortBy, $orderBy)
-            ->with('parent.parent.parent', 'locationType')
-            ->paginate($perPage, ['*'], 'page', $page);
-
-        return $union;
-        return UnionResource::collection($union)->additional([
-            'success' => true,
-            'message' => $this->fetchSuccessMessage,
-        ]);
     }
+
+    // Sorting Logic
+    if ($sortBy == 'parent.name_en') {
+        $sortBy = 'parent3.name_en';
+    }
+    if ($sortBy == 'parent.parent.name_en') {
+        $sortBy = 'parent2.name_en';
+    }
+    if ($sortBy == 'parent.parent.parent.name_en') {
+        $sortBy = 'parent1.name_en';
+    }
+
+    $union = Location::query()
+        ->join('locations as parent3', 'locations.parent_id', '=', 'parent3.id') // Join with the parent table
+        ->join('locations as parent2', 'parent3.parent_id', '=', 'parent2.id') // Join with the parent table
+        ->join('locations as parent1', 'parent2.parent_id', '=', 'parent1.id') // Join with the grandparent table
+        ->select(
+            'locations.*',
+            \DB::raw('(SELECT COUNT(*) FROM locations as children WHERE children.parent_id = locations.id) as children_count')
+        )
+        ->when(str_contains($searchText, '%'), function ($q) {
+            $q->whereNull('locations.id');
+        })
+        // Searching
+        ->where(function ($query) use (
+            $filterArrayNameEn,
+            $filterArrayNameBn,
+            $filterArrayCode,
+            $parent3filterArrayNameEn,
+            $parent3filterArrayNameBn,
+            $parent3filterArrayCode,
+            $parent2filterArrayNameEn,
+            $parent2filterArrayNameBn,
+            $parent2filterArrayCode,
+            $parent1filterArrayNameEn,
+            $parent1filterArrayNameBn,
+            $parent1filterArrayCode
+        ) {
+            $query->where($filterArrayNameEn)
+                ->orWhere($filterArrayNameBn)
+                ->orWhere($filterArrayCode) // Union Level Search
+
+                ->orWhereHas('parent', function ($query) use (
+                    $parent3filterArrayNameEn,
+                    $parent3filterArrayNameBn,
+                    $parent3filterArrayCode,
+                    $parent2filterArrayNameEn,
+                    $parent2filterArrayNameBn,
+                    $parent2filterArrayCode,
+                    $parent1filterArrayNameEn,
+                    $parent1filterArrayNameBn,
+                    $parent1filterArrayCode
+                ) {
+                    $query->where($parent3filterArrayNameEn)
+                        ->orWhere($parent3filterArrayNameBn)
+                        ->orWhere($parent3filterArrayCode) // City Level Search
+
+                        ->orWhereHas('parent', function ($query) use (
+                            $parent2filterArrayNameEn,
+                            $parent2filterArrayNameBn,
+                            $parent2filterArrayCode,
+                            $parent1filterArrayNameEn,
+                            $parent1filterArrayNameBn,
+                            $parent1filterArrayCode
+                        ) {
+                            $query->where($parent2filterArrayNameEn)
+                                ->orWhere($parent2filterArrayNameBn)
+                                ->orWhere($parent2filterArrayCode) // District Level Search
+
+                                ->orWhereHas('parent', function ($query) use ($parent1filterArrayNameEn, $parent1filterArrayNameBn, $parent1filterArrayCode) {
+                                    $query->where($parent1filterArrayNameEn)
+                                        ->orWhere($parent1filterArrayNameBn)
+                                        ->orWhere($parent1filterArrayCode); // Division Level Search
+                                });
+                        });
+                });
+        })
+        // Searching
+        ->whereIn('locations.type', [$this->pouro, $this->thana, $this->union])
+
+        // Filtering
+        ->when($city_id, function ($query, $city_id) {
+            return $query->where('parent3.id', $city_id);
+        })
+        ->when($upazila_id, function ($query, $upazila_id) {
+            return $query->where('parent3.id', $upazila_id);
+        })
+        ->when($district_id, function ($query, $district_id) {
+            return $query->where('parent2.id', $district_id);
+        })
+        ->when($division_id, function ($query, $division_id) {
+            return $query->where('parent1.id', $division_id);
+        })
+        // End Filtering
+
+        ->orderBy($sortBy, $orderBy)
+        ->with('parent.parent.parent', 'locationType','children')
+        ->paginate($perPage, ['*'], 'page', $page);
+
+    return UnionResource::collection($union)->additional([
+        'success' => true,
+        'message' => $this->fetchSuccessMessage,
+    ]);
+}
+
 
     /**
      * @OA\Get(
