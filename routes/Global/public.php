@@ -67,6 +67,8 @@ Route::prefix('global')->group(function () {
     // For commong table lookup value
 
     Route::get('common-dropdown', [GlobalController::class, 'dropdownList']);
+    //payment processor 
+    Route::get('coverage-area/{location_type}/{sub_location}/{location_id}', [GlobalController::class, 'coverageArea']);
 });
 
 
@@ -74,3 +76,4 @@ Route::prefix('global')->group(function () {
 
 Route::get('/send-sms', [\App\Http\Controllers\Api\V1\Admin\UserController::class, 'sendSmsTest']);
 Route::get('/send-mail', [\App\Http\Controllers\Api\V1\Admin\UserController::class, 'sendMail']);
+Route::get('/payment/processor/area', [\App\Http\Controllers\Api\V1\Admin\GlobalController::class, 'paymentArea']);

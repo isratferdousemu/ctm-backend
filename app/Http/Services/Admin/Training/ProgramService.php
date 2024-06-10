@@ -19,6 +19,8 @@ class ProgramService
         $program->end_date = $request->end_date;
         $program->description = $request->description;
         $program->on_days = $request->on_days;
+        $program->form_id = $request->form_id;
+        $program->training_form_id = $request->training_form_id;
         $program->question_link = $request->question_link;
         $program->trainer_ratings_link = $request->trainer_ratings_link;
         $program->status = $request->status;
@@ -27,13 +29,27 @@ class ProgramService
 
         $program->modules()->sync($request->circular_modules);
         $program->trainers()->sync($request->trainers);
-        $program->users()->syncWithPivotValues($request->users, ['training_circular_id' => $program->training_circular_id]);
+        $this->syncUserData($request, $program);
+
 
         $program->users->map(function ($user) {
             return $user->assignRole('participant');
         });
 
         return $program;
+    }
+
+
+    public function syncUserData($request, $program)
+    {
+        $data = [];
+        foreach ((array)$request->users as $userId) {
+            $data[$userId] = [
+                'training_circular_id' => $program->training_circular_id,
+                'passcode' => rand(1e7, 1e10)
+            ];
+        }
+        $program->users()->sync($data);
     }
 
 
@@ -47,6 +63,8 @@ class ProgramService
         $program->end_date = $request->end_date;
         $program->description = $request->description;
         $program->on_days = $request->on_days;
+        $program->form_id = $request->form_id;
+        $program->training_form_id = $request->training_form_id;
         $program->question_link = $request->question_link;
         $program->trainer_ratings_link = $request->trainer_ratings_link;
         $program->status = $request->status;
@@ -55,7 +73,7 @@ class ProgramService
 
         $program->modules()->sync($request->circular_modules);
         $program->trainers()->sync($request->trainers);
-        $program->users()->syncWithPivotValues($request->users, ['training_circular_id' => $program->training_circular_id]);
+        $this->syncUserData($request, $program);
 
         $program->users->map(function ($user) {
             return $user->assignRole('participant');

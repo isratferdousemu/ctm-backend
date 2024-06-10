@@ -75,8 +75,6 @@ class ParticipantController extends Controller
             $participant = $this->participantService->storeParticipant($request, $request->user_id);
         }
 
-        $this->participantService->sendPasscode($participant);
-
         Helper::activityLogInsert($participant, '','Training Participant','Training Participant Created !');
         return $this->sendResponse($participant, 'Training Participant created successfully');
     }
@@ -158,6 +156,20 @@ class ParticipantController extends Controller
         Helper::activityLogDelete($participant, '','Training Participant','Training Participant Deleted !');
 
         return $this->sendResponse($participant, 'Training Participant deleted successfully');
+
+    }
+
+
+
+    public function updateStatus(Request $request, TrainingProgramParticipant $participant)
+    {
+        $beforeUpdate = $participant->replicate();
+
+        $participant->update(['status' => $request->status]);
+
+        Helper::activityLogUpdate($participant, $beforeUpdate,'Training Participant','Training Participant Status Updated !');
+
+        return $this->sendResponse($participant, 'Participant status updated successfully');
 
     }
 }

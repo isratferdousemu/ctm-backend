@@ -27,6 +27,7 @@ class AllotmentResource extends JsonResource
             "allotment_area" => LocationResource::make($this->whenLoaded('location')),
             "allotted_beneficiaries" => $this->total_beneficiaries,
             "active_beneficiaries" => $this->active_beneficiaries,
+            "saved_beneficiaries" => $this->saved_beneficiaries,
             "status" => $this->allotment_id ? "Saved" : "Not Saved",
         ];
     }

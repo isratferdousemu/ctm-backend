@@ -32,16 +32,27 @@ use Illuminate\Database\Eloquent\Model;
 class AllowanceProgramAge extends Model
 {
     use HasFactory;
+
     public function newQuery($excludeDeleted = true)
     {
         return parent::newQuery($excludeDeleted)
             ->orderBy('min_age', 'asc');
     }
-    public static function getName($program_id){
-       
+
+    public static function getName($program_id)
+    {
+
         $permanentLocation_Division = AllowanceProgram::find($program_id);
-       
-        
-         return $permanentLocation_Division->name_en;
+
+
+        return $permanentLocation_Division->name_en;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function gender()
+    {
+        return $this->belongsTo(Lookup::class, 'gender_id');
     }
 }
