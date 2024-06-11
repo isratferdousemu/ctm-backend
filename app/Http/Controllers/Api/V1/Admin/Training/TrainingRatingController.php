@@ -12,12 +12,6 @@ class TrainingRatingController extends Controller
 {
     public function store(Request $request)
     {
-
-        $participant = TrainingProgramParticipant::where('user_id', auth()->id())
-            ->first();
-
-        return $participant->ratings;
-
         foreach ($request->ratings as $rating) {
             TrainingRating::firstOrCreate([
                 'training_program_id' => $request->program_id,

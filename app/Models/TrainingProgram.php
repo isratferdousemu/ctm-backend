@@ -66,7 +66,7 @@ class TrainingProgram extends Model
                 $participant = TrainingProgramParticipant::where('training_program_id', $this->id)
                     ->where('user_id', auth()->id())->first();
 
-                return $participant && $participant->exam_response && !$participant->ratings;
+                return $participant && $participant->exam_response && !$participant->ratings()->count();
             }
         );
     }
