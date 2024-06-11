@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::get('programs/sync-data/{program}', [TrainingProgramController::class, 'syncData']);
     Route::get('programs-test', [TrainingProgramController::class, 'testKobo']);
 
+    Route::put('participants/update-status/{participant}', [ParticipantController::class, 'updateStatus']);
     Route::post('participants/external', [TrainingParticipantController::class, 'storeExternalParticipant']);
     Route::get('participants/users/{type}', [TrainingParticipantController::class, 'getUsers']);
     Route::get('participants/circulars', [TrainingParticipantController::class, 'trainingCirculars']);

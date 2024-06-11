@@ -38,4 +38,8 @@ class PayrollPaymentCycleDetail extends Model
     {
         return $this->belongsTo(Payroll::class, 'payroll_id');
     }
+    public function beneficiary(){
+        return $this->belongsTo(Beneficiary::class, 'beneficiary_id');
+    }
+   
 }
