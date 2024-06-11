@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('emergency_beneficiaries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('program_id')->constrained('allowance_programs')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('allotment_id')->constrained('emergency_allotments')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('application_id')->nullable();
+            $table->string('beneficiary_id')->nullable();
             $table->string('name_en');
             $table->string('name_bn');
             $table->string('mother_name_en');
@@ -37,35 +38,32 @@ return new class extends Migration
             $table->string('verification_number')->nullable();
             $table->string('image')->nullable();
             $table->string('signature')->nullable();
-
-            $table->foreignId('division_id')->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('district_id')->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('location_type')->nullable()->constrained('lookups')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('city_corp_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('district_pourashava_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('upazila_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('pourashava_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('thana_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('union_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('ward_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('post_code');
-            $table->string('address');
-            $table->string('mobile')->nullable();
-
-            $table->foreignId('p_division_id')->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('p_district_id')->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('p_location_type')->nullable()->constrained('lookups')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('p_city_corp_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('p_district_pourashava_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('p_upazila_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('p_pourashava_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('p_thana_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('p_union_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('p_ward_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('p_post_code');
-            $table->string('p_address');
-            $table->string('p_mobile')->nullable();
-
+            $table->foreignId('current_division_id')->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('current_district_id')->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('current_location_type')->nullable()->constrained('lookups')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('current_city_corp_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('current_district_pourashava_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('current_upazila_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('current_pourashava_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('current_thana_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('current_union_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('current_ward_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('current_post_code');
+            $table->string('current_address');
+            $table->string('current_mobile')->nullable();
+            $table->foreignId('permanent_division_id')->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('permanent_district_id')->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('permanent_location_type')->nullable()->constrained('lookups')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('permanent_city_corp_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('permanent_district_pourashava_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('permanent_upazila_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('permanent_pourashava_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('permanent_thana_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('permanent_union_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('permanent_ward_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('permanent_post_code');
+            $table->string('permanent_address');
+            $table->string('permanent_mobile')->nullable();
             $table->string('nominee_en')->nullable();
             $table->string('nominee_bn')->nullable();
             $table->string('nominee_verification_number')->nullable();
@@ -74,15 +72,19 @@ return new class extends Migration
             $table->string('nominee_signature')->nullable();
             $table->string('nominee_relation_with_beneficiary')->nullable();
             $table->string('nominee_nationality')->nullable();
-
+            $table->date('nominee_date_of_birth')->nullable();
             $table->string('account_name');
             $table->string('account_number');
             $table->string('account_owner');
-            $table->enum('status', [1, 2, 3])->default(1); // 1=Active, 2=Inactive, 3=Waiting
-            $table->integer('score')->default(0);
-            $table->string('remarks')->nullable();
-            $table->softDeletes();
+            $table->unsignedTinyInteger('account_type')->nullable()->comment("1=Bank;2=Mobile");
+            $table->string('bank_name')->nullable();
+            $table->string('branch_name')->nullable();
+            $table->string('delete_cause', 255)->nullable();
+            $table->double('monthly_allowance', 8, 2)->nullable();
+            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('isExisting')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

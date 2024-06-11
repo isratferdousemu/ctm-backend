@@ -28,6 +28,7 @@ return new class extends Migration
             $table->foreignId('pourashava_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('thana_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('union_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('ward_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('financial_year_id')->nullable()->constrained("financial_years")->cascadeOnUpdate()->cascadeOnDelete();
             $table->date('starting_period');
             $table->date('closing_period');
