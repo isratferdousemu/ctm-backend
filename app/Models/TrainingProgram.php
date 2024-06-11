@@ -25,14 +25,16 @@ class TrainingProgram extends Model
     ];
 
 
-    protected $appends = ['is_participant', 'certificate'];
+    protected $appends = ['is_participant', 'certificate', 'give_rating'];
 
 
 
     protected function isParticipant(): Attribute
     {
         return new Attribute(
-            get: fn() => auth()->user()->hasRole($this->participant)
+//            get: fn() => auth()->user()->hasRole($this->participant)
+            get: fn() => TrainingProgramParticipant::where('training_program_id', $this->id)
+                ->where('user_id', auth()->id())->exists()
         );
     }
 
@@ -51,6 +53,20 @@ class TrainingProgram extends Model
                         'program_name' => $this->program_name,
                     ];
                 }
+            }
+        );
+    }
+
+
+
+    protected function giveRating(): Attribute
+    {
+        return new Attribute(
+            function () {
+                $participant = TrainingProgramParticipant::where('training_program_id', $this->id)
+                    ->where('user_id', auth()->id())->first();
+
+                return $participant && $participant->exam_response && !$participant->ratings;
             }
         );
     }
