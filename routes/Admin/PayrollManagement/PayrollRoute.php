@@ -42,6 +42,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/set-beneficiaries', [PayrollController::class, 'setBeneficiaries'])->middleware(['role_or_permission:super-admin|payroll-create']);
         Route::get('/preview-beneficiaries', [PayrollController::class, 'previewBeneficiaries'])->middleware(['role_or_permission:super-admin|payroll-create']);
         Route::post('/submit-payroll', [PayrollController::class, 'submitPayroll'])->middleware(['role_or_permission:super-admin|payroll-create']);
+        // for payroll approve
+        Route::prefix('approve')->group(function () {
+            Route::get('/get-pending-payroll-list', [PayrollController::class, 'getAllotmentAreaList'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
+            Route::get('/view-beneficiaries/{payroll_id}', [PayrollController::class, 'getActiveBeneficiaries'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
+            Route::put('/reject-beneficiary/{beneficiary_id}', [PayrollController::class, 'submitPayroll'])->middleware(['role_or_permission:super-admin|payroll-create']);
+            Route::put('/reject-payroll/{payroll_id}', [PayrollController::class, 'submitPayroll'])->middleware(['role_or_permission:super-admin|payroll-create']);
+            Route::put('/approve-payroll/{payroll_id}', [PayrollController::class, 'submitPayroll'])->middleware(['role_or_permission:super-admin|payroll-create']);
+        });
     });
 
 
