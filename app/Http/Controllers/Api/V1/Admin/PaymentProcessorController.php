@@ -9,6 +9,7 @@ use App\Models\bank;
 use App\Models\Beneficiary;
 use App\Models\PayrollPaymentProcessor;
 use App\Models\PayrollPaymentProcessorArea;
+use App\Rules\UniquePaymentProcessor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -28,34 +29,34 @@ class PaymentProcessorController extends Controller
                     ->orWhere('focal_phone_no', 'LIKE', '%' . $request->search . '%');
             });
 
-            // if ($request->filter !== false) {
-                $data->whereHas('ProcessorArea', function ($query) use ($request) {
-                    if ($request->location_type) {
-                        $query->where('location_type', $request->location_type);
-                    }
-                    if ($request->division_id) {
-                        $query->where('division_id', $request->division_id);
-                    }
-                    if ($request->district_id) {
-                        $query->where('district_id', $request->district_id);
-                    }
-                    if ($request->upazila_id) {
-                        $query->where('upazila_id', $request->upazila_id);
-                    }
-                    if ($request->city_corp_id) {
-                        $query->where('city_corp_id', $request->city_corp_id);
-                    }
-                    if ($request->thana_id) {
-                        $query->where('thana_id', $request->thana_id);
-                    }
-                    if ($request->district_pouro_id) {
-                        $query->where('district_pourashava_id', $request->district_pouro_id);
-                    }
-                    if ($request->union_id) {
-                        $query->where('union_id', $request->union_id);
-                    }
-                });
-            // }
+        // if ($request->filter !== false) {
+        $data->whereHas('ProcessorArea', function ($query) use ($request) {
+            if ($request->location_type) {
+                $query->where('location_type', $request->location_type);
+            }
+            if ($request->division_id) {
+                $query->where('division_id', $request->division_id);
+            }
+            if ($request->district_id) {
+                $query->where('district_id', $request->district_id);
+            }
+            if ($request->upazila_id) {
+                $query->where('upazila_id', $request->upazila_id);
+            }
+            if ($request->city_corp_id) {
+                $query->where('city_corp_id', $request->city_corp_id);
+            }
+            if ($request->thana_id) {
+                $query->where('thana_id', $request->thana_id);
+            }
+            if ($request->district_pouro_id) {
+                $query->where('district_pourashava_id', $request->district_pouro_id);
+            }
+            if ($request->union_id) {
+                $query->where('union_id', $request->union_id);
+            }
+        });
+        // }
 
         return $this->sendResponse($data->paginate(request('perPage')));
         // $data = $data->paginate($request->get('rows', 10));
@@ -64,6 +65,18 @@ class PaymentProcessorController extends Controller
 
     public function store(Request $request)
     {
+        // $request->validate([
+        //     'processor_type' => 'required',
+        //     'name_en' => 'string|nullable',
+        //     'name_bn' => 'string|nullable',
+        //     'focal_phone' => 'required|unique:payroll_payment_processors,focal_phone_no',
+        //     'focal_email' => 'required|email|unique:payroll_payment_processors,focal_email_address',
+        //     'division' => 'required',
+        //     'district' => 'required',
+        //     'location_type' => 'required',
+        //     'charge' => 'integer',
+        //     new UniquePaymentProcessor($request),
+        // ]);
         $request->validate([
             'processor_type' => 'required',
             'name_en' => 'string|nullable',
@@ -72,9 +85,45 @@ class PaymentProcessorController extends Controller
             'focal_email' => 'required|email|unique:payroll_payment_processors,focal_email_address',
             'division' => 'required',
             'district' => 'required',
-            'location_type' => 'required',
+            'location_type' => 'required|integer',
             'charge' => 'integer',
+            'district_pourashava' => 'nullable|required_if:location_type,1',
+            'upazila' => 'nullable|required_if:location_type,2',
+            'union' => 'nullable|required_if:location_type,2',
+            'city_corporation' => 'nullable|required_if:location_type,3',
+            'thana' => 'nullable|required_if:location_type,3',
+            // new UniquePaymentProcessor($request), // Custom validation rule
         ]);
+
+        $exists = DB::table('payroll_payment_processors')
+            ->join('payroll_payment_processor_areas', 'payroll_payment_processors.id', '=', 'payroll_payment_processor_areas.payment_processor_id')
+            ->where('payroll_payment_processors.processor_type', $request->processor_type)
+            ->where('payroll_payment_processors.name_en', $request->name_en)
+            ->where('payroll_payment_processors.name_bn', $request->name_bn)
+            ->where('payroll_payment_processor_areas.division_id', $request->division)
+            ->where('payroll_payment_processor_areas.district_id', $request->district)
+            ->where('payroll_payment_processor_areas.location_type', $request->location_type);
+
+        switch ($request->location_type) {
+            case 1:
+                $exists->where('payroll_payment_processor_areas.district_pourashava_id', $request->district_pourashava);
+                break;
+            case 2:
+                $exists->where('payroll_payment_processor_areas.upazila_id', $request->upazila)
+                    ->where('payroll_payment_processor_areas.union_id', $request->union);
+                break;
+            case 3:
+                $exists->where('payroll_payment_processor_areas.city_corp_id', $request->city_corporation)
+                    ->where('payroll_payment_processor_areas.thana_id', $request->thana);
+                break;
+            default:
+                return response()->json(['success' => false, 'error' => 'Invalid location type.']);
+        }
+        // return $exists->exists();
+
+        if ($exists->exists()  == true) {
+            return response()->json(['success' => false, 'status' => '403', 'message' => 'The combination of processor type, names, and location already exists.']);
+        }
 
         DB::beginTransaction();
         try {

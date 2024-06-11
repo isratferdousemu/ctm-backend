@@ -3,21 +3,58 @@
 namespace App\Models;
 
 use App\Constants\TrainingLookUp;
+use App\Http\Traits\RoleTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Schema;
 
 class TrainingProgram extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, RoleTrait;
 
 
     protected $guarded = ['id'];
 
 
     protected $casts = [
-        'on_days' => 'array'
+        'on_days' => 'array',
+        'question_paper' => 'array',
+        'trainer_ratings_paper' => 'array',
     ];
+
+
+    protected $appends = ['is_participant', 'certificate'];
+
+
+
+    protected function isParticipant(): Attribute
+    {
+        return new Attribute(
+            get: fn() => auth()->user()->hasRole($this->participant)
+        );
+    }
+
+
+    protected function certificate(): Attribute
+    {
+        return new Attribute(
+            function () {
+                $status = TrainingProgramParticipant::where('training_program_id', $this->id)
+                    ->where('user_id', auth()->id())
+                    ->value('status');
+
+                if ($status == 1) {
+                    return [
+                        'user_name' => auth()->user()->full_name,
+                        'program_name' => $this->program_name,
+                    ];
+                }
+            }
+        );
+    }
+
 
 
     public function trainingCircular()
@@ -43,6 +80,12 @@ class TrainingProgram extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'training_program_participants', 'training_program_id', 'user_id');
+    }
+
+
+    public function participants()
+    {
+        return $this->hasMany(TrainingProgramParticipant::class);
     }
 
 

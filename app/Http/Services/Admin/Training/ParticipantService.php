@@ -32,7 +32,6 @@ class ParticipantService
         $user->user_id = $user->id;
         $user->save();
 
-        $user->assignRole($this->participant);
 
         return $user;
     }
@@ -58,6 +57,7 @@ class ParticipantService
         );
 
         $participant->save();
+        $participant->user->assignRole($this->participant);
 
         return $participant;
     }
@@ -67,10 +67,10 @@ class ParticipantService
     {
         $programName = $participant->trainingProgram->program_name;
 
-        $message = "Congratulations! You have been registered as a participant for $programName. Your User Id is {$participant->user_id} and Passcode is {$participant->passcode}."
+        $message = "Congratulations! You have been registered as a participant for $programName. Your Employee Id is {$participant->user_id} and Passcode is {$participant->passcode}."
             ."\nPlease keep this information secure and ensure you have it available when you start your exam.\n-MIS, DSS";
 
-        (new SMSservice())->sendSms($participant->user->mobile, $message);
+//        (new SMSservice())->sendSms($participant->user->mobile, $message);
 
     }
 

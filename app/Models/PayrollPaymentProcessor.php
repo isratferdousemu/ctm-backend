@@ -35,8 +35,14 @@ class PayrollPaymentProcessor extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function ProcessorArea(): HasOne
+   public function payment_area()
+    {
+        return $this->hasMany(PayrollPaymentProcessorArea::class, 'payment_processor_id', 'id');
+    }
+      public function ProcessorArea(): HasOne
     {
         return $this->hasOne(PayrollPaymentProcessorArea::class, 'payment_processor_id', 'id');
     }
+
+        
 }

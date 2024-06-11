@@ -81,13 +81,13 @@ class TimeSlotController extends Controller
 {
     // Validate the request
     $request->validate([
-        'id' => 'required|exists:kobo_update_tokens,id', // Ensure 'id' exists in 'kobo_update_tokens' table
+        // 'id' => 'required|exists:kobo_update_tokens,id', // Ensure 'id' exists in 'kobo_update_tokens' table
         'token' => 'required|string' // Ensure 'token' is not null and is a string
     ]);
 
     // Find the existing token record
-     $before = KoboUpdateToken::where('id',$request->id)->get();
-    $beforeUpdate = KoboUpdateToken::find($request->id);
+     $before = KoboUpdateToken::where('id',1)->first();
+    $beforeUpdate = KoboUpdateToken::firstOrNew(['id' => 1]);
 
     // Get the new token from the request
     $updateToken = $request->token;
@@ -95,13 +95,21 @@ class TimeSlotController extends Controller
     $beforeUpdate->save();
 
     // Log the update activity
-    Helper::activityLogUpdate($beforeUpdate,'$before', 'Kobo Token', 'Kobo Token Updated !');
+    Helper::activityLogUpdate($beforeUpdate, $before, 'Kobo Token', 'Kobo Token Updated !');
 
     // Update the token in the database
- 
+
 
     // Return a success response
     return $this->sendResponse($updateToken, 'Token updated successfully');
 }
+    public function getToken(){
+
+        $token=KoboUpdateToken::firstOrCreate(
+            ['id' => 1],
+            ['token' => env('KOBO_API_TOKEN')]
+        );
+        return  $token;
+    }
 
 }

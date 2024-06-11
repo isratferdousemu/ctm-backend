@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AllowanceProgram;
+use App\Models\Beneficiary;
+use App\Models\EmergencyAllotment;
+use App\Models\EmergencyBeneficiary;
 use App\Models\Location;
 use App\Models\Payroll;
 use App\Models\PayrollPaymentCycle;
@@ -102,11 +105,9 @@ class PayrollDashboardController extends Controller
         $programs = AllowanceProgram::where('is_active', 1)
             ->with(['payroll' => function ($query) use ($startDate, $endDate, $currentYear) {
                 if ($startDate && $endDate) {
-                    // $query->whereBetween('created_at', [$startDate, $endDate]);
                     $query->whereBetween('payment_cycle_generated_at', [$startDate, $endDate])
                         ->where('is_payment_cycle_generated', 1);
                 } else {
-                    // $query->whereYear('created_at', $currentYear);
                     $query->whereYear('created_at', $currentYear)
                         ->where('is_payment_cycle_generated', 1);
                 }
@@ -384,15 +385,24 @@ class PayrollDashboardController extends Controller
         $failed = (clone $payrollPaymentCycleDetails)->where('status', 'Failed')->count();
 
         $statusCounts = [
-            ['name' => 'Completed', 'count' => $completed],
-            ['name' => 'Pending', 'count' => $pending],
-            ['name' => 'Initiated', 'count' => $initiated],
-            ['name' => 'Failed', 'count' => $failed],
+            ['name_en' => 'Completed', 'name_bn' => 'সম্পন্ন', 'count' => $completed],
+            ['name_en' => 'Pending', 'name_bn' => 'অপেক্ষমাণ', 'count' => $pending],
+            ['name_en' => 'Initiated', 'name_bn' => 'প্রারম্ভিক', 'count' => $initiated],
+            ['name_en' => 'Failed', 'name_bn' => 'বিফল', 'count' => $failed],
         ];
 
         return response()->json($statusCounts);
     }
     public function emergencyDashboardData()
     {
+        $emergencyAllotments = EmergencyAllotment::count();
+        $beneficiaries = Beneficiary::count();
+        $emergencyBeneficiaries = EmergencyBeneficiary::count();
+
+        return response()->json([
+            'emergency_allotments' => $emergencyAllotments,
+            'beneficiary' => $beneficiaries,
+            'emergency_beneficiaries' => $emergencyBeneficiaries
+        ]);
     }
 }

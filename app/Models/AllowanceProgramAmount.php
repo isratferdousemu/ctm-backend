@@ -28,4 +28,12 @@ use Illuminate\Database\Eloquent\Model;
 class AllowanceProgramAmount extends Model
 {
     use HasFactory;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type()
+    {
+        return $this->belongsTo(Lookup::class, 'type_id');
+    }
 }

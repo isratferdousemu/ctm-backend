@@ -12,6 +12,12 @@ class TrainingProgramParticipant extends Model
     protected $guarded = ['id'];
 
 
+    protected $casts = [
+        'exam_response' => 'array',
+        'trainer_rating_response' => 'array',
+    ];
+
+
     public function user()
     {
         return $this->belongsTo(User::class);
