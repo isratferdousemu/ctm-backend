@@ -37,6 +37,7 @@ class ParticipantUpdateRequest extends FormRequest
                     ->where('user_id', $this->participant->user_id)
                     ->ignore($this->participant->id)
             ],
+            'status' => 'nullable'
 
         ];
     }
