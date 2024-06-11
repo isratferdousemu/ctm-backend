@@ -155,27 +155,93 @@ class GlobalController extends Controller
 
     {
         if($location_type == 3){
-        $area=PayrollPaymentProcessorArea::where('thana_id',$location_id)
-        ->with('payment_processor.bank')
+        // $area=PayrollPaymentProcessorArea::where('thana_id',$location_id)
+      
+        // ->with('payment_processor.bank')
+        // ->get();
+        $area = PayrollPaymentProcessorArea::where('thana_id', $location_id)
+        ->whereHas('payment_processor', function ($query) {
+            $query->where('processor_type', 'bank');
+        })
+        ->with(['payment_processor' => function ($query) {
+            $query->with('bank');
+        }])
+        ->get();
+        $mfs=PayrollPaymentProcessorArea::where('thana_id', $location_id)
+        ->whereHas('payment_processor', function ($query) {
+            $query->where('processor_type', 'mfs');
+        })
+        ->with(['payment_processor' => function ($query) {
+            $query->with('bank');
+        }])
         ->get();
 
         }
           if($location_type == 1){
-        $area=PayrollPaymentProcessorArea::where('district_pourashava_id',$location_id)
-        ->with('payment_processor.bank')
+        // $area=PayrollPaymentProcessorArea::where('district_pourashava_id',$location_id)
+        // ->with('payment_processor.bank')
+        // ->get();
+         $area = PayrollPaymentProcessorArea::where('district_pourashava_id', $location_id)
+        ->whereHas('payment_processor', function ($query) {
+            $query->where('processor_type', 'bank');
+        })
+        ->with(['payment_processor' => function ($query) {
+            $query->with('bank');
+        }])
+        ->get();
+        $mfs=PayrollPaymentProcessorArea::where('district_pourashava_id', $location_id)
+        ->whereHas('payment_processor', function ($query) {
+            $query->where('processor_type', 'mfs');
+        })
+        ->with(['payment_processor' => function ($query) {
+            $query->with('bank');
+        }])
         ->get();
 
         }
           if($location_type == 2){
             if($sub_location==1){
-                  $area=PayrollPaymentProcessorArea::where('pourashava_id',$location_id)
-                ->with('payment_processor.bank')
+                //   $area=PayrollPaymentProcessorArea::where('pourashava_id',$location_id)
+                // ->with('payment_processor.bank')
+                // ->get();
+                $area = PayrollPaymentProcessorArea::where('pourashava_id', $location_id)
+                ->whereHas('payment_processor', function ($query) {
+                    $query->where('processor_type', 'bank');
+                })
+                ->with(['payment_processor' => function ($query) {
+                    $query->with('bank');
+                }])
                 ->get();
+                $mfs=PayrollPaymentProcessorArea::where('pourashava_id', $location_id)
+                ->whereHas('payment_processor', function ($query) {
+                    $query->where('processor_type', 'mfs');
+                })
+                ->with(['payment_processor' => function ($query) {
+                    $query->with('bank');
+                }])
+                ->get();
+
 
             }
               if($sub_location==2){
-                  $area=PayrollPaymentProcessorArea::where('union_id',$location_id)
-                ->with('payment_processor.bank')
+                //   $area=PayrollPaymentProcessorArea::where('union_id',$location_id)
+                // ->with('payment_processor.bank')
+                // ->get();
+                $area = PayrollPaymentProcessorArea::where('union_id', $location_id)
+                ->whereHas('payment_processor', function ($query) {
+                    $query->where('processor_type', 'bank');
+                })
+                ->with(['payment_processor' => function ($query) {
+                    $query->with('bank');
+                }])
+                ->get();
+                $mfs=PayrollPaymentProcessorArea::where('union_id', $location_id)
+                ->whereHas('payment_processor', function ($query) {
+                    $query->where('processor_type', 'mfs');
+                })
+                ->with(['payment_processor' => function ($query) {
+                    $query->with('bank');
+                }])
                 ->get();
 
             }
@@ -183,7 +249,13 @@ class GlobalController extends Controller
 
         }
       
-        return  $area;
+       
+           return([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+            'bank'=> $area,
+             'mfs'=> $mfs
+        ]);
         
     }
     
