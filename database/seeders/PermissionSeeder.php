@@ -650,7 +650,8 @@ class PermissionSeeder extends Seeder
                     ["id" => 258, "name" => "timeStot-create", "page_url" => "/training-management/time-slots/create", "parent_page" => 1],
                     ["id" => 259, "name" => "timeStot-view", "page_url" => "/training-management/time-slots", "parent_page" => 1],
                     ["id" => 260, "name" => "timeStot-edit", "page_url" => "/training-management/time-slots/edit/:id", "parent_page" => 1],
-                    ["id" => 265, "name" => "timeStot-delete", "page_url" => "/training-management/time-slots/view/:id", "parent_page" => 1]
+                    ["id" => 265, "name" => "timeStot-delete", "page_url" => "/training-management/time-slots/view/:id", "parent_page" => 1],
+                    ["id" => 276, "name" => "kobo-edit", "page_url" => "/training-management/kobo-token-update", "parent_page" => 1],
                 ]
 
             ],
@@ -744,7 +745,7 @@ class PermissionSeeder extends Seeder
 
         ];
 
-        //last id 274
+        //last id 276
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

@@ -112,6 +112,7 @@ class ApplicationService
             $application->religion = $request->religion;
             $application->account_type = $request->account_type;
             $application->bank_name = $request->bank_name;
+              $application->mfs_name = $request->mfs_name;
             $application->branch_name = $request->branch_name;
             // if($request->has('city_thana_id') && $request->city_thana_id!=null){
             //     $application->current_location_id              = $request->city_thana_id;
@@ -399,6 +400,7 @@ if ($request->hasFile('nominee_signature')) {
             $application->religion = $request->religion;
             $application->account_type = $request->account_type;
             $application->bank_name = $request->bank_name;
+              $application->mfs_name = $request->mfs_name;
             $application->branch_name = $request->branch_name;
             //  $application->current_location_id =null;
          

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Admin\Emergency\EmergencyAllotmentController;
 use App\Http\Controllers\Api\V1\Admin\Emergency\EmergencyBeneficiaryController;
+use App\Http\Controllers\Api\V1\Admin\Emergency\EmergencyPaymentCycleController;
 
 Route::middleware(['auth:sanctum', 'language'])->group(function () {
 
@@ -18,4 +19,14 @@ Route::middleware(['auth:sanctum', 'language'])->group(function () {
         Route::post('/beneficiaries', [EmergencyBeneficiaryController::class, 'store'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-create']);
         Route::get('/get-existing-beneficiaries-info', [EmergencyBeneficiaryController::class, 'getExistingBeneficariesInfo'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-create']);
     });
+     /*----------------------------Payment Cycle start--------------------------------*/
+
+     Route::prefix('admin/emergency')->group(function () {
+        Route::get('/payment-cycle', [EmergencyPaymentCycleController::class, 'getPaymentCycle'])->middleware(['role_or_permission:super-admin|payment-cycle-view']);
+        Route::get('/program-wise-installment/{id}', [EmergencyPaymentCycleController::class, 'programWiseInstallment'])->middleware(['role_or_permission:super-admin|payment-cycle-view']);
+        Route::get('/payment-cycle/view/{id}', [EmergencyPaymentCycleController::class, 'getPaymentCycleById'])->middleware(['role_or_permission:super-admin|payment-cycle-view']);
+        Route::post('/push-payroll-summary/{id}', [EmergencyPaymentCycleController::class, 'pushPayrollSummary'])->middleware(['role_or_permission:super-admin|payment-cycle-create']);
+     /*----------------------------Payment Cycle End--------------------------------*/
+     });
+
 });

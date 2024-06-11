@@ -22,4 +22,13 @@ class PayrollPaymentCycle extends Model
      * @var array
      */
     protected $guarded = ['id'];
+
+     public function program()
+    {
+        return $this->belongsTo(AllowanceProgram::class,'program_id','id');
+    }  
+    
+    public function PaymentCycleDetails(){
+        return $this->hasMany(PayrollPaymentCycleDetail::class,'payroll_payment_cycle_id');
+    }
 }
