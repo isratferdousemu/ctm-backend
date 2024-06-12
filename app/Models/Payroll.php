@@ -50,8 +50,13 @@ class Payroll extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function payrollDeails()
+    public function payrollDetails()
     {
-        return $this->hasMany(PayrollDetail::class, 'payroll_id');
+        return $this->hasMany(PayrollDetail::class, 'payroll_id','id');
+    }
+
+    public function paymentCycleDetails()
+    {
+        return $this->hasMany(PayrollPaymentCycleDetail::class, 'payroll_id','id');
     }
 }
