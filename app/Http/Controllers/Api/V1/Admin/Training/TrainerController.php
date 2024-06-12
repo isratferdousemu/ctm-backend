@@ -79,6 +79,8 @@ class TrainerController extends Controller
             ->count()
         ;
 
+        $trainer->rating = round($trainer->ratings()->avg('rating'), 2);
+
         return $this->sendResponse($trainer);
     }
 
