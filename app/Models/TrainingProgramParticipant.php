@@ -37,4 +37,11 @@ class TrainingProgramParticipant extends Model
     }
 
 
+    public function ratings()
+    {
+        return $this->hasMany(TrainingRating::class, 'user_id', 'user_id')
+            ->where('training_program_id', $this->training_program_id);
+    }
+
+
 }
