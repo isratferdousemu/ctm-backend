@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Admin\Training\TrainerController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainingCircularController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainingParticipantController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainingProgramController;
+use App\Http\Controllers\Api\V1\Admin\Training\TrainingRatingController;
 
 Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::apiResource('trainers', TrainerController::class);
@@ -31,6 +32,8 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::resource('participants', ParticipantController::class);
     Route::post('token/update', [TimeSlotController::class, 'updateToken']);
     Route::get('kobo_token', [TimeSlotController::class, 'getToken']);
+
+    Route::post('trainer-rating', [TrainingRatingController::class, 'store']);
 
 
 });

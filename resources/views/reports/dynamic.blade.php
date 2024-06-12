@@ -73,7 +73,7 @@
 </head>
 <body>
 
-<p>{{ $language == 'en' ? "Listed Report |Department of Social Services" : "তালিকাভুক্ত  রিপোর্ট | সমাজসেবা অধিদফতর" }}</p>
+<p>{{ $language == 'en' ? "Listed Report | Department of Social Services" : "তালিকাভুক্ত  রিপোর্ট | সমাজসেবা অধিদফতর" }}</p>
 
 <div class="title-container"></div>
 
