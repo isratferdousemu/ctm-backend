@@ -79,6 +79,7 @@ trait PermissionTrait
     private $subPaymentProcessor = "payment-processor";
     private $subPayrollDashboard = "payroll-dashboard";
     private $subEmergencyPaymentDashboard = "emergency-payment-dashboard";
+    private $subEmergencySupplementary = "emergency-supplementary";
 
 
     // module 5 sub modules
