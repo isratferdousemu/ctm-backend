@@ -15,6 +15,7 @@ class TrainingProgramParticipant extends Model
     protected $casts = [
         'exam_response' => 'array',
         'trainer_rating_response' => 'array',
+        'passing_date' => 'date',
     ];
 
 
