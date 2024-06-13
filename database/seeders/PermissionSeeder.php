@@ -750,6 +750,14 @@ class PermissionSeeder extends Seeder
                     ["id" => 277, "name" => "emergency-payment-dashboard-show", "page_url" => "/emergency-payment-management/dashboard", "parent_page" => 1],
                 ]
             ],
+            [
+                'module_name' => $this->modulePermissionEmergencyPayment,
+                'sub_module_name' => $this->subEmergencySupplementary,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 279, "name" => "emergency-supplementary-payroll-show", "page_url" => "/emergency-payment/supplementary-payroll", "parent_page" => 1],
+                ]
+            ],
 
 
             /* -------------------------------------------------------------------------- */
@@ -768,7 +776,7 @@ class PermissionSeeder extends Seeder
 
         ];
 
-        //last id 277
+        //last id 279
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

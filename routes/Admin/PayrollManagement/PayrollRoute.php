@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\Emergency\EmergencySupplementaryController;
 use App\Http\Controllers\Api\V1\Admin\PaymentProcessorController;
 use App\Http\Controllers\Api\V1\Admin\PayrollDashboardController;
 use App\Http\Controllers\Api\V1\Admin\Payroll\PayrollController;
@@ -36,7 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
         //emergency payment dashboard
         Route::get('/payment-cycle-disbursement-status', [PayrollDashboardController::class, 'paymentCycleDisbursementStatus']);
         Route::get('/emergency-dashboard-data', [PayrollDashboardController::class, 'emergencyDashboardData']);
-
+        //emergency supplementary payroll
+        Route::get('/emergency-supplementary-payroll', [EmergencySupplementaryController::class, 'emergencySupplementaryPayrollData']);
         // for payroll create
         Route::get('/get-program-info/{program_id}', [PayrollController::class, 'getProgramInfo'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
         Route::get('/get-active-installments/{program_id}/{financial_year_id}', [PayrollController::class, 'getActiveInstallments'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
