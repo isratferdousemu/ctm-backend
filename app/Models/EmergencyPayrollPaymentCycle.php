@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class EmergencyPayrollPaymentCycle extends Model
 {
@@ -16,8 +18,10 @@ class EmergencyPayrollPaymentCycle extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function CycleDetails(): HasMany
+    public function CycleDetails(): HasOne
     {
-        return $this->hasMany(EmergencyPayrollPaymentCycleDetails::class, 'emergency_cycle_id', 'id');
+        return $this->hasOne(EmergencyPayrollPaymentCycleDetails::class, 'emergency_cycle_id', 'id');
     }
+
+
 }
