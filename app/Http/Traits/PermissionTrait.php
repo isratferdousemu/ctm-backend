@@ -78,6 +78,7 @@ trait PermissionTrait
     private $subPayrollPaymentTracking = "payment-tracking";
     private $subPaymentProcessor = "payment-processor";
     private $subPayrollDashboard = "payroll-dashboard";
+    private $subEmergencyPaymentDashboard = "emergency-payment-dashboard";
 
 
     // module 5 sub modules

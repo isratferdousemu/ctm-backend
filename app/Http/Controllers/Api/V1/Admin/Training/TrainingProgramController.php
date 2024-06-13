@@ -236,6 +236,17 @@ class TrainingProgramController extends Controller
     }
 
 
+    public function acceptInvitation(Request $request, TrainingProgramParticipant $participant)
+    {
+        $beforeUpdate = $participant->replicate();
+        $participant->update(['invitation_status' => $request->invitation_status]);
+        Helper::activityLogUpdate($participant, $beforeUpdate,'Training Program','Training Program Invitation Status Updated !');
+
+        return $this->sendResponse($participant, 'Invitation status updated successfully');
+
+    }
+
+
     public function updateExamStatus(TrainingProgram $program)
     {
         $beforeUpdate = $program->replicate();

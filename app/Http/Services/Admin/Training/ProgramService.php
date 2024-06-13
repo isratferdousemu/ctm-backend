@@ -69,6 +69,9 @@ class ProgramService
         $program->trainer_ratings_link = $request->trainer_ratings_link;
         $program->status = $request->status;
 
+        $program->exam_status = $request->exam_status;
+        $program->rating_status = $request->rating_status;
+
         $program->save();
 
         $program->modules()->sync($request->circular_modules);
