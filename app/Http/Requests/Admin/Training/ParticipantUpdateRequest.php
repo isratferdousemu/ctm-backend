@@ -37,9 +37,20 @@ class ParticipantUpdateRequest extends FormRequest
                     ->where('user_id', $this->participant->user_id)
                     ->ignore($this->participant->id)
             ],
-            'status' => 'nullable'
+            'status' => 'nullable',
+            'passing_date' => 'nullable|date'
 
         ];
+    }
+
+
+    public function prepareForValidation()
+    {
+        $this->merge(
+            [
+                'passing_date' => $this->status == 1 ? now() : null
+            ]
+        );
     }
 
 
