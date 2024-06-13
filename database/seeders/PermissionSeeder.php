@@ -743,6 +743,20 @@ class PermissionSeeder extends Seeder
                 ]
             ],
 
+            /* -------------------------------------------------------------------------- */
+            /*                             Data Migration                         */
+            /* -------------------------------------------------------------------------- */
+
+            [
+                'module_name' => $this->moduleDataMigration,
+                'sub_module_name' => $this->moduleDataMigration,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 277, "name" => "beneficiaryMigrration-create", "page_url" => "/migration/beneficiary", "parent_page" => 1],
+                    ["id" => 278, "name" => "beneficiaryMigrration-view", "page_url" => "/migration/beneficiary", "parent_page" => 1],
+                ]
+            ],
+
         ];
 
         //last id 276
