@@ -12,10 +12,10 @@ class PowerBiReport extends Model
     use HasFactory, SoftDeletes;
     protected $guarded = ['id'];
 
-    protected function image(): Attribute
-    {
-        return new Attribute(
-            get: fn($value) => $value ? asset('storage/' . $value) : null
-        );
-    }
+//    protected function image(): Attribute
+//    {
+//        return new Attribute(
+//            get: fn($value) => $value ? asset('storage/' . $value) : null
+//        );
+//    }
 }
