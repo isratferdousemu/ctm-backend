@@ -33,6 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/program-wise-payment-cycle', [PayrollDashboardController::class, 'programWisePaymentCycle']);
         Route::get('/total-amount-disbursed', [PayrollDashboardController::class, 'totalAmountDisbursed']);
         Route::get('/program-balance', [PayrollDashboardController::class, 'programBalance']);
+        //emergency payment dashboard
+        Route::get('/payment-cycle-disbursement-status', [PayrollDashboardController::class, 'paymentCycleDisbursementStatus']);
+        Route::get('/emergency-dashboard-data', [PayrollDashboardController::class, 'emergencyDashboardData']);
 
         // for payroll create
         Route::get('/get-program-info/{program_id}', [PayrollController::class, 'getProgramInfo'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
