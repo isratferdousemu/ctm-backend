@@ -25,8 +25,16 @@ class TrainingProgram extends Model
     ];
 
 
-    protected $appends = ['is_participant', 'certificate', 'give_rating'];
+    protected $appends = ['is_participant', 'certificate', 'give_rating', 'participant', 'is_valid'];
 
+
+
+    protected function isValid(): Attribute
+    {
+        return new Attribute(
+            get: fn() => now()->gte($this->start_date) && now()->lte($this->end_date)
+        );
+    }
 
 
     protected function isParticipant(): Attribute
@@ -43,16 +51,30 @@ class TrainingProgram extends Model
     {
         return new Attribute(
             function () {
-                $status = TrainingProgramParticipant::where('training_program_id', $this->id)
+                $participant = TrainingProgramParticipant::where('training_program_id', $this->id)
                     ->where('user_id', auth()->id())
-                    ->value('status');
+                    ->first();
 
-                if ($status == 1) {
+                if ($participant && $participant->status == 1) {
                     return [
                         'user_name' => auth()->user()->full_name,
                         'program_name' => $this->program_name,
+                        'passing_date' => $participant->passing_date?->format('d M Y'),
                     ];
                 }
+            }
+        );
+    }
+
+
+    protected function participant(): Attribute
+    {
+        return new Attribute(
+            function () {
+                return TrainingProgramParticipant::where('training_program_id', $this->id)
+                    ->where('user_id', auth()->id())
+                    ->first();
+
             }
         );
     }

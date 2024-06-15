@@ -10,13 +10,10 @@ use App\Http\Controllers\Api\V1\Admin\Training\TrainingProgramController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainingRatingController;
 
 Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
-    Route::apiResource('trainers', TrainerController::class);
     Route::any('trainers/status/{trainer}', [TrainerController::class, 'updateStatus']);
 
-    Route::apiResource('circulars', TrainingCircularController::class);
-    Route::apiResource('time-slots', TimeSlotController::class);
-    Route::apiResource('programs', TrainingProgramController::class);
     Route::put('programs/status/{program}', [TrainingProgramController::class, 'updateStatus']);
+    Route::put('programs/accept-invite/{participant}', [TrainingProgramController::class, 'acceptInvitation']);
     Route::put('programs/exam-status/{program}', [TrainingProgramController::class, 'updateExamStatus']);
     Route::put('programs/rating-status/{program}', [TrainingProgramController::class, 'updateRatingStatus']);
     Route::get('program-circulars', [TrainingProgramController::class, 'circulars']);
@@ -24,7 +21,6 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::get('program-time-slots', [TrainingProgramController::class, 'timeSlots']);
     Route::get('programs/sync-data/{program}', [TrainingProgramController::class, 'syncData']);
     Route::get('programs-test', [TrainingProgramController::class, 'testKobo']);
-
     Route::put('participants/update-status/{participant}', [ParticipantController::class, 'updateStatus']);
     Route::post('participants/external', [TrainingParticipantController::class, 'storeExternalParticipant']);
     Route::get('participants/users/{type}', [TrainingParticipantController::class, 'getUsers']);
@@ -33,6 +29,10 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::post('token/update', [TimeSlotController::class, 'updateToken']);
     Route::get('kobo_token', [TimeSlotController::class, 'getToken']);
 
+    Route::apiResource('trainers', TrainerController::class);
+    Route::apiResource('circulars', TrainingCircularController::class);
+    Route::apiResource('time-slots', TimeSlotController::class);
+    Route::apiResource('programs', TrainingProgramController::class);
     Route::post('trainer-rating', [TrainingRatingController::class, 'store']);
 
 
