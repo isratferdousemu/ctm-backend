@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
+use Throwable;
 
 class ProcessBudget implements ShouldQueue, ShouldBeUniqueUntilProcessing
 {
@@ -32,5 +33,15 @@ class ProcessBudget implements ShouldQueue, ShouldBeUniqueUntilProcessing
     public function handle(BudgetService $budgetService): void
     {
         $budgetService->processBudget($this->budget);
+    }
+
+    /**
+     * Handle a job failure.
+     */
+    public function failed(?Throwable $exception): void
+    {
+        $this->budget->approval_status = 'Failed';
+        $this->budget->process_flag = -1;
+        $this->budget->save();
     }
 }
