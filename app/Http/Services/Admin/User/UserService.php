@@ -74,6 +74,7 @@ class UserService
             }
 
 
+            $user->programs_id = $request->programs_id;
             $user->user_type = $this->staffId;
             $user->salt = Helper::generateSalt();
 
@@ -192,6 +193,9 @@ class UserService
             } else {
                 abort(500, 'Internal server error');
             }
+
+            $user->programs_id = $request->programs_id;
+
 
             $user->save();
             // assign role to the user

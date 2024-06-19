@@ -1036,6 +1036,10 @@ class ApplicationController extends Controller
     {
         $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
 
+        if ($user->programs_id) {
+            $query->whereIn('program_id', $user->programs_id);
+        }
+
         if ($user->hasRole($this->officeHead) && $user->office_type) {
             return (new OfficeApplicationService())->getApplications($query, $user);
         }
