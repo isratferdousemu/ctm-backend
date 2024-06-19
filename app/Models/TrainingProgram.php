@@ -25,8 +25,16 @@ class TrainingProgram extends Model
     ];
 
 
-    protected $appends = ['is_participant', 'certificate', 'give_rating', 'participant'];
+    protected $appends = ['is_participant', 'certificate', 'give_rating', 'participant', 'is_valid'];
 
+
+
+    protected function isValid(): Attribute
+    {
+        return new Attribute(
+            get: fn() => now()->gte($this->start_date) && now()->lte($this->end_date)
+        );
+    }
 
 
     protected function isParticipant(): Attribute

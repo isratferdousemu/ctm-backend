@@ -79,6 +79,7 @@ trait PermissionTrait
     private $subPaymentProcessor = "payment-processor";
     private $subPayrollDashboard = "payroll-dashboard";
     private $subEmergencyPaymentDashboard = "emergency-payment-dashboard";
+    private $subEmergencySupplementary = "emergency-supplementary";
 
 
     // module 5 sub modules
@@ -94,6 +95,9 @@ trait PermissionTrait
     private $budgetManagement = "budget-management";
     private $allotmentManagement = "allotment-management";
     private $settingManagement = "setting-management";
+
+    //data migration
+    private $moduleDataMigration = "dataMigration";
 
 
     public function getUserPermissions()

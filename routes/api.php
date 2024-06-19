@@ -27,6 +27,7 @@ Route::prefix('v1')->group(function () {
     include "Admin/Training/trainingRoute.php";
     include "Admin/PayrollManagement/PayrollRoute.php";
     include "Admin/Emergency/EmergencyManagementRoute.php";
+    include "Admin/DataMigrationRoute.php";
 
 });
 

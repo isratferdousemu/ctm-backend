@@ -137,7 +137,7 @@ class BudgetController extends Controller
     {
         try {
             $beforeUpdate = Budget::findOrFail($id);
-            if (!$beforeUpdate->process_flag) {
+            if ($beforeUpdate->process_flag <= 0) {
                 throw new Exception('Budget not yet processed', ResponseAlias::HTTP_BAD_REQUEST);
             } elseif ($beforeUpdate->is_approved) {
                 throw new Exception('Budget Already Approved', ResponseAlias::HTTP_BAD_REQUEST);
