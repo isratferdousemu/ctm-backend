@@ -2183,8 +2183,9 @@ class LocationController extends Controller
         // End Filtering
 
         ->orderBy($sortBy, $orderBy)
-        ->with('parent.parent.parent', 'locationType','children')
+        ->with('parent.parent.parent', 'locationType')
         ->paginate($perPage, ['*'], 'page', $page);
+       
 
     return UnionResource::collection($union)->additional([
         'success' => true,
@@ -2557,7 +2558,8 @@ class LocationController extends Controller
 
         $validator->validated();
 
-        $union = Location::whereId($id)->whereType($this->union)->first();
+        $union = Location::whereId($id)->first();
+       
         if ($union->children->count() > 0) {
 
             return $this->sendError('This record cannot be deleted because it is linked to other data.', [], 500);

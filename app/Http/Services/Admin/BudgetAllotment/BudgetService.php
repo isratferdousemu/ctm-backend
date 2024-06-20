@@ -122,7 +122,8 @@ class BudgetService
     public function save(StoreBudgetRequest $request): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|bool|\Illuminate\Database\Eloquent\Builder|array|null
     {
         $budget_id = mt_rand(100000, 999999);
-        $validated = $request->safe()->merge(['budget_id' => $budget_id])->only(['budget_id', 'program_id', 'financial_year_id', 'calculation_type', 'no_of_previous_year', 'calculation_value', 'remarks']);
+        $created_by_id = auth()->user()->id;
+        $validated = $request->safe()->merge(['budget_id' => $budget_id, 'created_by_id' => $created_by_id])->only(['budget_id', 'program_id', 'financial_year_id', 'calculation_type', 'no_of_previous_year', 'calculation_value', 'remarks']);
         $budget = Budget::create($validated);
         ProcessBudget::dispatch($this->get($budget->id));
         Helper::activityLogInsert($budget, '', 'Budget', 'Budget Created!');
@@ -442,9 +443,11 @@ class BudgetService
     {
         $budget = Budget::findOrFail($id);
         $beforeUpdate = $budget->replicate();
-        $validated = $request->safe()->only(['calculation_type', 'no_of_previous_year', 'calculation_value', 'remarks']);
+        $updated_by_id = auth()->user()->id;
+        $validated = $request->safe()->merge(['updated_by_id' => $updated_by_id])->only(['calculation_type', 'no_of_previous_year', 'calculation_value', 'remarks']);
         $budget->fill($validated);
         $budget->save();
+
         Helper::activityLogUpdate($budget, $beforeUpdate, "Budget", "Budget Updated!");
         return $budget;
     }
@@ -461,6 +464,7 @@ class BudgetService
         $budget->fill($validated);
         $budget->is_approved = true;
         $budget->approval_status = 'Approved';
+        $budget->approved_by_id = auth()->user()->id;
         $budget->approved_at = now();
         if ($request->hasFile('approved_document'))
             $budget->approved_document = $request->file('approved_document')->store('public');
@@ -480,8 +484,8 @@ class BudgetService
         DB::beginTransaction();
         try {
             $budget = Budget::findOrFail($id);
-            $budget->budgetDetail()->delete();
-            $budget->delete();
+            $budget->budgetDetail()->forceDelete();
+            $budget->forceDelete();
             DB::commit();
             return true;
         } catch (\Throwable $th) {

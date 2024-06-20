@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Report\PowerBiRequest;
 use App\Http\Requests\Admin\Report\PowerBiUpdateRequest;
 use App\Http\Resources\Admin\Device\DeviceResource;
+use App\Http\Resources\Admin\Report\PowerBiResource;
 use App\Http\Services\Admin\Report\PowerBiService;
 use App\Models\PowerBiReport;
 use Illuminate\Http\Request;
@@ -42,11 +43,10 @@ class PowerBiController extends Controller
                 ->orWhere('name_bn', 'like', "%$v%");
         });
         $data = $query->orderBy($sortBy, $orderBy)->paginate($perPage, ['*'], 'page', $page);
-
-        return $data;
-
-
+//        return $data;
+        return PowerBiResource::collection($data);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -63,7 +63,7 @@ class PowerBiController extends Controller
     {
         $data = $this->powerBiService->createinfo($request);
 
-        return $this->sendResponse($data, 'Power BI Report created successfully Done');
+        return $this->sendResponse($data, 'Power BI Report created successfully');
     }
 
     /**
@@ -96,7 +96,7 @@ class PowerBiController extends Controller
     public function update(PowerBiUpdateRequest $request, string $id)
     {
         $data = $this->powerBiService->updateInfo($request);
-        return $this->sendResponse($data, 'Power BI Report updated successfully Done');
+        return $this->sendResponse($data, 'Power BI Report updated successfully');
     }
 
     /**

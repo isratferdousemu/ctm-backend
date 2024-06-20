@@ -22,7 +22,7 @@ class ApproveBudgetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'approved_by' => 'required|string|max:100',
+//            'approved_by' => 'required|string|max:100',
             'approved_document' => 'nullable|mimes:jpeg,jpg,pdf|max:2048',
             'approved_remarks' => 'nullable',
         ];

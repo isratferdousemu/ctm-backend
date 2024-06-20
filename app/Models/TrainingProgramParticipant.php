@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +16,28 @@ class TrainingProgramParticipant extends Model
     protected $casts = [
         'exam_response' => 'array',
         'trainer_rating_response' => 'array',
+        'passing_date' => 'date',
     ];
+
+
+    protected $appends = ['certificate'];
+
+
+
+    protected function certificate(): Attribute
+    {
+        return new Attribute(
+            function () {
+                if ($this->status == 1) {
+                    return [
+                        'user_name' => $this->user->full_name,
+                        'program_name' => $this->trainingProgram?->program_name,
+                        'passing_date' => $this->passing_date?->format('d M Y'),
+                    ];
+                }
+            }
+        );
+    }
 
 
     public function user()

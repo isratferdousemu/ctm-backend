@@ -165,7 +165,11 @@ class ParticipantController extends Controller
     {
         $beforeUpdate = $participant->replicate();
 
-        $participant->update(['status' => $request->status]);
+        $participant->update([
+            'status' => $request->status,
+            'rating' => $request->rating,
+            'passing_date' => $request->status == 1 ? now() : null
+        ]);
 
         Helper::activityLogUpdate($participant, $beforeUpdate,'Training Participant','Training Participant Status Updated !');
 

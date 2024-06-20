@@ -125,5 +125,9 @@ class Location extends Model
     {
         return $this->hasMany(Location::class, 'parent_id')->where('type', 'thana');
     }
+    public function getChildrenCountAttribute()
+    {
+        return $this->children()->count();
+    }
 
 }

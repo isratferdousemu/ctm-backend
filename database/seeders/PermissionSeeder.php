@@ -742,10 +742,41 @@ class PermissionSeeder extends Seeder
                     ["id" => 275, "name" => "payroll-dashboard-show", "page_url" => "/payroll-management/dashboard", "parent_page" => 1],
                 ]
             ],
+            [
+                'module_name' => $this->modulePermissionEmergencyPayment,
+                'sub_module_name' => $this->subEmergencyPaymentDashboard,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 277, "name" => "emergency-payment-dashboard-show", "page_url" => "/emergency-payment-management/dashboard", "parent_page" => 1],
+                ]
+            ],
+            [
+                'module_name' => $this->modulePermissionEmergencyPayment,
+                'sub_module_name' => $this->subEmergencySupplementary,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 279, "name" => "emergency-supplementary-payroll-show", "page_url" => "/emergency-payment/supplementary-payroll", "parent_page" => 1],
+                ]
+            ],
+
+
+            /* -------------------------------------------------------------------------- */
+            /*                             Data Migration                         */
+            /* -------------------------------------------------------------------------- */
+
+            [
+                'module_name' => $this->moduleDataMigration,
+                'sub_module_name' => $this->moduleDataMigration,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 277, "name" => "beneficiaryMigrration-create", "page_url" => "/migration/beneficiary", "parent_page" => 1],
+                    ["id" => 278, "name" => "beneficiaryMigrration-view", "page_url" => "/migration/beneficiary", "parent_page" => 1],
+                ]
+            ],
 
         ];
 
-        //last id 276
+        //last id 279
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Training\TrainingProgramRequest;
 use App\Http\Services\Admin\Training\KoboService;
 use App\Http\Services\Admin\Training\ProgramService;
 use App\Http\Traits\RoleTrait;
+use App\Models\KoboUpdateToken;
 use App\Models\TimeSlot;
 use App\Models\TrainingProgram;
 use App\Models\Trainer;
@@ -73,14 +74,15 @@ class TrainingProgramController extends Controller
             $q->whereDate('end_date', '<=', $v);
         });
 
+        $user = auth()->user();
 
-        if (\Auth::user()->hasRole($this->participant)) {
+        if ($user->user_type !=1 && $user->hasRole($this->participant)) {
             $query->whereHas('participants', function ($q) {
                 $q->where('user_id', auth()->id());
             });
         }
 
-        if (\Auth::user()->hasRole($this->trainer)) {
+        if ($user->user_type !=1 && $user->hasRole($this->trainer)) {
             $query->whereHas('trainers', function ($q) {
                 $q->where('trainer_id', auth()->id());
             });
@@ -128,7 +130,7 @@ class TrainingProgramController extends Controller
 
         DB::beginTransaction();
         try {
-            $token = env('KOBO_API_TOKEN');
+            $token = KoboUpdateToken::value('token');
             if ($program->form_id) {
                 $this->koboService->insertQuestion($program, $token);
                 $this->koboService->insertAnswers($program, $token);
@@ -197,10 +199,6 @@ class TrainingProgramController extends Controller
     {
         $program->load('trainingCircular.trainingType', 'modules', 'trainers', 'statusName');
 
-        if (auth()->user() && auth()->user()->hasRole($this->participant)) {
-            $program->participant = $program->participants()->firstWhere('user_id', auth()->id());
-        }
-
         return $this->sendResponse($program);
     }
 
@@ -232,6 +230,17 @@ class TrainingProgramController extends Controller
         Helper::activityLogUpdate($program, $beforeUpdate,'Training Program','Training Program Status Updated !');
 
         return $this->sendResponse($program, 'Training Program status updated successfully');
+
+    }
+
+
+    public function acceptInvitation(Request $request, TrainingProgramParticipant $participant)
+    {
+        $beforeUpdate = $participant->replicate();
+        $participant->update(['invitation_status' => $request->invitation_status]);
+        Helper::activityLogUpdate($participant, $beforeUpdate,'Training Program','Training Program Invitation Status Updated !');
+
+        return $this->sendResponse($participant, 'Invitation status updated successfully');
 
     }
 

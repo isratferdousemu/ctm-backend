@@ -96,11 +96,16 @@ class TrainingParticipantController extends Controller
 
 
 
-    public function getUsers($userType)
+    public function getUsers(Request $request, $userType)
     {
         $query = User::query();
 
         $query->select('id', 'username', 'full_name', 'user_id', 'user_type', 'photo', 'mobile', 'email');
+
+        $query->when($request->location_id, function ($q, $v) {
+            $q->where('assign_location_id', $v);
+        });
+
 
         $query->when($userType == 1, function ($q) {
             $q->whereNotNull('office_type')
