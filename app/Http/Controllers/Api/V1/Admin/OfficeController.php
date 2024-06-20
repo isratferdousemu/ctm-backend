@@ -462,16 +462,12 @@ class OfficeController extends Controller
         }
 
 
+
         try {
             $office = $this->OfficeService->createOffice($request);
 
             Helper::activityLogInsert($office,'','Office','Office Created !');
 
-
-            // activity("Office")
-            //     ->causedBy(auth()->user())
-            //     ->performedOn($office)
-            //     ->log('Office Created !');
             return OfficeResource::make($office)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -599,16 +595,11 @@ class OfficeController extends Controller
 
     public function officeUpdate(OfficeUpdateRequest $request)
     {
-
         try {
             $beforeUpdate = Office::find($request->id);
             $office = $this->OfficeService->updateOffice($request);
             Helper::activityLogUpdate($office,$beforeUpdate,'Office','Office Updated !');
 
-            // activity("Office")
-            //     ->causedBy(auth()->user())
-            //     ->performedOn($office)
-            //     ->log('Office Updated !');
             return OfficeResource::make($office)->additional([
                 'success' => true,
                 'message' => $this->updateSuccessMessage,
@@ -724,6 +715,7 @@ class OfficeController extends Controller
 
         $office = Office::whereId($id)->first();
         if ($office) {
+            $office->wards()->delete();
             $office->delete();
         }
         Helper::activityLogDelete($office,'','Office','Office Deleted !');
