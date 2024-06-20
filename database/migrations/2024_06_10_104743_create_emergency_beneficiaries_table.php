@@ -48,6 +48,7 @@ return new class extends Migration
             $table->foreignId('current_thana_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('current_union_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('current_ward_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('current_location_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('current_post_code');
             $table->string('current_address');
             $table->string('current_mobile')->nullable();
@@ -61,6 +62,7 @@ return new class extends Migration
             $table->foreignId('permanent_thana_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('permanent_union_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('permanent_ward_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('permanent_location_id')->nullable()->constrained('locations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('permanent_post_code');
             $table->string('permanent_address');
             $table->string('permanent_mobile')->nullable();
@@ -83,6 +85,7 @@ return new class extends Migration
             $table->double('monthly_allowance', 8, 2)->nullable();
             $table->tinyInteger('status')->default(0);
             $table->tinyInteger('isExisting')->default(0);
+            $table->tinyInteger('isSelected')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

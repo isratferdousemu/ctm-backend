@@ -34,7 +34,7 @@ return new class extends Migration
             $table->date('closing_period');
             $table->foreignId('created_by_id')->nullable()->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('updated_by_id')->nullable()->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->integer('status')->default(0);
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

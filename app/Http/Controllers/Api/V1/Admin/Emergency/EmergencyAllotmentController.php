@@ -42,7 +42,7 @@ class EmergencyAllotmentController extends Controller
 
         return EmergencyAllotmentResource::make($allotment)->additional([
             'success' => true,
-            'message' => $this->insertSuccessMessage,
+            'message' => "Emergency Allotment Created Successfully",
         ]);
     }
     public function edit($id)
@@ -67,7 +67,7 @@ class EmergencyAllotmentController extends Controller
 
             return EmergencyAllotmentResource::make($allotment)->additional([
                 'success' => true,
-                'message' => $this->updateSuccessMessage,
+                'message' => "Emergency Allotment Updated Successfully",
             ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -77,6 +77,6 @@ class EmergencyAllotmentController extends Controller
     {
         $data = $this->emergencyAllotmentService->destroy($id);
         Helper::activityLogDelete($data, '', 'Emergency Allotment', 'Emergency Allotment Deleted !');
-        return handleResponse($data, $this->deleteSuccessMessage);
+        return handleResponse($data, "Emergency Allotment Deleted Successfully");
     }
 }
