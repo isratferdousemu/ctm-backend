@@ -14,6 +14,7 @@ use App\Models\TrainingProgram;
 use App\Models\Trainer;
 use App\Models\TrainingCircular;
 use App\Models\TrainingProgramParticipant;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -130,7 +131,7 @@ class TrainingProgramController extends Controller
 
         DB::beginTransaction();
         try {
-            $token = KoboUpdateToken::value('token');
+            $token = KoboUpdateToken::value('token') ?: env('KOBO_API_TOKEN');
             if ($program->form_id) {
                 $this->koboService->insertQuestion($program, $token);
                 $this->koboService->insertAnswers($program, $token);
@@ -144,6 +145,11 @@ class TrainingProgramController extends Controller
             return $this->sendResponse($program, 'Data synced successfully');
         } catch (\Exception $exception) {
             DB::rollBack();
+
+            if ($exception instanceof GuzzleException) {
+                return $this->sendError('Invalid Token');
+            }
+
             throw $exception;
         }
 
@@ -197,7 +203,7 @@ class TrainingProgramController extends Controller
      */
     public function show(TrainingProgram $program)
     {
-        $program->load('trainingCircular.trainingType', 'modules', 'trainers', 'statusName');
+        $program->load('trainingCircular.trainingType', 'modules', 'trainers', 'statusName', 'users');
 
         return $this->sendResponse($program);
     }
