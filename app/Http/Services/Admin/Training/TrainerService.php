@@ -67,6 +67,8 @@ class TrainerService
 
         $trainer->save();
 
+        $trainer->user->assignRole($this->trainer);
+
         return $trainer;
     }
 
