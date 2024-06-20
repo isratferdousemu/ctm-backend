@@ -454,6 +454,11 @@ class PermissionSeeder extends Seeder
                     ["id" => 139, "name" => "emergency-beneficiary-edit", "page_url" => "/emergency-payment/emergency-beneficiary/edit/:id", "parent_page" => 1],
                     ["id" => 140, "name" => "emergency-beneficiary-delete", "page_url" => "/emergency-payment/emergency-beneficiary", "parent_page" => 1],
 
+                    ["id" => 141, "name" => "manage-emergency-beneficiary-create", "page_url" => "/emergency-payment/manage-emergency-beneficiary/create", "parent_page" => 1],
+                    ["id" => 142, "name" => "manage-emergency-beneficiary-view", "page_url" => "/emergency-payment/manage-emergency-beneficiary", "parent_page" => 1],
+                    ["id" => 143, "name" => "manage-emergency-beneficiary-edit", "page_url" => "/emergency-payment/manage-emergency-beneficiary/edit/:id", "parent_page" => 1],
+                    ["id" => 144, "name" => "manage-emergency-beneficiary-delete", "page_url" => "/emergency-payment/manage-emergency-beneficiary", "parent_page" => 1],
+
                     ["id" => 141, "name" => "emergency-payroll-create", "page_url" => "/payroll-management/emergency-payroll/create", "parent_page" => 1],
                     ["id" => 142, "name" => "emergency-payroll-view", "page_url" => "/payroll-management/emergency-payroll", "parent_page" => 1],
                     ["id" => 143, "name" => "emergency-payroll-edit", "page_url" => "/payroll-management/emergency-payroll/edit/:id", "parent_page" => 1],

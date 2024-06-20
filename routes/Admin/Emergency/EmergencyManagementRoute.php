@@ -13,14 +13,17 @@ Route::middleware(['auth:sanctum', 'language'])->group(function () {
         Route::delete('/allotments/{id}', [EmergencyAllotmentController::class, 'destroy'])->middleware(['role_or_permission:super-admin|emergency-allotment-delete']);
         Route::get('/allotments/edit/{id}', [EmergencyAllotmentController::class, 'edit'])->middleware(['role_or_permission:super-admin|emergency-allotment-edit']);
         Route::put('/allotments/update/{id}', [EmergencyAllotmentController::class, 'update'])->middleware(['role_or_permission:super-admin|emergency-allotment-edit']);
+        Route::get('/get-allotment-wise-program', [EmergencyAllotmentController::class, 'getAllotmentWiseProgram'])->middleware(['role_or_permission:super-admin|emergency-allotment-view']);
         /* -----------------------------------Emergency Allotment End--------------------------------------- */
 
         /*----------------------------Emergency Beneficiary Start--------------------------------*/
         Route::get('/beneficiaries', [EmergencyBeneficiaryController::class, 'list'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-view']);
         Route::post('/beneficiaries', [EmergencyBeneficiaryController::class, 'store'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-create']);
+        Route::post('/store-multiple-beneficiaries', [EmergencyBeneficiaryController::class, 'storeMultipleData'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-create']);
         Route::get('/beneficiary/edit/{id}', [EmergencyBeneficiaryController::class, 'edit'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-edit']);
         Route::put('/beneficiary/update/{id}', [EmergencyBeneficiaryController::class, 'update'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-edit']);
         Route::get('/get-existing-beneficiaries-info', [EmergencyBeneficiaryController::class, 'getExistingBeneficiariesInfo'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-create']);
+        Route::get('/get-new-beneficiaries-info', [EmergencyBeneficiaryController::class, 'getNewBeneficiariesInfo'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-create']);
         Route::delete('/beneficiary/{id}', [EmergencyBeneficiaryController::class, 'destroy'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-delete']);
         /* -----------------------------------Emergency Beneficiary End--------------------------------------- */
 

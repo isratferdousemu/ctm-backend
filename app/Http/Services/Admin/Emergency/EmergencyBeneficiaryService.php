@@ -13,12 +13,13 @@ use Illuminate\Support\Facades\Storage;
 class EmergencyBeneficiaryService
 {
     use FileUploadTrait;
+
     public function getExistingBeneficaries($request)
     {
         $queryParams = $request->only([
             'division_id', 'district_id', 'location_type', 'thana_id',
             'union_id', 'city_id', 'city_thana_id', 'district_pouro_id',
-            'searchBy', 'status', 'program_id', 'perPage'
+            'status', 'program_id', 'perPage'
         ]);
 
         $perPage = $request->query('perPage', 10);
@@ -48,9 +49,67 @@ class EmergencyBeneficiaryService
             $query->where('current_city_corp_id', $queryParams['city_id']);
         }
 
-        // if (!empty($queryParams['city_thana_id'])) {
-        //     $query->where('current_city_thana_id', $queryParams['city_thana_id']);
-        // }
+        if (!empty($queryParams['city_thana_id'])) {
+            $query->where('current_thana_id', $queryParams['city_thana_id']);
+        }
+
+        if (!empty($queryParams['district_pouro_id'])) {
+            $query->where('current_district_pourashava_id', $queryParams['district_pouro_id']);
+        }
+        if (!empty($queryParams['pouro_id'])) {
+            $query->where('current_pourashava_id', $queryParams['pouro_id']);
+        }
+        if (!empty($queryParams['ward_id'])) {
+            $query->where('current_ward_id', $queryParams['ward_id']);
+        }
+
+        if (!empty($queryParams['status'])) {
+            $query->where('status', $queryParams['status']);
+        }
+
+
+        $data = $query->get();
+        return $data;
+    }
+
+    public function getNewBeneficaries($request)
+    {
+        $queryParams = $request->only([
+            'division_id', 'district_id', 'location_type', 'thana_id',
+            'union_id', 'city_id', 'city_thana_id', 'district_pouro_id',
+            'status', 'program_id', 'perPage'
+        ]);
+
+        $perPage = $request->query('perPage', 10);
+        $query = EmergencyBeneficiary::query();
+
+        if (!empty($queryParams['division_id'])) {
+            $query->where('current_division_id', $queryParams['division_id']);
+        }
+
+        if (!empty($queryParams['district_id'])) {
+            $query->where('current_district_id', $queryParams['district_id']);
+        }
+
+        if (!empty($queryParams['location_type'])) {
+            $query->where('current_location_type', $queryParams['location_type']);
+        }
+
+        if (!empty($queryParams['thana_id'])) {
+            $query->where('current_upazila_id', $queryParams['thana_id']);
+        }
+
+        if (!empty($queryParams['union_id'])) {
+            $query->where('current_union_id', $queryParams['union_id']);
+        }
+
+        if (!empty($queryParams['city_id'])) {
+            $query->where('current_city_corp_id', $queryParams['city_id']);
+        }
+
+        if (!empty($queryParams['city_thana_id'])) {
+            $query->where('current_city_thana_id', $queryParams['city_thana_id']);
+        }
 
         if (!empty($queryParams['district_pouro_id'])) {
             $query->where('current_district_pourashava_id', $queryParams['district_pouro_id']);
@@ -60,30 +119,9 @@ class EmergencyBeneficiaryService
             $query->where('status', $queryParams['status']);
         }
 
-        // Handle searchBy - Assuming 'searchBy' can be used to filter by name or other text fields
-        // if (!empty($queryParams['searchBy'])) {
-        //     $searchBy = $queryParams['searchBy'];
-        //     $query->where(function ($q) use ($searchBy) {
-        //         $q->where('name_en', 'LIKE', "%{$searchBy}%")
-        //             ->orWhere('name_bn', 'LIKE', "%{$searchBy}%")
-        //             ->orWhere('email', 'LIKE', "%{$searchBy}%");
-        //         // Add more fields as needed
-        //     });
-        // }
+        $query->where('isExisting', 0);
 
-        $data = $query->with(
-            'program',
-            'permanentDivision',
-            'permanentDistrict',
-            'permanentCityCorporation',
-            'permanentDistrictPourashava',
-            'permanentUpazila',
-            'permanentPourashava',
-            'permanentThana',
-            'permanentUnion',
-            'permanentWard'
-        )->paginate($perPage);
-
+        $data = $query->get();
         return $data;
     }
 
@@ -231,7 +269,6 @@ class EmergencyBeneficiaryService
         return $beneficiary;
     }
 
-
     public function update($request, $id)
     {
 
@@ -289,7 +326,7 @@ class EmergencyBeneficiaryService
             $beneficiary->fill($request->only(['nominee_en', 'nominee_bn', 'nominee_verification_number', 'nominee_address',
                 'nominee_relation_with_beneficiary', 'nominee_nationality',
                 'nominee_date_of_birth', 'account_name', 'account_number',
-                'account_owner', 'account_type', 'bank_name', 'branch_name','email']));
+                'account_owner', 'account_type', 'bank_name', 'branch_name', 'email']));
             if ($request->hasFile('nominee_image'))
                 $beneficiary->nominee_image = $request->file('nominee_image')->store('public');
 
@@ -304,46 +341,14 @@ class EmergencyBeneficiaryService
         }
 
     }
-    public function base64Image($file)
-    {
 
-        $position = strpos($file, ';');
-        $sub = substr($file, 0, $position);
-        $ext = explode('/', $sub)[1];
-        if(isset($ext) && ($ext == "png" || $ext == "jpeg" || $ext == "jpg" || $ext == "pdf")) {
-            $newImageName = time() . "." . $ext;
-        } else {
-            $ext2 = explode('.', $ext)[3];
-            if ($ext2 == "document") {
-                $ext = "docx";
-                $newImageName = time() . "." . $ext;
-            } elseif ($ext2 == "sheet") {
-                $ext = "xlsx";
-                $newImageName = time() . "." . $ext;
-            } else {
-                $newImageName = "";
-            }
-            $newImageName = time() . "." . $ext;
-        }
-        $this->validateFile($file);
-        $this->createUploadFolder();
-        $uploadedPath = $this->uploadFile($newImageName, $file);
-        return $uploadedPath;
-    }
-    private function uploadFile($newImageName, $file)
-    {
-
-        $path = $this->uploadPath . '/' . $this->folderName . '/';
-        if (Storage::putFileAs('public/' . $path, $file, $newImageName)) {
-            return  $path . $newImageName;
-        }
-    }
     public function store($request): EmergencyBeneficiary
     {
+
         try {
             $beneficiary = new EmergencyBeneficiary();
-            $beneficiary->allotment_id = $request->emergency_allotment_id;
-            $beneficiary->beneficiary_id = \Str::random(4);
+            $beneficiary->allotment_id = $request->emergency_allotment_id ?? $request->program_id;
+            $beneficiary->beneficiary_id = mt_rand(1000, 9999);
             $beneficiary->verification_type = $request->verification_type;
             $beneficiary->verification_number = $request->verification_number;
             $beneficiary->age = $request->age;
@@ -364,7 +369,6 @@ class EmergencyBeneficiaryService
             $beneficiary->nationality = $request->nationality;
             $beneficiary->account_type = $request->account_type;
             $beneficiary->bank_name = $request->bank_name;
-//          $beneficiary->mfs_name = $request->mfs_name;
             $beneficiary->branch_name = $request->branch_name;
 
             if ($request->has('ward_id_city') && $request->ward_id_city != null) {
@@ -508,6 +512,169 @@ class EmergencyBeneficiaryService
 
     }
 
+    public function storeMultipleData(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+//        dd($data);
+        foreach ($data as $item) {
+            $beneficiary = new EmergencyBeneficiary();
+//            dd($item['program_id']);
+            $beneficiary->allotment_id = $item['program_id'];
+            $beneficiary->beneficiary_id = $item['beneficiary_id'];
+            $beneficiary->verification_type = $item['verification_type'];
+            $beneficiary->verification_number = $item['verification_number'];
+            $beneficiary->age = $item['age'];
+            $beneficiary->date_of_birth = $item['date_of_birth'];
+            $beneficiary->name_en = $item['name_en'];
+            $beneficiary->name_bn = $item['name_bn'];
+            $beneficiary->mother_name_en = $item['mother_name_en'];
+            $beneficiary->mother_name_bn = $item['mother_name_bn'];
+            $beneficiary->father_name_en = $item['father_name_en'];
+            $beneficiary->father_name_bn = $item['father_name_bn'];
+            $beneficiary->spouse_name_en = $item['spouse_name_en'];
+            $beneficiary->spouse_name_bn = $item['spouse_name_bn'];
+            $beneficiary->identification_mark = $item['identification_mark'];
+            $beneficiary->gender_id = $item['gender_id'];
+            $beneficiary->education_status = $item['education_status'];
+            $beneficiary->profession = $item['profession'];
+            $beneficiary->religion = $item['religion'];
+            $beneficiary->nationality = $item['nationality'];
+            $beneficiary->account_type = $item['account_type'];
+            $beneficiary->bank_name = $item['bank_name'];
+            $beneficiary->branch_name = $item['branch_name'];
+            $beneficiary->permanent_post_code = $item['permanent_post_code'];
+            $beneficiary->permanent_address = $item['permanent_address'];
+            $beneficiary->current_post_code = $item['current_post_code'];
+            $beneficiary->current_address = $item['current_address'];
+            $beneficiary->permanent_mobile = $item['permanent_mobile'];
+            $beneficiary->current_mobile = $item['mobile'];
+            $beneficiary->nominee_en = $item['nominee_en'];
+            $beneficiary->nominee_bn = $item['nominee_bn'];
+            $beneficiary->nominee_verification_number = $item['nominee_verification_number'];
+            $beneficiary->nominee_address = $item['nominee_address'];
+            $beneficiary->nominee_date_of_birth = $item['nominee_date_of_birth'];
+            $beneficiary->nominee_relation_with_beneficiary = $item['nominee_relation_with_beneficiary'];
+            $beneficiary->nominee_nationality = $item['nominee_nationality'];
+            $beneficiary->account_name = $item['account_name'];
+            $beneficiary->account_number = $item['account_number'];
+            $beneficiary->account_owner = $item['account_owner'];
+            $beneficiary->marital_status = $item['marital_status'];
+            $beneficiary->email = $item['email'];
+            $beneficiary->isSelected = $item['isSelected'];
+            $beneficiary->isExisting = $item['isExisting'];
+            $beneficiary->status = $item['status'];
+
+
+            $beneficiary->current_division_id = $item['current_division_id'];
+            $beneficiary->current_district_id = $item['current_district_id'];
+            $beneficiary->current_location_type = $item['current_location_type_id'];
+            //Dist pouro
+            if ($item['current_location_type_id'] == 1) {
+                $beneficiary->current_district_pourashava_id = $item['current_district_pourashava_id'];
+                $beneficiary->current_ward_id = $item['current_ward_id'];
+            }
+
+            //City corporation
+            if ($item['current_location_type_id'] == 3) {
+                $beneficiary->current_city_corp_id = $item['current_city_corp_id'];
+                $beneficiary->current_thana_id = $item['current_thana_id'];
+                $beneficiary->current_ward_id = $item['current_ward_id'];
+            }
+
+            //Upazila
+            if ($item['current_location_type_id'] == 2) {
+                $beneficiary->current_upazila_id = $item['current_upazila_id'];
+                //union
+                if ($item['current_location_type_id'] == 2) {
+                    $beneficiary->current_union_id = $item['current_union_id'];
+                    $beneficiary->current_ward_id = $item['current_ward_id'];
+                } else {
+                    //pouro
+                    $beneficiary->current_pourashava_id = $item['current_pourashava_id'];
+                    $beneficiary->current_ward_id = $item['current_ward_id'];
+                }
+
+            }
+
+            //  Permanent Location Type
+
+            $beneficiary->permanent_division_id = $item['permanent_division_id'];
+            $beneficiary->permanent_district_id = $item['permanent_district_id'];
+            $beneficiary->permanent_location_type = $item['permanent_location_type_id'];
+
+            //Dist pouro
+            if ($item['permanent_location_type_id'] == 1) {
+                $beneficiary->permanent_district_pourashava_id = $item['permanent_district_pourashava_id'];
+                $beneficiary->permanent_ward_id = $item['permanent_ward_id'];
+            }
+
+
+            //City corporation
+            if ($item['permanent_location_type_id'] == 3) {
+                $beneficiary->permanent_city_corp_id = $item['permanent_city_corp_id'];
+                $beneficiary->permanent_thana_id = $item['permanent_thana_id'];
+                $beneficiary->permanent_ward_id = $item['permanent_ward_id'];
+            }
+
+            //Upazila
+            if ($item['permanent_location_type_id'] == 2) {
+                $beneficiary->permanent_upazila_id = $item['permanent_upazila_id'];
+                //union
+                if ($item['permanent_location_type_id'] == 2) {
+                    $beneficiary->permanent_union_id = $item['permanent_union_id'];
+                    $beneficiary->permanent_ward_id = $item['permanent_ward_id'];
+                } else {
+                    //pouro
+                    $beneficiary->permanent_pourashava_id = $item['permanent_pourashava_id'];
+                    $beneficiary->permanent_ward_id = $item['permanent_ward_id'];
+                }
+
+            }
+            // Image
+            $beneficiary->image = $item['image'];
+            $beneficiary->signature = $item['signature'];
+            $beneficiary->nominee_image = $item['nominee_image'];
+            $beneficiary->nominee_signature = $item['nominee_signature'];
+            $beneficiary->save();
+        }
+        return $beneficiary;
+    }
+
+    public function base64Image($file)
+    {
+
+        $position = strpos($file, ';');
+        $sub = substr($file, 0, $position);
+        $ext = explode('/', $sub)[1];
+        if (isset($ext) && ($ext == "png" || $ext == "jpeg" || $ext == "jpg" || $ext == "pdf")) {
+            $newImageName = time() . "." . $ext;
+        } else {
+            $ext2 = explode('.', $ext)[3];
+            if ($ext2 == "document") {
+                $ext = "docx";
+                $newImageName = time() . "." . $ext;
+            } elseif ($ext2 == "sheet") {
+                $ext = "xlsx";
+                $newImageName = time() . "." . $ext;
+            } else {
+                $newImageName = "";
+            }
+            $newImageName = time() . "." . $ext;
+        }
+        $this->validateFile($file);
+        $this->createUploadFolder();
+        $uploadedPath = $this->uploadFile($newImageName, $file);
+        return $uploadedPath;
+    }
+
+    private function uploadFile($newImageName, $file)
+    {
+
+        $path = $this->uploadPath . '/' . $this->folderName . '/';
+        if (Storage::putFileAs('public/' . $path, $file, $newImageName)) {
+            return $path . $newImageName;
+        }
+    }
 
     public function destroy($id)
     {

@@ -8,13 +8,13 @@ use App\Http\Requests\Admin\Emergency\EmergencyBeneficiaryRequest;
 use App\Http\Resources\Admin\Emergency\EmergencyBeneficiaryResource;
 use App\Http\Services\Admin\Emergency\EmergencyBeneficiaryService;
 use App\Http\Traits\MessageTrait;
-
 use App\Models\EmergencyBeneficiary;
 use Illuminate\Http\Request;
 
 class EmergencyBeneficiaryController extends Controller
 {
     use MessageTrait;
+
     private EmergencyBeneficiaryService $emergencyBeneficiaryService;
 
     public function __construct(EmergencyBeneficiaryService $emergencyBeneficiaryService)
@@ -35,7 +35,18 @@ class EmergencyBeneficiaryController extends Controller
             'success' => true,
             'message' => $this->insertSuccessMessage,
         ]);
+    }public function storeMultipleData(Request $request): EmergencyBeneficiaryResource
+    {
+        $beneficiary = $this->emergencyBeneficiaryService->storeMultipleData($request);
+
+        Helper::activityLogInsert($beneficiary, '', 'Emergency Beneficiary', 'Emergency Beneficiary Created !');
+
+        return EmergencyBeneficiaryResource::make($beneficiary)->additional([
+            'success' => true,
+            'message' => $this->insertSuccessMessage,
+        ]);
     }
+
     public function edit($id)
     {
         try {
@@ -48,13 +59,22 @@ class EmergencyBeneficiaryController extends Controller
             throw $th;
         }
     }
+
     public function list(Request $request): \Illuminate\Http\JsonResponse
     {
         $beneficiaryInfo = $this->emergencyBeneficiaryService->list($request);
         return handleResponse($beneficiaryInfo, null);
-    }   public function getExistingBeneficiariesInfo(Request $request): \Illuminate\Http\JsonResponse
-{
+    }
+
+    public function getExistingBeneficiariesInfo(Request $request): \Illuminate\Http\JsonResponse
+    {
         $beneficiaryInfo = $this->emergencyBeneficiaryService->getExistingBeneficaries($request);
+        return handleResponse($beneficiaryInfo, null);
+    }
+
+    public function getNewBeneficiariesInfo(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $beneficiaryInfo = $this->emergencyBeneficiaryService->getNewBeneficaries($request);
         return handleResponse($beneficiaryInfo, null);
     }
 

@@ -21,6 +21,7 @@ class EmergencyAllotmentController extends Controller
     {
         $this->emergencyAllotmentService = $emergencyAllotmentService;
     }
+
     public function getEmergencyAllotments(Request $request)
     {
         $allotments = $this->emergencyAllotmentService->getEmergencyAllotments($request);
@@ -31,6 +32,24 @@ class EmergencyAllotmentController extends Controller
         ]);
     }
 
+    public function getAllotmentWiseProgram(Request $request)
+    {
+        $data= array();
+        $processedProgramIds = [];
+        $emergencyAllotments = EmergencyAllotment::with('program')->get();
+        foreach ($emergencyAllotments as $emergencyAllotment) {
+            $program = $emergencyAllotment->program;
+            if ($program && !in_array($program->id, $processedProgramIds)) {
+                $data[] = [
+                    'id' => $program->id,
+                    'name_en' => $program->name_en,
+                    'name_bn' => $program->name_bn,
+                ];
+                $processedProgramIds[] = $program->id;
+            }
+        }
+       return $data;
+    }
 
 
     public function store(EmergencyAllotmentRequest $request)
@@ -45,6 +64,7 @@ class EmergencyAllotmentController extends Controller
             'message' => "Emergency Allotment Created Successfully",
         ]);
     }
+
     public function edit($id)
     {
 
@@ -58,6 +78,7 @@ class EmergencyAllotmentController extends Controller
             throw $th;
         }
     }
+
     public function update(EmergencyAllotmentRequest $request, $id)
     {
         try {
@@ -73,6 +94,7 @@ class EmergencyAllotmentController extends Controller
             throw $th;
         }
     }
+
     public function destroy($id)
     {
         $data = $this->emergencyAllotmentService->destroy($id);
