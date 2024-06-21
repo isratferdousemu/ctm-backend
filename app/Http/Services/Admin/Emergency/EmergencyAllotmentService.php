@@ -120,10 +120,6 @@ class EmergencyAllotmentService
         if ($started_period && $closing_period) {
             $query->whereBetween('starting_period', [$started_period, $closing_period]);
         }
-
-
-
-
         return $query->with('program',  'division', 'district', 'upazila', 'cityCorporation', 'districtPourosova', 'location')
             ->orderBy('emergency_payment_name', 'asc')
             ->latest()
@@ -141,25 +137,6 @@ class EmergencyAllotmentService
         try {
 
             $allotment = EmergencyAllotment::where('id', $id)->first();
-            // dd($allotment);
-
-            if ($request->has('city_id')) {
-                $allotment->city_corp_id = $request->city_id;
-            }
-            if ($request->has('city_thana_id')) {
-                $allotment->thana_id = $request->city_thana_id;
-            }
-            if ($request->has('thana_id')) {
-                $allotment->upazila_id = $request->thana_id;
-            }
-            if ($request->has('union_id')) {
-                $allotment->union_id = $request->union_id;
-            }
-
-            if ($request->has('district_pouro_id')) {
-                $allotment->district_pourashava_id = $request->district_pouro_id;
-            }
-
             $allotment->program_id                            = $request->program_id;
             $allotment->emergency_payment_name                = $request->payment_name;
             $allotment->payment_cycle                         = $request->payment_cycle;
@@ -172,6 +149,45 @@ class EmergencyAllotmentService
             $allotment->starting_period                       = $request->starting_period;
             $allotment->closing_period                        = $request->closing_period;
             $allotment->updated_by_id                         = Auth()->user()->id;
+
+            if ($request->has('ward_id_city') && $request->ward_id_city != null) {
+                $allotment->location_id = $request->ward_id_city;
+            }
+            if ($request->has('ward_id_dist') && $request->ward_id_dist != null) {
+                $allotment->location_id = $request->ward_id_dist;
+            }
+            if ($request->has('ward_id_union') && $request->ward_id_union != null) {
+                $allotment->location_id = $request->ward_id_union;
+            }
+            if ($request->has('ward_id_pouro') && $request->ward_id_pouro != null) {
+                $allotment->location_id = $request->ward_id_pouro;
+            }
+
+            //Dist pouro
+            if ($request->location_type == 1) {
+                $allotment->district_pourashava_id = $request->district_pouro_id;
+                $allotment->ward_id = $request->ward_id_dist;
+            }
+
+            //City corporation
+            if ($request->location_type == 3) {
+                $allotment->city_corp_id = $request->city_id;
+                $allotment->thana_id = $request->city_thana_id;
+                $allotment->ward_id = $request->ward_id_city;
+            }
+            //Upazila
+            if ($request->location_type == 2) {
+                $allotment->upazila_id = $request->thana_id;
+                //union
+                if ($request->sub_location_type == 2) {
+                    $allotment->union_id = $request->union_id;
+                    $allotment->ward_id = $request->ward_id_union;
+                } else {
+                    //pouro
+                    $allotment->pourashava_id = $request->pouro_id;
+                    $allotment->ward_id = $request->ward_id_pouro;
+                }
+            }
             $allotment->update();
             return $allotment;
         } catch (\Throwable $th) {
@@ -182,28 +198,8 @@ class EmergencyAllotmentService
 
     public function storeAllotment(Request $request)
     {
-
         try {
-
             $allotment = new EmergencyAllotment();
-
-            if ($request->has('city_id')) {
-                $allotment->city_corp_id = $request->city_id;
-            }
-            if ($request->has('city_thana_id')) {
-                $allotment->thana_id = $request->city_thana_id;
-            }
-            if ($request->has('thana_id')) {
-                $allotment->upazila_id = $request->thana_id;
-            }
-            if ($request->has('union_id')) {
-                $allotment->union_id = $request->union_id;
-            }
-
-            if ($request->has('district_pouro_id')) {
-                $allotment->district_pourashava_id = $request->district_pouro_id;
-            }
-
             $allotment->program_id                            = $request->program_id;
             $allotment->emergency_payment_name                = $request->payment_name;
             $allotment->payment_cycle                         = $request->payment_cycle;
@@ -217,6 +213,45 @@ class EmergencyAllotmentService
             $allotment->closing_period                        = $request->closing_period;
             $allotment->created_by_id                         = Auth()->user()->id;
             $allotment->status                                = 1;
+
+            if ($request->has('ward_id_city') && $request->ward_id_city != null) {
+                $allotment->location_id = $request->ward_id_city;
+            }
+            if ($request->has('ward_id_dist') && $request->ward_id_dist != null) {
+                $allotment->location_id = $request->ward_id_dist;
+            }
+            if ($request->has('ward_id_union') && $request->ward_id_union != null) {
+                $allotment->location_id = $request->ward_id_union;
+            }
+            if ($request->has('ward_id_pouro') && $request->ward_id_pouro != null) {
+                $allotment->location_id = $request->ward_id_pouro;
+            }
+
+            //Dist pouro
+            if ($request->location_type == 1) {
+                $allotment->district_pourashava_id = $request->district_pouro_id;
+                $allotment->ward_id = $request->ward_id_dist;
+            }
+
+            //City corporation
+            if ($request->location_type == 3) {
+                $allotment->city_corp_id = $request->city_id;
+                $allotment->thana_id = $request->city_thana_id;
+                $allotment->ward_id = $request->ward_id_city;
+            }
+            //Upazila
+            if ($request->location_type == 2) {
+                $allotment->upazila_id = $request->thana_id;
+                //union
+                if ($request->sub_location_type == 2) {
+                    $allotment->union_id = $request->union_id;
+                    $allotment->ward_id = $request->ward_id_union;
+                } else {
+                    //pouro
+                    $allotment->pourashava_id = $request->pouro_id;
+                    $allotment->ward_id = $request->ward_id_pouro;
+                }
+            }
             $allotment->save();
 
             return $allotment;

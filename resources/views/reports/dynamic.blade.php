@@ -8,19 +8,12 @@
 
     <style>
         body {
-            @if(app()->isLocale('bn'))
-                font-family: 'kalpurush', sans-serif !important;
-            @else
-              font-family: "Work Sans", sans-serif !important;
-            @endif
-               margin: 0;
+            font-family: 'kalpurush' !important;
+            margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        h4, h5, h6{
-            font-weight: normal !important;
-        }
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -34,22 +27,16 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px; /* Add margin to separate tables */
+            margin-bottom: 20px;
         }
 
         table.img-table img {
-            width: 30px; /* Adjust the width of your images */
+            width: 30px;
             height: auto;
         }
 
         td {
             border: none;
-        }
-
-        .border-table th {
-            border: 1px solid #dddddd;
-            text-align: center;
-            background-color: #d1d1d1;
         }
 
         .border-table td {
@@ -73,7 +60,7 @@
 
         .title {
             font-size: 20px;
-            margin: 0; /* Remove default margin */
+            margin: 0;
         }
 
         .footer {
@@ -81,11 +68,6 @@
             bottom: 0;
             width: 100%;
             text-align: center;
-        }
-
-        @page {
-            header: page-header;
-            footer: page-footer;
         }
     </style>
 </head>
