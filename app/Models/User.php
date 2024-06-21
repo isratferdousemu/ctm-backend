@@ -141,6 +141,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'programs_id' => 'array'
     ];
 
     public $appends = ["photo_url"];

@@ -4,6 +4,8 @@ namespace App\Http\Services\Admin\User;
 
 use App\Helpers\Helper;
 use App\Http\Traits\RoleTrait;
+use App\Models\Trainer;
+use App\Models\TrainingProgramParticipant;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -74,6 +76,7 @@ class UserService
             }
 
 
+            $user->programs_id = $request->programs_id;
             $user->user_type = $this->staffId;
             $user->salt = Helper::generateSalt();
 
@@ -193,6 +196,9 @@ class UserService
                 abort(500, 'Internal server error');
             }
 
+            $user->programs_id = $request->programs_id;
+
+
             $user->save();
             // assign role to the user
 
@@ -211,6 +217,15 @@ class UserService
                 $user->syncRoles([]);
                 $user->assignRole('committee');
             }
+
+            if (!$user->hasRole($this->trainer)) {
+                Trainer::where('user_id', $user->id)->delete();
+            }
+
+            if (!$user->hasRole($this->participant)) {
+                TrainingProgramParticipant::where('user_id', $user->id)->delete();
+            }
+
 
             $this->saveUserWards($user, $request);
 

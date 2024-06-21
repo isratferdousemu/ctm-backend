@@ -57,6 +57,17 @@ class UserRequest extends FormRequest
     }
 
 
+    public function prepareForValidation()
+    {
+        $this->merge(
+            [
+                'programs_id' => $this->programs_id ?
+                    explode(',', $this->programs_id) : null
+            ]
+        );
+    }
+
+
 
 
 
