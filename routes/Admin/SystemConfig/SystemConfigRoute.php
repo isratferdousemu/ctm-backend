@@ -87,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/insert', [financialYearController::class, 'insertFinancialYear'])->middleware(['role_or_permission:super-admin|financial-create']);
         Route::get('/get',[financialYearController::class, 'getFinancialPaginated'])/*->middleware(['role_or_permission:super-admin|financial-view'])*/;
+        Route::get('/list',[financialYearController::class, 'getFinancialYears'])/*->middleware(['role_or_permission:super-admin|financial-view'])*/;
         Route::get('/destroy/{id}', [financialYearController::class, 'destroyFinancial'])->middleware(['role_or_permission:super-admin|financial-delete']);
     });
 

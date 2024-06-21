@@ -22,8 +22,6 @@ class OfficeService
     {
         $selectedWardsDetails = json_decode($request->input('selectedWardsDetails'), true);
 
-        //  print_r($request->ward_under_office);
-        // return;
 
         DB::beginTransaction();
         try {
@@ -66,7 +64,7 @@ class OfficeService
 
 
             // if (is_array($data) && count($data) > 0) {
-            if ($selectedWardsDetails) {
+            if ($request->office_type == 9 && $selectedWardsDetails) {
                 foreach ($selectedWardsDetails as $wardDetails) {
                     if (is_array($wardDetails) && count($wardDetails)) {
                         // dd($isWardExists);
@@ -84,6 +82,22 @@ class OfficeService
                 }
             }
 
+
+            if ($request->office_type == 10 && $request->selectedWardsDetails_UCDUpazila) {
+                $wards = json_decode($request->selectedWardsDetails_UCDUpazila, true);
+
+                foreach ($wards as $ward) {
+                    $officeWard = new OfficeHasWard;
+                    $officeWard->office_id = $office->id;
+                    $officeWard->ward_id = $ward['ward_id'];
+                    $officeWard->division_id = $ward['division_id'];
+                    $officeWard->district_id = $ward['district_id'];
+                    $officeWard->union_id = $ward['union_id'] ?? null;
+                    $officeWard->pouro_id = $ward['pouro_id'] ?? null;
+                    $officeWard->save();
+                }
+            }
+
             DB::commit();
             return $office;
         } catch (\Throwable $th) {
@@ -98,28 +112,6 @@ class OfficeService
         DB::beginTransaction();
         try {
             $office = Office::find($request->id);
-            // if ($request->has('office_type')) {
-            //     $office->office_type = $request->office_type;
-            //     if ($request->office_type != 4 || $request->office_type != 5) {
-            //         if ($request->office_type == 6) {
-            //             if ($request->has('division_id')) {
-            //                 $office->assign_location_id = $request->division_id;
-            //             }
-            //         } elseif ($request->office_type == 7) {
-            //             if ($request->has('district_id')) {
-            //                 $office->assign_location_id = $request->district_id;
-            //             }
-            //         } elseif ($request->office_type == 8 || $request->office_type == 10 || $request->office_type == 11) {
-            //             if ($request->has('thana_id')) {
-            //                 $office->assign_location_id = $request->thana_id;
-            //             }
-            //         } elseif ($request->office_type == 9) {
-            //             if ($request->has('city_corpo_id')) {
-            //                 $office->assign_location_id = $request->city_corpo_id;
-            //             }
-            //         }
-            //     }
-            // }
             if ($request->has('office_type')) {
                 $office->office_type = $request->office_type;
                 if ($request->office_type != 4 || $request->office_type != 5) {
@@ -155,29 +147,11 @@ class OfficeService
             $office->save();
 
 
-            // $data = $request->ward_under_office;
-
-            // if (is_array($data) && count($data) > 0) {
-
-            //     foreach ($data as $item) {
-            //         $ward_under_office = new OfficeHasWard;
-            //         $ward_under_office->office_id = $office->id;
-            //         $ward_under_office->ward_id = $item['ward_id'];
-            //         $ward_under_office->save();
-            //     }
-            // }
             $data = $request->selectedWards;
 
 
             OfficeHasWard::where('office_id', $request->id)->delete();
-            //      $model = OfficeHasWard::where('office_id', $request->id)->firstOrFail();
-            //      $delete=
-            //    dd( $model['office_id']);
-
-
-            // if (is_array($data) && count($data) > 0) {
-            // dd($selectedWardsDetails);
-            if ($selectedWardsDetails) {
+            if ($request->office_type == 9 && $selectedWardsDetails) {
                 foreach ($selectedWardsDetails as $wardDetails) {
                     if (is_array($wardDetails) && count($wardDetails)) {
                         $ward_under_office = new OfficeHasWard;
@@ -190,6 +164,22 @@ class OfficeService
                         $ward_under_office->thana_id = $wardDetails['thana_id'];
                         $ward_under_office->save();
                     }
+                }
+            }
+
+
+            if ($request->office_type == 10 && $request->selectedWardsDetails_UCDUpazila) {
+                $wards = json_decode($request->selectedWardsDetails_UCDUpazila, true);
+
+                foreach ($wards as $ward) {
+                    $officeWard = new OfficeHasWard;
+                    $officeWard->office_id = $office->id;
+                    $officeWard->ward_id = $ward['ward_id'];
+                    $officeWard->division_id = $ward['division_id'];
+                    $officeWard->district_id = $ward['district_id'];
+                    $officeWard->union_id = $ward['union_id'] ?? null;
+                    $officeWard->pouro_id = $ward['pouro_id'] ?? null;
+                    $officeWard->save();
                 }
             }
 

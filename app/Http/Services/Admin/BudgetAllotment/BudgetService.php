@@ -123,7 +123,7 @@ class BudgetService
     {
         $budget_id = mt_rand(100000, 999999);
         $created_by_id = auth()->user()->id;
-        $validated = $request->safe()->merge(['budget_id' => $budget_id, 'created_by_id' => $created_by_id])->only(['budget_id', 'program_id', 'financial_year_id', 'calculation_type', 'no_of_previous_year', 'calculation_value', 'remarks']);
+        $validated = $request->safe()->merge(['budget_id' => $budget_id, 'created_by_id' => $created_by_id])->only(['budget_id', 'program_id', 'financial_year_id', 'calculation_type', 'prev_financial_year_ids', 'calculation_value', 'remarks']);
         $budget = Budget::create($validated);
         ProcessBudget::dispatch($this->get($budget->id));
         Helper::activityLogInsert($budget, '', 'Budget', 'Budget Created!');
@@ -139,12 +139,6 @@ class BudgetService
     {
         DB::beginTransaction();
         try {
-            $financialYear = FinancialYear::findOrFail($budget->financial_year_id);
-            $calculationType = Lookup::findOrFail($budget->calculation_type);
-            $no_of_previous_year = $budget->no_of_previous_year ?: 1;
-            $previousFinancialYearIds = FinancialYear::whereDate('end_date', '<', $financialYear->end_date)->orderBy('end_date')->limit($no_of_previous_year)->pluck('id')->toArray();
-            $per_beneficiary_amount = 100;
-
             $allotmentAreas = DB::select("
             SELECT
                 l.location_type,
@@ -248,13 +242,32 @@ class BudgetService
                 AND l.`type` = 'ward'
                 AND l.deleted_at IS NULL;
             ");
+            $program_id = $budget->program()->id;
+            $financial_year_id = $budget->financialYear()->id;
+            $calculation_type = $budget->calculationType()->keyword;
+            $calculation_value = $budget->calculation_value;
+            $previous_financial_year_ids = explode(',', $budget->prev_financial_year_ids);
 
             foreach ($allotmentAreas as $allotmentArea) {
+                $location = [
+                    'division_id' => $allotmentArea->division_id,
+                    'district_id' => $allotmentArea->district_id,
+                    'location_type' => $allotmentArea->location_type,
+                    'city_corp_id' => $allotmentArea->city_corp_id,
+                    'upazila_id' => $allotmentArea->upazila_id,
+                    'district_pourashava_id' => $allotmentArea->district_pourashava_id,
+                    'thana_id' => $allotmentArea->thana_id,
+                    'pourashava_id' => $allotmentArea->pourashava_id,
+                    'union_id' => $allotmentArea->union_id,
+                    'ward_id' => $allotmentArea->ward_id,
+                ];
+
+                $budget_value = $this->calculateBudget($program_id, $financial_year_id, $calculation_type, $calculation_value, $previous_financial_year_ids, $location);
+
                 $budgetDetail = [
                     'budget_id' => $budget->id,
-                    'total_beneficiaries' => 100,
-                    'per_beneficiary_amount' => $per_beneficiary_amount,
-                    'total_amount' => 10000,
+                    'total_beneficiaries' => $budget_value['current_total_beneficiary'],
+                    'total_amount' => $budget_value['current_total_amount'],
                     'division_id' => $allotmentArea->division_id,
                     'district_id' => $allotmentArea->district_id,
                     'location_type' => $allotmentArea->location_type,
@@ -281,14 +294,17 @@ class BudgetService
         return true;
     }
 
+
     /**
-     * @param Budget $budget
-     * @param array $previousFinancialYearIds
-     * @param $calculationType
+     * @param int $program_id
+     * @param int $financial_year_id
+     * @param string $calculation_type
+     * @param float $calculation_value
+     * @param array $previous_financial_year_ids
      * @param array $location
      * @return int[]
      */
-    public function calculateBudget($program_id, $financial_year_id, $per_beneficiary_amount, $calculationTypeKeyword, $calculationValue, array $previousFinancialYearIds, array $location = array()): array
+    public function calculateBudget(int $program_id, int $financial_year_id, string $calculation_type, float $calculation_value, array $previous_financial_year_ids, array $location = array()): array
     {
         // initialize
         $data = [
@@ -298,77 +314,88 @@ class BudgetService
             'current_total_amount' => 0,
         ];
 
-        $query = DB::table('budget')
-            ->join('budget_detail', 'budget_detail.budget_id', '=', 'budget.id')
-            ->where('budget.program_id', $program_id)
-            ->whereIn('budget.financial_year_id', $previousFinancialYearIds);
+        $query = DB::table('budgets')
+            ->join('budget_details', 'budget_details.budget_id', '=', 'budgets.id')
+            ->where('budgets.program_id', $program_id)
+            ->whereIn('budgets.financial_year_id', $previous_financial_year_ids);
         $beneficiaryQuery = DB::table('beneficiaries')
             ->where('financial_year_id', $financial_year_id)
             ->where('program_id', $program_id);
-        if (empty($location)) {
+        if (count($location) > 0) {
             if (isset($location['division_id']) && $location['division_id'] != null) {
-                $query = $query->where('budget_detail.division_id', $location['division_id']);
-                $beneficiaryQuery = $beneficiaryQuery->where('division_id', $location['division_id']);
+                $query = $query->where('budget_details.division_id', $location['division_id']);
+                $beneficiaryQuery = $beneficiaryQuery->where('permanent_division_id', $location['division_id']);
             }
             if (isset($location['district_id']) && $location['district_id'] != null) {
-                $query = $query->where('budget_detail.district_id', $location['district_id']);
-                $beneficiaryQuery = $beneficiaryQuery->where('district_id', $location['district_id']);
+                $query = $query->where('budget_details.district_id', $location['district_id']);
+                $beneficiaryQuery = $beneficiaryQuery->where('permanent_district_id', $location['district_id']);
             }
             if (isset($location['city_corp_id']) && $location['city_corp_id'] != null) {
-                $query = $query->where('budget_detail.city_corp_id', $location['city_corp_id']);
-                $beneficiaryQuery = $beneficiaryQuery->where('city_corp_id', $location['city_corp_id']);
+                $query = $query->where('budget_details.city_corp_id', $location['city_corp_id']);
+                $beneficiaryQuery = $beneficiaryQuery->where('permanent_city_corp_id', $location['city_corp_id']);
             }
             if (isset($location['district_pourashava_id']) && $location['district_pourashava_id'] != null) {
-                $query = $query->where('budget_detail.district_pourashava_id', $location['district_pourashava_id']);
-                $beneficiaryQuery = $beneficiaryQuery->where('district_pourashava_id', $location['district_pourashava_id']);
+                $query = $query->where('budget_details.district_pourashava_id', $location['district_pourashava_id']);
+                $beneficiaryQuery = $beneficiaryQuery->where('permanent_district_pourashava_id', $location['district_pourashava_id']);
             }
             if (isset($location['upazila_id']) && $location['upazila_id'] != null) {
-                $query = $query->where('budget_detail.upazila_id', $location['upazila_id']);
-                $beneficiaryQuery = $beneficiaryQuery->where('upazila_id', $location['upazila_id']);
+                $query = $query->where('budget_details.upazila_id', $location['upazila_id']);
+                $beneficiaryQuery = $beneficiaryQuery->where('permanent_upazila_id', $location['upazila_id']);
             }
             if (isset($location['pourashava_id']) && $location['pourashava_id'] != null) {
-                $query = $query->where('budget_detail.pourashava_id', $location['pourashava_id']);
-                $beneficiaryQuery = $beneficiaryQuery->where('pourashava_id', $location['pourashava_id']);
+                $query = $query->where('budget_details.pourashava_id', $location['pourashava_id']);
+                $beneficiaryQuery = $beneficiaryQuery->where('permanent_pourashava_id', $location['pourashava_id']);
             }
             if (isset($location['thana_id']) && $location['thana_id'] != null) {
-                $query = $query->where('budget_detail.thana_id', $location['thana_id']);
-                $beneficiaryQuery = $beneficiaryQuery->where('thana_id', $location['thana_id']);
+                $query = $query->where('budget_details.thana_id', $location['thana_id']);
+                $beneficiaryQuery = $beneficiaryQuery->where('permanent_thana_id', $location['thana_id']);
             }
             if (isset($location['union_id']) && $location['union_id'] != null) {
-                $query = $query->where('budget_detail.union_id', $location['union_id']);
-                $beneficiaryQuery = $beneficiaryQuery->where('union_id', $location['union_id']);
+                $query = $query->where('budget_details.union_id', $location['union_id']);
+                $beneficiaryQuery = $beneficiaryQuery->where('permanent_union_id', $location['union_id']);
             }
             if (isset($location['ward_id']) && $location['ward_id'] != null) {
-                $query = $query->where('budget_detail.ward_id', $location['ward_id']);
-                $beneficiaryQuery = $beneficiaryQuery->where('ward_id', $location['ward_id']);
+                $query = $query->where('budget_details.ward_id', $location['ward_id']);
+                $beneficiaryQuery = $beneficiaryQuery->where('permanent_ward_id', $location['ward_id']);
             }
         }
-        $previousBudgetResult = $query->selectRaw('avg(budget_detail.total_beneficiary) as total_beneficiary, avg(budget_detail.total_amount)')->first();
-        $previous_total_beneficiary = $previousBudgetResult->total_beneficiary;
+        $previousBudgetResult = $query->selectRaw('avg(budget_details.total_beneficiaries) as total_beneficiaries, avg(budget_details.total_amount) as total_amount')->first();
+        $previous_total_beneficiary = $previousBudgetResult->total_beneficiaries;
         $previous_total_amount = $previousBudgetResult->total_amount;
+        $per_beneficiary_amount = $previous_total_beneficiary > 0 ? ceil($previous_total_amount / $previous_total_beneficiary) : 0;
         if ($previous_total_beneficiary == 0 || $previous_total_amount == 0) {
-            $currentBeneficiaryResult = $beneficiaryQuery->selectRaw('count(id) as total_beneficiary, max(monthly_allowance)')->first();
-            $current_total_beneficiary = $currentBeneficiaryResult->total_beneficiary;
-            $current_total_amount = $current_total_beneficiary * $per_beneficiary_amount;
-            $data["current_total_beneficiary"] = $current_total_beneficiary;
-            $data["current_total_amount"] = $current_total_amount;
+            $currentBeneficiaryResult = $beneficiaryQuery->selectRaw('count(id) as total_beneficiaries, sum(monthly_allowance) as total_amount')->first();
+            if ($currentBeneficiaryResult) {
+                $current_total_beneficiary = $currentBeneficiaryResult->total_beneficiaries;
+                $current_total_amount = $currentBeneficiaryResult->total_amount;
+                $data["current_total_beneficiary"] = $current_total_beneficiary;
+                $data["current_total_amount"] = $current_total_amount;
+            }
         } else {
-            switch ($calculationTypeKeyword) {
+            switch ($calculation_type) {
                 case "PERCENTAGE_OF_AMOUNT":
-                    $current_total_amount = $previous_total_amount * ($calculationValue / 100) + $previous_total_amount;
-                    $current_total_beneficiary = $per_beneficiary_amount > 0 ? floor($current_total_amount / $per_beneficiary_amount) : 0;
+                    $extra_amount = $previous_total_amount * ($calculation_value / 100);
+                    $current_total_amount = $extra_amount + $previous_total_amount;
+                    $extra_beneficiaries = $per_beneficiary_amount > 0 ? floor($extra_amount / $per_beneficiary_amount) : 0;
+                    $current_total_beneficiary = $previous_total_beneficiary + $extra_beneficiaries;
                     break;
                 case "FIXED_AMOUNT":
-                    $current_total_amount = $previous_total_amount + $calculationValue;
-                    $current_total_beneficiary = $per_beneficiary_amount > 0 ? floor($current_total_amount / $per_beneficiary_amount) : 0;
+                    $extra_amount = $calculation_value;
+                    $current_total_amount = $previous_total_amount + $extra_amount;
+                    $extra_beneficiaries = $per_beneficiary_amount > 0 ? floor($extra_amount / $per_beneficiary_amount) : 0;
+                    $current_total_beneficiary = $previous_total_beneficiary + $extra_beneficiaries;
                     break;
                 case "PERCENTAGE_OF_BENEFICIARY":
-                    $current_total_beneficiary = $previous_total_beneficiary;
-                    $current_total_amount = $previous_total_amount;
+                    $extra_beneficiaries = $previous_total_beneficiary * ($calculation_value / 100);
+                    $current_total_beneficiary = $previous_total_beneficiary + $extra_beneficiaries;
+                    $extra_amount = $extra_beneficiaries * $per_beneficiary_amount;
+                    $current_total_amount = $previous_total_amount + $extra_amount;
                     break;
                 case "FIXED_BENEFICIARY":
-                    $current_total_beneficiary = $previous_total_beneficiary;
-                    $current_total_amount = $previous_total_amount;
+                    $extra_beneficiaries = $calculation_value;
+                    $current_total_beneficiary = $previous_total_beneficiary + $extra_beneficiaries;
+                    $extra_amount = $extra_beneficiaries * $per_beneficiary_amount;
+                    $current_total_amount = $previous_total_amount + $extra_amount;
                     break;
                 case "BY_APPLICATION":
                     $current_total_beneficiary = $previous_total_beneficiary;
@@ -383,8 +410,12 @@ class BudgetService
                     $current_total_amount = $previous_total_amount;
                     break;
                 default:
+                    $current_total_beneficiary = $previous_total_beneficiary;
+                    $current_total_amount = $previous_total_amount;
                     break;
             }
+            $data["current_total_beneficiary"] = $current_total_beneficiary;
+            $data["current_total_amount"] = $current_total_amount;
         }
 
         return $data;
@@ -573,40 +604,69 @@ class BudgetService
      * @param $financial_year_id
      * @return array
      */
-    public function getProjection(Request $request, $program_id, $financial_year_id): array
+    public function getProjection(Request $request)
     {
-        $location_id = $request->query('location_id');
-        $location = $location_id ? Location::findOrFail($location_id) : null;
-        $program = AllowanceProgram::findOrFail($program_id);
-        $query = Beneficiary::query()->where('program_id', $program_id)->where('financial_year_id', $financial_year_id);
-//        if ($location_id)
-//            $query = $query->where('program_id', $program_id);
-        $coming_year_total_ben = $query->count();
-        $coming_year_total_amount = 100;
+        $program_id = $request->query('program_id');
+        $financial_year_id = $request->query('financial_year_id');
+        $calculation_type = $request->query('calculation_type');
+        $calculation_value = $request->query('calculation_value');
+        $previous_financial_year_ids = $request->has('previous_financial_year_ids') ? explode(',', $request->query('previous_financial_year_ids')) : [];
 
-        $previous_financial_year = FinancialYear::whereRaw(
-            "start_date < (
-                SELECT
-                    fy2.start_date
-                from
-                    financial_years fy2
-                WHERE
-                    fy2.id = $financial_year_id)")
-            ->orderBy('start_date', 'desc')
-            ->first();
-        $query2 = Beneficiary::query()->where('program_id', $program_id)->where('financial_year_id', $previous_financial_year?->id);
-//        if ($location_id)
-//            $query = $query->where('program_id', $program_id);
-        $previous_year_total_ben = $query2->count();
-        $previous_year_total_amount = 90;
-        return [
-            'location' => $location,
-            'program' => $program,
-            'previous_year_total_ben' => $previous_year_total_ben,
-            'previous_year_total_amount' => $previous_year_total_amount,
-            'coming_year_total_ben' => $coming_year_total_ben,
-            'coming_year_total_amount' => $coming_year_total_amount
-        ];
+        $locations = Location::query()->where(function ($query) use ($request) {
+            if ($request->has('location_id')) {
+                $location_id = $request->query('location_id');
+                $query->where('parent_id', $location_id);
+            } else {
+                $query->whereNull('parent_id');
+            }
+            return $query;
+        })->with('parent')->get();
+
+        $locations->map(function ($location) use ($program_id, $financial_year_id, $calculation_type, $calculation_value, $previous_financial_year_ids) {
+
+            // budget location
+
+            // $location?->localtion_type;
+            // 1=District Pouroshava, 2=Upazila, 3=City Corporation
+
+            // $location?->type;
+            // division->district
+            // localtion_type=1; district-pouroshava->ward
+            // localtion_type=2; thana->{union/pouro}->ward
+            // localtion_type=3; thana->ward
+
+            $budgetLocation = [];
+            if ($location?->type == 'ward') {
+                $budgetLocation['ward_id'] = $location->id;
+            } elseif ($location?->type == 'union' || $location?->type == 'pouro') {
+                if ($location?->type == 'union')
+                    $budgetLocation['union_id'] = $location->id;
+                elseif ($location?->type == 'pouro')
+                    $budgetLocation['pourashava_id'] = $location->id;
+            } elseif ($location?->type == 'thana') {
+                if ($location?->location_type == 2) {
+                    $budgetLocation['upazila_id'] = $location->id;
+                } elseif ($location?->location_type == 3) {
+                    $budgetLocation['thana_id'] = $location->id;
+                }
+            } elseif ($location?->type == 'city') {
+                if ($location?->location_type == 1)
+                    $budgetLocation['district_pourashava_id'] = $location->id;
+                elseif ($location?->location_type == 3)
+                    $budgetLocation['city_corp_id'] = $location->id;
+            } elseif ($location?->type == 'district') {
+                $budgetLocation['district_id'] = $location->id;
+            } elseif ($location?->type == 'division')
+                $budgetLocation['division_id'] = $location->id;
+
+            $budget_value = $this->calculateBudget($program_id, $financial_year_id, $calculation_type, $calculation_value, $previous_financial_year_ids, $budgetLocation);
+            $location->previous_total_beneficiary = $budget_value['previous_total_beneficiary'];
+            $location->previous_total_amount = $budget_value['previous_total_amount'];
+            $location->current_total_beneficiary = $budget_value['current_total_beneficiary'];
+            $location->current_total_amount = $budget_value['current_total_amount'];
+        });
+
+        return $locations;
     }
 
     /**

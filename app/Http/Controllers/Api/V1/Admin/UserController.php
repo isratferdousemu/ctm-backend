@@ -24,6 +24,7 @@ use App\Mail\UserCreateMail;
 use App\Models\Location;
 use App\Models\Office;
 use App\Models\User;
+use App\Models\UserHasWard;
 use Auth;
 use Cache;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Response;
 
@@ -435,6 +437,18 @@ class UserController extends Controller
 
     // 1. if the user has a committee type then the user will be created under that committee type - which means that the users will have the committtee ID
 
+
+    public function checkWardOnStore($request)
+    {
+        $wards = $request->office_ward_id ? explode(',', $request->office_ward_id) : [];
+
+        if (UserHasWard::whereIn('ward_id', $wards)->exists()) {
+            throw ValidationException::withMessages([
+                'office_id' => 'This office already has a office head',
+            ]);
+        }
+    }
+
     public function insertUser(UserRequest $request)
     {
 
@@ -446,10 +460,13 @@ class UserController extends Controller
                 $officeHead = User::where('office_id', $request->office_id)->whereHas('roles', function ($query) {
                     $query->where('name', $this->officeHead);
                 })->first();
-                if ($officeHead) {
+
+                if ($officeHead && !in_array($request->office_type, [9, 10])) {
                     return $this->sendError('This office already has a office head', [
                         'office_id' => 'This office already has a office head',
                     ], 422);
+                } else {
+                    $this->checkWardOnStore($request);
                 }
             }
         }
@@ -458,15 +475,23 @@ class UserController extends Controller
 
         Helper::activityLogInsert($user, '', 'User', 'User Created !');
 
-        //            activity("User")
-        //            ->causedBy(auth()->user())
-        //            ->performedOn($user)
-        //            ->log('User Created !');
 
         return UserResource::make($user)->additional([
             'success' => true,
             'message' => $this->insertSuccessMessage,
         ]);
+    }
+
+
+    public function checkWardOnUpdate($request, $userId)
+    {
+        $wards = $request->office_ward_id ? explode(',', $request->office_ward_id) : [];
+
+        if (UserHasWard::whereIn('ward_id', $wards)->whereNot('user_id', $userId)->exists()) {
+            throw ValidationException::withMessages([
+                'office_id' => 'This office already has a office head',
+            ]);
+        }
     }
 
     public function update(UserUpdateRequest $request, $id)
@@ -477,9 +502,12 @@ class UserController extends Controller
                 if (in_array($role->id, $request->role_id)) {
                     $officeHead = User::where('office_id', $request->office_id)->whereHas('roles', function ($query) {
                         $query->where('name', $this->officeHead);
-                    })->first();
-                    if ($officeHead && $officeHead->id != $id) {
+                    })->whereNot('id', $id)
+                        ->first();
+                    if ($officeHead && !in_array($request->office_type, [9, 10])) {
                         return $this->sendError('This office already has a office head', [], 500);
+                    } else {
+                        $this->checkWardOnUpdate($request, $id);
                     }
                 }
             }
