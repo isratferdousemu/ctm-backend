@@ -45,6 +45,6 @@ class FinancialYear extends Model
     public function newQuery($excludeDeleted = true)
     {
         return parent::newQuery($excludeDeleted)
-            ->orderBy('start_date', 'asc');
+            ->orderBy('start_date', 'desc');
     }
 }

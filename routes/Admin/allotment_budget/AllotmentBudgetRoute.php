@@ -15,7 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/update/{id}', [BudgetController::class, 'update'])->middleware(['role_or_permission:super-admin|budget-edit']);
         Route::put('/approve/{id}', [BudgetController::class, 'approve'])->middleware(['role_or_permission:super-admin|budget-edit']);
         Route::delete('/delete/{id}', [BudgetController::class, 'delete'])->middleware(['role_or_permission:super-admin|budget-delete']);
-        Route::get('/getProjection/{program_id}/{financial_year_id}', [BudgetController::class, 'getProjection'])->middleware(['role_or_permission:super-admin|budget-view']);
+        Route::get('/getProjection', [BudgetController::class, 'getProjection'])->middleware(['role_or_permission:super-admin|budget-create|budget-view']);
         // budget detail
         Route::get('/detail/list/{budget_id}', [BudgetController::class, 'detailList'])->middleware(['role_or_permission:super-admin|budget-view']);
         Route::put('/detail/update/{budget_id}', [BudgetController::class, 'detailUpdate'])->middleware(['role_or_permission:super-admin|budget-view']);

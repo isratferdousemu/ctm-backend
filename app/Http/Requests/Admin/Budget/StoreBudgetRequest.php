@@ -33,7 +33,7 @@ class StoreBudgetRequest extends FormRequest
             ],
             'financial_year_id' => 'required|integer|exists:financial_years,id',
             'calculation_type' => 'required|integer|exists:lookups,id',
-            'no_of_previous_year' => 'nullable|numeric',
+            'prev_financial_year_ids' => 'required',
             'calculation_value' => 'required|numeric',
             'remarks' => 'nullable|max:255'
         ];

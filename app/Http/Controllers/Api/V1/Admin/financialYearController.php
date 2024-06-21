@@ -16,33 +16,35 @@ use Illuminate\Support\Facades\Validator;
 class financialYearController extends Controller
 {
     use MessageTrait;
+
     private $systemconfigService;
 
-    public function __construct(SystemconfigService $systemconfigService) {
-        $this->systemconfigService= $systemconfigService;
+    public function __construct(SystemconfigService $systemconfigService)
+    {
+        $this->systemconfigService = $systemconfigService;
     }
 
     /**
-    * @OA\Get(
-    *     path="/admin/financial-year/get",
-    *      operationId="getFinancialPaginated",
-    *      tags={"ADMIN-FINANCIAL-YEAR"},
-    *      summary="get paginated financial-year",
-    *      description="get paginated financial-year",
-    *      security={{"bearer_token":{}}},
-    *     @OA\Parameter(
-    *         name="perPage",
-    *         in="query",
-    *         description="number of financial-year per page",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="page",
-    *         in="query",
-    *         description="page number",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *      @OA\Response(
+     * @OA\Get(
+     *     path="/admin/financial-year/get",
+     *      operationId="getFinancialPaginated",
+     *      tags={"ADMIN-FINANCIAL-YEAR"},
+     *      summary="get paginated financial-year",
+     *      description="get paginated financial-year",
+     *      security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="perPage",
+     *         in="query",
+     *         description="number of financial-year per page",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="page number",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\JsonContent()
@@ -65,17 +67,16 @@ class financialYearController extends Controller
      *          description="Unprocessable Entity",
      *
      *          )
-    * )
-    */
+     * )
+     */
 
- public function getFinancialPaginated(Request $request){
-    // Retrieve the query parameters
-    $searchText = $request->query('searchText');
-    $perPage = $request->query('perPage');
-    $page = $request->query('page');
+    public function getFinancialPaginated(Request $request)
+    {
+        // Retrieve the query parameters
+        $searchText = $request->query('searchText');
+        $perPage = $request->query('perPage');
+        $page = $request->query('page');
 
-   
-    
 
         $filterFinancialYear = [];
         $filterStartDate = [];
@@ -86,25 +87,34 @@ class financialYearController extends Controller
             $filterFinancialYear[] = ['financial_year', 'LIKE', '%' . $searchText . '%'];
             $filterStartDate[] = ['start_date', 'LIKE', '%' . $searchText . '%'];
             $filterEndDate[] = ['end_date', 'LIKE', '%' . $searchText . '%'];
-             if ($searchText != null) {
+            if ($searchText != null) {
                 $page = 1;
             }
         }
-    $financial = FinancialYear::query()
-     ->where(function ($query) use ($filterFinancialYear, $filterStartDate, $filterEndDate) {
+        $financial = FinancialYear::query()
+            ->where(function ($query) use ($filterFinancialYear, $filterStartDate, $filterEndDate) {
                 $query->where($filterFinancialYear)
                     ->orWhere($filterStartDate)
                     ->orWhere($filterEndDate);
             })
-    ->latest()
-      ->paginate($perPage, ['*'], 'page', $page);
-   
+            ->latest()
+            ->paginate($perPage, ['*'], 'page', $page);
 
-    return FinancialResource::collection($financial)->additional([
-        'success' => true,
-        'message' => $this->fetchSuccessMessage,
-    ]);
-}
+
+        return FinancialResource::collection($financial)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
+
+    public function getFinancialYears(Request $request)
+    {
+        $financial = FinancialYear::query()->limit(50)->get();
+        return FinancialResource::collection($financial)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
 
     /**
      *
@@ -158,14 +168,15 @@ class financialYearController extends Controller
      *        )
      *     )
      */
-    public function insertFinancialYear(FinancialRequest $request){
+    public function insertFinancialYear(FinancialRequest $request)
+    {
 
         try {
             $financial = $this->systemconfigService->createFinancialYear($request);
             activity("Financial-Year")
-            ->causedBy(auth()->user())
-            ->performedOn($financial)
-            ->log('Financial Year Created !');
+                ->causedBy(auth()->user())
+                ->performedOn($financial)
+                ->log('Financial Year Created !');
             return FinancialResource::make($financial)->additional([
                 'success' => true,
                 'message' => $this->insertSuccessMessage,
@@ -220,7 +231,6 @@ class financialYearController extends Controller
     {
 
 
-
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|exists:financial_years,id,deleted_at,NULL',
         ]);
@@ -228,12 +238,12 @@ class financialYearController extends Controller
         $validator->validated();
 
         $financial_years = FinancialYear::whereId($id)->whereStatus(0)->first();
-        if($financial_years){
+        if ($financial_years) {
             $financial_years->delete();
         }
         activity("Financial-Year")
-        ->causedBy(auth()->user())
-        ->log('Financial Year Deleted!!');
-         return $this->sendResponse($financial_years, $this->deleteSuccessMessage, Response::HTTP_OK);
+            ->causedBy(auth()->user())
+            ->log('Financial Year Deleted!!');
+        return $this->sendResponse($financial_years, $this->deleteSuccessMessage, Response::HTTP_OK);
     }
 }
