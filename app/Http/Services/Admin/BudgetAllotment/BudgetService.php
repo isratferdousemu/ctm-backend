@@ -634,11 +634,13 @@ class BudgetService
             // localtion_type=1; district-pouroshava->ward
             // localtion_type=2; thana->{union/pouro}->ward
             // localtion_type=3; thana->ward
-
+            $is_allotment_area = false;
             $budgetLocation = [];
             if ($location?->type == 'ward') {
+                $is_allotment_area = $location?->localtion_type == 1 || $location?->localtion_type == 3;
                 $budgetLocation['ward_id'] = $location->id;
             } elseif ($location?->type == 'union' || $location?->type == 'pouro') {
+                $is_allotment_area = $location?->localtion_type == 2;
                 if ($location?->type == 'union')
                     $budgetLocation['union_id'] = $location->id;
                 elseif ($location?->type == 'pouro')
@@ -664,6 +666,7 @@ class BudgetService
             $location->previous_total_amount = $budget_value['previous_total_amount'];
             $location->current_total_beneficiary = $budget_value['current_total_beneficiary'];
             $location->current_total_amount = $budget_value['current_total_amount'];
+            $location->is_allotment_area = $is_allotment_area;
         });
 
         return $locations;
