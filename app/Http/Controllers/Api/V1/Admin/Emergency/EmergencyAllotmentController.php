@@ -34,35 +34,39 @@ class EmergencyAllotmentController extends Controller
 
     public function getAllotmentWiseProgram(Request $request)
     {
-        $data= array();
+        $data = array();
         $processedProgramIds = [];
-        $emergencyAllotments = EmergencyAllotment::with('program')->get();
+        $emergencyAllotments = EmergencyAllotment::with('programs')->get();
         foreach ($emergencyAllotments as $emergencyAllotment) {
-            $program = $emergencyAllotment->program;
-            if ($program && !in_array($program->id, $processedProgramIds)) {
+            $programs = $emergencyAllotment->programs;
+            foreach ($programs as $program) {
                 $data[] = [
                     'id' => $program->id,
                     'name_en' => $program->name_en,
                     'name_bn' => $program->name_bn,
                 ];
-                $processedProgramIds[] = $program->id;
             }
         }
-       return $data;
+        return $data;
     }
 
 
     public function store(EmergencyAllotmentRequest $request)
     {
 
-        $allotment = $this->emergencyAllotmentService->storeAllotment($request);
+        try {
+            $allotment = $this->emergencyAllotmentService->storeAllotment($request);
 
-        Helper::activityLogInsert($allotment, '', 'Emergency Allotment', 'Emergency Allotment Created !');
+            Helper::activityLogInsert($allotment, '', 'Emergency Allotment', 'Emergency Allotment Created !');
 
-        return EmergencyAllotmentResource::make($allotment)->additional([
-            'success' => true,
-            'message' => "Emergency Allotment Created Successfully",
-        ]);
+            return EmergencyAllotmentResource::make($allotment)->additional([
+                'success' => true,
+                'message' => "Emergency Allotment Created Successfully",
+            ]);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+
     }
 
     public function edit($id)
@@ -75,7 +79,7 @@ class EmergencyAllotmentController extends Controller
                 'message' => $this->fetchDataSuccessMessage,
             ]);
         } catch (\Throwable $th) {
-            throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
         }
     }
 
@@ -91,14 +95,19 @@ class EmergencyAllotmentController extends Controller
                 'message' => "Emergency Allotment Updated Successfully",
             ]);
         } catch (\Throwable $th) {
-            throw $th;
+            return $this->sendError($th->getMessage(), [], 500);
         }
     }
 
     public function destroy($id)
     {
-        $data = $this->emergencyAllotmentService->destroy($id);
-        Helper::activityLogDelete($data, '', 'Emergency Allotment', 'Emergency Allotment Deleted !');
-        return handleResponse($data, "Emergency Allotment Deleted Successfully");
+        try {
+            $data = $this->emergencyAllotmentService->destroy($id);
+            Helper::activityLogDelete($data, '', 'Emergency Allotment', 'Emergency Allotment Deleted !');
+            return handleResponse($data, "Emergency Allotment Deleted Successfully");
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+
     }
 }

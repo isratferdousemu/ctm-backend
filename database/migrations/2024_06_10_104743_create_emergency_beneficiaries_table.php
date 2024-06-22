@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('emergency_beneficiaries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('allotment_id')->constrained('emergency_allotments')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('allotment_id')->index()->nullable()->constrained('emergency_allotments')->cascadeOnDelete();
+            $table->foreignId('program_id')->index()->nullable()->constrained('allowance_programs')->cascadeOnDelete();
             $table->string('application_id')->nullable();
             $table->string('beneficiary_id')->nullable();
             $table->string('name_en');
@@ -81,7 +82,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('account_type')->nullable()->comment("1=Bank;2=Mobile");
             $table->string('bank_name')->nullable();
             $table->string('branch_name')->nullable();
-            $table->string('delete_cause', 255)->nullable();
             $table->double('monthly_allowance', 8, 2)->nullable();
             $table->tinyInteger('status')->default(0);
             $table->tinyInteger('isExisting')->default(0);

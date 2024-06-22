@@ -18,6 +18,8 @@ Route::middleware(['auth:sanctum', 'language'])->group(function () {
 
         /*----------------------------Emergency Beneficiary Start--------------------------------*/
         Route::get('/beneficiaries', [EmergencyBeneficiaryController::class, 'list'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-view']);
+        Route::get('/get-selected-beneficiaries', [EmergencyBeneficiaryController::class, 'getSelectedBeneficiaries'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-view']);
+        Route::get('/beneficiaries-info/{id}', [EmergencyBeneficiaryController::class, 'beneficiariesInfo'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-view']);
         Route::post('/beneficiaries', [EmergencyBeneficiaryController::class, 'store'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-create']);
         Route::post('/store-multiple-beneficiaries', [EmergencyBeneficiaryController::class, 'storeMultipleData'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-create']);
         Route::get('/beneficiary/edit/{id}', [EmergencyBeneficiaryController::class, 'edit'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-edit']);
@@ -25,6 +27,7 @@ Route::middleware(['auth:sanctum', 'language'])->group(function () {
         Route::get('/get-existing-beneficiaries-info', [EmergencyBeneficiaryController::class, 'getExistingBeneficiariesInfo'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-create']);
         Route::get('/get-new-beneficiaries-info', [EmergencyBeneficiaryController::class, 'getNewBeneficiariesInfo'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-create']);
         Route::delete('/beneficiary/{id}', [EmergencyBeneficiaryController::class, 'destroy'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-delete']);
+        Route::get('/getBeneficiaryListPdf', [EmergencyBeneficiaryController::class, 'getBeneficiaryListPdf'])->middleware(['role_or_permission:super-admin|emergency-beneficiary-view']);
         /* -----------------------------------Emergency Beneficiary End--------------------------------------- */
 
         /*----------------------------Payment Cycle start--------------------------------*/
