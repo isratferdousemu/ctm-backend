@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Http\Traits\PermissionTrait;
 use DB;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
@@ -439,6 +438,11 @@ class PermissionSeeder extends Seeder
                     ["id" => 132, "name" => "payroll-generation-delete", "page_url" => "/payroll-management/payroll-generation", "parent_page" => 1]
                 ]
             ],
+
+            /* -------------------------------------------------------------------------- */
+            /*                            Emergency Payment Management                    */
+            /* -------------------------------------------------------------------------- */
+            //  Emergency Allotment
             [
                 'module_name' => $this->modulePermissionEmergencyPayment,
                 'sub_module_name' => $this->subEmergencyAllotment,
@@ -449,31 +453,54 @@ class PermissionSeeder extends Seeder
                     ["id" => 135, "name" => "emergency-allotment-edit", "page_url" => "/emergency-payment/emergency-allotment/edit/:id", "parent_page" => 1],
                     ["id" => 136, "name" => "emergency-allotment-delete", "page_url" => "/emergency-payment/emergency-allotment/delete/:id", "parent_page" => 1],
 
+                ]
+            ],
+            //  Emergency Beneficiary
+            [
+                'module_name' => $this->modulePermissionEmergencyPayment,
+                'sub_module_name' => $this->subEmergencyBeneficiary,
+                'guard_name' => $this->guard,
+                'permissions' => [
                     ["id" => 137, "name" => "emergency-beneficiary-create", "page_url" => "/emergency-payment/emergency-beneficiary/create", "parent_page" => 1],
                     ["id" => 138, "name" => "emergency-beneficiary-view", "page_url" => "/emergency-payment/emergency-beneficiary", "parent_page" => 1],
                     ["id" => 139, "name" => "emergency-beneficiary-edit", "page_url" => "/emergency-payment/emergency-beneficiary/edit/:id", "parent_page" => 1],
                     ["id" => 140, "name" => "emergency-beneficiary-delete", "page_url" => "/emergency-payment/emergency-beneficiary", "parent_page" => 1],
 
+                ]
+            ],
+            //  Manage Emergency Beneficiary
+            [
+                'module_name' => $this->modulePermissionEmergencyPayment,
+                'sub_module_name' => $this->subManageEmergencyBeneficiary,
+                'guard_name' => $this->guard,
+                'permissions' => [
                     ["id" => 141, "name" => "manage-emergency-beneficiary-create", "page_url" => "/emergency-payment/manage-emergency-beneficiary/create", "parent_page" => 1],
                     ["id" => 142, "name" => "manage-emergency-beneficiary-view", "page_url" => "/emergency-payment/manage-emergency-beneficiary", "parent_page" => 1],
                     ["id" => 143, "name" => "manage-emergency-beneficiary-edit", "page_url" => "/emergency-payment/manage-emergency-beneficiary/edit/:id", "parent_page" => 1],
                     ["id" => 144, "name" => "manage-emergency-beneficiary-delete", "page_url" => "/emergency-payment/manage-emergency-beneficiary", "parent_page" => 1],
 
-                    ["id" => 141, "name" => "emergency-payroll-create", "page_url" => "/payroll-management/emergency-payroll/create", "parent_page" => 1],
-                    ["id" => 142, "name" => "emergency-payroll-view", "page_url" => "/payroll-management/emergency-payroll", "parent_page" => 1],
-                    ["id" => 143, "name" => "emergency-payroll-edit", "page_url" => "/payroll-management/emergency-payroll/edit/:id", "parent_page" => 1],
-                    ["id" => 144, "name" => "emergency-payroll-delete", "page_url" => "/payroll-management/emergency-payroll", "parent_page" => 1]
+                ]
+            ],
+            //  Payroll Create
+            [
+                'module_name' => $this->modulePermissionEmergencyPayment,
+                'sub_module_name' => $this->subEmergencyPayorll,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 280, "name" => "emergency-payroll-create", "page_url" => "/emergency-payment/emergency-payroll/create", "parent_page" => 1],
+                    ["id" => 281, "name" => "emergency-payroll-view", "page_url" => "/emergency-payment/emergency-payroll", "parent_page" => 1],
+                    ["id" => 282, "name" => "emergency-payroll-edit", "page_url" => "/emergency-payment/emergency-payroll/edit/:id", "parent_page" => 1],
+                    ["id" => 283, "name" => "emergency-payroll-delete", "page_url" => "/emergency-payment/emergency-payroll", "parent_page" => 1],
+                    ["id" => 284, "name" => "emergency-payroll-approval", "page_url" => "/emergency-payment/emergency-payroll/approval", "parent_page" => 1],
 
                 ]
             ],
-
 
             /* -------------------------------------------------------------------------- */
             /*                            Grievance Management                            */
             /* -------------------------------------------------------------------------- */
 
-            [
-                'module_name' => $this->modulePermissionGrievanceManagement,
+            ['module_name' => $this->modulePermissionGrievanceManagement,
                 'sub_module_name' => $this->subGrievanceSetting,
                 'guard_name' => $this->guard,
                 'permissions' => [
@@ -774,14 +801,14 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->moduleDataMigration,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 277, "name" => "beneficiaryMigrration-create", "page_url" => "/migration/beneficiary", "parent_page" => 1],
+                    ["id" => 285, "name" => "beneficiaryMigrration-create", "page_url" => "/migration/beneficiary", "parent_page" => 1],
                     ["id" => 278, "name" => "beneficiaryMigrration-view", "page_url" => "/migration/beneficiary", "parent_page" => 1],
                 ]
             ],
 
         ];
 
-        //last id 279
+        //last id 285
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

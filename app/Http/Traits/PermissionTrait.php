@@ -73,6 +73,9 @@ trait PermissionTrait
     private $subAccountsInformation = "accounts-information";
     private $subPayrollGeneration = "payroll-generation";
     private $subEmergencyAllotment = "emergency-allotment";
+    private $subEmergencyBeneficiary = "emergency-beneficiary";
+    private $subManageEmergencyBeneficiary = "manage-emergency-beneficiary";
+    private $subEmergencyPayorll = "emergency-payroll";
     private $subPayrollSetting = "payroll-setting";
     private $subPayrollVerificationSetting = "payroll-verification-setting";
     private $subPayrollPaymentTracking = "payment-tracking";
