@@ -26,7 +26,10 @@ class PaymentProcessorController extends Controller
             $data = $data->where(function ($data) use ($request) {
                 //Search the data by name
                 $data = $data->where('name_en', 'LIKE', '%' . $request->search . '%')
-                    ->orWhere('focal_phone_no', 'LIKE', '%' . $request->search . '%');
+                    ->orWhere('name_bn', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('focal_phone_no', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('focal_email_address', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('processor_type', 'LIKE', '%' . $request->search . '%');
             });
 
         // if ($request->filter !== false) {

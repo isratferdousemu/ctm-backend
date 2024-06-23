@@ -747,7 +747,7 @@ class PermissionSeeder extends Seeder
                 'sub_module_name' => $this->subEmergencyPaymentDashboard,
                 'guard_name' => $this->guard,
                 'permissions' => [
-                    ["id" => 277, "name" => "emergency-payment-dashboard-show", "page_url" => "/emergency-payment-management/dashboard", "parent_page" => 1],
+                    ["id" => 285, "name" => "emergency-payment-dashboard-show", "page_url" => "/emergency-payment-management/dashboard", "parent_page" => 1],
                 ]
             ],
             [
@@ -761,7 +761,7 @@ class PermissionSeeder extends Seeder
 
 
             /* -------------------------------------------------------------------------- */
-            /*                             Data Migration                         */
+            /*                             Data Migration                                 */
             /* -------------------------------------------------------------------------- */
 
             [

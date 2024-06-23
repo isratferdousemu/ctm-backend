@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/emergency-dashboard-data', [PayrollDashboardController::class, 'emergencyDashboardData']);
         //emergency supplementary payroll
         Route::get('/emergency-supplementary-payroll', [EmergencySupplementaryController::class, 'emergencySupplementaryPayrollData']);
+        Route::get('/emergency-supplementary-payroll-show/{id}', [EmergencySupplementaryController::class, 'emergencySupplementaryPayrollShow']);
         // for payroll create
         Route::get('/get-program-info/{program_id}', [PayrollController::class, 'getProgramInfo'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);
         Route::get('/get-active-installments/{program_id}/{financial_year_id}', [PayrollController::class, 'getActiveInstallments'])->middleware(['role_or_permission:super-admin|payroll-create|payroll-view']);

@@ -24,4 +24,8 @@ class EmergencySupplementaryController extends Controller
 
         return response()->json($supplementary);
     }
+
+    public function emergencySupplementaryPayrollShow(Request $request,$id){
+        EmergencyPayrollPaymentCycle::with('CycleDetails.EmergencyBeneficiary')->find($id);
+    }
 }
