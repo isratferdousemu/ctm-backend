@@ -74,7 +74,7 @@ class APIListController extends Controller
         $apiList->selected_columns = $request->selected_columns;
         $apiList->save();
 
-        Helper::activityLogInsert($apiList, '','Api List','Api List Created !');
+        Helper::activityLogInsert($apiList, '','Api List','Api List Created');
 
 
         return $this->sendResponse($apiList, 'API created successfully');
