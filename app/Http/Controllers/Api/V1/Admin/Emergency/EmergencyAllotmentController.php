@@ -15,14 +15,14 @@ class EmergencyAllotmentController extends Controller
 {
     use MessageTrait;
 
-    protected $emergencyAllotmentService;
+    protected EmergencyAllotmentService $emergencyAllotmentService;
 
     public function __construct(EmergencyAllotmentService $emergencyAllotmentService)
     {
         $this->emergencyAllotmentService = $emergencyAllotmentService;
     }
 
-    public function getEmergencyAllotments(Request $request)
+    public function getEmergencyAllotments(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $allotments = $this->emergencyAllotmentService->getEmergencyAllotments($request);
 
@@ -32,10 +32,25 @@ class EmergencyAllotmentController extends Controller
         ]);
     }
 
-    public function getAllotmentWiseProgram(Request $request)
+    public function getAllotmentWiseProgram(Request $request, $allotment_id): array
     {
         $data = array();
-        $processedProgramIds = [];
+        $emergencyAllotments = EmergencyAllotment::with('programs')->where('id', $allotment_id)->get();
+        foreach ($emergencyAllotments as $emergencyAllotment) {
+            $programs = $emergencyAllotment->programs;
+            foreach ($programs as $program) {
+                $data[] = [
+                    'id' => $program->id,
+                    'name_en' => $program->name_en,
+                    'name_bn' => $program->name_bn,
+                ];
+            }
+        }
+        return $data;
+    }
+    public function getAllAllotmentPrograms(Request $request): array
+    {
+        $data = array();
         $emergencyAllotments = EmergencyAllotment::with('programs')->get();
         foreach ($emergencyAllotments as $emergencyAllotment) {
             $programs = $emergencyAllotment->programs;
