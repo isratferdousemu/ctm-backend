@@ -295,6 +295,7 @@ class EmergencyBeneficiaryService
     public function getSelectedBeneficiaries(Request $request)
     {
         $program_id = $request->query('program_id');
+        $allotment_id = $request->query('allotment_id');
 
         $beneficiary_id = $request->query('beneficiary_id');
         $nominee_name = $request->query('nominee_name');
@@ -309,12 +310,14 @@ class EmergencyBeneficiaryService
         $query = EmergencyBeneficiary::query();
         if ($program_id)
             $query = $query->where('program_id', $program_id);
+        if ($allotment_id)
+            $query = $query->where('allotment_id', $allotment_id);
 
         $query = $this->applyLocationFilter($query, $request);
 
         // advance search
         if ($beneficiary_id)
-            $query = $query->where('application_id', $beneficiary_id);
+            $query = $query->where('beneficiary_id', $beneficiary_id);
         if ($nominee_name)
             $query = $query->whereRaw('UPPER(nominee_en) LIKE "%' . strtoupper($nominee_name) . '%"');
         if ($account_number)
