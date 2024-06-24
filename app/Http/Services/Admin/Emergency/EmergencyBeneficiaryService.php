@@ -4,6 +4,7 @@ namespace App\Http\Services\Admin\Emergency;
 
 use App\Http\Traits\FileUploadTrait;
 use App\Models\Beneficiary;
+use App\Models\EmergencyAllotment;
 use App\Models\EmergencyBeneficiary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -600,7 +601,7 @@ class EmergencyBeneficiaryService
             }
 //            if ($item['beneficiary_id'] != null) {
                 $beneficiary = new EmergencyBeneficiary();
-                $beneficiary->allotment_id = $item['allotment_id'] ?? null;
+                $beneficiary->allotment_id = $item['allotment_id'] ?? $this->getProgram($item['program_id']);
                 $beneficiary->program_id = $item['program_id'] ?? null;
                 $beneficiary->beneficiary_id = $item['beneficiary_id'];
                 $beneficiary->verification_type = $item['verification_type'];
@@ -769,5 +770,15 @@ class EmergencyBeneficiaryService
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    private function getProgram($id)
+    {
+        $emergencyAllotmentId = DB::table('allowance_program_emergency_allotment')
+            ->where('allowance_program_id', $id)
+            ->value('emergency_allotment_id');
+
+        return $emergencyAllotmentId;
+
     }
 }
