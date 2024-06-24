@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
 
 Route::middleware('auth:sanctum')->prefix('admin/training/dashboard')->group(function () {
     Route::get('calculation-cards',[TrainingDashboardController::class,'cardCalculation']);
+    Route::get('top-trainers',[TrainingDashboardController::class,'topTrainers']);
 });
 
 Route::get('circulars-details/{circular}', [TrainingCircularController::class, 'show']);
