@@ -25,4 +25,6 @@ class EmergencyPayrollPaymentCycleDetails extends Model
     {
         return $this->belongsTo(EmergencyPayroll::class, 'emergency_payroll_id', 'id');
     }
+
+
 }

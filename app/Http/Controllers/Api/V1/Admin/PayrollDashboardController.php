@@ -372,7 +372,7 @@ class PayrollDashboardController extends Controller
     {
         $programId = $request->input('program_id');
 
-        $payrollPaymentCycleDetails = EmergencyPayrollPaymentCycleDetails::with('payroll');
+        $payrollPaymentCycleDetails = EmergencyPayrollPaymentCycleDetails::with('EmergencyPayroll');
 
         if ($programId) {
             $payrollPaymentCycleDetails->whereHas('EmergencyPayroll', function ($query) use ($programId) {

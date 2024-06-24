@@ -8,11 +8,13 @@ use App\Http\Requests\Admin\Training\TrainingProgramRequest;
 use App\Http\Services\Admin\Training\KoboService;
 use App\Http\Services\Admin\Training\ProgramService;
 use App\Http\Traits\RoleTrait;
+use App\Models\KoboUpdateToken;
 use App\Models\TimeSlot;
 use App\Models\TrainingProgram;
 use App\Models\Trainer;
 use App\Models\TrainingCircular;
 use App\Models\TrainingProgramParticipant;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -73,14 +75,15 @@ class TrainingProgramController extends Controller
             $q->whereDate('end_date', '<=', $v);
         });
 
+        $user = auth()->user();
 
-        if (\Auth::user()->hasRole($this->participant)) {
+        if ($user->user_type !=1 && $user->hasRole($this->participant)) {
             $query->whereHas('participants', function ($q) {
                 $q->where('user_id', auth()->id());
             });
         }
 
-        if (\Auth::user()->hasRole($this->trainer)) {
+        if ($user->user_type !=1 && $user->hasRole($this->trainer)) {
             $query->whereHas('trainers', function ($q) {
                 $q->where('trainer_id', auth()->id());
             });
@@ -128,7 +131,7 @@ class TrainingProgramController extends Controller
 
         DB::beginTransaction();
         try {
-            $token = env('KOBO_API_TOKEN');
+            $token = KoboUpdateToken::value('token') ?: env('KOBO_API_TOKEN');
             if ($program->form_id) {
                 $this->koboService->insertQuestion($program, $token);
                 $this->koboService->insertAnswers($program, $token);
@@ -142,6 +145,11 @@ class TrainingProgramController extends Controller
             return $this->sendResponse($program, 'Data synced successfully');
         } catch (\Exception $exception) {
             DB::rollBack();
+
+            if ($exception instanceof GuzzleException) {
+                return $this->sendError('Invalid Token');
+            }
+
             throw $exception;
         }
 
@@ -195,11 +203,7 @@ class TrainingProgramController extends Controller
      */
     public function show(TrainingProgram $program)
     {
-        $program->load('trainingCircular.trainingType', 'modules', 'trainers', 'statusName');
-
-        if (auth()->user() && auth()->user()->hasRole($this->participant)) {
-            $program->participant = $program->participants()->firstWhere('user_id', auth()->id());
-        }
+        $program->load('trainingCircular.trainingType', 'modules', 'trainers', 'statusName', 'users');
 
         return $this->sendResponse($program);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Services\Admin\Report;
 
 use App\Helpers\Helper;
+use App\Http\Resources\Admin\Report\PowerBiResource;
 use App\Models\PowerBiReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class PowerBiService
             $data->name_bn                = $request->name_bn;
             $data->embaded_code           = $request->embaded_code;
             if ($request->image) {
-                $data->image = $request->file('image')->store('public');
+                $data->image = $request->file('image')->store('public/powerbi');
             }
             $data->save();
             DB::commit();
@@ -46,12 +47,13 @@ class PowerBiService
                 if ($data->image && Storage::exists($data->image)) {
                     Storage::delete($data->image);
                 }
-                $data->image = $request->file('image')->store('public');
+                $data->image = $request->file('image')->store('public/powerbi');
             }
             $data->save();
             DB::commit();
             Helper::activityLogUpdate($data, $previousValues,'Power BI','Power BI Report Updated !');
-            return $data;
+            return new PowerBiResource($data);
+//            return $data;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;

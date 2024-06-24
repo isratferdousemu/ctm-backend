@@ -1036,6 +1036,10 @@ class ApplicationController extends Controller
     {
         $user = auth()->user()->load('assign_location.parent.parent.parent.parent');
 
+        if ($user->programs_id) {
+            $query->whereIn('program_id', $user->programs_id);
+        }
+
         if ($user->hasRole($this->officeHead) && $user->office_type) {
             return (new OfficeApplicationService())->getApplications($query, $user);
         }
@@ -2009,6 +2013,8 @@ class ApplicationController extends Controller
                 "nominee_relation_with_beneficiary" => $application->nominee_relation_with_beneficiary,
                 "nominee_nationality" => $application->nominee_nationality,
                 "account_name" => $application->account_name,
+                   "bank_name" => $application->bank_name,
+                    "mfs_name" => $application->mfs_name,
                 "account_number" => $application->account_number,
                 "account_owner" => $application->account_owner,
 

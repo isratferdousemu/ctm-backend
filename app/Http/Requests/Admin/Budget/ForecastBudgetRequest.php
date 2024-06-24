@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\Budget;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ApproveBudgetRequest extends FormRequest
+class ForecastBudgetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,12 @@ class ApproveBudgetRequest extends FormRequest
     public function rules(): array
     {
         return [
-//            'approved_by' => 'required|string|max:100',
-            'approved_document' => 'nullable|mimes:jpeg,jpg,pdf|max:2048',
-            'approved_remarks' => 'nullable',
+            'program_id' => 'required',
+            'financial_year_id' => '',
+            'calculation_type' => '',
+            'calculation_value' => '',
+            'previous_financial_year_ids' => '',
+            'location' => ''
         ];
     }
 }

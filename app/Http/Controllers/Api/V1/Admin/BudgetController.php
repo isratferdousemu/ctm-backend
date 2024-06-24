@@ -137,7 +137,7 @@ class BudgetController extends Controller
     {
         try {
             $beforeUpdate = Budget::findOrFail($id);
-            if (!$beforeUpdate->process_flag) {
+            if ($beforeUpdate->process_flag <= 0) {
                 throw new Exception('Budget not yet processed', ResponseAlias::HTTP_BAD_REQUEST);
             } elseif ($beforeUpdate->is_approved) {
                 throw new Exception('Budget Already Approved', ResponseAlias::HTTP_BAD_REQUEST);
@@ -176,10 +176,10 @@ class BudgetController extends Controller
         }
     }
 
-    public function getProjection(Request $request, $program_id, $financial_year_id): \Illuminate\Http\JsonResponse
+    public function getProjection(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $data = $this->budgetService->getProjection($request, $program_id, $financial_year_id);
+            $data = $this->budgetService->getProjection($request);
             return response()->json([
                 'data' => $data,
                 'success' => true,
