@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Admin\AllotmentController;
-use App\Http\Controllers\Api\V1\Admin\BudgetController;
+use App\Http\Controllers\Api\V1\Admin\Budget\AllotmentController;
+use App\Http\Controllers\Api\V1\Admin\Budget\BudgetController;
+use App\Http\Controllers\Api\V1\Admin\Budget\DashboardController;
 
 Route::middleware('auth:sanctum')->group(function () {
     /* -------------------------------------------------------------------------- */
@@ -21,6 +22,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/detail/update/{budget_id}', [BudgetController::class, 'detailUpdate'])->middleware(['role_or_permission:super-admin|budget-view']);
         // report
         Route::get('/detail/report/{budget_id}', [BudgetController::class, 'getBudgetDetailListPdf'])->middleware(['role_or_permission:super-admin|budget-view']);
+        // dashboard
+        Route::get('/dashboard/getBudgetAndAllotmentSummary', [DashboardController::class, 'getBudgetAndAllotmentSummary'])->middleware(['role_or_permission:super-admin|budget-view|allotment-view']);
+        Route::get('/dashboard/currentBudgetAmount', [DashboardController::class, 'currentBudgetAmount'])->middleware(['role_or_permission:super-admin|budget-view|allotment-view']);
+        Route::get('/dashboard/totalBeneficiaries', [DashboardController::class, 'totalBeneficiaries'])->middleware(['role_or_permission:super-admin|budget-view|allotment-view']);
     });
 
     /* -------------------------------------------------------------------------- */
@@ -33,6 +38,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/delete/{id}', [AllotmentController::class, 'delete'])->middleware(['role_or_permission:super-admin|allotment-delete']);
         // report
         Route::get('/report', [AllotmentController::class, 'report'])->middleware(['role_or_permission:super-admin|allotment-view']);
+        // dashboard
+        Route::get('/dashboard/totalAllotmentAmount', [DashboardController::class, 'totalAllotmentAmount'])->middleware(['role_or_permission:super-admin|budget-view|allotment-view']);
+        Route::get('/dashboard/currentAllotmentAmount', [DashboardController::class, 'currentAllotmentAmount'])->middleware(['role_or_permission:super-admin|budget-view|allotment-view']);
     });
 
 

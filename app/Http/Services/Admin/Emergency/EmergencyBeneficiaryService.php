@@ -4,6 +4,7 @@ namespace App\Http\Services\Admin\Emergency;
 
 use App\Http\Traits\FileUploadTrait;
 use App\Models\Beneficiary;
+use App\Models\EmergencyAllotment;
 use App\Models\EmergencyBeneficiary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -294,6 +295,7 @@ class EmergencyBeneficiaryService
     public function getSelectedBeneficiaries(Request $request)
     {
         $program_id = $request->query('program_id');
+        $allotment_id = $request->query('allotment_id');
 
         $beneficiary_id = $request->query('beneficiary_id');
         $nominee_name = $request->query('nominee_name');
@@ -308,12 +310,14 @@ class EmergencyBeneficiaryService
         $query = EmergencyBeneficiary::query();
         if ($program_id)
             $query = $query->where('program_id', $program_id);
+        if ($allotment_id)
+            $query = $query->where('allotment_id', $allotment_id);
 
         $query = $this->applyLocationFilter($query, $request);
 
         // advance search
         if ($beneficiary_id)
-            $query = $query->where('application_id', $beneficiary_id);
+            $query = $query->where('beneficiary_id', $beneficiary_id);
         if ($nominee_name)
             $query = $query->whereRaw('UPPER(nominee_en) LIKE "%' . strtoupper($nominee_name) . '%"');
         if ($account_number)
@@ -600,7 +604,7 @@ class EmergencyBeneficiaryService
             }
 //            if ($item['beneficiary_id'] != null) {
                 $beneficiary = new EmergencyBeneficiary();
-                $beneficiary->allotment_id = $item['allotment_id'] ?? null;
+                $beneficiary->allotment_id = $item['allotment_id'] ?? $this->getProgram($item['program_id']);
                 $beneficiary->program_id = $item['program_id'] ?? null;
                 $beneficiary->beneficiary_id = $item['beneficiary_id'];
                 $beneficiary->verification_type = $item['verification_type'];
@@ -769,5 +773,15 @@ class EmergencyBeneficiaryService
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    private function getProgram($id)
+    {
+        $emergencyAllotmentId = DB::table('allowance_program_emergency_allotment')
+            ->where('allowance_program_id', $id)
+            ->value('emergency_allotment_id');
+
+        return $emergencyAllotmentId;
+
     }
 }
