@@ -18,9 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/verification-setting-submit', [PayrollSettingController::class, 'payrollVerification']);
         Route::get('/get-verification-setting', [PayrollSettingController::class, 'getVerificationSetting']);
     });
-    // beneficiary tracking information
-    Route::post('/payment-tracking-info', [PaymentProcessorController::class, 'getPaymentTrackingInfo']);
-
-
 
 });
+// beneficiary tracking information
+Route::post('mobile/payroll/payment-tracking-info', [PaymentProcessorController::class, 'getPaymentTrackingInfoMobile']);

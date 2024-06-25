@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -217,9 +218,9 @@ class Beneficiary extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function payroll(): HasOne
+    public function PayrollDetails(): HasMany
     {
-        return $this->hasOne(PayrollDetail::class, 'beneficiary_id', 'id');
+        return $this->hasMany(PayrollDetail::class, 'beneficiary_id', 'id');
     }
 
     /**
@@ -227,9 +228,9 @@ class Beneficiary extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function PaymentCycle(): HasOne
+    public function PaymentCycleDetails(): HasMany
     {
-        return $this->hasOne(PayrollPaymentCycleDetail::class, 'beneficiary_id', 'id');
+        return $this->hasMany(PayrollPaymentCycleDetail::class, 'beneficiary_id', 'id');
     }
 
 }
