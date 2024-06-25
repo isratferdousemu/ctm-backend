@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Admin\Training\ParticipantController;
 use App\Http\Controllers\Api\V1\Admin\Training\TimeSlotController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainerController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainingCircularController;
+use App\Http\Controllers\Api\V1\Admin\Training\TrainingDashboardController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainingParticipantController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainingProgramController;
 use App\Http\Controllers\Api\V1\Admin\Training\TrainingRatingController;
@@ -35,7 +36,11 @@ Route::middleware('auth:sanctum')->prefix('admin/training')->group(function () {
     Route::apiResource('programs', TrainingProgramController::class);
     Route::post('trainer-rating', [TrainingRatingController::class, 'store']);
 
+});
 
+Route::middleware('auth:sanctum')->prefix('admin/training/dashboard')->group(function () {
+    Route::get('calculation-cards',[TrainingDashboardController::class,'cardCalculation']);
+    Route::get('top-trainers',[TrainingDashboardController::class,'topTrainers']);
 });
 
 Route::get('circulars-details/{circular}', [TrainingCircularController::class, 'show']);

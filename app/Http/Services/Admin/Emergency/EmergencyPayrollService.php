@@ -6,7 +6,7 @@ use App\Models\EmergencyAllotment;
 use Illuminate\Http\Request;
 
 
-class EmergencyAllotmentService
+class EmergencyPayrollService
 {
 
     public function getEmergencyAllotments(Request $request)
