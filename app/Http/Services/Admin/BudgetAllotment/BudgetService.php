@@ -28,6 +28,22 @@ use Throwable;
 class BudgetService
 {
     /**
+     * @return FinancialYear|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function currentFinancialYear()
+    {
+        return FinancialYear::query()->where('status', 1)->first();
+    }
+
+    /**
+     * @return FinancialYear|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function budgetFinancialYear()
+    {
+        return FinancialYear::query()->where('status', 2)->first();
+    }
+
+    /**
      * @return array
      */
     public function getUserLocation(): array

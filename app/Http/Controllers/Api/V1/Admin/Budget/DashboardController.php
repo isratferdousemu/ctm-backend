@@ -53,4 +53,32 @@ class DashboardController extends Controller
             'message' => $this->fetchSuccessMessage,
         ], ResponseAlias::HTTP_OK);
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTotalBudget(Request $request)
+    {
+        $data = $this->dashboardService->totalBudget($request);
+        return response()->json([
+            'data' => $data,
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ], ResponseAlias::HTTP_OK);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTotalAllotment(Request $request)
+    {
+        $data = $this->dashboardService->totalAllotment($request);
+        return response()->json([
+            'data' => $data,
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ], ResponseAlias::HTTP_OK);
+    }
 }

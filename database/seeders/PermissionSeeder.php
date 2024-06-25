@@ -164,7 +164,12 @@ class PermissionSeeder extends Seeder
                     ["id" => 46, "name" => "budget-create", "page_url" => "/budget/create", "parent_page" => 1],
                     ["id" => 47, "name" => "budget-view", "page_url" => "/budget", "parent_page" => 1],
                     ["id" => 48, "name" => "budget-edit", "page_url" => "/budget/edit/:id", "parent_page" => 1],
-                    ["id" => 49, "name" => "budget-delete", "page_url" => "/budget", "parent_page" => 1]
+                    ["id" => 49, "name" => "budget-delete", "page_url" => "/budget", "parent_page" => 1],
+
+                    ["id" => 286, "name" => "budgetDashboard-create", "page_url" => "/budget/dashboard/create", "parent_page" => 1],
+                    ["id" => 287, "name" => "budgetDashboard-view", "page_url" => "/budget/dashboard", "parent_page" => 1],
+                    ["id" => 288, "name" => "budgetDashboard-edit", "page_url" => "/budget/dashboard/edit/:id", "parent_page" => 1],
+                    ["id" => 289, "name" => "budgetDashboard-delete", "page_url" => "/budget/dashboard", "parent_page" => 1],
                 ]
             ],
             [
@@ -427,17 +432,22 @@ class PermissionSeeder extends Seeder
 //                    ["id" => 128, "name" => "account-information-delete", "page_url" => "/payroll-management/account-information", "parent_page" => 1]
 //                ]
 //            ],
-//            [
-//                'module_name' => $this->modulePermissionPayrollManagement,
-//                'sub_module_name' => $this->subPayrollGeneration,
-//                'guard_name' => $this->guard,
-//                'permissions' => [
-//                    ["id" => 129, "name" => "payroll-generation-create", "page_url" => "/payroll-management/payroll-generation/create", "parent_page" => 1],
-//                    ["id" => 130, "name" => "payroll-generation-view", "page_url" => "/payroll-management/payroll-generation", "parent_page" => 1],
-//                    ["id" => 131, "name" => "payroll-generation-edit", "page_url" => "/payroll-management/payroll-generation/edit/:id", "parent_page" => 1],
-//                    ["id" => 132, "name" => "payroll-generation-delete", "page_url" => "/payroll-management/payroll-generation", "parent_page" => 1]
-//                ]
-//            ],
+            [
+                'module_name' => $this->modulePermissionPayrollManagement,
+                'sub_module_name' => $this->subPayrollGeneration,
+                'guard_name' => $this->guard,
+                'permissions' => [
+                    ["id" => 290, "name" => "payroll-generation-create", "page_url" => "/payroll-management/payroll-create", "parent_page" => 1],
+                    ["id" => 291, "name" => "payroll-generation-view", "page_url" => "/payroll-management/payroll-generation", "parent_page" => 1],
+                    ["id" => 292, "name" => "payroll-generation-edit", "page_url" => "/payroll-management/payroll-generation/edit/:id", "parent_page" => 1],
+                    ["id" => 293, "name" => "payroll-generation-delete", "page_url" => "/payroll-management/payroll-generation", "parent_page" => 1],
+
+                    ["id" => 294, "name" => "payroll-approval-create", "page_url" => "/payroll-management/payroll-approval", "parent_page" => 1],
+                    ["id" => 295, "name" => "payroll-approval-view", "page_url" => "/payroll-management/payroll-approval/list", "parent_page" => 1],
+                    ["id" => 296, "name" => "payroll-approval-edit", "page_url" => "/payroll-management/payroll-approval/edit/:id", "parent_page" => 1],
+                    ["id" => 297, "name" => "payroll-approval-delete", "page_url" => "/payroll-management/payroll-approval/delete", "parent_page" => 1]
+                ]
+            ],
 
             /* -------------------------------------------------------------------------- */
             /*                            Emergency Payment Management                    */

@@ -9,6 +9,8 @@ Route::middleware('auth:sanctum')->group(function () {
     /*                               Budget Management  Routes                    */
     /* -------------------------------------------------------------------------- */
     Route::prefix('admin/budget')->group(function () {
+        Route::get('/getCurrentFinancialYear', [BudgetController::class, 'getCurrentFinancialYear']);
+        Route::get('/getBudgetFinancialYear', [BudgetController::class, 'getBudgetFinancialYear']);
         Route::get('/getUserLocation', [BudgetController::class, 'getUserLocation']);
         Route::get('/list', [BudgetController::class, 'list'])->middleware(['role_or_permission:super-admin|budget-view']);
         Route::post('/add', [BudgetController::class, 'add'])->middleware(['role_or_permission:super-admin|budget-create']);
@@ -24,8 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/detail/report/{budget_id}', [BudgetController::class, 'getBudgetDetailListPdf'])->middleware(['role_or_permission:super-admin|budget-view']);
         // dashboard
         Route::get('/dashboard/getBudgetAndAllotmentSummary', [DashboardController::class, 'getBudgetAndAllotmentSummary'])->middleware(['role_or_permission:super-admin|budget-view|allotment-view']);
-        Route::get('/dashboard/currentBudgetAmount', [DashboardController::class, 'currentBudgetAmount'])->middleware(['role_or_permission:super-admin|budget-view|allotment-view']);
-        Route::get('/dashboard/totalBeneficiaries', [DashboardController::class, 'totalBeneficiaries'])->middleware(['role_or_permission:super-admin|budget-view|allotment-view']);
+        Route::get('/dashboard/getTotalBudget', [DashboardController::class, 'getTotalBudget'])->middleware(['role_or_permission:super-admin|budget-view|allotment-view']);
+        Route::get('/dashboard/getTotalAllotment', [DashboardController::class, 'getTotalAllotment'])->middleware(['role_or_permission:super-admin|budget-view|allotment-view']);
     });
 
     /* -------------------------------------------------------------------------- */

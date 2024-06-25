@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\Budget\StoreBudgetRequest;
 use App\Http\Requests\Admin\Budget\UpdateBudgetRequest;
 use App\Http\Resources\Admin\Budget\BudgetDetailResource;
 use App\Http\Resources\Admin\Budget\BudgetResource;
+use App\Http\Resources\Admin\Systemconfig\Finanacial\FinancialResource;
 use App\Http\Services\Admin\BudgetAllotment\BudgetService;
 use App\Http\Traits\MessageTrait;
 use App\Models\Budget;
@@ -35,6 +36,30 @@ class BudgetController extends Controller
     public function __construct(BudgetService $budgetService)
     {
         $this->budgetService = $budgetService;
+    }
+
+    /**
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getCurrentFinancialYear()
+    {
+        $financialYear = $this->budgetService->currentFinancialYear();
+        return FinancialResource::collection($financialYear)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
+    }
+
+    /**
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getBudgetFinancialYear()
+    {
+        $financialYear = $this->budgetService->budgetFinancialYear();
+        return FinancialResource::collection($financialYear)->additional([
+            'success' => true,
+            'message' => $this->fetchSuccessMessage,
+        ]);
     }
 
     /**
@@ -133,6 +158,11 @@ class BudgetController extends Controller
         }
     }
 
+    /**
+     * @param ApproveBudgetRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|BudgetResource
+     */
     public function approve(ApproveBudgetRequest $request, $id): \Illuminate\Http\JsonResponse|BudgetResource
     {
         try {
@@ -176,6 +206,10 @@ class BudgetController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getProjection(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -190,6 +224,11 @@ class BudgetController extends Controller
         }
     }
 
+    /**
+     * @param $budget_id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function detailList($budget_id, Request $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         try {
@@ -211,6 +250,11 @@ class BudgetController extends Controller
         }
     }
 
+    /**
+     * @param $budget_id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function detailUpdate($budget_id, Request $request): \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         try {
@@ -231,6 +275,11 @@ class BudgetController extends Controller
         }
     }
 
+    /**
+     * @param $budget_id
+     * @param Request $request
+     * @return ResponseAlias
+     */
     public function getBudgetDetailListPdf($budget_id, Request $request): ResponseAlias
     {
         $budgetDetailList = $this->budgetService->detailList($budget_id, $request, true);
