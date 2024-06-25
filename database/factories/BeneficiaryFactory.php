@@ -52,6 +52,7 @@ class BeneficiaryFactory extends Factory
 //            'application_table_id' => 1,
             'financial_year_id' => 1,
             'application_id' => fake()->unique()->numberBetween(1001, 9999),
+            'beneficiary_id' => fake()->unique()->numberBetween(1001, 9999),
             'name_en' => $name,
             'name_bn' => $name,
             'mother_name_en' => $mother_name,
