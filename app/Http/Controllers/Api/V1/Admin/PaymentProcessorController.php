@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\PayrollManagement\PaymentTrackingResource;
 use App\Http\Resources\CommonResource;
+use App\Http\Resources\Mobile\Payroll\PaymentTrackingMobileResource;
 use App\Models\bank;
 use App\Models\Beneficiary;
 use App\Models\PayrollPaymentProcessor;
@@ -26,7 +27,10 @@ class PaymentProcessorController extends Controller
             $data = $data->where(function ($data) use ($request) {
                 //Search the data by name
                 $data = $data->where('name_en', 'LIKE', '%' . $request->search . '%')
-                    ->orWhere('focal_phone_no', 'LIKE', '%' . $request->search . '%');
+                    ->orWhere('name_bn', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('focal_phone_no', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('focal_email_address', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('processor_type', 'LIKE', '%' . $request->search . '%');
             });
 
         // if ($request->filter !== false) {
@@ -272,6 +276,50 @@ class PaymentProcessorController extends Controller
 
         if ($Beneficiary) {
             return (new PaymentTrackingResource($Beneficiary))->additional([
+                'success' => true,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Beneficiary not found'
+            ], 404);
+        }
+    }
+
+    public function getPaymentTrackingInfoMobile(Request $request)
+    {
+        $Beneficiary = Beneficiary::with(
+            // 'program',
+            // 'gender',
+            // 'currentDivision',
+            // 'currentDistrict',
+            // 'currentCityCorporation',
+            // 'currentDistrictPourashava',
+            // 'currentUpazila',
+            // 'currentPourashava',
+            // 'currentThana',
+            // 'currentUnion',
+            // 'currentWard',
+            // 'permanentDivision',
+            // 'permanentDistrict',
+            // 'permanentCityCorporation',
+            // 'permanentDistrictPourashava',
+            // 'permanentUpazila',
+            // 'permanentPourashava',
+            // 'permanentThana',
+            // 'permanentUnion',
+            // 'permanentWard',
+            // 'financialYear',
+            'PayrollDetails.payroll.financialYear',
+            'PayrollDetails.payroll.installmentSchedule',
+            'PayrollDetails.paymentCycleDetails',
+            // 'PaymentCycleDetails.payrollPaymentCycle'
+        )
+            ->where('verification_number', $request->beneficiary_id)
+            ->first();
+
+        if ($Beneficiary) {
+            return (new PaymentTrackingMobileResource($Beneficiary))->additional([
                 'success' => true,
             ]);
         } else {

@@ -7,6 +7,7 @@ use App\Models\AllowanceProgram;
 use App\Models\Beneficiary;
 use App\Models\EmergencyAllotment;
 use App\Models\EmergencyBeneficiary;
+use App\Models\EmergencyPayrollPaymentCycleDetails;
 use App\Models\Location;
 use App\Models\Payroll;
 use App\Models\PayrollPaymentCycle;
@@ -371,10 +372,10 @@ class PayrollDashboardController extends Controller
     {
         $programId = $request->input('program_id');
 
-        $payrollPaymentCycleDetails = PayrollPaymentCycleDetail::with('payroll');
+        $payrollPaymentCycleDetails = EmergencyPayrollPaymentCycleDetails::with('EmergencyPayroll');
 
         if ($programId) {
-            $payrollPaymentCycleDetails->whereHas('payroll', function ($query) use ($programId) {
+            $payrollPaymentCycleDetails->whereHas('EmergencyPayroll', function ($query) use ($programId) {
                 $query->where('program_id', $programId);
             });
         }

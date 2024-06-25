@@ -18,10 +18,12 @@ class EmergencyPayrollPaymentCycle extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function CycleDetails(): HasOne
+    public function CycleDetails(): HasMany
     {
-        return $this->hasOne(EmergencyPayrollPaymentCycleDetails::class, 'emergency_cycle_id', 'id');
+        return $this->hasMany(EmergencyPayrollPaymentCycleDetails::class, 'emergency_cycle_id', 'id');
     }
+
+
 
 
 }

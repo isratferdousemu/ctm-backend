@@ -36,7 +36,12 @@ class Payroll extends Model
      */
     public function financialYear()
     {
-        return $this->belongsTo(FinancialYear::class, 'financial_year_id');
+        return $this->belongsTo(FinancialYear::class, 'financial_year_id','id');
+    }
+
+    public function installmentSchedule()
+    {
+        return $this->belongsTo(PayrollInstallmentSchedule::class, 'installment_schedule_id','id');
     }
 
     /**
